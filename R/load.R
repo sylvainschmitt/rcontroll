@@ -14,14 +14,23 @@ NULL
 #'
 #' @examples
 #'
-load <- function(name = getOption("TROLL.name"), 
-                 path = file.path(getOption("TROLL.path"), getOption("TROLL.name"))){
+load <- function(name = getOption("RconTroll.name"), 
+                 path = file.path(getOption("RconTroll.path"), getOption("RconTroll.name"))){
 
   # Final pattern
   final_pattern <- read.table(file.path(path, paste0(name, '_0_final_pattern.txt')))
   names(final_pattern) <- c("x","y","age","dbh","height","crown_radius","crown_depth","sp_lab")
   coordinates(final_pattern) <- c('x', 'y')
   gridded(final_pattern) <- TRUE
+  
+  # Disturbance
+  disturbance <- suppressWarnings(
+    try(read.table(file.path(path, paste0(name, '_0_disturbance.txt'))), 
+        silent = TRUE))
+  if(inherits(disturbance, 'try-error')){
+    warning('No disturbance data available.')
+    disturbance <- data.frame()
+  }
 
   # Opening files
   x <- TROLLoutput(
@@ -45,6 +54,7 @@ load <- function(name = getOption("TROLL.name"),
       death3 = read.table(file.path(path, paste0(name, '_0_death3.txt'))),
       deathrate = read.table(file.path(path, paste0(name, '_0_deathrate.txt')))
     ),
+    disturbance = disturbance,
     final_pattern = final_pattern,
     gpp = read.table(file.path(path, paste0(name, '_0_gpp.txt')), row.names = 1),
     info = list(
@@ -158,6 +168,8 @@ load <- function(name = getOption("TROLL.name"),
   colnames(x@agb) <- c(rownames(x@sp_par), "Total")
   colnames(x@ba$ba) <- c(rownames(x@sp_par), "Total")
   colnames(x@ba$ba10) <- c(rownames(x@sp_par), "Total")
+  if(length(names(x@disturbance)) > 0)
+    names(x@disturbance) <- c('age', 'dbh', 'height', 'crown_radius', 'crown_depth', 'sp_lab')
   colnames(x@gpp) <- c(rownames(x@sp_par), "Total")
   colnames(x@litterfall) <- c(rownames(x@sp_par), "Total")
   colnames(x@npp) <- c(rownames(x@sp_par), "Total")

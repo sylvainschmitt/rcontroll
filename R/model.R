@@ -69,13 +69,13 @@ NULL
 #'
 model <- function(
   # function options
-  name = getOption("TROLL.name"),
-  path = getOption("TROLL.path"),
-  src = getOption("TROLL.src"),
+  name = getOption("RconTroll.name"),
+  path = getOption("RconTroll.path"),
+  src = getOption("RconTroll.src"),
   optimisation = NULL,
-  app = getOption("TROLL.app"),
-  input = getOption("TROLL.init"),
-  output = getOption("TROLL.output"),
+  app = getOption("RconTroll.app"),
+  input = getOption("RconTroll.init"),
+  output = getOption("RconTroll.output"),
   build = TRUE,
   overwrite = TRUE,
   verbose = TRUE,
@@ -119,8 +119,7 @@ model <- function(
   m1 = 0.035,
   CO2 = 360,
   # species data
-  species = read.table(getOption("TROLL.species"),
-                       header=TRUE, dec=".", sep=""),
+  species = read.table(getOption("RconTroll.path"), header=TRUE, dec=".", sep=""),
   # climate data
   Tyear = c(24.64982014,	24.60624211,	24.49933474,	24.96279395,	24.88365139,
             24.87594184,	24.98313802,	25.68910135,	26.58033805,	26.98619405,

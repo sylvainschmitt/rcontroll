@@ -4,7 +4,8 @@
 \alias{load}
 \title{Function to load TROLL output}
 \usage{
-load(name, path = getwd())
+load(name = getOption("RconTroll.name"),
+  path = file.path(getOption("RconTroll.path"), getOption("RconTroll.name")))
 }
 \arguments{
 \item{name}{char. Name given to the model output}

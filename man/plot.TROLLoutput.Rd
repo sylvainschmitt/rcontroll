@@ -39,10 +39,18 @@ Available plots:
  }
 }
 \item{death}{Not implemented}
+\item{disturbance}{
+ \describe{
+ \item{dist height}{disturbed tree height histogram}
+ \item{dist dbh}{disturbed dbh histogram}
+ \item{dist rank-abundance}{disturbed species rank-abundance histogram}
+ }
+}
 \item{final pattern}{
  \describe{
- \item{heigh hist}{final tree height histogram}
- \item{species count}{final abundance by species}
+ \item{heigh}{final tree height histogram}
+ \item{dbh}{final dbh histogram}
+ \item{rank-abundance}{final species rank-abundance histogram}
  \item{age}{final tree age distribution}
  \item{species}{final species spatial distribution map}
  }

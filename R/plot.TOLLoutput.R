@@ -1,4 +1,5 @@
 #' @import methods
+#' @importFrom graphics image
 NULL
 
 #' Function to plot TROLL outputs.
@@ -28,10 +29,18 @@ NULL
 #'  }
 #' }
 #' \item{death}{Not implemented}
+#' \item{disturbance}{
+#'  \describe{
+#'  \item{dist height}{disturbed tree height histogram}
+#'  \item{dist dbh}{disturbed dbh histogram}
+#'  \item{dist rank-abundance}{disturbed species rank-abundance histogram}
+#'  }
+#' }
 #' \item{final pattern}{
 #'  \describe{
-#'  \item{heigh hist}{final tree height histogram}
-#'  \item{species count}{final abundance by species}
+#'  \item{heigh}{final tree height histogram}
+#'  \item{dbh}{final dbh histogram}
+#'  \item{rank-abundance}{final species rank-abundance histogram}
 #'  \item{age}{final tree age distribution}
 #'  \item{species}{final species spatial distribution map}
 #'  }
@@ -66,7 +75,9 @@ setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
   ##### data ####
   nbiter <- x@par$general$nbiter
   iter <- x@par$general$iter
+  distiter <- x@par$general$disturb_iter
   age <- round(nbiter / iter, 1) # in years
+  distage <- round(distiter / iter, 1)
   surf <- prod(x@info$step * x@info$SitesNb) / 10000 # in ha
   
   if(missing(y)) {
@@ -80,7 +91,7 @@ setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
             plot(x, 'abund')
             plot(x, 'agb')
             plot(x, 'ba')
-            plot(x, 'height hist')
+            plot(x, 'height')
             par(mfrow=c(1,1))
           },
           
@@ -161,9 +172,14 @@ setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
             warning('death plots not implemented yet !')
           },
           
+          ##### disturbance ####
+          'dist height' = .plot_dist_height(x),
+          'dist dbh' = .plot_dist_dbh(x),
+          'dist rank-abundance' = .plot_dist_rank_abundance(x),
+          
           ##### final pattern ####
           
-          'height hist' = {
+          'height' = {
             hist <- hist(x@final_pattern$height[x@final_pattern$height != 0], breaks=seq(0,50,by=1), plot = FALSE)
             plot(hist,
                  main = paste("Tree height histogram after", age, "years (", surf, "ha)"),
@@ -173,12 +189,23 @@ setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
                  xlab = "Height class")
           },
           
-          'species count' = {
-            barplot(table(x@final_pattern$sp_lab), horiz = T)
+          'dbh' = {
+            hist(x@final_pattern$dbh[x@final_pattern$dbh != 0],
+                 main = paste("Tree dbh histogram after", age, "years (", surf, "ha)"),
+                 col="green",
+                 xlab = "Dbh class")
+          },
+          
+          'rank-abundance' = {
+            barplot(table(x@final_pattern$sp_lab)[order(table(x@final_pattern$sp_lab), decreasing = T)],
+                    col = 'green',
+                    xlab = 'rank',
+                    ylab = 'abundance',
+                    main = paste("Tree rank-abundance histogram after", age, "years (", surf, "ha)"))
           },
           
           'age' = {
-            plot(x@final_pattern['age'],
+            image(x@final_pattern['age'],
                  col=rev(heat.colors(10)),
                  main="TROLL age distribution",
                  xlab="x (m)",
@@ -187,11 +214,8 @@ setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
           },
           
           'species' = {
-            plot(x@final_pattern['sp_lab'],
-                 # col=rev(heat.colors(10)),
-                 col = rainbow(length(unique(final_pattern$sp_lab))),
-                 xlim=c(0,x_max),
-                 ylim=c(0,y_max),
+            image(x@final_pattern['sp_lab'],
+                 col = rainbow(length(unique(x@final_pattern$sp_lab))),
                  main="TROLL species distribution",
                  xlab="x (m)",
                  ylab="y (m)"
@@ -329,7 +353,41 @@ setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
             plot(x, 'wd10')
             plot(x, 'wd30')
             par(mfrow=c(1,1))
-          }
+          },
+          
+          stop('Option not available')
           
   )
 })
+
+#### Disturbance ####
+
+.plot_dist_height <- function(x){
+  hist <- hist(x@disturbance$height, breaks=seq(0,50,by=1), plot = FALSE)
+  plot(hist,
+       main = paste("Height histogram of tree killed in disturbance \n after", 
+                    distage, "years (", surf, "ha)"),
+       col="green",
+       xlim=c(0,30),
+       ylim=c(0,40000),
+       xlab = "Height class")
+}
+
+.plot_dist_dbh <- function(x){
+  hist(x@disturbance$dbh,
+       main = paste("Dbh histogram of tree killed in disturbance \n after", 
+                    distage, "years (", surf, "ha)"),
+       col="green",
+       xlab = "Dbh class")
+}
+
+.plot_dist_rank_abundance <- function(x){
+  barplot(table(x@disturbance$sp_lab)[order(table(x@disturbance$sp_lab), 
+                                            decreasing = T)],
+          col = 'green',
+          xlab = 'rank',
+          ylab = 'abundance',
+          main = paste(
+            "Rank-abundance histogram of tree killed in disturbance \n after", 
+            distage, "years (", surf, "ha)"))
+}

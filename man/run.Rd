@@ -4,8 +4,8 @@
 \alias{run}
 \title{Run TROLL}
 \usage{
-run(name = getOption("TROLL.name"), path = getOption("TROLL.path"),
-  app = getOption("TROLL.app"), input = getOption("TROLL.init"),
+run(name = getOption("RconTroll.name"), path = getOption("RconTroll.path"),
+  app = getOption("RconTroll.app"), input = getOption("RconTroll.init"),
   overwrite = TRUE, verbose = TRUE)
 }
 \arguments{

@@ -4,8 +4,8 @@
 \alias{build}
 \title{Build TROLL}
 \usage{
-build(src = getOption("TROLL.src"), app = getOption("TROLL.app"),
-  path = getOption("TROLL.path"), optimisation = NULL, verbose = TRUE)
+build(src = getOption("RconTroll.src"), app = getOption("RconTroll.app"),
+  path = getOption("RconTroll.path"), optimisation = NULL, verbose = TRUE)
 }
 \arguments{
 \item{src}{char. path to src file}

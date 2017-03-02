@@ -4,10 +4,11 @@
 \alias{model}
 \title{Model}
 \usage{
-model(name = getOption("TROLL.name"), path = getOption("TROLL.path"),
-  src = getOption("TROLL.src"), optimisation = NULL,
-  app = getOption("TROLL.app"), input = getOption("TROLL.init"),
-  output = getOption("TROLL.output"), build = TRUE, overwrite = TRUE,
+model(name = getOption("RconTroll.name"),
+  path = getOption("RconTroll.path"), src = getOption("RconTroll.src"),
+  optimisation = NULL, app = getOption("RconTroll.app"),
+  input = getOption("RconTroll.init"),
+  output = getOption("RconTroll.output"), build = TRUE, overwrite = TRUE,
   verbose = TRUE, nbcol = 400, nbrows = 400, nbiter = 12, iter = 12,
   NV = 1, NH = 1, nbout = 4, numesp = 163, p = 0.05,
   disturb_iter = 4, disturb_intensity = 0.4, daylight = c(0.03, 0.108,
@@ -21,8 +22,8 @@ model(name = getOption("TROLL.name"), path = getOption("TROLL.path"),
   vC = 0.1, DBH0 = 0.01, H0 = 1, ra0 = 0.5, ra1 = 10, de0 = 0.3,
   de1 = 0.12, dens = 0.8, fbranchstem = 0.35, fcanopy = 0.3,
   seedrain = 200, nbseeds = 10, mindeathrate = 0.035, m1 = 0.035,
-  CO2 = 360, species = read.table(getOption("TROLL.species"), header = TRUE,
-  dec = ".", sep = ""), Tyear = c(24.64982014, 24.60624211, 24.49933474,
+  CO2 = 360, species = read.table(getOption("RconTroll.path"), header =
+  TRUE, dec = ".", sep = ""), Tyear = c(24.64982014, 24.60624211, 24.49933474,
   24.96279395, 24.88365139, 24.87594184, 24.98313802, 25.68910135, 26.58033805,
   26.98619405, 25.87259696, 25.16530008), maxT = c(29.08402, 28.86072,
   28.51707, 29.56514, 29.0068, 29.83177, 30.19183, 31.34605, 32.93941, 33.14729,

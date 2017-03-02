@@ -24,6 +24,8 @@ This is an S4 class to represent TROLL outputs.
 
 \item{\code{death}}{list. death data frames}
 
+\item{\code{disturbance}}{df. tree killed in disturbance data frame}
+
 \item{\code{final_pattern}}{df. final pattern data frame}
 
 \item{\code{gpp}}{df. gpp data frame}
