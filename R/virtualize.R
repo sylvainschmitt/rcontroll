@@ -8,6 +8,7 @@ NULL
 #' Virtualize a forest survey in forest text file to initialize TROLL model
 #'
 #' @param forest int. path to the file to create
+#' @param path char. working directory
 #' @param overwrite logical. allow to overwrite existing input file
 #' @param species df. species trait values (can be open from external file)
 #' @param missing (logical, path). missing species should be save and where ?
@@ -34,13 +35,12 @@ NULL
 #'
 virtualize <- function(
   # file
-  forest = getOption("TROLL.forest"),
-  path = getOption("TROLL.path"),
+  forest = getOption("RconTroll.forest"),
+  path = getOption("RconTroll.path"),
   overwrite = FALSE,
   # species data
-  species = read.table(system.file("extdata", "species.txt",  package = 'TROLL'),
-                       header=TRUE, dec=".", sep="", row.names = 1),
-  missing = getOption("TROLL.missing"),
+  species = read.table(getOption("RconTroll.path"), header=TRUE, dec=".", sep="", row.names = 1),
+  missing = getOption("RconTroll.missing"),
   spcorrect = TRUE,
   # data
   data = read.csv("~/Documents/BIOGET/Projet/Data/paracou data - corrected DBH/paracou_p1_15.csv"),

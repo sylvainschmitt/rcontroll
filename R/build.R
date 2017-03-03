@@ -15,10 +15,10 @@
 #' @examples
 #'
 build <- function(
-  src = getOption("TROLL.src"), # rename TROLL.cpp
-  app = getOption("TROLL.app"), 
-  path = getOption("TROLL.path"),
-  optimisation = NULL, # add compiler option
+  src = getOption("RconTroll.src"),
+  app = getOption("RconTroll.app"),
+  path = getOption("RconTroll.path"),
+  optimisation = NULL,
   verbose = TRUE
 ){
   output <- file.path(path, app)

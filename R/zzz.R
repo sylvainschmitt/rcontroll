@@ -1,6 +1,6 @@
 #' Options
 #' 
-#' TROLL package global options
+#' RconTROLL package global options
 #'  
 #' @param path char. working directory path
 #' @param src char. path to the TROLL C++ main code (default: package tools folder)
@@ -9,27 +9,27 @@
 #' @param forest char. name of the virtual forest input file (default: forest.txt)
 #' @param species char. path to the species input data (default: package extdata folder)
 #' @param missing char. name of missing species file (default: missing.txt)
-#' @param output char. name of the output folder (default: OUTPUT)
+#' @param  output char. name of the output folder (default: OUTPUT)
 #'   
-#' @name option.TROLL
+#' @name option.RconTroll
 NULL
 
 .onLoad <- function(libname, pkgname) {
   op <- options()
-  op.TROLL <- list(
-    TROLL.name = "test",  # include in documentation
-    TROLL.path = "~/Documents/ECOFOG/Results", # set to current wd
-    TROLL.src = system.file("tools", "main.cpp",  
-                            package = 'TROLL'), # explain? 
-    TROLL.app = "TROLL.out",
-    TROLL.init = "input.txt",
-    TROLL.forest = "forest.txt", # rename "inventory"
-    TROLL.species = system.file("extdata", "species.txt", # several files
-                                package = 'TROLL'),
-    TROLL.missing = "missing.txt" # ?
+  op.RconTroll <- list(
+    RconTroll.name = "test",
+    RconTroll.path = "~/Documents/ECOFOG/Results",
+    RconTroll.src = system.file("tools", "main.cpp",  
+                            package = 'RconTroll'),
+    RconTroll.app = "RconTroll.out",
+    RconTroll.init = "input.txt",
+    RconTroll.forest = "forest.txt",
+    RconTroll.species = system.file("extdata", "species.txt",  
+                                package = 'RconTroll'),
+    RconTroll.missing = "missing.txt"
   )
-  toset <- !(names(op.TROLL) %in% names(op))
-  if(any(toset)) options(op.TROLL[toset])
+  toset <- !(names(op.RconTroll) %in% names(op))
+  if(any(toset)) options(op.RconTroll[toset])
   
   invisible()
 }

@@ -12,6 +12,7 @@ NULL
 #'@slot ba list. ba data frames
 #'@slot dbh df. dbh data frame
 #'@slot death list. death data frames
+#'@slot disturbance df. tree killed in disturbance data frame
 #'@slot final_pattern df. final pattern data frame
 #'@slot gpp df. gpp data frame
 #'@slot info list. model info
@@ -36,6 +37,7 @@ setClass('TROLLoutput',
            # cica = 'data.frame', To massive
            dbh = 'data.frame',
            death = 'list',
+           disturbance = 'data.frame',
            final_pattern = 'SpatialPixelsDataFrame',
            gpp = 'data.frame',
            info = 'list',
@@ -58,6 +60,7 @@ setClass('TROLLoutput',
            ba = list(),
            dbh = data.frame(),
            death = list(),
+           disturbance = data.frame(),
            final_pattern = new('SpatialPixelsDataFrame'),
            gpp = data.frame(),
            info = list(),
@@ -81,6 +84,7 @@ TROLLoutput <- function(
   ba = list(),
   dbh = data.frame(),
   death = list(),
+  disturbance = data.frame(),
   final_pattern = new('SpatialPixelsDataFrame'),
   gpp = data.frame(),
   info = list(),
@@ -102,6 +106,7 @@ TROLLoutput <- function(
              ba = ba,
              dbh = dbh,
              death = death,
+             disturbance = disturbance,
              final_pattern = final_pattern,
              gpp = gpp,
              info = info,
