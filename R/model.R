@@ -61,7 +61,7 @@ NULL
 #' @param dailymeanVPD num. Daily mean VPD
 #' @param dailymaxVPD num. daily max VPD in kPa
 #'
-#' @return an S4 \linkS4class{TROLLoutput} class object
+#' @return an S4 \linkS4class{TROLLsim} class object
 #'
 #' @export
 #'

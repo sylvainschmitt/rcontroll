@@ -2,7 +2,7 @@
 #' 
 #' Virtualize  a forest from a TROLL model output
 #'
-#' @param x TROLLoutput
+#' @param x TROLLsim
 #' @param forest char. name of the file to write
 #' @param path char. path to the working directory
 #' @param overwrite logical. allow to overwrite existing input file

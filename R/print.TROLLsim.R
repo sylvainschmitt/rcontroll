@@ -3,7 +3,7 @@ NULL
 
 #' Function to print TROLL outputs.
 #'
-#' @param x TROLLoutput
+#' @param x TROLLsim
 #'
 #' @return Print in console
 #'
@@ -11,9 +11,9 @@ NULL
 #'
 #' @examples
 #'
-#' @name print.TROLLoutput
+#' @name print.TROLLsim
 #' 
-setMethod('print', 'TROLLoutput', function(x, ...) {
+setMethod('print', 'TROLLsim', function(x, ...) {
 
   cat('Object of class :', class(x)[1],'\n\n')
 
@@ -28,7 +28,7 @@ setMethod('print', 'TROLLoutput', function(x, ...) {
   cat('Average computation time : ', x@info$ComputationTime, 'seconds \n\n')
 })
 
-setMethod('show', 'TROLLoutput', function(object) {
+setMethod('show', 'TROLLsim', function(object) {
 
   cat('Object of class :', class(object)[1],'\n\n')
 

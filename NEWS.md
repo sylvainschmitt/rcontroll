@@ -1,5 +1,12 @@
 # TO DO
 
+
+# RconTroll 0.1.9003
+
+* renaming objects and methods (e.g. `TROLLoutput` to `TROLLsim`, `virtualizeFromData` to `inventoryFromData`)
+
+# TO DO
+
 * plot multiple `Output` better integration (https://github.com/fischer-fjd/RconTroll/issues/1)
 * summary method for `Output` (https://github.com/fischer-fjd/RconTroll/issues/2)
 * Correct `plot.output` method with use of internal functions (see disturbance example)

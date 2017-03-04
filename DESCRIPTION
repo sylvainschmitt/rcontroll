@@ -1,7 +1,7 @@
 Package: RconTroll
 Type: Package
 Title: Package for individual-based forest growth simulator TROLL (wip)
-Version: 0.1.9002
+Version: 0.1.9003
 Author: Sylvain SCHMITT && Fabian FISCHER
 Maintainer: Fabian FISCHER <fabian.j.d.fischer@gmx.de>
 Description: Function and code to manage and use forest model indivdual-based
@@ -15,17 +15,24 @@ Imports:
     ggplot2
 RoxygenNote: 6.0.1
 Collate: 
-    'TROLLoutput.R'
+    'TROLLsim.R'
+    'TROLLsimstack.R'
     'build.R'
-    'compareplot.R'
+    'comparePlot.R'
     'init.R'
+    'inventoryFromData.R'
+    'inventoryFromOutput.R'
+    'TROLLoutput.R'
+    'loadOutput.R'
     'load.R'
     'run.R'
     'model.R'
-    'plot.TOLLoutput.R'
-    'print.TROLLoutput.R'
-    'virtualize.R'
-    'virtualizeFromOutput.R'
+    'plot.TROLLsim.R'
+    'plot.TROLLsimstack.R'
+    'print.TROLLsim.R'
+    'print.TROLLsimstack.R'
+    'summary.TROLLsim.R'
+    'summary.TROLLsimstack.R'
     'zzz.R'
 Suggests: knitr,
     rmarkdown

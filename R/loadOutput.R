@@ -14,7 +14,7 @@ NULL
 #'
 #' @examples
 #'
-load <- function(name = getOption("RconTroll.name"), 
+loadOutput <- function(name = getOption("RconTroll.name"), 
                  path = file.path(getOption("RconTroll.path"), getOption("RconTroll.name"))){
 
   # Final pattern

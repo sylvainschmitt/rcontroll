@@ -27,7 +27,7 @@ NULL
 #'@slot vertd df. vertd data.frame
 #'
 #'@export
-setClass('TROLLoutput',
+setClass('TROLLsim',
          representation(
            name = 'character',
            path = 'character',
@@ -76,7 +76,7 @@ setClass('TROLLoutput',
          )
 )
 
-TROLLoutput <- function(
+TROLLsim <- function(
   name = character(),
   path = character(),
   abundances = list(),
@@ -98,7 +98,7 @@ TROLLoutput <- function(
   sp_par = data.frame(),
   vertd = data.frame()
 ){
-  return(new('TROLLoutput',
+  return(new('TROLLsim',
              name = name,
              path = path,
              abundances = abundances,

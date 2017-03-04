@@ -4,7 +4,7 @@ NULL
 
 #' Function to plot TROLL outputs.
 #'
-#' @param x TROLLoutput
+#' @param x TROLLsim
 #' @param y char. Output to plot, see details.
 #'
 #' @return Plot the output
@@ -68,9 +68,9 @@ NULL
 #'
 #' @examples
 #'
-#' @name plot.TROLLoutput
+#' @name plot.TROLLsim
 #' 
-setMethod('plot', 'TROLLoutput', function(x, y = NULL, ...) {
+setMethod('plot', 'TROLLsim', function(x, y = NULL, ...) {
   
   ##### data ####
   nbiter <- x@par$general$nbiter
