@@ -3,7 +3,7 @@ NULL
 
 #' Function to provide summary of TROLL outputs
 #'
-#' @param x TROLLsim
+#' @param x TROLLsimstack
 #'
 #' @return Print in console
 #'
@@ -11,26 +11,46 @@ NULL
 #'
 #' @examples
 #'
-#' @name summary.TROLLsim
+#' @name summary.TROLLsimstack
 #' 
-
 setMethod('summary', 'TROLLsimstack', function(object, ...) {
-# 
-# cat('Object of class :', class(x)[1],'\n\n')
-# 
-# cat('Name :', x@name, '\n\n')
+  
+  ##### params ####
+  nbiter <- object@nbiter
+  iter <- object@iter
+  
+  ##### summary ####
+  
+  cat('Object of class :', class(object)[1],'\n\n')
+  cat('Structured :', object@structured, '\n')
+  cat('Compressed', object@compressed, '\n\n')
 
-#### Needs to include
-
-# launched from zero or not
-# average biomass per hectare
-# biomass change (avg, sd) over last 100 iterations (if possible)
-# nb of seedlings in seedbank
-# 5 most dominant species, 5 least dominant species (with live individual)
-# nb of stems per hectare (total, 10, 30)
-# Simpson index
-# etc. (everything from Isabelle)
-# maximum realized tree height
-
-#
+  if(isTRUE(object@structured)){  
+  cat('\n','*************************************************')
+  cat('\n','**** General outputs (multirun means and sd) ****')
+  cat('\n','*************************************************','\n\n')
+  
+  cat('Number of trees (stems/ha):\t\t\t'
+    , mean(sapply(object@layers, function(x) return(x@abundances$abund$Total[nbiter])))
+    , '\t'
+    , sd(sapply(object@layers, function(x) return(x@abundances$abund$Total[nbiter])))
+    , '\n')
+  cat('Number of trees with dbh > 10 cm (stems/ha):\t'
+    , mean(sapply(object@layers, function(x) return(x@abundances$abu10$Total[nbiter])))
+    , '  \t'
+    , sd(sapply(object@layers, function(x) return(x@abundances$abu10$Total[nbiter])))
+    , '\n')
+  cat('Number of trees with dbh > 30 cm (stems/ha):\t'
+    , mean(sapply(object@layers, function(x) return(x@abundances$abu30$Total[nbiter])))
+    , '    \t'
+    , sd(sapply(object@layers, function(x) return(x@abundances$abu30$Total[nbiter])))
+    , '\n')
+  cat('Aboveground biomass (t/ha): \t\t\t'
+    , mean(sapply(object@layers, function(x) return(x@agb$Total[nbiter]/1000)))
+    , '\t'
+    , sd(sapply(object@layers, function(x) return(x@agb$Total[nbiter]/1000)))
+    ,'\n')
+  } else {
+    cat('TROLLsimstack is not structured. No meaningful summary statistics calculated.')
+  }
 })

@@ -5,7 +5,7 @@ NULL
 #' 
 #' function to compare
 #'
-#' @param sim list of TROLL.output. TROLL model outputs to compare
+#' @param sim list of TROLL.sim. TROLL model outputs to compare
 #' @param output char. Output to compare (abu10, abu30, agb and gpp available)
 #' @param legend logical. add legend
 #' @param reduce int. factor to reduce number of outputs points (default 12 months reduced to one year)
@@ -16,7 +16,7 @@ NULL
 #'
 #' @examples
 #' 
-compareplot <- function(sim, 
+comparePlot <- function(sim, 
                         output = 'agb', 
                         legend = TRUE,
                         reduce = 12){

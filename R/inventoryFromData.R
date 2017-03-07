@@ -3,9 +3,9 @@
 #' @importFrom sp coordinates
 NULL
 
-#' Virtualize
+#' Create inventory
 #'
-#' Virtualize a forest survey in forest text file to initialize TROLL model
+#' Virtualize a forest inventory in forest text file to initialize TROLL model
 #'
 #' @param forest int. path to the file to create
 #' @param path char. working directory
@@ -27,19 +27,19 @@ NULL
 #' @param year int. year of the census to intialize on
 #' @param alive int/char/logical. code corresponding to alive tree
 #'
-#' @return virtual forest file for the TROLL program (forest.txt)
+#' @return virtual forest inventory for the TROLL program (forest.txt)
 #'
 #' @export
 #'
 #' @examples
 #'
-virtualize <- function(
+inventoryFromData <- function(
   # file
   forest = getOption("RconTroll.forest"),
   path = getOption("RconTroll.path"),
   overwrite = FALSE,
   # species data
-  species = read.table(getOption("RconTroll.path"), header=TRUE, dec=".", sep="", row.names = 1),
+  species = read.table(getOption("RconTroll.species"), header=TRUE, dec=".", sep="", row.names = 1),
   missing = getOption("RconTroll.missing"),
   spcorrect = TRUE,
   # data

@@ -17,8 +17,8 @@ NULL
 .onLoad <- function(libname, pkgname) {
   op <- options()
   op.RconTroll <- list(
-    RconTroll.name = "test",
-    RconTroll.path = "~/Documents/ECOFOG/Results",
+    RconTroll.name = "TROLL_test_forfun",
+    RconTroll.path = "~/Desktop/Development_Troll/Troll_XCode/TROLL/OUTPUT/",
     RconTroll.src = system.file("tools", "main.cpp",  
                             package = 'RconTroll'),
     RconTroll.app = "RconTroll.out",

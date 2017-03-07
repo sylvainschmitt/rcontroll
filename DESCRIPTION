@@ -1,11 +1,10 @@
 Package: RconTroll
 Type: Package
 Title: Package for individual-based forest growth simulator TROLL (wip)
-Version: 0.1.9003
+Version: 0.1.9004
 Author: Sylvain SCHMITT && Fabian FISCHER
 Maintainer: Fabian FISCHER <fabian.j.d.fischer@gmx.de>
-Description: Function and code to manage and use forest model indivdual-based
-    spatially-explicit TROLL.
+Description: Function and code to manage and use indivdual-based and spatially-explicit forest growth model TROLL.
 License: GPL 3
 LazyData: TRUE
 Imports:
@@ -19,16 +18,14 @@ Collate:
     'TROLLsimstack.R'
     'build.R'
     'comparePlot.R'
+    'compareSim.R'
     'init.R'
     'inventoryFromData.R'
     'inventoryFromOutput.R'
-    'TROLLoutput.R'
     'loadOutput.R'
-    'load.R'
     'run.R'
     'model.R'
     'plot.TROLLsim.R'
-    'plot.TROLLsimstack.R'
     'print.TROLLsim.R'
     'print.TROLLsimstack.R'
     'summary.TROLLsim.R'

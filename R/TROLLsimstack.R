@@ -1,124 +1,91 @@
-#' @importFrom sp SpatialPixelsDataFrame
-NULL
-
 #'An S4 class to represent TROLL outputs
 #'
-#'This is an S4 class to represent TROLL outputs.
+#'This is an S4 class to represent TROLL outputs in stacked format (stack of TROLLsim objects)
 #'
-#'@slot name char. model name
-#'@slot path char. path to the model
-#'@slot abundances list. abundances data frames
-#'@slot agb df. agb data frame
-#'@slot ba list. ba data frames
-#'@slot dbh df. dbh data frame
-#'@slot death list. death data frames
-#'@slot disturbance df. tree killed in disturbance data frame
-#'@slot final_pattern df. final pattern data frame
-#'@slot gpp df. gpp data frame
-#'@slot info list. model info
-#'@slot litterfall df. litterfall data frame
-#'@slot npp df. npp data frame
-#'@slot par df. par data frame
-#'@slot paramspace list. model space parameters
-#'@slot ppfd0 df. ground level ppfd data frames
-#'@slot R list. respiration data frames
-# @slot site list. site data frames
-#'@slot sp_par df. species par data frame
-#'@slot vertd df. vertd data.frame
+#'@slot structured logical. indicates whether stacked simulations have the same dimensions or not
+#'@slot compressed logical. indicates whether stacked simulations are saved in compressed format (mean, sd)
+#'@slot layers list. TROLLsim objects
 #'
 #'@export
 setClass('TROLLsimstack',
          representation(
-           name = 'character',
-           path = 'character',
-           abundances = 'list',
-           agb = 'data.frame',
-           ba = 'list',
-           # cica = 'data.frame', To massive
-           dbh = 'data.frame',
-           death = 'list',
-           disturbance = 'data.frame',
-           final_pattern = 'SpatialPixelsDataFrame',
-           gpp = 'data.frame',
-           info = 'list',
-           # leafdens = 'list', To massive
-           litterfall = 'data.frame',
-           npp = 'data.frame',
-           par = 'list',
-           paramspace = 'list',
-           ppfd0 = 'data.frame',
-           R = 'list',
-           # site = 'list',
-           sp_par = 'data.frame',
-           vertd = 'data.frame'
+           structured = 'logical',
+           compressed = 'logical',
+           layers = 'list',
+           nbcols = 'integer',
+           nbrows = 'integer',
+           nbiter = 'integer',
+           iter = 'integer',
+           NV = 'integer',
+           NH = 'integer'
          ),
          prototype(
-           name = character(),
-           path = character(),
-           abundances = list(),
-           agb = data.frame(),
-           ba = list(),
-           dbh = data.frame(),
-           death = list(),
-           disturbance = data.frame(),
-           final_pattern = new('SpatialPixelsDataFrame'),
-           gpp = data.frame(),
-           info = list(),
-           litterfall = data.frame(),
-           npp = data.frame(),
-           par = list(),
-           paramspace = list(),
-           ppfd0 = data.frame(),
-           R = list(),
-           # site = list(),
-           sp_par = data.frame(),
-           vertd =  data.frame()
+           structured = FALSE,
+           compressed = FALSE,
+           layers = list(),
+           nbcols = integer(),
+           nbrows = integer(),
+           nbiter = integer(),
+           iter = integer(),
+           NV = integer(),
+           NH = integer()
          )
 )
 
-TROLLsimstack <- function(
-  name = character(),
-  path = character(),
-  abundances = list(),
-  agb = data.frame(),
-  ba = list(),
-  dbh = data.frame(),
-  death = list(),
-  disturbance = data.frame(),
-  final_pattern = new('SpatialPixelsDataFrame'),
-  gpp = data.frame(),
-  info = list(),
-  litterfall = data.frame(),
-  npp = data.frame(),
-  par = list(),
-  paramspace = list(),
-  ppfd0 = data.frame(),
-  R = list(),
-  # site = list(),
-  sp_par = data.frame(),
-  vertd = data.frame()
-){
-  return(new('TROLLsim',
-             name = name,
-             path = path,
-             abundances = abundances,
-             agb = agb,
-             ba = ba,
-             dbh = dbh,
-             death = death,
-             disturbance = disturbance,
-             final_pattern = final_pattern,
-             gpp = gpp,
-             info = info,
-             litterfall = litterfall,
-             npp = npp,
-             par = par,
-             paramspace = paramspace,
-             ppfd0 = ppfd0,
-             R = R,
-             # site = site,
-             sp_par = sp_par,
-             vertd = vertd
-  )
-  )
+# functions to initialise class
+# ToDo: move to their own file
+# ToDo: subclasses? structured/compressed
+
+if (!isGeneric("stack")) {
+  setGeneric("stack", function(x, ...)
+    standardGeneric("stack"))
 }
+
+setMethod("stack", signature(x='TROLLsim'), function(x, ...,layers=NULL) {
+  simlist <- list(x, ...)
+  stack(simlist)
+})
+
+setMethod("stack", signature(x='list'), function(x, bands=NULL) {
+  
+  # check for proper object classes
+  isTROLLsim <- sapply(x, function(i) inherits(i, 'TROLLsim')) 
+  if(!all(isTROLLsim)){
+      if(sum(isTROLLsim) == 0 ){
+        x <- NULL
+        stop('Input contains no TROLLsim objects. Stack cannot be created')
+      }
+    warning('Input contains not only TROLLsim objects. Automatic removal of non-TROLLsim objects')
+    x <- x[isTROLLsim]
+  }
+  
+  # use simulation names to identify list items
+  names(x) <- sapply(x,function(x){listname<-x@name})  
+  
+  # check for duplicates
+  isunique <- !duplicated(x)
+  if(!all(isunique)){
+    warning('Input contains duplicates. Automatic removal of duplicates')
+    x <- x[isunique]
+  }
+
+  s <- new("TROLLsimstack")
+  s@layers <- x
+  #names(s) <- names(x)
+  
+  # compare to determine whether stack is structured or not
+  # a simstack of only one TROLLsim object is structured by default
+  if(length(x) == 1 || compareSim(x,stopiffalse = FALSE)){
+    s@structured <- TRUE
+    s@nbcols <- x[[1]]@par$general$nbcols
+    s@nbrows <- x[[1]]@par$general$nbrows
+    s@nbiter <- x[[1]]@par$general$nbiter
+    s@iter <- x[[1]]@par$general$iter
+    s@NV <- x[[1]]@par$general$NV
+    s@NH <- x[[1]]@par$general$NH
+  }
+  
+  return(s)
+  
+})
+

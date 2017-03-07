@@ -1,6 +1,6 @@
-#' Virtualize from output
+#' Create inventory from output
 #' 
-#' Virtualize  a forest from a TROLL model output
+#' Create an inventory from a TROLL model output
 #'
 #' @param x TROLLsim
 #' @param forest char. name of the file to write
@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' 
-virtualizeFromOutput <- function(x,
+inventoryFromOutput <- function(x,
                                  forest = getOption("RconTroll.forest"),
                                  path = getOption("RconTroll.path"),
                                  overwrite = TRUE){

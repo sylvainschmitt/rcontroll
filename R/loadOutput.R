@@ -1,4 +1,4 @@
-#' @include TROLLoutput.R
+#' @include TROLLsim.R
 #' @importFrom sp coordinates<- gridded<-
 NULL
 
@@ -8,7 +8,7 @@ NULL
 #' @param name char. Name given to the model output
 #' @param path char. Path where the model is saved
 #'
-#' @return an S4 \linkS4class{TROLLoutput} class object
+#' @return an S4 \linkS4class{TROLLsim} class object
 #'
 #' @export
 #'
@@ -33,7 +33,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
   }
 
   # Opening files
-  x <- TROLLoutput(
+  x <- TROLLsim(
     name = name,
     path = path,
     abundances = list(
@@ -70,7 +70,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
     npp = read.table(file.path(path, paste0(name, '_0_npp.txt')), row.names = 1),
     par = list(
       general = list(
-        nbcol = scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 4, n = 1, quiet = TRUE),
+        nbcols = scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 4, n = 1, quiet = TRUE),
         nbrows = scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 5, n = 1, quiet = TRUE),
         nbiter= scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 6, n = 1, quiet = TRUE),
         iter = scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 7, n = 1, quiet = TRUE),
@@ -79,57 +79,57 @@ loadOutput <- function(name = getOption("RconTroll.name"),
         nbout = scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 10, n = 1, quiet = TRUE),
         numesp = scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE),
         p = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 12, n = 1, quiet = TRUE),
-        disturb_iter = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 13, n = 1, quiet = TRUE),
-        disturb_intensity = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 14, n = 1, quiet = TRUE),
-        daylight = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 15, n = 24, quiet = TRUE),
-        dayT = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 16, n = 24, quiet = TRUE),
-        dayVPD = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 17, n = 24, quiet = TRUE)
+        #disturb_iter = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 13, n = 1, quiet = TRUE),
+        #disturb_intensity = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 14, n = 1, quiet = TRUE),
+        daylight = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 13, n = 24, quiet = TRUE),
+        dayT = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 14, n = 24, quiet = TRUE),
+        dayVPD = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 15, n = 24, quiet = TRUE)
       ),
       species_par = list(
-        klight = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 19, n = 1, quiet = TRUE),
-        phi = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 20, n = 1, quiet = TRUE),
-        g1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 21, n = 1, quiet = TRUE), 
-        vC = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 22, n = 1, quiet = TRUE),
-        DBH0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 23, n = 1, quiet = TRUE),
-        H0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 24, n = 1, quiet = TRUE),
-        ra0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 25, n = 1, quiet = TRUE),
-        ra1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 26, n = 1, quiet = TRUE),
-        de0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 27, n = 1, quiet = TRUE),
-        de1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 28, n = 1, quiet = TRUE),
-        dens = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 29, n = 1, quiet = TRUE),
-        fbranchstem = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 30, n = 1, quiet = TRUE),
-        fcanopy = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 31, n = 1, quiet = TRUE),
-        seedrain = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 32, n = 1, quiet = TRUE),
-        nbseeds = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 33, n = 1, quiet = TRUE),
-        mindeathrate = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 34, n = 1, quiet = TRUE),
-        m1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 35, n = 1, quiet = TRUE),
-        CO2 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 36, n = 1, quiet = TRUE)
+        klight = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 17, n = 1, quiet = TRUE),
+        phi = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 18, n = 1, quiet = TRUE),
+        g1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 19, n = 1, quiet = TRUE), 
+        vC = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 20, n = 1, quiet = TRUE),
+        DBH0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 21, n = 1, quiet = TRUE),
+        H0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 22, n = 1, quiet = TRUE),
+        ra0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 23, n = 1, quiet = TRUE),
+        ra1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 24, n = 1, quiet = TRUE),
+        de0 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 25, n = 1, quiet = TRUE),
+        de1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 26, n = 1, quiet = TRUE),
+        dens = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 27, n = 1, quiet = TRUE),
+        fbranchstem = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 28, n = 1, quiet = TRUE),
+        fcanopy = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 29, n = 1, quiet = TRUE),
+        seedrain = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 30, n = 1, quiet = TRUE),
+        nbseeds = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 31, n = 1, quiet = TRUE),
+        mindeathrate = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 32, n = 1, quiet = TRUE),
+        m1 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 33, n = 1, quiet = TRUE),
+        CO2 = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), skip = 34, n = 1, quiet = TRUE)
       ),
       climate = list(
         Tyear = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-             skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 4),
+             skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 4),
         maxT = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                    skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 5),
+                    skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 5),
         nightmeanT = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                          skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 6),
+                          skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 6),
         rainfall = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                        skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 7),
+                        skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 7),
         wind = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                    skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 8),
+                    skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 8),
         maxIrradiance = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                             skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 9),
+                             skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 9),
         irradiance = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                             skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 10),
+                             skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 10),
         e_s = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                   skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 11),
+                   skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 11),
         e_a = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                   skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 12),
+                   skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 12),
         VPD = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                   skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 13),
+                   skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 13),
         dailymeanVPD = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                            skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 14),
+                            skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 14),
         dailymaxVPD = scan(file.path(path, paste0(name, '_0_par.txt')), numeric(), n = 12, quiet = TRUE,
-                           skip = 38 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 15)
+                           skip = 36 + scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE) + 15)
       )
     ),
     paramspace = list(
@@ -156,7 +156,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
     # ),
     sp_par = read.table(file.path(path, paste0(name, '_0_par.txt')),
                         header=TRUE, dec=".", sep="",
-                        skip=38, row.names=1,
+                        skip=36, row.names=1,
                         nrows=scan(file.path(path, paste0(name, '_0_par.txt')), integer(), skip = 11, n = 1, quiet = TRUE)),
     vertd = read.table(file.path(path, paste0(name, '_0_vertd.txt')))
   )
@@ -178,9 +178,13 @@ loadOutput <- function(name = getOption("RconTroll.name"),
   names(x@vertd) <- c('height', 'vertd')
 
   # Transforming
-  x@abundances$relabdund <- x@abundances$abund[,-ncol(x@abundances$abund)]*100/x@abundances$abund$Total
+  x@abundances$relabund <- x@abundances$abund[,-ncol(x@abundances$abund)]*100/x@abundances$abund$Total
   x@abundances$relabu10 <- x@abundances$abu10[,-ncol(x@abundances$abu10)]*100/x@abundances$abu10$Total
   x@abundances$relabu30 <- x@abundances$abu30[,-ncol(x@abundances$abu30)]*100/x@abundances$abu30$Total
 
+  # Adding sp_lab index, in future better directly from TROLL
+  x@sp_par$sp_lab <- as.numeric(factor(rownames(x@sp_par)))
+
+  
   return(x)
 }
