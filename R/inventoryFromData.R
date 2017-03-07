@@ -23,7 +23,7 @@ NULL
 #' @param alivecol char. name of the column containing alive information
 #' @param NV int. vertical number of cells (nb per m)
 #' @param NH int. horizontal number of cells (nb per m)
-#' @param plot int/char. name or number of the plot to initialize on
+#' @param plots int/char. name or number of the plot to initialize on
 #' @param year int. year of the census to intialize on
 #' @param alive int/char/logical. code corresponding to alive tree
 #'

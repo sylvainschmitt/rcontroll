@@ -8,7 +8,9 @@
 \S4method{summary}{TROLLsimstack}(object, ...)
 }
 \arguments{
-\item{x}{TROLLsimstack}
+\item{...}{unused argument}
+
+\item{x}{TROLLsimstack. TROLL simstack object tu summarize}
 }
 \value{
 Print in console

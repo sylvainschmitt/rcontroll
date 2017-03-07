@@ -21,7 +21,7 @@
 #' @param dayVPD num. normalized daily T course (from 7am to 7 pm, with a half-hour time step)
 #' @param klight num. light attenuation in the canopy Beer-Lambert
 #' @param phi num. quantum yield (in micromol C/micromol photon)
-#' @param g1 num. parameter g1 of Medlyn et al ’s stomatal conductance model 
+#' @param g1 num. parameter g1 of Medlyn et al stomatal conductance model 
 #' @param vC num. variance of the flexion moment
 #' @param DBH0 num. initial dbh (m)
 #' @param H0 num. initial height (m)
@@ -167,7 +167,7 @@ init <- function(
     '###	Characters shared by species											',
     paste(klight,	'/* klight # light attenuation in the canopy Beer-Lambert */', sep = '\t'),
     paste(phi,	'/* phi # quantum yield (in micromol C/micromol photon) */', sep = '\t'),
-    paste(g1,	'/* parameter g1 of Medlyn et al ’s stomatal conductance model */', sep = '\t'),
+    paste(g1,	'/* parameter g1 of Medlyn et al stomatal conductance model */', sep = '\t'),
     paste(vC,	'/* vC  # variance of the flexion moment */', sep = '\t'),
     paste(DBH0,	'/* DBH0 # initial dbh (m) */', sep = '\t'),
     paste(H0,	'/* H0 # initial height (m) */', sep = '\t'),

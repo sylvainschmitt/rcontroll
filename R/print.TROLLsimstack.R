@@ -18,7 +18,7 @@ setMethod('print', 'TROLLsimstack', function(x, ...) {
   cat('Object of class :', class(x)[1],'\n\n')
   
   cat('Structured :', x@structured, '\n')
-  cat('Compressed', x@compressed, '\n\n')
+  cat('Aggregated', x@aggregated, '\n\n')
   
   if(isTRUE(x@structured)){
   cat('Number of sites      : ', x@nbcols, 'x', x@nbrows, '\n')
@@ -32,7 +32,7 @@ setMethod('show', 'TROLLsimstack', function(object) {
   cat('Object of class :', class(object)[1],'\n\n')
   
   cat('Structured :', object@structured, '\n')
-  cat('Compressed', object@compressed, '\n\n')
+  cat('Aggregated', object@aggregated, '\n\n')
   
   if(isTRUE(object@structured)){
     cat('Number of sites      : ', object@nbcols, 'x', object@nbrows, '\n')

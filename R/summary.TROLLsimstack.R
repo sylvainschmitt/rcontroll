@@ -3,7 +3,8 @@ NULL
 
 #' Function to provide summary of TROLL outputs
 #'
-#' @param x TROLLsimstack
+#' @param x TROLLsimstack. TROLL simstack object tu summarize
+#' @param ... unused argument
 #'
 #' @return Print in console
 #'
@@ -23,7 +24,7 @@ setMethod('summary', 'TROLLsimstack', function(object, ...) {
   
   cat('Object of class :', class(object)[1],'\n\n')
   cat('Structured :', object@structured, '\n')
-  cat('Compressed', object@compressed, '\n\n')
+  cat('Aggregated', object@aggregated, '\n\n')
 
   if(isTRUE(object@structured)){  
   cat('\n','*************************************************')

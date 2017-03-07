@@ -5,32 +5,37 @@ Version: 0.1.9004
 Author: Sylvain SCHMITT && Fabian FISCHER
 Maintainer: Fabian FISCHER <fabian.j.d.fischer@gmx.de>
 Description: Function and code to manage and use indivdual-based and spatially-explicit forest growth model TROLL.
-License: GPL 3
+License: GPL-3
 LazyData: TRUE
 Imports:
     methods,
     sp,
-    maptools,
-    ggplot2
+    maptools
+Suggests: 
+    knitr,
+    rmarkdown,
+    ggplot2,
+    plotly
 RoxygenNote: 6.0.1
 Collate: 
     'TROLLsim.R'
     'TROLLsimstack.R'
+    'aggregate.TROLLsimstack.R'
     'build.R'
-    'comparePlot.R'
     'compareSim.R'
     'init.R'
     'inventoryFromData.R'
     'inventoryFromOutput.R'
     'loadOutput.R'
+    'loadOutputOld.R'
     'run.R'
     'model.R'
     'plot.TROLLsim.R'
+    'plot.TROLLsimstack.R'
     'print.TROLLsim.R'
     'print.TROLLsimstack.R'
+    'stack.TROLLsim.R'
     'summary.TROLLsim.R'
     'summary.TROLLsimstack.R'
     'zzz.R'
-Suggests: knitr,
-    rmarkdown
 VignetteBuilder: knitr

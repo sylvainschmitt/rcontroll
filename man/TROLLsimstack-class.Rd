@@ -12,8 +12,20 @@ This is an S4 class to represent TROLL outputs in stacked format (stack of TROLL
 \describe{
 \item{\code{structured}}{logical. indicates whether stacked simulations have the same dimensions or not}
 
-\item{\code{compressed}}{logical. indicates whether stacked simulations are saved in compressed format (mean, sd)}
+\item{\code{aggregated}}{logical. indicates whether stacked simulations are saved in compressed format (mean, sd)}
 
 \item{\code{layers}}{list. TROLLsim objects}
+
+\item{\code{nbcols}}{int. number of columns}
+
+\item{\code{nbrows}}{int. number of rows}
+
+\item{\code{nbiter}}{int. total nb of timesteps}
+
+\item{\code{iter}}{int. number of iteration per year}
+
+\item{\code{NV}}{int. vertical nb of cells (nb per m)}
+
+\item{\code{NH}}{int. horizontal nb of cells (nb per m)}
 }}
 

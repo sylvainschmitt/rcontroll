@@ -3,20 +3,35 @@
 \docType{methods}
 \name{plot.TROLLsim}
 \alias{plot.TROLLsim}
-\title{Function to plot TROLL outputs.}
+\alias{plot,TROLLsim,missing-method}
+\alias{plot,TROLLsim,TROLLsim-method}
+\title{Function to plot TROLL simulations}
 \usage{
-\S4method{plot}{TROLLsim,ANY}(x, y = NULL, ...)
+\S4method{plot}{TROLLsim,missing}(x, y, what, ggplot2 = FALSE,
+  plotly = FALSE, ...)
+
+\S4method{plot}{TROLLsim,TROLLsim}(x, y, what, ggplot2 = FALSE,
+  plotly = FALSE, ...)
 }
 \arguments{
-\item{x}{TROLLsim}
+\item{x}{TROLLsimstack. Troll simulation stack object to plot}
 
-\item{y}{char. Output to plot, see details.}
+\item{y}{TROLLsimstack. nothing or Troll aggregated simulation stack to
+compare with}
+
+\item{what}{char. ecosystem output to plot, see details}
+
+\item{ggplot2}{logical. creates ggplot graph}
+
+\item{plotly}{logical. use plotly library for interactive plots with ggplot}
+
+\item{...}{other graphical parameters}
 }
 \value{
 Plot the output
 }
 \description{
-Function to plot TROLL outputs.
+Function to plot TROLL simulations
 }
 \details{
 Available plots:
@@ -72,7 +87,7 @@ Available plots:
  \item{allwd}{wd + wd10 + wd30}
  }
 }
-}
+}l
 }
 \examples{
 
