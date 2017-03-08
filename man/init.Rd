@@ -86,7 +86,7 @@ init(path = getOption("RconTroll.path"),
 
 \item{phi}{num. quantum yield (in micromol C/micromol photon)}
 
-\item{g1}{num. parameter g1 of Medlyn et al ’s stomatal conductance model}
+\item{g1}{num. parameter g1 of Medlyn et al stomatal conductance model}
 
 \item{vC}{num. variance of the flexion moment}
 
@@ -151,5 +151,6 @@ parameter file for the TROLL program (input.txt)
 Create the parameter file for the TROLL program
 }
 \examples{
+NA
 
 }

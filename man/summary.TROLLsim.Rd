@@ -3,12 +3,18 @@
 \docType{methods}
 \name{summary.TROLLsim}
 \alias{summary.TROLLsim}
+\alias{summary,TROLLsim-method}
+\alias{summary,TROLLsimstack-method}
 \title{Function to provide summary of TROLL outputs}
 \usage{
 \S4method{summary}{TROLLsim}(object, ...)
+
+\S4method{summary}{TROLLsimstack}(object, ...)
 }
 \arguments{
-\item{x}{TROLLsim}
+\item{object}{TROLLsim or TROLLsimstack}
+
+\item{...}{unused argument}
 }
 \value{
 Print in console
@@ -17,5 +23,6 @@ Print in console
 Function to provide summary of TROLL outputs
 }
 \examples{
+NA
 
 }

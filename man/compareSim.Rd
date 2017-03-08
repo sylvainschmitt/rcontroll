@@ -31,5 +31,6 @@ logical
 Function to compare whether two or more TROLLsim objects have been executed with the same set of general parameters. Please note: This function does not compare output.
 }
 \examples{
+NA
 
 }

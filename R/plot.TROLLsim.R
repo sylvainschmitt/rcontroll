@@ -1,76 +1,40 @@
 #' @import methods
+#' @importFrom graphics legend matplot
+#' @importFrom stats sd time
+#' @importFrom utils read.csv read.table write.table
 NULL
 
-#' Function to plot TROLL simulations
-#'
-#' @param x TROLLsimstack. Troll simulation stack object to plot
-#' @param y TROLLsimstack. nothing or Troll aggregated simulation stack to
-#'   compare with
+#' Plot TROLL simulations stack
+#' 
+#' @param x TROLLsim or TROLLsimstack. Troll simulation stacked or not object to
+#'   plot
+#' @param y Any, TROLLsim or TROLLsimstack. nothing, TROLL simulation or Troll
+#'   aggregated simulation stack to compare with
 #' @param what char. ecosystem output to plot, see details
 #' @param ggplot2 logical. creates ggplot graph
 #' @param plotly logical. use plotly library for interactive plots with ggplot
 #' @param ... other graphical parameters
-#'
-#' @return Plot the output
-#'
+#'   
+#' @return Plot the simulations
+
 #' @details Available plots:
 #' \describe{
-#' \item{defaults}{abund + agb + ba +height hist}
-#' \item{abund}{
-#'  \describe{
-#'  \item{abund}{Number of stems/ha ~ Time (in years)}
-#'  \item{abu10}{Number of trees with dbh > 10 cm (in stems/ha) ~ Time (in years)}
-#'  \item{abu30}{Number of trees with dbh > 30 cm (in stems/ha) ~ Time (in years)}
-#'  \item{allabund}{abund + abu10 + abu30}
-#'  }
+#' \item{agb}{above ground biomass}
+#' \item{gpp}{gross primary productivity}
+#' \item{abund, abu10, abu30}{abundances (total, above 10 and above 30 cm dbh)}
+#' \item{ba, ba10}{basal area (total and above 10 cm dbh)}
+#' \item{Rday, Rnight}{night and day respiration}
+#' \item{height, distheight}{tree height histogram (final and disturbed)}
+#' \item{dbh, distdbh}{tree dbh histogram (final and disturbed)}
+#' \item{age, distage}{tree age histogram (final and disturbed)}
+#' \item{species, distspecies}{tree species histogram (final and disturbed)}
 #' }
-#' \item{agb}{Aboveground biomass (in tonnes/ha) ~ Time (in years)}
-#' \item{ba}{
-#'  \describe{
-#'  \item{ba}{Basal area (in m2/ha) ~ Time (in years)}
-#'  \item{ba10}{Basal area of trees with dbh > 10 cm (in stems/ha) ~ Time (in years)}
-#'  \item{allba}{ba + ba10}
-#'  }
-#' }
-#' \item{death}{Not implemented}
-#' \item{disturbance}{
-#'  \describe{
-#'  \item{dist height}{disturbed tree height histogram}
-#'  \item{dist dbh}{disturbed dbh histogram}
-#'  \item{dist rank-abundance}{disturbed species rank-abundance histogram}
-#'  }
-#' }
-#' \item{final pattern}{
-#'  \describe{
-#'  \item{heigh}{final tree height histogram}
-#'  \item{dbh}{final dbh histogram}
-#'  \item{rank-abundance}{final species rank-abundance histogram}
-#'  \item{age}{final tree age distribution}
-#'  \item{species}{final species spatial distribution map}
-#'  }
-#' }
-#' \item{flux}{GPP, Autotrphic respiration, NPP ~ Time (in years)}
-#' \item{gpp}{Total GPPLeaf (in MgC/ha) ~ Time (in years)}
-#' \item{LAI}{Not implemented}
-#' \item{litterfall}{Leaf litterfall per month (in Mg/ha/year dry mass) ~ Time (in years)}
-#' \item{npp}{Total NPPLeaf (in MgC/ha) ~ Time (in years)}
-#' \item{R}{Not implemented}
-#' \item{Ra}{Autotrophic respiration (in MgC/ha) ~ Time (in years)}
-#' \item{relabund}{Not implemented}
-#' \item{vertd}{PAD (m2 per m3) ~ Height (in m)}
-#' \item{wd}{
-#'  \describe{
-#'  \item{wd}{Total wood density (in g/cm3) ~ Time (in years)}
-#'  \item{wd10}{Wood density of trees with dbh > 10 cm (in g/cm3) ~ Time (in years)}
-#'  \item{wd30}{Wood density of trees with dbh > 30 cm (in g/cm3) ~ Time (in years)}
-#'  \item{allwd}{wd + wd10 + wd30}
-#'  }
-#' }
-#' }l
-#'
+#' 
 #' @examples
-#'
+#' NA
+#' 
 #' @name plot.TROLLsim
+#'   
 NULL
 
 #' @rdname plot.TROLLsim
@@ -85,324 +49,283 @@ setMethod('plot', signature(x="TROLLsim", y="TROLLsim"), function(x, y, what, gg
   plot(x = stack(x, y), what = what, ggplot2 = ggplot2, plotly = plotly, ...)
 })
 
-# setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what, ...) {
-#   
-#   ##### data ####
-#   nbiter <- x@par$general$nbiter
-#   iter <- x@par$general$iter
-#   distiter <- x@par$general$disturb_iter
-#   age <- round(nbiter / iter, 1) # in years
-#   distage <- round(distiter / iter, 1)
-#   surf <- prod(x@info$step * x@info$SitesNb) / 10000 # in ha
-#   
-#   if(missing(y)) {
-#     y <- 'default'
-#   }
-#   switch (y,
-#           
-#           ##### default ####
-#           'default' = {
-#             par(mfrow=c(2,2))
-#             plot(x, 'abund')
-#             plot(x, 'agb')
-#             plot(x, 'ba')
-#             plot(x, 'height')
-#             par(mfrow=c(1,1))
-#           },
-#           
-#           ##### abund ####
-#           'abund' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@abundances$abund$Total, pch=20,
-#                  main="Total abundance (in stems/ha)",
-#                  xlab="Times (in years)",
-#                  ylab="Number of stems/ha",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'abu10' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@abundances$abu10$Total, pch=20,
-#                  main="Number of trees with dbh > 10 cm (in stems/ha)",
-#                  xlab="Times (in years)",
-#                  ylab="Number of stems/ha",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'abu30' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@abundances$abu30$Total, pch=20,
-#                  main="Number of trees with dbh > 30 cm (in stems/ha)",
-#                  xlab="Times (in years)",
-#                  ylab="Number of stems/ha",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'allabund' = {
-#             par(mfrow=c(3,1))
-#             plot(x, 'abund')
-#             plot(x, 'abu10')
-#             plot(x, 'abu30')
-#             par(mfrow=c(1,1))
-#           },
-#           
-#           ##### agb ####
-#           'agb' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@agb$Total, pch=20,
-#                  main="Aboveground biomass (in tonnes/ha)",
-#                  xlab="Times (in years)",
-#                  ylab="Aboveground biomass (in tonnes/ha)",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           ##### ba ####
-#           'ba' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@ba$ba$Total, pch=20,
-#                  main="Total basal area (in m2/ha)",
-#                  xlab="Times (in years)",
-#                  ylab="Basal area (in m2/ha)",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'ba10' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@ba$ba10$Total, pch=20,
-#                  main="Basal area of trees with dbh > 10 cm (in stems/ha)",
-#                  xlab="Times (in years)",
-#                  ylab="Basal area (in m2/ha)",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'allba' = {
-#             par(mfrow=c(2,1))
-#             plot(x, 'ba')
-#             plot(x, 'ba10')
-#             par(mfrow=c(1,1))
-#           },
-#           
-#           ##### death ####
-#           'death' = {
-#             warning('death plots not implemented yet !')
-#           },
-#           
-#           ##### disturbance ####
-#           'dist height' = .plot_dist_height(x),
-#           'dist dbh' = .plot_dist_dbh(x),
-#           'dist rank-abundance' = .plot_dist_rank_abundance(x),
-#           
-#           ##### final pattern ####
-#           
-#           'height' = {
-#             hist <- hist(x@final_pattern$height[x@final_pattern$height != 0], breaks=seq(0,50,by=1), plot = FALSE)
-#             plot(hist,
-#                  main = paste("Tree height histogram after", age, "years (", surf, "ha)"),
-#                  col="green",
-#                  xlim=c(0,30),
-#                  ylim=c(0,40000),
-#                  xlab = "Height class")
-#           },
-#           
-#           'dbh' = {
-#             hist(x@final_pattern$dbh[x@final_pattern$dbh != 0],
-#                  main = paste("Tree dbh histogram after", age, "years (", surf, "ha)"),
-#                  col="green",
-#                  xlab = "Dbh class")
-#           },
-#           
-#           'rank-abundance' = {
-#             barplot(table(x@final_pattern$sp_lab)[order(table(x@final_pattern$sp_lab), decreasing = T)],
-#                     col = 'green',
-#                     xlab = 'rank',
-#                     ylab = 'abundance',
-#                     main = paste("Tree rank-abundance histogram after", age, "years (", surf, "ha)"))
-#           },
-#           
-#           'age' = {
-#             image(x@final_pattern['age'],
-#                  col=rev(heat.colors(10)),
-#                  main="TROLL age distribution",
-#                  xlab="x (m)",
-#                  ylab="y (m)"
-#             )
-#           },
-#           
-#           'species' = {
-#             image(x@final_pattern['sp_lab'],
-#                  col = rainbow(length(unique(x@final_pattern$sp_lab))),
-#                  main="TROLL species distribution",
-#                  xlab="x (m)",
-#                  ylab="y (m)"
-#             )
-#           },
-#           
-#           ##### flux ####
-#           'flux' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@gpp$Total, pch=20,
-#                  xlab="Times (in years)",
-#                  ylab="Total flux (in MgC/ha)",
-#                  main="Flux (in MgC/ha)")
-#             points(seq(1,nbiter,1)/iter,
-#                    x@npp$Total, pch=20, col = 'red')
-#             points(seq(1,nbiter,1)/iter,
-#                    x@gpp$Total - x@npp$Total,
-#                    pch=20, col = 'green')
-#             legend("topright", col=c("black", "green",  "red"), pch=20,
-#                    legend=c("GPP", "Autotrophic respiration", "NPP"))
-#           },
-#           
-#           ##### gpp ####
-#           'gpp' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@gpp$Total, pch=20,
-#                  xlab="Times (in years)",
-#                  ylab="Total GPPLeaf (in MgC/ha)",
-#                  main="Gross primary productivity (in MgC/ha)")
-#           },
-#           
-#           ##### LAI ####
-#           'LAI' = {
-#             warning('LAI plots not implemented yet !')
-#           },
-#           
-#           ##### litterfall ####
-#           'litterfall' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@litterfall$Total * 12, pch=20,
-#                  xlab="Times (in years)",
-#                  ylab="Leaf litterfall per month (in Mg/ha/year dry mass)",
-#                  main="Leaf litterfall per month (in Mg dry mass/ha/year)")
-#           },
-#           
-#           ##### npp ####
-#           'npp' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@npp$Total, pch=20,
-#                  xlab="Times (in years)",
-#                  ylab="Total NPPLeaf (in MgC/ha)",
-#                  main="Net primary productivity (in MgC/ha)")
-#           },
-#           
-#           ##### R ####
-#           'R' = {
-#             warning('R plots not implemented yet !')
-#           },
-#           
-#           
-#           ##### Ra ####
-#           'Ra' = {
-#             plot(seq(1,nbiter,1)/iter,
-#                  x@gpp$Total - x@npp$Total, pch=20,
-#                  xlab="Times (in years)",
-#                  ylab="Autotrophic respiration (in MgC/ha)",
-#                  main="Autotrophic respiration (in MgC/ha)")
-#           },
-#           
-#           ##### relabund ####
-#           'relabund' = {
-#             warning('relabund plots not implemented yet !')
-#           },
-#           
-#           ##### vertd ####
-#           
-#           'vertd' = {
-#             max_height <- max(x@vertd$height)
-#             plot(x =c(-diff(tail(x@vertd$vertd, max_height)),0),
-#                  y = seq(1, max_height),
-#                  type = "l",
-#                  main = paste("PAD distribution after", age, "years"),
-#                  xlab = "PAD (m2 per m3)",
-#                  ylab = "Height",
-#                  xlim = c(0,1),
-#                  ylim = c(0,60))
-#           },
-#           
-#           ##### wd ####
-#           'wd' = {
-#             mean_wood_dens <- rep(0,nbiter)
-#             for (i in 1:nbiter) {
-#               mean_wood_dens[i] <- sum(x@abundances$relabdund[i,] / 100 * x@sp_par$wsg)
-#             }
-#             plot(seq(1,nbiter,1)/iter,
-#                  mean_wood_dens,
-#                  ylim=c(0, 0.7), pch=20,
-#                  main="Total wood density (in g/cm3)",
-#                  xlab="Time (in year)",
-#                  ylab="Average plot wood density",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'wd10' = {
-#             mean_wood_dens <- rep(0,nbiter)
-#             for (i in 1:nbiter) {
-#               mean_wood_dens[i] <- sum(x@abundances$relabu10[i,] / 100 * x@sp_par$wsg)
-#             }
-#             plot(seq(1,nbiter,1)/iter,
-#                  mean_wood_dens,
-#                  ylim=c(0, 0.7), pch=20,
-#                  main="Wood density of trees with dbh > 10 cm (in g/cm3)",
-#                  xlab="Time (in year)",
-#                  ylab="Average plot wood density",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'wd30' = {
-#             mean_wood_dens <- rep(0,nbiter)
-#             for (i in 1:nbiter) {
-#               mean_wood_dens[i] <- sum(x@abundances$relabu30[i,] / 100 * x@sp_par$wsg)
-#             }
-#             plot(seq(1,nbiter,1)/iter,
-#                  mean_wood_dens,
-#                  ylim=c(0, 0.7), pch=20,
-#                  main="Wood density of trees with dbh > 30 cm (in g/cm3)",
-#                  xlab="Time (in year)",
-#                  ylab="Average plot wood density",
-#                  xlim=c(0,nbiter/iter))
-#           },
-#           
-#           'allwd' = {
-#             par(mfrow=c(3,1))
-#             plot(x, 'wd')
-#             plot(x, 'wd10')
-#             plot(x, 'wd30')
-#             par(mfrow=c(1,1))
-#           },
-#           
-#           stop('Option not available')
-#           
-#   )
-# })
-# 
-# #### Disturbance ####
-# 
-# .plot_dist_height <- function(x){
-#   hist <- hist(x@disturbance$height, breaks=seq(0,50,by=1), plot = FALSE)
-#   plot(hist,
-#        main = paste("Height histogram of tree killed in disturbance \n after", 
-#                     distage, "years (", surf, "ha)"),
-#        col="green",
-#        xlim=c(0,30),
-#        ylim=c(0,40000),
-#        xlab = "Height class")
-# }
-# 
-# .plot_dist_dbh <- function(x){
-#   hist(x@disturbance$dbh,
-#        main = paste("Dbh histogram of tree killed in disturbance \n after", 
-#                     distage, "years (", surf, "ha)"),
-#        col="green",
-#        xlab = "Dbh class")
-# }
-# 
-# .plot_dist_rank_abundance <- function(x){
-#   barplot(table(x@disturbance$sp_lab)[order(table(x@disturbance$sp_lab), 
-#                                             decreasing = T)],
-#           col = 'green',
-#           xlab = 'rank',
-#           ylab = 'abundance',
-#           main = paste(
-#             "Rank-abundance histogram of tree killed in disturbance \n after", 
-#             distage, "years (", surf, "ha)"))
-# }
+#### Simstack ####
+#' @rdname plot.TROLLsim
+#' @export
+setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what, ggplot2 = FALSE, plotly = FALSE, ...) {
+  ggplot2 <- .library_plots(ggplot2, plotly)
+  
+  #### AGB, GPP, Litterfall ####
+  if(what %in% c('agb', 'gpp', 'litterfall')){
+    ylab <- switch(what,
+                   'agb' = 'Aboveground biomass (kgC/ha)',
+                   'litterfall' = 'Leaf litterfall per month (Mg dry mass/ha/year)',
+                   'gpp' = "Total GPPLeaf (MgC/ha)")
+    g <- .get_graph(x, ggplot2, 'Total', what, ylab = ylab, ...)
+  }
+
+  #### Abundances, BA, R ####
+  if(what %in% c('abund', 'abu10', 'abu30', 'ba', 'ba10', 'Rday', 'Rnight')){
+    slot <- switch(what,
+                   'abund' = 'abundances', 
+                   'abu10' = 'abundances', 
+                   'abu30' = 'abundances', 
+                   'ba' = 'ba', 
+                   'ba10' = 'ba', 
+                   'Rday' = 'R', 
+                   'Rnight' = 'R')
+    ylab <- switch(what,
+                   'abund' = "Total abundance (stems/ha)", 
+                   'abu10' = "Number of trees with dbh > 10 cm (stems/ha)", 
+                   'abu30' = "Number of trees with dbh > 30 cm (stems/ha)", 
+                   'ba' = "Total basal area (m2/ha)", 
+                   'ba10' = "Basal area of trees with dbh > 10 cm (stems/ha)", 
+                   'Rday' = 'Total day respiration (MgC/ha)', 
+                   'Rnight' = 'Total night respiration (MgC/ha)')
+    g <- .get_graph(x, ggplot2, 'Total', slot, what, ylab = ylab, ...)
+  }
+  
+  #### Height, dbh, age, species ####
+  if(what %in% c('height', 'distheight', 'dbh', 'distdbh', 'age', 'distage', 'species', 'distspecies')){
+    slot <- switch(what,
+                   'height' = 'final_pattern',
+                   'dbh' = 'final_pattern',
+                   'age' = 'final_pattern',
+                   'species' = 'final_pattern',
+                   'distheight' = 'disturbance',
+                   'distdbh' = 'disturbance',
+                   'distage' = 'disturbance',
+                   'distspecies' = 'disturbance')
+    col <- switch(what,
+                  'height' = 'height',
+                  'distheight' = 'height',
+                  'dbh' = 'dbh',
+                  'distdbh' = 'dbh',
+                  'age' = 'age',
+                  'distage' = 'age',
+                  'species' = 'sp_lab',
+                  'distspecies' = 'sp_lab')
+    xlab <- switch(what,
+                   'height' = 'height (m)',
+                   'distheight' = 'height (m)',
+                   'dbh' = 'diameter at breast height (m)',
+                   'distdbh' = 'diameter at breast height (m)',
+                   'age' = 'age (years)',
+                   'distage' = 'age (years)',
+                   'species' = 'species rank',
+                   'distspecies' = 'species rank')
+    ylab <- switch(what,
+                   'height' = 'log10 stem number',
+                   'distheight' = 'log10 stem number',
+                   'dbh' = 'stem > 1 number',
+                   'distdbh' = 'stem number',
+                   'age' = 'log10 stem number',
+                   'distage' = 'log10 stem number',
+                   'species' = 'stem number',
+                   'distspecies' = 'stem number')
+    xmin <- switch(what,
+                   'dbh' = 0.01,
+                   'distdbh' = 0,
+                   NA)
+    ytrans <- switch(what,
+                   'height' = 'log10',
+                   'distheight' = 'log10',
+                   'dbh' = 'identity',
+                   'distdbh' = 'identity',
+                   'age' = 'log10',
+                   'distage' = 'log10',
+                   'species' = 'identity',
+                   'distspecies' = 'identity')
+    g <- .get_hist(x, ggplot2, col, slot, xlab, ylab, xmin, ytrans, ...)
+  }
+  
+  if(plotly)
+    return(ggplotly(g))
+  if(ggplot2)
+    return(g)
+})
+
+#### Simstack, Simstack ####
+#' @rdname plot.TROLLsim
+#' @export
+setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y, what, ggplot2 = FALSE, plotly = FALSE, ...) {
+  ggplot2 <- .library_plots(ggplot2, plotly)
+  if(!y@aggregated)
+    stop('You need to use aggregated data in second TROLL simulation stack !')
+    
+  #### AGB, GPP, Litterfall ####
+  if(what %in% c('agb', 'gpp', 'litterfall')){
+    g <- plot(x, what = what, ggplot2 = ggplot2, plotly = plotly, ...)
+    if(!ggplot2)
+      stop('No method available to compare TROLLsimstack without ggplot2 yet !')
+    if(plotly)
+      stop('Plotly not compatible with methods to compare TROLLsimstack !')
+    g <- .get_control(g, y, 'Total', what)
+  }
+  
+  #### Abundances, BA, R ####
+  if(what %in% c('abund', 'abu10', 'abu30', 'ba', 'ba10', 'Rday', 'Rngiht')){
+    slot <- switch(what,
+                   'abund' = 'abundances', 
+                   'abu10' = 'abundances', 
+                   'abu30' = 'abundances', 
+                   'ba' = 'ba', 
+                   'ba10' = 'ba', 
+                   'Rday' = 'R', 
+                   'Rngiht' = 'R')
+    g <- plot(x, what = what, ggplot2 = ggplot2, plotly = plotly, ...)
+    if(!ggplot2)
+      stop('No method available to compare TROLLsimstack without ggplot2 yet !')
+    if(plotly)
+      stop('Plotly not compatible with methods to compare TROLLsimstack !')
+    g <- .get_control(g, y, 'Total', slot, what)
+  }
+  
+  #### Height, dbh, age, species ####
+  if(what %in% c('height', 'distheight', 'dbh', 'distdbh', 'age', 'distage', 'species', 'distspecies')){
+    stop('Comparisons of two simulations stack histograms is imposible !')
+  }
+  
+  if(ggplot2)
+    return(g)
+})
+
+#### Internals ####
+
+.library_plots <- function(ggplot2, plotly){
+  if(plotly)
+    ggplot2 <- TRUE
+  if(plotly && !requireNamespace("plotly", quietly = TRUE))
+    stop('You need to install plotly package to use plotly option !')
+  if(ggplot2 && !requireNamespace("ggplot2", quietly = TRUE))
+    stop('You need to install ggplot2 package to use ggplot2 option !')
+  return(ggplot2)
+}
+
+.basic_data <- function(x, col, slot, list = NULL){
+  if(is.null(list))
+    data <- sapply(x@layers, function(y){
+      slot(y, slot)[,col]
+    })
+  if(!is.null(list))
+    data <- sapply(x@layers, function(y){
+      slot(y, slot)[[list]][,col]
+    })
+  data <- data.frame(data)
+  return(data)
+}
+
+.basic_graph <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+  data <- .basic_data(x, 'Total', 'agb')
+  matplot(data, xlab = xlab, ylab = ylab, ...)
+  legend('bottomright', names(data), fill = 1:6)
+}
+
+.ggplot_table <- function(x, col, slot, list = NULL){
+  data <- .basic_data(x, col, slot, list)
+  n <- dim(data)[1]
+  data <- data.frame(
+    time = rep(seq(1,x@layers[[1]]@par$general$nbiter,1)/x@layers[[1]]@par$general$iter, length(names(data))),
+    values = unname(unlist(data)),
+    layer = rep(names(data), each = n)
+    ) 
+  return(data)
+}
+
+.ggplot_graph <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+  data <- .ggplot_table(x, col, slot, list)
+  g <- ggplot(data, aes(x = time, y = values, colour = layer)) +
+    geom_point(size=0.5) +
+    geom_line() +
+    xlab(xlab) +
+    ylab(ylab) +
+    theme_bw()
+  return(g)
+}
+
+.get_graph <- function(x, ggplot2 = FALSE, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+  if(!ggplot2)
+    .basic_graph(x, col, slot, list, xlab , ylab, ...)
+  if(ggplot2)
+    .ggplot_graph(x, col, slot, list, xlab, ylab, ...)
+}
+
+.get_control <- function(g, y, col, slot, list = NULL){
+  data <- .basic_data(y, col, slot, list)
+  time <- seq(1,y@layers[[1]]@par$general$nbiter,1)/y@layers[[1]]@par$general$iter
+  data <- cbind(time, data)
+  data$control <- 1
+  data <- cbind(g$data, data)
+  c <- ggplot(data, aes(x = time, y = values, colour = layer)) +
+    geom_linerange(aes(ymin = min, ymax = max), colour = 'grey') +
+    geom_line() +
+    geom_line(aes(x = time, y = mean), colour = 'black') +
+    xlab(g$labels$x) +
+    ylab(g$labels$y) +
+    theme_bw()
+  return(c)
+}
+
+.basic_data_final_pattern <- function(x, col, slot){
+  data <- sapply(x@layers, function(y){
+    slot(y, slot)[[col]]
+  })
+  data <- data.frame(data)
+  return(data)
+}
+
+.basic_data_disturbance <- function(x, col, slot){
+  data_list <- sapply(x@layers, function(y){
+    slot(y, slot)[[col]]
+  })
+  if(is.list(data_list)){
+    data <- data.frame(matrix(ncol = length(names(data_list)),
+                              nrow = max(unlist(lapply(data_list, length)))))
+    names(data) <- names(data_list)
+    data <- sapply(names(data), function(name){
+      data[seq_len(length(data_list[[name]])),name] <- data_list[[name]]
+      return(data[,name])
+    })
+    data[is.na(data)] <- 0
+    data <- data.frame(data)
+  } else {
+    data <- data.frame(data_list)
+  }
+  return(data)
+}
+
+.basic_hist <- function(x, col, slot, xlab = 'Time (year)', ylab, xmin, ytrans, ...){
+  stop('Histogram not available yet without ggplot2 option !')
+}
+
+.ggplot_table_hist <- function(x, col, slot){
+  if(slot == 'final_pattern')
+    data <- .basic_data_final_pattern(x, col, slot)
+  if(slot == 'disturbance')
+    data <- .basic_data_disturbance(x, col, slot)
+  n <- dim(data)[1]
+  data <- data.frame(
+    values = unname(unlist(data)),
+    layer = rep(names(data), each = n)
+  ) 
+  return(data)
+}
+
+.ggplot_hist <- function(x, col, slot, xlab, ylab, xmin, ytrans, ...){
+  data <- .ggplot_table_hist(x, col, slot)
+  g <- ggplot(data, aes(x = values, colour = layer)) +
+    geom_histogram() +
+    scale_x_continuous(limits = c(xmin,NA)) +
+    scale_y_continuous(trans = ytrans) +
+    xlab(xlab) +
+    ylab(ylab) +
+    theme_bw()
+  return(g)
+}
+
+.get_hist <- function(x, ggplot2 = FALSE, col, slot, xlab, ylab, xmin, ytrans, ...){
+  if(!ggplot2)
+    .basic_hist(x, col, slot, xlab , ylab, xmin, ytrans, ...)
+  if(ggplot2)
+    .ggplot_hist(x, col, slot, xlab, ylab, xmin, ytrans, ...)
+}

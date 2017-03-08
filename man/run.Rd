@@ -28,5 +28,6 @@ model output files in the path folder
 Function to run TROLL code
 }
 \examples{
+NA
 
 }

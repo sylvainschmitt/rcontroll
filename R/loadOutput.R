@@ -13,6 +13,7 @@ NULL
 #' @export
 #'
 #' @examples
+#' NA
 #'
 loadOutput <- function(name = getOption("RconTroll.name"), 
                        path = file.path(getOption("RconTroll.path"), 
@@ -59,13 +60,13 @@ loadOutput <- function(name = getOption("RconTroll.name"),
     final_pattern = final_pattern,
     gpp = read.table(file.path(path, paste0(name, '_0_gpp.txt')), row.names = 1),
     info = list(
-      step = as.numeric(scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 4, n = 7, quiet = T)[7]),
+      step = as.numeric(scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 4, n = 7, quiet = TRUE)[7]),
       SitesNb = as.numeric(unlist(strsplit(scan(file.path(path, paste0(name, '_0_info.txt')),
-                                     character(), skip = 12, n = 5, quiet = T)[5], 'x'))),
-      IterationsNb = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 13, n = 5, quiet = T)[5],
-      timestep = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 14, n = 5, quiet = T)[5],
-      SpeciesNb = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 15, n = 5, quiet = T)[5],
-      ComputationTime = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 17, n = 5, quiet = T)[5]
+                                     character(), skip = 12, n = 5, quiet = TRUE)[5], 'x'))),
+      IterationsNb = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 13, n = 5, quiet = TRUE)[5],
+      timestep = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 14, n = 5, quiet = TRUE)[5],
+      SpeciesNb = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 15, n = 5, quiet = TRUE)[5],
+      ComputationTime = scan(file.path(path, paste0(name, '_0_info.txt')), character(), skip = 17, n = 5, quiet = TRUE)[5]
     ),
     litterfall = read.table(file.path(path, paste0(name, '_0_litterfall.txt'))),
     npp = read.table(file.path(path, paste0(name, '_0_npp.txt')), row.names = 1),

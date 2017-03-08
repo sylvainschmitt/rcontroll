@@ -14,6 +14,7 @@
 #' @export
 #'
 #' @examples
+#' NA
 #'
 run <- function(name = getOption("RconTroll.name"),
                 path = getOption("RconTroll.path"),

@@ -63,6 +63,8 @@ model(name = getOption("RconTroll.name"),
 
 \item{input}{char. input file to create}
 
+\item{output}{char. output folder name}
+
 \item{build}{logical. do you want to (re)-build the model}
 
 \item{overwrite}{logical. allow to overwrite existing input and outputs files}
@@ -164,5 +166,6 @@ an S4 \linkS4class{TROLLsim} class object
 Create and open a TROLL model
 }
 \examples{
+NA
 
 }

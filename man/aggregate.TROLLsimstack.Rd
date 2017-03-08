@@ -3,6 +3,7 @@
 \docType{methods}
 \name{aggregate.TROLLsimstack}
 \alias{aggregate.TROLLsimstack}
+\alias{aggregate,TROLLsimstack-method}
 \title{aggregate}
 \usage{
 \S4method{aggregate}{TROLLsimstack}(x, add = FALSE, force = FALSE, ...)
@@ -17,12 +18,13 @@
 \item{...}{unused argument}
 }
 \value{
-aggregated TROLL simstack
+aggregated S4 \linkS4class{TROLLsimstack} object
 }
 \description{
 Splits the data into subsets, computes summary statistics for each, and
 returns the result in a convenient form.
 }
 \examples{
+NA
 
 }

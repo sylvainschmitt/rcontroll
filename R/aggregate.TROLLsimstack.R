@@ -8,15 +8,18 @@
 #' @param force logical. should we force the aggregation (can cause error)
 #' @param ... unused argument
 #'   
-#' @return aggregated TROLL simstack
-#' 
-#' @export
+#' @return aggregated S4 \linkS4class{TROLLsimstack} object
 #' 
 #' @examples
+#' NA
 #' 
 #' @name aggregate.TROLLsimstack
-#' 
-setMethod("aggregate", signature(x='TROLLsimstack'), function(x, add = FALSE, force = FALSE, ...) {
+NULL
+
+#' @export
+#' @rdname aggregate.TROLLsimstack
+setMethod("aggregate", signature(x='TROLLsimstack'), 
+          function(x, add = FALSE, force = FALSE, ...) {
   # check correspondance between all parameters
   if(!force){
     ref <- x@layers[[1]]
@@ -50,16 +53,19 @@ setMethod("aggregate", signature(x='TROLLsimstack'), function(x, add = FALSE, fo
   },a = x, b= y)))
 }
 
-.aggregate_fun <- function(x, FUN){ # Aggregate a simulation stack following a function
+.aggregate_fun <- function(x, FUN){ # Aggregate a simulation stack
   y <- TROLLsim(
     name = as.character(match.call())[3],
     abundances = list(
       abund = .aggregate_simstack_df(x, FUN, 'abundances', list = 'abund'),
       abu10 = .aggregate_simstack_df(x, FUN, 'abundances', list = 'abu10'),
       abu30 = .aggregate_simstack_df(x, FUN, 'abundances', list = 'abu30'),
-      relabdund = .aggregate_simstack_df(x, FUN, 'abundances', list = 'relabdund'),
-      relabu10 = .aggregate_simstack_df(x, FUN, 'abundances', list = 'relabu10'),
-      relabu30 = .aggregate_simstack_df(x, FUN, 'abundances', list = 'relabu30')
+      relabdund = .aggregate_simstack_df(x, FUN, 'abundances', 
+                                         list = 'relabdund'),
+      relabu10 = .aggregate_simstack_df(x, FUN, 'abundances', 
+                                        list = 'relabu10'),
+      relabu30 = .aggregate_simstack_df(x, FUN, 'abundances', 
+                                        list = 'relabu30')
     ),
     agb = .aggregate_simstack_df(x, FUN, 'agb'),
     ba = list(
@@ -67,11 +73,15 @@ setMethod("aggregate", signature(x='TROLLsimstack'), function(x, add = FALSE, fo
       ba10 = .aggregate_simstack_df(x, FUN, 'ba', list = 'ba10')
     ),
     # death = list(
-    #   death = .aggregate_simstack_df(x, FUN, 'death', list = 'death'),
-    #   death1 = .aggregate_simstack_df(x, FUN, 'death', ref = 1, list = 'death1'),
-    #   death2 = .aggregate_simstack_df(x, FUN, 'death', ref = 1, list = 'death2'),
-    #   death3 = .aggregate_simstack_df(x, FUN, 'death', ref = 1, list = 'death3'),
-    #   deathrate = .aggregate_simstack_df(x, FUN, 'death', list = 'deathrate')
+    # death = .aggregate_simstack_df(x, FUN, 'death',
+    #                                list = 'death'),
+    # death1 = .aggregate_simstack_df(x, FUN, 'death', ref = 1,
+    #                                 list = 'death1'),
+    # death2 = .aggregate_simstack_df(x, FUN, 'death', ref = 1,
+    #                                 list = 'death2'),
+    # death3 = .aggregate_simstack_df(x, FUN, 'death', ref = 1,
+    #                                 list = 'death3'),
+    # deathrate = .aggregate_simstack_df(x, FUN, 'death', list = 'deathrate')
     # ),
     gpp = .aggregate_simstack_df(x, FUN, 'gpp'),
     info = list(

@@ -25,5 +25,6 @@ build the TROLL app
 Function to build TROLL code
 }
 \examples{
+NA
 
 }

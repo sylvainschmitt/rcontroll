@@ -13,11 +13,12 @@ loadOutputOld(name = getOption("RconTroll.name"),
 \item{path}{char. Path where the model is saved}
 }
 \value{
-an S4 \linkS4class{TROLLoutput} class object
+an S4 \linkS4class{TROLLsim} class object
 }
 \description{
 Function to load TROLL output of old disturbance module (deprecated)
 }
 \examples{
+NA
 
 }

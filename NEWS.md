@@ -4,13 +4,23 @@
 * modification of input file
 * merging of info and par file in output, potentially using info-file for module activation
 * finish `summary` for TROLLsimstack
-* create subclasses for TROLLsimstack
-* define `plot` for TROLLsimstack
-* Correct `plot.output` method with use of internal functions (see disturbance example)
 * Integrate virtual forest in modelling process (activate _from _FromData in `build` and integrate forest.txt in `run`)
 * formal testin with test that
 * use of `goodpractice`package
 * integrate all methods to better manipulate TROLLsimstack (e.g. `[[`)
+* plot function for diversity indices with `entropart` package
+* plot function for traits distributions
+
+# RconTroll 0.1.9005
+
+* New possibilities in plotting `what` argument (agb, gpp, litterfall, all abund, all ba, all R, all final_pattern, all disturbance)
+* `inventoryFromOutput` fixed
+* Joining `plot` methods in one file with only one doc
+* Joining `print` methods in one file with only one doc
+* Joining `summary` methods in one file with only one doc
+* Corrected all WARNINGs and NOTEs in R CMD check
+* Corrected part of `goodpractice::gp()` recomendations
+* Add `cran-comment.md` to justify R CMD check NOTEs
 
 # RconTroll 0.1.9004
 

@@ -13,6 +13,7 @@ NULL
 #' @param optimisation char. optimisation level to build cpp with g++ (default NULL)
 #' @param app char. path to troll app (e.g. TROLL.out)
 #' @param input char. input file to create
+#' @param output char. output folder name
 #' @param build logical. do you want to (re)-build the model
 #' @param overwrite logical. allow to overwrite existing input and outputs files
 #' @param verbose logical. allow output in console
@@ -66,6 +67,7 @@ NULL
 #' @export
 #'
 #' @examples
+#' NA
 #'
 model <- function(
   # function options
@@ -119,7 +121,8 @@ model <- function(
   m1 = 0.035,
   CO2 = 360,
   # species data
-  species = read.table(getOption("RconTroll.species"), header=TRUE, dec=".", sep=""),
+  species = read.table(getOption("RconTroll.species"), 
+                       header=TRUE, dec=".", sep=""),
   # climate data
   Tyear = c(24.64982014,	24.60624211,	24.49933474,	24.96279395,	24.88365139,
             24.87594184,	24.98313802,	25.68910135,	26.58033805,	26.98619405,

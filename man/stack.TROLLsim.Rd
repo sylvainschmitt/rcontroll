@@ -15,6 +15,10 @@
 \item{x}{TROLLsim. Troll simulation object}
 
 \item{...}{other TROLL simulations}
+
+\item{layers}{unused argument}
+
+\item{bands}{unused arguments}
 }
 \value{
 TROLL simulation stack
@@ -24,5 +28,6 @@ Simulation stack is a collection of TROLL simulations created from several or
 a list off TROLL simulations object.
 }
 \examples{
+NA
 
 }

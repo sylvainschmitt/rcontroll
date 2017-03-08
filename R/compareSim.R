@@ -14,8 +14,10 @@
 #' @return logical
 #' 
 #' @examples
+#' NA
 #' 
-compareSim <- function(sim, ..., rowcols=TRUE, duration=TRUE, dimension=TRUE, species=FALSE, stopiffalse=TRUE,showwarning=FALSE) {
+compareSim <- function(sim, ..., rowcols=TRUE, duration=TRUE, dimension=TRUE, 
+                       species=FALSE, stopiffalse=TRUE,showwarning=FALSE) {
   
   result <- TRUE
   objects <- c(sim, list(...))

@@ -19,5 +19,6 @@ an S4 \linkS4class{TROLLsim} class object
 Function to load TROLL output
 }
 \examples{
+NA
 
 }

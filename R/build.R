@@ -13,6 +13,7 @@
 #' @export
 #'
 #' @examples
+#' NA
 #'
 build <- function(
   src = getOption("RconTroll.src"),

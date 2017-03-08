@@ -8,12 +8,10 @@ inventoryFromData(forest = getOption("RconTroll.forest"),
   path = getOption("RconTroll.path"), overwrite = FALSE,
   species = read.table(getOption("RconTroll.species"), header = TRUE, dec =
   ".", sep = "", row.names = 1), missing = getOption("RconTroll.missing"),
-  spcorrect = TRUE,
-  data = read.csv("~/Documents/BIOGET/Projet/Data/paracou data - corrected DBH/paracou_p1_15.csv"),
-  plotcol = "n_parcelle", xcol = "Xutm", ycol = "Yutm",
-  censuscol = "campagne", spcol = c("Genre", "espece"), dbhcol = "dbh_c",
-  alivecol = "status", NV = 1, NH = 1, plots = c(1), year = 1984,
-  alive = 1)
+  spcorrect = TRUE, data, plotcol = "n_parcelle", xcol = "Xutm",
+  ycol = "Yutm", censuscol = "campagne", spcol = c("Genre", "espece"),
+  dbhcol = "dbh_c", alivecol = "status", NV = 1, NH = 1, plots = c(1),
+  year = 1984, alive = 1)
 }
 \arguments{
 \item{forest}{int. path to the file to create}
@@ -38,7 +36,8 @@ inventoryFromData(forest = getOption("RconTroll.forest"),
 
 \item{censuscol}{char. name of the column containing census year information}
 
-\item{spcol}{char. name of the column(s) containing secies information (can be a vector if species and genus are split)}
+\item{spcol}{char. name of the column(s) containing secies information (can
+be a vector if species and genus are split)}
 
 \item{dbhcol}{char. name of the column containing dbh information}
 
@@ -48,11 +47,11 @@ inventoryFromData(forest = getOption("RconTroll.forest"),
 
 \item{NH}{int. horizontal number of cells (nb per m)}
 
+\item{plots}{int/char. name or number of the plot to initialize on}
+
 \item{year}{int. year of the census to intialize on}
 
 \item{alive}{int/char/logical. code corresponding to alive tree}
-
-\item{plot}{int/char. name or number of the plot to initialize on}
 }
 \value{
 virtual forest inventory for the TROLL program (forest.txt)
@@ -61,5 +60,6 @@ virtual forest inventory for the TROLL program (forest.txt)
 Virtualize a forest inventory in forest text file to initialize TROLL model
 }
 \examples{
+NA
 
 }

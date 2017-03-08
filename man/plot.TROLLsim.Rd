@@ -5,19 +5,28 @@
 \alias{plot.TROLLsim}
 \alias{plot,TROLLsim,missing-method}
 \alias{plot,TROLLsim,TROLLsim-method}
-\title{Function to plot TROLL simulations}
+\alias{plot,TROLLsimstack,missing-method}
+\alias{plot,TROLLsimstack,TROLLsimstack-method}
+\title{Plot TROLL simulations stack}
 \usage{
 \S4method{plot}{TROLLsim,missing}(x, y, what, ggplot2 = FALSE,
   plotly = FALSE, ...)
 
 \S4method{plot}{TROLLsim,TROLLsim}(x, y, what, ggplot2 = FALSE,
   plotly = FALSE, ...)
+
+\S4method{plot}{TROLLsimstack,missing}(x, y, what, ggplot2 = FALSE,
+  plotly = FALSE, ...)
+
+\S4method{plot}{TROLLsimstack,TROLLsimstack}(x, y, what, ggplot2 = FALSE,
+  plotly = FALSE, ...)
 }
 \arguments{
-\item{x}{TROLLsimstack. Troll simulation stack object to plot}
+\item{x}{TROLLsim or TROLLsimstack. Troll simulation stacked or not object to
+plot}
 
-\item{y}{TROLLsimstack. nothing or Troll aggregated simulation stack to
-compare with}
+\item{y}{Any, TROLLsim or TROLLsimstack. nothing, TROLL simulation or Troll
+aggregated simulation stack to compare with}
 
 \item{what}{char. ecosystem output to plot, see details}
 
@@ -28,67 +37,26 @@ compare with}
 \item{...}{other graphical parameters}
 }
 \value{
-Plot the output
+Plot the simulations
 }
 \description{
-Function to plot TROLL simulations
+Plot TROLL simulations stack
 }
 \details{
 Available plots:
 \describe{
-\item{defaults}{abund + agb + ba +height hist}
-\item{abund}{
- \describe{
- \item{abund}{Number of stems/ha ~ Time (in years)}
- \item{abu10}{Number of trees with dbh > 10 cm (in stems/ha) ~ Time (in years)}
- \item{abu30}{Number of trees with dbh > 30 cm (in stems/ha) ~ Time (in years)}
- \item{allabund}{abund + abu10 + abu30}
- }
+\item{agb}{above ground biomass}
+\item{gpp}{gross primary productivity}
+\item{abund, abu10, abu30}{abundances (total, above 10 and above 30 cm dbh)}
+\item{ba, ba10}{basal area (total and above 10 cm dbh)}
+\item{Rday, Rnight}{night and day respiration}
+\item{height, distheight}{tree height histogram (final and disturbed)}
+\item{dbh, distdbh}{tree dbh histogram (final and disturbed)}
+\item{age, distage}{tree age histogram (final and disturbed)}
+\item{species, distspecies}{tree species histogram (final and disturbed)}
 }
-\item{agb}{Aboveground biomass (in tonnes/ha) ~ Time (in years)}
-\item{ba}{
- \describe{
- \item{ba}{Basal area (in m2/ha) ~ Time (in years)}
- \item{ba10}{Basal area of trees with dbh > 10 cm (in stems/ha) ~ Time (in years)}
- \item{allba}{ba + ba10}
- }
-}
-\item{death}{Not implemented}
-\item{disturbance}{
- \describe{
- \item{dist height}{disturbed tree height histogram}
- \item{dist dbh}{disturbed dbh histogram}
- \item{dist rank-abundance}{disturbed species rank-abundance histogram}
- }
-}
-\item{final pattern}{
- \describe{
- \item{heigh}{final tree height histogram}
- \item{dbh}{final dbh histogram}
- \item{rank-abundance}{final species rank-abundance histogram}
- \item{age}{final tree age distribution}
- \item{species}{final species spatial distribution map}
- }
-}
-\item{flux}{GPP, Autotrphic respiration, NPP ~ Time (in years)}
-\item{gpp}{Total GPPLeaf (in MgC/ha) ~ Time (in years)}
-\item{LAI}{Not implemented}
-\item{litterfall}{Leaf litterfall per month (in Mg/ha/year dry mass) ~ Time (in years)}
-\item{npp}{Total NPPLeaf (in MgC/ha) ~ Time (in years)}
-\item{R}{Not implemented}
-\item{Ra}{Autotrophic respiration (in MgC/ha) ~ Time (in years)}
-\item{relabund}{Not implemented}
-\item{vertd}{PAD (m2 per m3) ~ Height (in m)}
-\item{wd}{
- \describe{
- \item{wd}{Total wood density (in g/cm3) ~ Time (in years)}
- \item{wd10}{Wood density of trees with dbh > 10 cm (in g/cm3) ~ Time (in years)}
- \item{wd30}{Wood density of trees with dbh > 30 cm (in g/cm3) ~ Time (in years)}
- \item{allwd}{wd + wd10 + wd30}
- }
-}
-}l
 }
 \examples{
+NA
 
 }

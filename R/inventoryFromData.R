@@ -4,9 +4,9 @@
 NULL
 
 #' Create inventory
-#'
+#' 
 #' Virtualize a forest inventory in forest text file to initialize TROLL model
-#'
+#' 
 #' @param forest int. path to the file to create
 #' @param path char. working directory
 #' @param overwrite logical. allow to overwrite existing input file
@@ -18,7 +18,8 @@ NULL
 #' @param xcol char. name of the column containing longitude information
 #' @param ycol char. name of the column containing latitude information
 #' @param censuscol char. name of the column containing census year information
-#' @param spcol char. name of the column(s) containing secies information (can be a vector if species and genus are split)
+#' @param spcol char. name of the column(s) containing secies information (can
+#'   be a vector if species and genus are split)
 #' @param dbhcol char. name of the column containing dbh information
 #' @param alivecol char. name of the column containing alive information
 #' @param NV int. vertical number of cells (nb per m)
@@ -26,24 +27,26 @@ NULL
 #' @param plots int/char. name or number of the plot to initialize on
 #' @param year int. year of the census to intialize on
 #' @param alive int/char/logical. code corresponding to alive tree
-#'
+#'   
 #' @return virtual forest inventory for the TROLL program (forest.txt)
-#'
+#'   
 #' @export
-#'
+#' 
 #' @examples
-#'
+#' NA
+#' 
 inventoryFromData <- function(
   # file
   forest = getOption("RconTroll.forest"),
   path = getOption("RconTroll.path"),
   overwrite = FALSE,
   # species data
-  species = read.table(getOption("RconTroll.species"), header=TRUE, dec=".", sep="", row.names = 1),
+  species = read.table(getOption("RconTroll.species"), 
+                       header=TRUE, dec=".", sep="", row.names = 1),
   missing = getOption("RconTroll.missing"),
   spcorrect = TRUE,
   # data
-  data = read.csv("~/Documents/BIOGET/Projet/Data/paracou data - corrected DBH/paracou_p1_15.csv"),
+  data,
   plotcol = 'n_parcelle',
   xcol = 'Xutm',
   ycol = 'Yutm',
@@ -91,15 +94,18 @@ inventoryFromData <- function(
   # Species check
   spref <- as.character(unique(row.names(species)))
   spdata <- as.character(unique(data$sp))
-  spmatch <- as.character(unique(c(intersect(spref, spdata), intersect(spdata, spref))))
+  spmatch <- as.character(unique(c(intersect(spref, spdata), 
+                                   intersect(spdata, spref))))
   spmis <- list(
     ref = data.frame(
       sp = as.character(setdiff(spref, spdata)),
-      gen = as.character(unlist(lapply(strsplit(setdiff(spref, spdata), '_'), '[[', 1))),
+      gen = as.character(unlist(lapply(
+        strsplit(setdiff(spref, spdata), '_'), '[[', 1))),
       stringsAsFactors = FALSE),
     data = data.frame(
       sp = as.character(setdiff(spdata, spref)),
-      gen = as.character(unlist(lapply(strsplit(setdiff(spdata, spref), '_'), '[[', 1))),
+      gen = as.character(unlist(lapply(
+        strsplit(setdiff(spdata, spref), '_'), '[[', 1))),
       stringsAsFactors = FALSE)
   )
 
@@ -116,7 +122,9 @@ inventoryFromData <- function(
           cat(i, '/', n, ': No suggestion for', spmis$ref$sp[i], '\n')
         } else {
           for(j in genmatch){
-            answer <- readline(prompt = paste(i, '/', n, ': Is', spmis$data$sp[j], 'corresponding to', spmis$ref$sp[i], '(y/n) : '))
+            answer <- readline(prompt = paste(i, '/', n, ': Is', spmis$data$sp[j], 
+                                              'corresponding to', 
+                                              spmis$ref$sp[i], '(y/n) : '))
             switch (answer,
                     y = {
                       data$sp[data$sp == spmis$data$sp[j]] <- spmis$ref$sp[i]
@@ -139,18 +147,21 @@ inventoryFromData <- function(
 
   # For now removing missing data
   spmis <- sort(spmis$data$sp)
-  spmisBA <- round(sum(data$dbh[match(spmis, data$sp)], na.rm = TRUE) / sum(data$dbh) * 100)
+  spmisBA <- round(sum(data$dbh[match(spmis, data$sp)], 
+                       na.rm = TRUE) / sum(data$dbh) * 100)
   spmisInd <- round(length(match(spmis, data$sp)) / length(data$sp) * 100)
-  spmis <- c(paste(length(spmis), 'missing species representing', spmisInd, '% of individuals and', spmisBA, '% of basal area.'), spmis)
+  spmis <- c(paste(length(spmis), 'missing species representing', spmisInd,
+                   '% of individuals and', spmisBA, '% of basal area.'), spmis)
   warning(spmis[1], ' They will be removed from the data.')
   if(!is.null(missing))
-    write.table(spmis, file.path(path, missing), col.names = FALSE, row.names = FALSE, quote = FALSE)
+    write.table(spmis, file.path(path, missing), col.names = FALSE, 
+                row.names = FALSE, quote = FALSE)
   data <- data[-match(spmis[-1], data$sp),]
 
   # Creating the grid
   datasp <- data
   coordinates(datasp) <- c('x', 'y') # spatializing data
-  pxmin <- data[which(data$x == min(data$x)), c('x', 'y')] # getting main points for rotation
+  pxmin <- data[which(data$x == min(data$x)), c('x', 'y')] # rotation
   pymin <- data[which(data$y == min(data$y)), c('x', 'y')]
   pobj <- cbind(pxmin['x'], pymin['y'])
   x <- as.numeric(pymin - pxmin) # getting vectors
@@ -165,7 +176,8 @@ inventoryFromData <- function(
   data$y <- round((data$y - min(data$y)) * NV)
   data <- data[order(data$dbh, decreasing = TRUE),]
   if(length(duplicated(data[1:2])) > 0){
-    warning(length(duplicated(data[1:2])), ' trees occupe the same case in the grid. The biggest dbh will be kept.')
+    warning(length(duplicated(data[1:2])), 
+            ' trees occupe the same case in the grid. The biggest dbh will be kept.')
     data <- data[-duplicated(data[1:2]),]
   }
   # plot(y ~ x, data, col = as.factor(sp), pch = 16, cex = dbh / 50) # To see the result

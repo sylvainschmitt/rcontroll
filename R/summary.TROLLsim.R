@@ -3,16 +3,20 @@ NULL
 
 #' Function to provide summary of TROLL outputs
 #'
-#' @param x TROLLsim
+#' @param object TROLLsim or TROLLsimstack
+#' @param ... unused argument
 #'
 #' @return Print in console
 #'
-#' @export
-#'
 #' @examples
+#' NA
 #'
 #' @name summary.TROLLsim
 #' 
+NULL
+
+#' @export
+#' @rdname summary.TROLLsim
 setMethod('summary', 'TROLLsim', function(object, ...) {
 
   ##### params ####
@@ -23,7 +27,8 @@ setMethod('summary', 'TROLLsim', function(object, ...) {
   surf <- prod(object@info$step * object@info$SitesNb) / 10000 # in ha
   
   ##### data ####
-  sortabund <- t(sort(data.frame(object@abundances$relabu10[nbiter,1:SpeciesNb]),decreasing=T))
+  sortabund <- t(sort(data.frame(object@abundances$relabu10[nbiter,1:SpeciesNb]),
+                      decreasing=TRUE))
   
   ##### summary ####
   
@@ -40,7 +45,8 @@ setMethod('summary', 'TROLLsim', function(object, ...) {
   cat('Aboveground biomass (t/ha):\t\t\t', object@agb$Total[nbiter]/1000, '\n')
   if(nbiter>12){
     cat('Aboveground biomass relative change (%):\t', 
-      100*mean((object@agb$Total[(nbiter-11):nbiter]-object@agb$Total[(nbiter-12):(nbiter-1)])/object@agb$Total[(nbiter-11):nbiter]), 
+      100*mean((object@agb$Total[(nbiter-11):nbiter]
+                -object@agb$Total[(nbiter-12):(nbiter-1)])/object@agb$Total[(nbiter-11):nbiter]), 
       '\n')
     cat('(avg over last 12 iterations)\n')
     }
@@ -72,3 +78,47 @@ setMethod('summary', 'TROLLsim', function(object, ...) {
 # nb of seedlings in seedbank
 # Simpson index
 #
+
+#' @export
+#' @rdname summary.TROLLsim
+setMethod('summary', 'TROLLsimstack', function(object, ...) {
+  
+  ##### params ####
+  nbiter <- object@nbiter
+  iter <- object@iter
+  
+  ##### summary ####
+  
+  cat('Object of class :', class(object)[1],'\n\n')
+  cat('Structured :', object@structured, '\n')
+  cat('Aggregated', object@aggregated, '\n\n')
+  
+  if(isTRUE(object@structured)){  
+    cat('\n','*************************************************')
+    cat('\n','**** General outputs (multirun means and sd) ****')
+    cat('\n','*************************************************','\n\n')
+    
+    cat('Number of trees (stems/ha):\t\t\t'
+        , mean(sapply(object@layers, function(x) return(x@abundances$abund$Total[nbiter])))
+        , '\t'
+        , sd(sapply(object@layers, function(x) return(x@abundances$abund$Total[nbiter])))
+        , '\n')
+    cat('Number of trees with dbh > 10 cm (stems/ha):\t'
+        , mean(sapply(object@layers, function(x) return(x@abundances$abu10$Total[nbiter])))
+        , '  \t'
+        , sd(sapply(object@layers, function(x) return(x@abundances$abu10$Total[nbiter])))
+        , '\n')
+    cat('Number of trees with dbh > 30 cm (stems/ha):\t'
+        , mean(sapply(object@layers, function(x) return(x@abundances$abu30$Total[nbiter])))
+        , '    \t'
+        , sd(sapply(object@layers, function(x) return(x@abundances$abu30$Total[nbiter])))
+        , '\n')
+    cat('Aboveground biomass (t/ha): \t\t\t'
+        , mean(sapply(object@layers, function(x) return(x@agb$Total[nbiter]/1000)))
+        , '\t'
+        , sd(sapply(object@layers, function(x) return(x@agb$Total[nbiter]/1000)))
+        ,'\n')
+  } else {
+    cat('TROLLsimstack is not structured. No meaningful summary statistics calculated.')
+  }
+})

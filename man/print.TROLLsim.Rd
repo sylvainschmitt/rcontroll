@@ -3,19 +3,34 @@
 \docType{methods}
 \name{print.TROLLsim}
 \alias{print.TROLLsim}
-\title{Function to print TROLL outputs.}
+\alias{print,TROLLsim-method}
+\alias{show,TROLLsim-method}
+\alias{print,TROLLsimstack-method}
+\alias{show,TROLLsimstack-method}
+\title{Function to print or show TROLL outputs.}
 \usage{
 \S4method{print}{TROLLsim}(x, ...)
+
+\S4method{show}{TROLLsim}(object)
+
+\S4method{print}{TROLLsimstack}(x, ...)
+
+\S4method{show}{TROLLsimstack}(object)
 }
 \arguments{
-\item{x}{TROLLsim}
+\item{x}{TROLLsim or TROLLsimstack}
+
+\item{...}{unused argument}
+
+\item{object}{TROLLsim or TROLLsimstack}
 }
 \value{
-Print in console
+Print or show in console
 }
 \description{
-Function to print TROLL outputs.
+Function to print or show TROLL outputs.
 }
 \examples{
+NA
 
 }

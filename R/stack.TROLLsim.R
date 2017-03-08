@@ -10,10 +10,13 @@ if (!isGeneric("stack")) {
 #' 
 #' @param x TROLLsim. Troll simulation object
 #' @param ... other TROLL simulations
+#' @param layers unused argument
+#' @param bands unused arguments
 #'   
 #' @return TROLL simulation stack
 #' 
 #' @examples
+#' NA
 #' 
 #' @name stack.TROLLsim
 #' 

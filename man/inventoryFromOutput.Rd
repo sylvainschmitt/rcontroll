@@ -23,5 +23,6 @@ virtual forest file for the TROLL program (forest.txt)
 Create an inventory from a TROLL model output
 }
 \examples{
+NA
 
 }
