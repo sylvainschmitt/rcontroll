@@ -50,10 +50,11 @@ Available plots:
 \item{abund, abu10, abu30}{abundances (total, above 10 and above 30 cm dbh)}
 \item{ba, ba10}{basal area (total and above 10 cm dbh)}
 \item{Rday, Rnight}{night and day respiration}
+\item{diversity, distdiversity}{species diversity for different order of diversities (final and disturbed, require entropart)}
+\item{rankabund, distrankabund}{species rank-abundance diagram(final and disturbed)}
 \item{height, distheight}{tree height histogram (final and disturbed)}
 \item{dbh, distdbh}{tree dbh histogram (final and disturbed)}
 \item{age, distage}{tree age histogram (final and disturbed)}
-\item{species, distspecies}{tree species histogram (final and disturbed)}
 }
 }
 \examples{

@@ -8,8 +8,11 @@
 * formal testin with test that
 * use of `goodpractice`package
 * integrate all methods to better manipulate TROLLsimstack (e.g. `[[`)
-* plot function for diversity indices with `entropart` package
-* plot function for traits distributions
+
+# RconTroll 0.1.9007
+
+* New possibilities in plotting `what` argument : diversity and rank-abundance (disturbed and final)
+* New possibilities in plotting `what` argument : functional traits density plots (disturbed and final)
 
 # RconTroll 0.1.9006
 

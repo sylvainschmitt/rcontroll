@@ -24,10 +24,14 @@ NULL
 #' \item{abund, abu10, abu30}{abundances (total, above 10 and above 30 cm dbh)}
 #' \item{ba, ba10}{basal area (total and above 10 cm dbh)}
 #' \item{Rday, Rnight}{night and day respiration}
+#' \item{diversity, distdiversity}{species diversity for different order of diversities
+#'  (final and disturbed, require entropart)}
+#' \item{rankabund, distrankabund}{species rank-abundance diagram(final and disturbed)}
 #' \item{height, distheight}{tree height histogram (final and disturbed)}
 #' \item{dbh, distdbh}{tree dbh histogram (final and disturbed)}
 #' \item{age, distage}{tree age histogram (final and disturbed)}
-#' \item{species, distspecies}{tree species histogram (final and disturbed)}
+#' \item{trait, disttrait}{functional trait density distribution, replace trait
+#' by the name of the trait you want to plot (final and disturbed)}
 #' }
 #' 
 #' @examples
@@ -64,7 +68,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
     g <- .get_graph(x, ggplot2, 'Total', what, ylab = ylab, ...)
   }
 
-  #### Abundances, BA, R ####
+  #### Abund, BA, R ####
   if(what %in% c('abund', 'abu10', 'abu30', 'ba', 'ba10', 'Rday', 'Rnight')){
     slot <- switch(what,
                    'abund' = 'abundances', 
@@ -85,8 +89,28 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
     g <- .get_graph(x, ggplot2, 'Total', slot, what, ylab = ylab, ...)
   }
   
-  #### Height, dbh, age, species ####
-  if(what %in% c('height', 'distheight', 'dbh', 'distdbh', 'age', 'distage', 'species', 'distspecies')){
+  #### Species ####
+  if(what %in% c('diversity', 'distdiversity', 'rankabund', 'distrankabund')){
+    slot <- switch(what,
+                   'diversity' = 'final_pattern',
+                   'rankabund' = 'final_pattern',
+                   'distdiversity' = 'disturbance',
+                   'distrankabund' = 'disturbance')
+    xlab <- switch(what,
+                   'diversity' = 'Order of diversity',
+                   'distdiversity' = 'Order of diversity',
+                   'rankabund' = 'Rank',
+                   'distrankabund' = 'Rank')
+    ylab <- switch(what,
+                   'diversity' = 'Diversity',
+                   'distdiversity' = 'Diversity',
+                   'rankabund' = 'log of abundance',
+                   'distrankabund' = 'log of abundance')
+    g <- .get_graph(x, ggplot2, what, slot, xlab = xlab, ylab = ylab, ...)
+  }
+  
+  #### Height, dbh, age ####
+  if(what %in% c('height', 'distheight', 'dbh', 'distdbh', 'age', 'distage')){
     slot <- switch(what,
                    'height' = 'final_pattern',
                    'dbh' = 'final_pattern',
@@ -125,7 +149,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
                    'distspecies' = 'stem number')
     xmin <- switch(what,
                    'dbh' = 0.01,
-                   'distdbh' = 0,
+                   'distdbh' = 0.01,
                    NA)
     ytrans <- switch(what,
                    'height' = 'log10',
@@ -137,6 +161,15 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
                    'species' = 'identity',
                    'distspecies' = 'identity')
     g <- .get_hist(x, ggplot2, col, slot, xlab, ylab, xmin, ytrans, ...)
+  }
+  
+  #### Trait ####
+  if(what %in% c(names(x@layers[[1]]@sp_par))){
+    g <- .get_density(x, ggplot2, what, 'final_pattern', ...)
+  }
+  if(what %in% paste0('dist',names(x@layers[[1]]@sp_par))){
+    col <- unlist(strsplit(what, 'dist'))[2]
+    g <- .get_density(x, ggplot2, col, 'disturbance', ...)
   }
   
   if(plotly)
@@ -160,10 +193,10 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
       stop('No method available to compare TROLLsimstack without ggplot2 yet !')
     if(plotly)
       stop('Plotly not compatible with methods to compare TROLLsimstack !')
-    g <- .get_control(g, y, 'Total', what)
+    g <- .get_graph_control(g, y, 'Total', what)
   }
   
-  #### Abundances, BA, R ####
+  #### Abund, BA, R ####
   if(what %in% c('abund', 'abu10', 'abu30', 'ba', 'ba10', 'Rday', 'Rngiht')){
     slot <- switch(what,
                    'abund' = 'abundances', 
@@ -178,12 +211,33 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
       stop('No method available to compare TROLLsimstack without ggplot2 yet !')
     if(plotly)
       stop('Plotly not compatible with methods to compare TROLLsimstack !')
-    g <- .get_control(g, y, 'Total', slot, what)
+    g <- .get_graph_control(g, y, 'Total', slot, what)
   }
   
-  #### Height, dbh, age, species ####
-  if(what %in% c('height', 'distheight', 'dbh', 'distdbh', 'age', 'distage', 'species', 'distspecies')){
-    stop('Comparisons of two simulations stack histograms is imposible !')
+  #### Species ####
+  if(what %in% c('diversity', 'distdiversity', 'rankabund', 'distrankabund')){
+    slot <- switch(what,
+                   'diversity' = 'final_pattern',
+                   'rankabund' = 'final_pattern',
+                   'distdiversity' = 'disturbance',
+                   'distrankabund' = 'disturbance')
+    g <-  plot(x, what = what, ggplot2 = ggplot2, plotly = plotly, ...)
+    if(!ggplot2)
+      stop('No method available to compare TROLLsimstack without ggplot2 yet !')
+    if(plotly)
+      stop('Plotly not compatible with methods to compare TROLLsimstack !')
+    g <- .get_graph_control(g, y, what, slot)
+  }
+  
+  #### Height, dbh, age ####
+  if(what %in% c('height', 'distheight', 'dbh', 'distdbh', 'age', 'distage')){
+    stop('Comparisons of two simulations stack histograms is impossible !')
+  }
+  
+  #### Trait ####
+  if(what %in% c(names(x@layers[[1]]@sp_par), 
+                 paste0('dist',names(x@layers[[1]]@sp_par)))){
+    stop('Comparisons of two simulations stack density plot is impossible !')
   }
   
   if(ggplot2)
@@ -202,7 +256,9 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
   return(ggplot2)
 }
 
-.basic_data <- function(x, col, slot, list = NULL){
+#### Data ####
+
+.data_basic <- function(x, col, slot, list = NULL){
   if(is.null(list))
     data <- sapply(x@layers, function(y){
       slot(y, slot)[,col]
@@ -212,63 +268,59 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
       slot(y, slot)[[list]][,col]
     })
   data <- data.frame(data)
+  row.names(data) <- seq(1,x@layers[[1]]@par$general$nbiter,1)/x@layers[[1]]@par$general$iter
   return(data)
 }
 
-.basic_graph <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
-  data <- .basic_data(x, 'Total', 'agb')
-  matplot(data, xlab = xlab, ylab = ylab, ...)
-  legend('bottomright', names(data), fill = 1:6)
+.data_species <- function(x, col, slot){
+  Abd_list <- lapply(x@layers, function(y){
+    trees <- row.names(y@sp_par)[slot(y, slot)$sp_lab]
+    Abd <- as.vector(table(trees))
+    names(Abd) <- names(table(trees))
+    return(Abd)
+  })
+  Ps_list <- lapply(Abd_list, function(y){
+    y / sum(y)
+  })
+  if(col %in% c('diversity', 'distdiversity')){
+    if(!requireNamespace("entropart", quietly = TRUE))
+      stop('You need to install entropart package to use plotDiversity methods !')
+    x <- seq(0, 2, 0.1)
+    data <- data.frame(row.names = x,
+                       do.call('cbind',
+                               lapply(Ps_list, function(y){
+                                 CommunityProfile(
+                                   entropart::Diversity, y, x)$y
+                               })
+                       )
+    )
+  }
+  if(col %in% c('rankabund', 'distrankabund')){
+    logAbd_list <- lapply(Abd_list, function(y){
+      log(sort(y, decreasing = T))
+    })   
+    data <- data.frame(do.call('cbind', logAbd_list))
+    row.names(data) <- seq_len(dim(data)[1])
+  }
+  return(data)
 }
 
-.ggplot_table <- function(x, col, slot, list = NULL){
-  data <- .basic_data(x, col, slot, list)
+.data_ggplot <- function(x, col, slot, list = NULL){
+  if(col %in% c('diversity', 'distdiversity', 'rankabund', 'distrankabund')){
+    data <- .data_species(x, col, slot)
+  } else {
+    data <- .data_basic(x, col, slot, list)
+  }
   n <- dim(data)[1]
   data <- data.frame(
-    time = rep(seq(1,x@layers[[1]]@par$general$nbiter,1)/x@layers[[1]]@par$general$iter, length(names(data))),
-    values = unname(unlist(data)),
+    x = as.numeric(rep(row.names(data), length(names(data)))),
+    y = unname(unlist(data)),
     layer = rep(names(data), each = n)
   ) 
   return(data)
 }
 
-.ggplot_graph <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
-  data <- .ggplot_table(x, col, slot, list)
-  g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'time', y = 'values', colour = 'layer')) +
-    ggplot2::geom_point(size=0.5) +
-    ggplot2::geom_line() +
-    ggplot2::xlab(xlab) +
-    ggplot2::ylab(ylab) +
-    ggplot2::theme_bw()
-  return(g)
-}
-
-.get_graph <- function(x, ggplot2 = FALSE, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
-  if(!ggplot2)
-    .basic_graph(x, col, slot, list, xlab , ylab, ...)
-  if(ggplot2)
-    .ggplot_graph(x, col, slot, list, xlab, ylab, ...)
-}
-
-.get_control <- function(g, y, col, slot, list = NULL){
-  data <- .basic_data(y, col, slot, list)
-  time <- seq(1,y@layers[[1]]@par$general$nbiter,1)/y@layers[[1]]@par$general$iter
-  data <- cbind(time, data)
-  data$control <- 1
-  data <- cbind(g$data, data)
-  c <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'time', y = 'values', 
-                                                 colour = 'layer')) +
-    ggplot2::geom_linerange(ggplot2::aes(ymin = min, ymax = max), 
-                            colour = 'grey') +
-    ggplot2::geom_line() +
-    ggplot2::geom_line(ggplot2::aes(x = time, y = mean), colour = 'black') +
-    ggplot2::xlab(g$labels$x) +
-    ggplot2::ylab(g$labels$y) +
-    ggplot2::theme_bw()
-  return(c)
-}
-
-.basic_data_final_pattern <- function(x, col, slot){
+.data_basic_final_pattern <- function(x, col, slot){
   data <- sapply(x@layers, function(y){
     slot(y, slot)[[col]]
   })
@@ -276,7 +328,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
   return(data)
 }
 
-.basic_data_disturbance <- function(x, col, slot){
+.data_basic_disturbance <- function(x, col, slot){
   data_list <- sapply(x@layers, function(y){
     slot(y, slot)[[col]]
   })
@@ -296,15 +348,11 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
   return(data)
 }
 
-.basic_hist <- function(x, col, slot, xlab = 'Time (year)', ylab, xmin, ytrans, ...){
-  stop('Histogram not available yet without ggplot2 option !')
-}
-
-.ggplot_table_hist <- function(x, col, slot){
+.data_hist_ggplot <- function(x, col, slot){
   if(slot == 'final_pattern')
-    data <- .basic_data_final_pattern(x, col, slot)
+    data <- .data_basic_final_pattern(x, col, slot)
   if(slot == 'disturbance')
-    data <- .basic_data_disturbance(x, col, slot)
+    data <- .data_basic_disturbance(x, col, slot)
   n <- dim(data)[1]
   data <- data.frame(
     values = unname(unlist(data)),
@@ -313,8 +361,88 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
   return(data)
 }
 
-.ggplot_hist <- function(x, col, slot, xlab, ylab, xmin, ytrans, ...){
-  data <- .ggplot_table_hist(x, col, slot)
+.data_trait <- function(x, col, slot){
+  data_list <- lapply(x@layers, function(y){
+    y@sp_par[slot(y,slot)$sp_lab,col]
+  })
+  data <- data.frame(matrix(ncol = length(names(data_list)),
+                            nrow = max(unlist(lapply(data_list, length)))))
+  names(data) <- names(data_list)
+  data <- sapply(names(data), function(name){
+    data[seq_len(length(data_list[[name]])),name] <- data_list[[name]]
+    return(data[,name])
+  })
+  data <- data.frame(data)
+  return(data)
+}
+
+.data_trait_ggplot <- function(x, col, slot){
+  data <- .data_trait(x, col, slot)
+  n <- dim(data)[1]
+  data <- data.frame(
+    y = unname(unlist(data)),
+    layer = rep(names(data), each = n)
+  ) 
+  return(data)
+}
+
+#### Graphs ####
+
+.graph_basic <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+  if(col %in% c('diversity', 'distdiversity', 'rankabund', 'distrankabund')){
+    data <- .data_species(x, col, slot)
+  } else {
+    data <- .data_basic(x, 'Total', slot, list)
+  }
+  matplot(data, xlab = xlab, ylab = ylab, ...)
+  legend('bottomright', names(data), fill = 1:6)
+}
+
+.graph_ggplot <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+  data <- .data_ggplot(x, col, slot, list)
+  g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'x', y = 'y', colour = 'layer')) +
+    ggplot2::geom_point(size=0.5) +
+    ggplot2::geom_line() +
+    ggplot2::xlab(xlab) +
+    ggplot2::ylab(ylab) +
+    ggplot2::theme_bw()
+  return(g)
+}
+
+.get_graph <- function(x, ggplot2 = FALSE, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+  if(!ggplot2)
+    .graph_basic(x, col, slot, list, xlab , ylab, ...)
+  if(ggplot2)
+    .graph_ggplot(x, col, slot, list, xlab, ylab, ...)
+}
+
+.get_graph_control <- function(g, y, col, slot, list = NULL){
+  if(col %in% c('diversity', 'distdiversity', 'rankabund', 'distrankabund')){
+    data <- .data_species(y, col, slot)
+  } else {
+    data <- .data_basic(y, col, slot, list)
+  }
+  data <- cbind(g$data, data)
+  c <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'x', y = 'y', 
+                                                 colour = 'layer')) +
+    ggplot2::geom_linerange(ggplot2::aes(ymin = min, ymax = max), 
+                            colour = 'grey') +
+    ggplot2::geom_line() +
+    ggplot2::geom_line(ggplot2::aes_string(x = 'x', y = 'mean'), colour = 'black') +
+    ggplot2::xlab(g$labels$x) +
+    ggplot2::ylab(g$labels$y) +
+    ggplot2::theme_bw()
+  return(c)
+}
+
+#### Hist ####
+
+.hist_basic <- function(x, col, slot, xlab = 'Time (year)', ylab, xmin, ytrans, ...){
+  stop('Histogram not available yet without ggplot2 option !')
+}
+
+.hist_ggplot <- function(x, col, slot, xlab, ylab, xmin, ytrans, ...){
+  data <- .data_hist_ggplot(x, col, slot)
   g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'values', 
                                                  colour = 'layer')) +
     ggplot2::geom_histogram() +
@@ -328,7 +456,29 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
 
 .get_hist <- function(x, ggplot2 = FALSE, col, slot, xlab, ylab, xmin, ytrans, ...){
   if(!ggplot2)
-    .basic_hist(x, col, slot, xlab , ylab, xmin, ytrans, ...)
+    .hist_basic(x, col, slot, xlab , ylab, xmin, ytrans, ...)
   if(ggplot2)
-    .ggplot_hist(x, col, slot, xlab, ylab, xmin, ytrans, ...)
+    .hist_ggplot(x, col, slot, xlab, ylab, xmin, ytrans, ...)
+}
+
+#### Density ####
+
+.density_basic <- function(x, col, slot, xlab = 'Time (year)', ...){
+  stop('Density plot not available yet without ggplot2 option !')
+}
+
+.density_ggplot <- function(x, col, slot, ...){
+  data <- .data_trait_ggplot(x, col, slot)
+  g <- ggplot2::ggplot(data, ggplot2::aes_string('y', colour = 'layer', fill = 'layer')) +
+    ggplot2::geom_density(alpha = 0.1) +
+    ggplot2::xlab(col) +
+    ggplot2::theme_bw()
+  return(g)
+}
+
+.get_density <- function(x, ggplot2 = FALSE, col, slot, ...){
+  if(!ggplot2)
+    .density_basic(x, col, slot, ...)
+  if(ggplot2)
+    .density_ggplot(x, col, slot, ...)
 }
