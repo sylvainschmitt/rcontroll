@@ -1,7 +1,7 @@
 Package: RconTroll
 Type: Package
 Title: Package for individual-based forest growth simulator TROLL (wip)
-Version: 0.1.9005
+Version: 0.1.9006
 Author: Sylvain SCHMITT && Fabian FISCHER
 Maintainer: Fabian FISCHER <fabian.j.d.fischer@gmx.de>
 URL: https://github.com/fischer-fjd/RconTroll
@@ -30,11 +30,12 @@ Collate:
     'inventoryFromOutput.R'
     'loadOutput.R'
     'loadOutputOld.R'
+    'stack.TROLLsim.R'
+    'loadStack.R'
     'run.R'
     'model.R'
     'plot.TROLLsim.R'
     'print.TROLLsim.R'
-    'stack.TROLLsim.R'
     'summary.TROLLsim.R'
     'zzz.R'
 VignetteBuilder: knitr

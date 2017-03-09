@@ -140,7 +140,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
   }
   
   if(plotly)
-    return(ggplotly(g))
+    return(plotly::ggplotly(g))
   if(ggplot2)
     return(g)
 })
@@ -228,18 +228,18 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
     time = rep(seq(1,x@layers[[1]]@par$general$nbiter,1)/x@layers[[1]]@par$general$iter, length(names(data))),
     values = unname(unlist(data)),
     layer = rep(names(data), each = n)
-    ) 
+  ) 
   return(data)
 }
 
 .ggplot_graph <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
   data <- .ggplot_table(x, col, slot, list)
-  g <- ggplot(data, aes(x = time, y = values, colour = layer)) +
-    geom_point(size=0.5) +
-    geom_line() +
-    xlab(xlab) +
-    ylab(ylab) +
-    theme_bw()
+  g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'time', y = 'values', colour = 'layer')) +
+    ggplot2::geom_point(size=0.5) +
+    ggplot2::geom_line() +
+    ggplot2::xlab(xlab) +
+    ggplot2::ylab(ylab) +
+    ggplot2::theme_bw()
   return(g)
 }
 
@@ -256,13 +256,15 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
   data <- cbind(time, data)
   data$control <- 1
   data <- cbind(g$data, data)
-  c <- ggplot(data, aes(x = time, y = values, colour = layer)) +
-    geom_linerange(aes(ymin = min, ymax = max), colour = 'grey') +
-    geom_line() +
-    geom_line(aes(x = time, y = mean), colour = 'black') +
-    xlab(g$labels$x) +
-    ylab(g$labels$y) +
-    theme_bw()
+  c <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'time', y = 'values', 
+                                                 colour = 'layer')) +
+    ggplot2::geom_linerange(ggplot2::aes(ymin = min, ymax = max), 
+                            colour = 'grey') +
+    ggplot2::geom_line() +
+    ggplot2::geom_line(ggplot2::aes(x = time, y = mean), colour = 'black') +
+    ggplot2::xlab(g$labels$x) +
+    ggplot2::ylab(g$labels$y) +
+    ggplot2::theme_bw()
   return(c)
 }
 
@@ -313,13 +315,14 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
 
 .ggplot_hist <- function(x, col, slot, xlab, ylab, xmin, ytrans, ...){
   data <- .ggplot_table_hist(x, col, slot)
-  g <- ggplot(data, aes(x = values, colour = layer)) +
-    geom_histogram() +
-    scale_x_continuous(limits = c(xmin,NA)) +
-    scale_y_continuous(trans = ytrans) +
-    xlab(xlab) +
-    ylab(ylab) +
-    theme_bw()
+  g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'values', 
+                                                 colour = 'layer')) +
+    ggplot2::geom_histogram() +
+    ggplot2::scale_x_continuous(limits = c(xmin,NA)) +
+    ggplot2::scale_y_continuous(trans = ytrans) +
+    ggplot2::xlab(xlab) +
+    ggplot2::ylab(ylab) +
+    ggplot2::theme_bw()
   return(g)
 }
 

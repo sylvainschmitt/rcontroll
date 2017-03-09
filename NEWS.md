@@ -11,6 +11,12 @@
 * plot function for diversity indices with `entropart` package
 * plot function for traits distributions
 
+# RconTroll 0.1.9006
+
+* `loadStack` function
+* Correct `plotly` and `ggplot2` namespaces issues
+* insert wip badge in `README` ![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg)
+
 # RconTroll 0.1.9005
 
 * New possibilities in plotting `what` argument (agb, gpp, litterfall, all abund, all ba, all R, all final_pattern, all disturbance)
