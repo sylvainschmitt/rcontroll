@@ -20,6 +20,7 @@ NULL
 #'@slot npp df. npp data frame
 #'@slot par df. par data frame
 #'@slot paramspace list. model space parameters
+#'@slot paramsylviculture list. model sylviculture parameters
 #'@slot ppfd0 df. ground level ppfd data frames
 #'@slot R list. respiration data frames
 # @slot site list. site data frames
@@ -46,6 +47,7 @@ setClass('TROLLsim',
            npp = 'data.frame',
            par = 'list',
            paramspace = 'list',
+           paramsylviculture = 'list',
            ppfd0 = 'data.frame',
            R = 'list',
            # site = 'list',
@@ -68,6 +70,7 @@ setClass('TROLLsim',
            npp = data.frame(),
            par = list(),
            paramspace = list(),
+           paramsylviculture = list(),
            ppfd0 = data.frame(),
            R = list(),
            # site = list(),
@@ -92,6 +95,7 @@ TROLLsim <- function(
   npp = data.frame(),
   par = list(),
   paramspace = list(),
+  paramsylviculture = list(),
   ppfd0 = data.frame(),
   R = list(),
   # site = list(),
@@ -114,6 +118,7 @@ TROLLsim <- function(
              npp = npp,
              par = par,
              paramspace = paramspace,
+             paramsylviculture = paramsylviculture,
              ppfd0 = ppfd0,
              R = R,
              # site = site,

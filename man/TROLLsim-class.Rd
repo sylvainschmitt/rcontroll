@@ -40,6 +40,8 @@ This is an S4 class to represent TROLL outputs.
 
 \item{\code{paramspace}}{list. model space parameters}
 
+\item{\code{paramsylviculture}}{list. model sylviculture parameters}
+
 \item{\code{ppfd0}}{df. ground level ppfd data frames}
 
 \item{\code{R}}{list. respiration data frames}

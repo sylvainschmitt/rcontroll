@@ -1,4 +1,4 @@
-#' @include loadOutput.R loadOutputOld.R stack.TROLLsim.R
+#' @include loadOutput.R stack.TROLLsim.R
 NULL
 
 #' load simulation stack
@@ -16,8 +16,7 @@ NULL
 #' @examples
 #' NA
 #' 
-loadStack <- function(path, 
-                      old = FALSE,
+loadStack <- function(path,
                       ignore = NULL){
   
   # Get sim path list
@@ -29,20 +28,13 @@ loadStack <- function(path,
   sim <- sapply(simpath, function(x){
     unlist(strsplit(
       list.files(file.path(path, x), pattern = '_0_agb.txt')
-      , '_'))[1]
+      , '_0_'))[1]
   })
-  
-  # Get opening function
-  if(!old)
-    FUN = loadOutput
-  if(old){
-    warning('Deprecated option for backward compatibilty with the old disturbance module')
-    FUN = loadOutputOld
-  }
   
   # Opening stack
   stack <- mapply(function(x,y){
-    FUN(name = x, path = file.path(path, y))
+    cat(y, '\n')
+    loadOutput(name = x, path = file.path(path, y))
   }, x = sim, y = simpath, SIMPLIFY = FALSE)
   stack <- stack(stack)
   

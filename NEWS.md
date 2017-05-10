@@ -9,6 +9,9 @@
 * use of `goodpractice`package
 * integrate all methods to better manipulate TROLLsimstack (e.g. `[[`)
 
+# RconTroll 0.1.9008
+* `loadStack` and `loadOutput` recode
+
 # RconTroll 0.1.9007
 
 * New possibilities in plotting `what` argument : diversity and rank-abundance (disturbed and final)
