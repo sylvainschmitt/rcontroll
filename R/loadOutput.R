@@ -37,9 +37,9 @@ loadOutput <- function(name = getOption("RconTroll.name"),
   names(abundances$abund) <- c(rownames(sp_par), "Total")
   names(abundances$abu10) <- c(rownames(sp_par), "Total")
   names(abundances$abu30) <- c(rownames(sp_par), "Total")
-  abundances$relabund <- x@abundances$abund[,-ncol(x@abundances$abund)]*100/x@abundances$abund$Total
-  abundances$relabu10 <- x@abundances$abu10[,-ncol(x@abundances$abu10)]*100/x@abundances$abu10$Total
-  abundances$relabu30 <- x@abundances$abu30[,-ncol(x@abundances$abu30)]*100/x@abundances$abu30$Total
+  abundances$relabund <- abundances$abund[,-ncol(abundances$abund)]*100/abundances$abund$Total
+  abundances$relabu10 <- abundances$abu10[,-ncol(abundances$abu10)]*100/abundances$abu10$Total
+  abundances$relabu30 <- abundances$abu30[,-ncol(abundances$abu30)]*100/abundances$abu30$Total
   
   #### AGB ####
   agb <- read.table(file.path(path, paste0(name, '_0_agb.txt')))
@@ -65,7 +65,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
     deathrate = read.table(file.path(path, paste0(name, '_0_deathrate.txt')))
   )
   names(death$death) <- c('dead.ha', 'dead10.ha')
-  if(!inherits(disturbance, 'try-error'))
+  if(!inherits(death$death1, 'try-error'))
     names(death$death1) <- c('Type', 'sp_lab', 'dbh', 'age', 'height')
   names(death$death2) <- c('Type', 'sp_lab', 'dbh', 'age', 'height')
   names(death$death3) <- c('Type', 'sp_lab', 'dbh', 'age', 'height')
@@ -230,7 +230,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
     abundances = abundances,
     agb = agb,
     ba = ba,
-    dbh = dhb,
+    dbh = dbh,
     death = death,
     disturbance = disturbance,
     final_pattern = final_pattern,
