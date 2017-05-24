@@ -9,6 +9,10 @@
 * use of `goodpractice`package
 * integrate all methods to better manipulate TROLLsimstack (e.g. `[[`)
 
+# RconTroll 0.1.9009
+* Issue [#6](https://github.com/fischer-fjd/RconTroll/issues/6) about species assignment in loadOutput
+* Issue [#8](https://github.com/fischer-fjd/RconTroll/issues/6) about full_final.txt integration
+
 # RconTroll 0.1.9008
 * `loadStack` and `loadOutput` recode
 
@@ -21,8 +25,7 @@
 
 * `loadStack` function
 * Correct `plotly` and `ggplot2` namespaces issues
-* insert wip badge in `README` ![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg)
-
+* insert wip badge in `README`
 # RconTroll 0.1.9005
 
 * New possibilities in plotting `what` argument (agb, gpp, litterfall, all abund, all ba, all R, all final_pattern, all disturbance)

@@ -14,6 +14,7 @@ NULL
 #'@slot death list. death data frames
 #'@slot disturbance df. tree killed in disturbance data frame
 #'@slot final_pattern df. final pattern data frame
+#'@slot full_final df. full final pattern data frame (save TROLL sim)
 #'@slot gpp df. gpp data frame
 #'@slot info list. model info
 #'@slot litterfall df. litterfall data frame
@@ -35,14 +36,13 @@ setClass('TROLLsim',
            abundances = 'list',
            agb = 'data.frame',
            ba = 'list',
-           # cica = 'data.frame', To massive
            dbh = 'data.frame',
            death = 'list',
            disturbance = 'data.frame',
            final_pattern = 'SpatialPixelsDataFrame',
+           full_final = 'data.frame',
            gpp = 'data.frame',
            info = 'list',
-           # leafdens = 'list', To massive
            litterfall = 'data.frame',
            npp = 'data.frame',
            par = 'list',
@@ -50,7 +50,6 @@ setClass('TROLLsim',
            paramsylviculture = 'list',
            ppfd0 = 'data.frame',
            R = 'list',
-           # site = 'list',
            sp_par = 'data.frame',
            vertd = 'data.frame'
          ),
@@ -64,6 +63,7 @@ setClass('TROLLsim',
            death = list(),
            disturbance = data.frame(),
            final_pattern = new('SpatialPixelsDataFrame'),
+           full_final = data.frame(),
            gpp = data.frame(),
            info = list(),
            litterfall = data.frame(),
@@ -73,7 +73,6 @@ setClass('TROLLsim',
            paramsylviculture = list(),
            ppfd0 = data.frame(),
            R = list(),
-           # site = list(),
            sp_par = data.frame(),
            vertd =  data.frame()
          )
@@ -89,6 +88,7 @@ TROLLsim <- function(
   death = list(),
   disturbance = data.frame(),
   final_pattern = new('SpatialPixelsDataFrame'),
+  full_final = data.frame(),
   gpp = data.frame(),
   info = list(),
   litterfall = data.frame(),
@@ -98,7 +98,6 @@ TROLLsim <- function(
   paramsylviculture = list(),
   ppfd0 = data.frame(),
   R = list(),
-  # site = list(),
   sp_par = data.frame(),
   vertd = data.frame()
 ){
@@ -112,6 +111,7 @@ TROLLsim <- function(
              death = death,
              disturbance = disturbance,
              final_pattern = final_pattern,
+             full_final = full_final,
              gpp = gpp,
              info = info,
              litterfall = litterfall,
@@ -121,7 +121,6 @@ TROLLsim <- function(
              paramsylviculture = paramsylviculture,
              ppfd0 = ppfd0,
              R = R,
-             # site = site,
              sp_par = sp_par,
              vertd = vertd
   )

@@ -77,8 +77,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
   if(inherits(disturbance, 'try-error')){
     warning('No disturbance data available.')
     disturbance <- data.frame()
-  }
-  if(length(names(disturbance)) > 0){
+  } else {
     names(disturbance) <- c('type', 'col', 'row', 'age', 'dbh', 'height', 'crown_radius', 'crown_depth', 'sp_lab')
     disturbance$species <- row.names(sp_par)[disturbance$sp_lab]
   }
@@ -88,6 +87,19 @@ loadOutput <- function(name = getOption("RconTroll.name"),
   names(final_pattern) <- c("x","y","age","dbh","height","crown_radius","crown_depth","sp_lab")
   coordinates(final_pattern) <- c('x', 'y')
   gridded(final_pattern) <- TRUE
+  
+  #### Full final ####
+  full_final <- suppressWarnings(
+    try(read.table(file.path(path, paste0(name, '_0_fullfinal.txt'))), 
+        silent = TRUE))
+  if(inherits(disturbance, 'try-error')){
+    warning('No full final data available.')
+    full_final <- data.frame()
+  } else {
+    names(full_final) <- c('col', 'row', 'dbh', 'sp_lab', 'NPPneg', 'dbhthresh', 'hmax', 'height', 'crownDepth', 
+                           'crownRadius', 'ddbh', 'age', 'youngLA', 'matureLA', 'oldLA', 'leafarea', 'dens', 
+                           'litter', 'hurt')
+  }
   
   #### GPP ####
   gpp <- read.table(file.path(path, paste0(name, '_0_gpp.txt')), row.names = 1)
@@ -222,6 +234,8 @@ loadOutput <- function(name = getOption("RconTroll.name"),
   vertd <- try(read.table(file.path(path, paste0(name, '_0_vertd.txt'))))
   if(!inherits(vertd, 'try-error'))
     names(vertd) <- c('height', 'vertd')
+  else 
+    vertd <- data.frame()
 
   #### Output ####
   x <- TROLLsim(
@@ -234,6 +248,7 @@ loadOutput <- function(name = getOption("RconTroll.name"),
     death = death,
     disturbance = disturbance,
     final_pattern = final_pattern,
+    full_final = full_final,
     gpp = gpp,
     info = info,
     litterfall = litterfall,
