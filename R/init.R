@@ -14,8 +14,6 @@
 #' @param nbout int. number of outputs
 #' @param numesp int. number of species
 #' @param p num. light incidence parameter (diff through turbid medium)
-#' @param disturb_iter num. iteration step where the disturbation occure
-#' @param disturb_intensity num. intensity of disturbance in percent of BA
 #' @param daylight num. normalized daily light course (from 7am to 7 pm, with a half-hour time step)
 #' @param dayT num. normalized daily VPD course (from 7am to 7 pm, with a half-hour time step)
 #' @param dayVPD num. normalized daily T course (from 7am to 7 pm, with a half-hour time step)
@@ -73,8 +71,6 @@ init <- function(
   nbout = 4,
   numesp = 163,
   p = 0.05,
-  disturb_iter = 4,
-  disturb_intensity = 0.4,
   daylight = c(0.030,	0.108, 0.208,	0.304,	0.473,	0.617,	0.723,	0.823,	0.925,
                0.965,	0.995,	0.988,	1.000,	0.942,	0.854,	0.766,	0.646,	0.493,
                0.360,	0.277,	0.183,	0.102,	0.058,	0.022),
@@ -161,8 +157,6 @@ init <- function(
     paste(nbout,	'/* nbout # Number of outputs */ ', sep = '\t'),
     paste(numesp,	'/* numesp # Number of species */', sep = '\t'),
     paste(p,	'/* p # light incidence param (diff through turbid medium) */', sep = '\t'),
-    paste(disturb_iter,	'/* disturb_iter # iteration step where the disturbation occure */', sep = '\t'),
-    paste(disturb_intensity,	'/* disturb_intensity # intensity of disturbance in percent of BA */', sep = '\t'),
     do.call(paste, as.list(c(format(daylight, nsmall = 3), '  /* normalized daily light course (from 7am to 7pm, with a half-hour time-step */', sep = '\t'))),
     do.call(paste, as.list(c(format(dayT, nsmall = 3), '  /* normalized daily VPD course (from 7am to 7pm, with a half-hour time-step */', sep = '\t'))),
     do.call(paste, as.list(c(format(dayVPD, nsmall = 3), '  /* normalized daily T course (from 7am to 7pm, with a half-hour time-step */', sep = '\t'))),

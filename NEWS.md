@@ -9,6 +9,9 @@
 * use of `goodpractice`package
 * integrate all methods to better manipulate TROLLsimstack (e.g. `[[`)
 
+# RconTroll 0.1.9010
+* TROLL workflow vignette
+
 # RconTroll 0.1.9009
 * Issue [#6](https://github.com/fischer-fjd/RconTroll/issues/6) about species assignment in loadOutput
 * Issue [#8](https://github.com/fischer-fjd/RconTroll/issues/6) about full_final.txt integration
