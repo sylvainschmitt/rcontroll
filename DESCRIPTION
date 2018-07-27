@@ -1,8 +1,8 @@
-Package: RconTroll
+Package: RconTROLL
 Type: Package
 Title: Package for individual-based forest growth simulator TROLL (wip)
 Version: 0.1.9010
-Author: Sylvain SCHMITT && Fabian FISCHER
+Author: Sylvain SCHMITT and Fabian FISCHER
 Maintainer: Fabian FISCHER <fabian.j.d.fischer@gmx.de>
 URL: https://github.com/fischer-fjd/RconTroll
 BugReports: https://github.com/fischer-fjd/RconTroll/issues
@@ -13,19 +13,19 @@ Imports:
     methods,
     sp,
     maptools
-Suggests: 
+Suggests:
     knitr,
     rmarkdown,
     ggplot2,
     plotly,
     entropart,
-    BiocStyle
+    testthat
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
+    'RconTROLL.R'
     'TROLLsim.R'
     'TROLLsimstack.R'
     'aggregate.TROLLsimstack.R'
-    'build.R'
     'compareSim.R'
     'init.R'
     'inventoryFromData.R'
@@ -33,10 +33,9 @@ Collate:
     'loadOutput.R'
     'stack.TROLLsim.R'
     'loadStack.R'
-    'run.R'
-    'model.R'
     'plot.TROLLsim.R'
     'print.TROLLsim.R'
+    'run.R'
     'summary.TROLLsim.R'
     'zzz.R'
 VignetteBuilder: knitr

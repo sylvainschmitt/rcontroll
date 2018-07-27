@@ -1,24 +1,14 @@
 ---
 title: "TROLL simulations workflow"
-author:
-  - name: Sylvain Schmitt
-    affiliation: 
-    - UMR Biodiversité Gènes et Communautés, Université de Bordeaux
-    - UMR Écologie des Forêts de Guyane, Kourou
-    email: sylvain.schmitt@agroparistech.fr
-  - name: Nino Page
-    affiliation: UMR Écologie des Forêts de Guyane, Kourou
+author: "Sylvain Schmitt and Nino Page"
 date: '`r Sys.Date()`'
-package: RconTroll
-abstract: >
-  Instructions and example of a workflow to run simulations with both TROLL and RconTroll.
-output:
-  BiocStyle::html_document: 
-    toc: true
-    toc_float: yes
-csl: /home/sylvain/Documents/Bibliography/csl/mee.csl
-bibliography: /home/sylvain/Documents/Bibliography/library.bib
-link-citations: yes
+output: rmarkdown::html_vignette
+  # toc: true
+  # toc_float: yes
+vignette: >
+  %\VignetteIndexEntry{TROLL simulations workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -48,7 +38,7 @@ rm(list=ls()) ; invisible(gc())
 # install.packages("devtools")
 # devtools::install_github("sylvainschmitt/RConTroll")
 # devtools::install_github('hadley/ggplot2')
-library(RconTroll)
+library(RconTROLL)
 library(ggplot2)
 library(plotly)
 library(entropart)
@@ -66,19 +56,11 @@ cd ~/Documents/ECOFOG/TROLL/inst/tools
 g++ -Ofast -o troll main_2.3.1.cpp
 ```
 
-Within R:
-```{r}
-build(src = file.path(path, "main_2.3.1.cpp"), # C++ code
-      app = "troll", # name of the app
-      path = path, # path to compile
-      optimisation = "-Ofast") # optimisation
-```
-
 # Prepare modelling
 
 To do the modelling we need to prepare parameters inside the initialization file. You can either modify an already existing initialization file or use the `init` function from `RconTroll`. The `init` function may be used with a single list of species and their traits, but many other variables (environment, simulation settings, etc) can be modified if needed. Beware, the version of `RconTroll` should correspond to the version of `Troll`to correctly build the initialization file.
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, eval=F}
 init(path = path,
      species = read.table(file.path(path, "species.txt"), 
                           header = TRUE, dec = ".", sep = ""))
@@ -91,7 +73,7 @@ init(path = path,
 First we need to create the new directories to store the simulation outputs. We can do it either inside the shell or inside R.
 
 Within shell:
-```{bash}
+```{bash, eval=F}
 cd ~/Documents/ECOFOG/TROLL/inst/tools
 mkdir test_single_run
 ```

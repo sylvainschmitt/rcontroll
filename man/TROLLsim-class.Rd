@@ -28,6 +28,8 @@ This is an S4 class to represent TROLL outputs.
 
 \item{\code{final_pattern}}{df. final pattern data frame}
 
+\item{\code{full_final}}{df. full final pattern data frame (save TROLL sim)}
+
 \item{\code{gpp}}{df. gpp data frame}
 
 \item{\code{info}}{list. model info}

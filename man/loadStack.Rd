@@ -4,13 +4,10 @@
 \alias{loadStack}
 \title{load simulation stack}
 \usage{
-loadStack(path, old = FALSE, ignore = NULL)
+loadStack(path, ignore = NULL)
 }
 \arguments{
 \item{path}{char. path containing all models folders}
-
-\item{old}{logical. DEPRECATED, use loadOutputOld for backward compatibility
-with all disturbance module}
 
 \item{ignore}{char. names of folder or files to ignore in path that are not
 model folders}

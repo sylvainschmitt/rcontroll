@@ -4,8 +4,6 @@ NULL
 #' load simulation stack
 #' 
 #' @param path char. path containing all models folders
-#' @param old logical. DEPRECATED, use loadOutputOld for backward compatibility
-#'   with all disturbance module
 #' @param ignore char. names of folder or files to ignore in path that are not
 #'   model folders
 #'   

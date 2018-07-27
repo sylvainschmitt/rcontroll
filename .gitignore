@@ -4,5 +4,6 @@
 .Ruserdata
 .DS_Store
 *.html
+*.pdf
 *_cache
 *_files

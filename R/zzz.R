@@ -2,34 +2,36 @@
 #' 
 #' RconTROLL package global options
 #'  
-#' @param path char. working directory path
-#' @param src char. path to the TROLL C++ main code (default: package tools folder)
-#' @param app char. name of the TROLL executable (default: TROLL.out)
-#' @param init char. name of the input file (default: input.txt)
-#' @param forest char. name of the virtual forest input file (default: forest.txt)
+#' @param name char. name of simulations
+#' @param src char. path to the TROLL C++ main code (default: package extdata folder)
+#' @param app char. path to the TROLL executable (default: package extdata folder)
+#' @param init char. path to the input file template (default: package extdata folder)
 #' @param species char. path to the species input data (default: package extdata folder)
-#' @param missing char. name of missing species file (default: missing.txt)
-#' @param  output char. name of the output folder (default: OUTPUT)
+#' @param species char. path to the species input data (default: package extdata folder)
+#' @param forest char. name of the forest inventory input file (default: forest.txt)
 #'   
-#' @name option.RconTroll
+#' @name option.RconTROLL
 NULL
 
 .onLoad <- function(libname, pkgname) {
   op <- options()
-  op.RconTroll <- list(
-    RconTroll.name = "TROLL_test_forfun",
-    RconTroll.path = "~/Desktop/Development_Troll/Troll_XCode/TROLL/OUTPUT/",
-    RconTroll.src = system.file("tools", "main.cpp",  
-                            package = 'RconTroll'),
-    RconTroll.app = "RconTroll.out",
-    RconTroll.init = "input.txt",
-    RconTroll.forest = "forest.txt",
-    RconTroll.species = system.file("extdata", "species.txt",  
-                                package = 'RconTroll'),
-    RconTroll.missing = "missing.txt"
+  op.RconTROLL <- list(
+    RconTROLL.name = "TROLL_test",
+    RconTROLL.src = system.file("tools", "main_v2.3.2.cpp",  
+                            package = 'RconTROLL'),
+    RconTROLL.app = system.file("extdata", "RconTROLL.exe",  
+                                 package = 'RconTROLL'),
+    RconTROLL.init = system.file("extdata", "init.txt",  
+                                 package = 'RconTROLL'),
+    RconTROLL.species = system.file("extdata", "species.txt",  
+                                package = 'RconTROLL'),
+    RconTROLL.climate = system.file("extdata", "climate.txt",  
+                                    package = 'RconTROLL'),
+    RconTROLL.forest = system.file("extdata", "forest.txt",  
+                                   package = 'RconTROLL')
   )
-  toset <- !(names(op.RconTroll) %in% names(op))
-  if(any(toset)) options(op.RconTroll[toset])
+  toset <- !(names(op.RconTROLL) %in% names(op))
+  if(any(toset)) options(op.RconTROLL[toset])
   
   invisible()
 }

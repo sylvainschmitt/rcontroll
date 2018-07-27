@@ -3,3 +3,5 @@
 .travis.yml
 README.Rmd
 cran-comment.md
+dev
+^appveyor\.yml$
