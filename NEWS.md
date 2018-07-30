@@ -11,6 +11,9 @@
 * rm build and model functions
 * vignette bug fix
 
+# RconTROLL 0.1.9011
+* developers guidelines #10 & README
+
 # RconTROLL 0.1.9010
 * TROLL workflow vignette
 
