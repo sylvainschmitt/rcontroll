@@ -9,17 +9,13 @@
 \alias{plot,TROLLsimstack,TROLLsimstack-method}
 \title{Plot TROLL simulations stack}
 \usage{
-\S4method{plot}{TROLLsim,missing}(x, y, what, ggplot2 = FALSE,
-  plotly = FALSE, ...)
+\S4method{plot}{TROLLsim,missing}(x, y, what, ...)
 
-\S4method{plot}{TROLLsim,TROLLsim}(x, y, what, ggplot2 = FALSE,
-  plotly = FALSE, ...)
+\S4method{plot}{TROLLsim,TROLLsim}(x, y, what, ...)
 
-\S4method{plot}{TROLLsimstack,missing}(x, y, what, ggplot2 = FALSE,
-  plotly = FALSE, ...)
+\S4method{plot}{TROLLsimstack,missing}(x, y, what, ...)
 
-\S4method{plot}{TROLLsimstack,TROLLsimstack}(x, y, what, ggplot2 = FALSE,
-  plotly = FALSE, ...)
+\S4method{plot}{TROLLsimstack,TROLLsimstack}(x, y, what, ...)
 }
 \arguments{
 \item{x}{TROLLsim or TROLLsimstack. Troll simulation stacked or not object to
@@ -29,10 +25,6 @@ plot}
 aggregated simulation stack to compare with}
 
 \item{what}{char. ecosystem output to plot, see details}
-
-\item{ggplot2}{logical. creates ggplot graph}
-
-\item{plotly}{logical. use plotly library for interactive plots with ggplot}
 
 \item{...}{other graphical parameters}
 }

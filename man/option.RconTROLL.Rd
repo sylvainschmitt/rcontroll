@@ -6,9 +6,9 @@
 \arguments{
 \item{name}{char. name of simulations}
 
-\item{src}{char. path to the TROLL C++ main code (default: package extdata folder)}
+\item{src}{char. path to the TROLL C++ main code (default: package tools folder)}
 
-\item{app}{char. path to the TROLL executable (default: package extdata folder)}
+\item{app}{char. path to the TROLL executable (default: package tools folder)}
 
 \item{init}{char. path to the input file template (default: package extdata folder)}
 

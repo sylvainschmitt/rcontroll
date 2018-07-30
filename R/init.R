@@ -54,12 +54,16 @@
 #' @export
 #'
 #' @examples
-#' NA
+#' 
+#' \dontrun{
+#' init(path = system.file("tools", package = 'RconTROLL'), 
+#'      input = "init.txt")
+#' }
 #'
 init <- function(
   # file
-  path = getOption("RconTroll.path"),
-  input = getOption("RconTroll.init"),
+  path,
+  input,
   overwrite = TRUE,
   # general parameters
   nbcol = 400,
@@ -100,7 +104,7 @@ init <- function(
   m1 = 0.035,
   CO2 = 360,
   # species data
-  species = read.table(getOption("RconTroll.species"), 
+  species = read.table(getOption("RconTROLL.species"), 
                        header=TRUE, dec=".", sep=""),
   # climate data
   Tyear = c(24.64982014,	24.60624211,	24.49933474,	24.96279395,	24.88365139,

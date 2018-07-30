@@ -1,6 +1,6 @@
 #' Run TROLL
 #'
-#' Function to run TROLL code
+#' Function to run TROLL application
 #'
 #' @param name char. name of the model
 #' @param path char. working directory
@@ -14,10 +14,18 @@
 #' @export
 #'
 #' @examples
-#' NA
 #'
-run <- function(name = getOption("RconTroll.name"),
-                path = getOption("RconTroll.path"),
+#' \dontrun{
+#' getTROLL()
+#' init(path = system.file("tools", package = 'RconTROLL'),
+#'      input = "init.txt")
+#' run(path = system.file("tools", package = 'RconTROLL'),
+#'     name = "test", app = getOption("RconTroll.app"),
+#'     input = system.file("tools", "init.txt", package = 'RconTROLL'))
+#' }
+#' 
+run <- function(path,
+                name = getOption("RconTROLL.name"),
                 app = getOption("RconTroll.app"),
                 input = getOption("RconTroll.init"),
                 overwrite = TRUE,
@@ -33,13 +41,10 @@ run <- function(name = getOption("RconTroll.name"),
   }
   dir.create(path_o)
 
-  app_c <- paste0('./', app)
-  input_c <- paste0("'", input, "'")
-  output_c <- file.path('./', name, name)
-  command <- paste0('cd ', path, ' ; ',
-                    app_c,
-                    ' -i', input_c, 
-                    ' -o', output_c)
+  output <- file.path(path, name, name)
+  command <- paste0(app,
+                    ' -i', input, 
+                    ' -o', output)
   if(verbose)
     cat(command, '\n')
   system(command)

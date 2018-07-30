@@ -1,1 +1,6 @@
-To be filled
+****	LMA	Nmass	Pmass	wsg	dmax	hmax	ah	seedvolume	Freg
+Abarema_jupunba	84.47	0.0225	8.3e-4	0.552	0.23	25.9	0.346	4.751658889	0.2
+Ambelania_acida	110.38	0.0207	6.3e-4	0.65	0.73	51.76	0.142	1.4525	0.2
+Amphirrhox_longifolia	98.67	0.0128	7.4e-4	0.849	0.62	51.76	0.525	0.25132741199999997	0.2
+Anacardium_spruceanum	86.58	0.019	3.7e-4	0.535	0.29	63.04	0.33	2.010619298	0.2
+Aspidosperma_cruentum	95.92	0.0177	0.00138	0.746	0.48	46.52	0.466	0.640884901	0.2

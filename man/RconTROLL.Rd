@@ -12,6 +12,8 @@ forest growth model TROLL.
 \section{Modelling main  functions}{
  \describe{
   \item{\code{\link{init}}}{Create the parameter file for the TROLL program}
+  \item{\code{\link{getTROLL}}}{Locally copy TROLL C++ code into your package
+  installation and eventually complie it into an executable.}
   \item{\code{\link{run}}}{Launch a simulation}
   \item{\code{\link{loadOutput}}}{Load TROLL output}
   \item{\code{\link{loadStack}}}{Load simulation stack}
@@ -34,11 +36,12 @@ forest growth model TROLL.
 \section{Model classes}{
  \describe{ \item{\code{\linkS4class{TROLLsim}}}{S4
   class with TROLL outptus for a single simulation.}
-  \item{\code{\linkS4class{TROLLsimstack}}}{S4 class with TROLL outptus for
-  a stack of simulations.} }
+  \item{\code{\linkS4class{TROLLsimstack}}}{S4 class with TROLL outptus for a
+  stack of simulations.} }
 }
 
 \section{Modelling additional  functions}{
- \describe{\item{ToDo}{work in progress}}
+ \describe{\item{ToDo}{work in
+  progress}}
 }
 

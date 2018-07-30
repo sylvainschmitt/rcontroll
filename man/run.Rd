@@ -4,14 +4,14 @@
 \alias{run}
 \title{Run TROLL}
 \usage{
-run(name = getOption("RconTroll.name"), path = getOption("RconTroll.path"),
+run(path, name = getOption("RconTROLL.name"),
   app = getOption("RconTroll.app"), input = getOption("RconTroll.init"),
   overwrite = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{name}{char. name of the model}
-
 \item{path}{char. working directory}
+
+\item{name}{char. name of the model}
 
 \item{app}{char. path to troll app (e.g. TROLL.out)}
 
@@ -25,9 +25,17 @@ run(name = getOption("RconTroll.name"), path = getOption("RconTroll.path"),
 model output files in the path folder
 }
 \description{
-Function to run TROLL code
+Function to run TROLL application
 }
 \examples{
-NA
+
+\dontrun{
+getTROLL()
+init(path = system.file("tools", package = 'RconTROLL'),
+     input = "init.txt")
+run(path = system.file("tools", package = 'RconTROLL'),
+    name = "test", app = getOption("RconTroll.app"),
+    input = system.file("tools", "init.txt", package = 'RconTROLL'))
+}
 
 }

@@ -12,7 +12,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, cache = T)
+knitr::opts_chunk$set(echo = T, cache = T, eval=F)
 ```
 
 # Getting started
@@ -161,11 +161,11 @@ Every output (except "100yearsofsolitude") can be plotted with the package's imp
 For example, let's look at the aboveground biomass of our simulations.
 
 ```{r message=FALSE, warning=FALSE, fig.cap="Aboveground biomass along time in the single simulation test. The graphic is dynamic."}
-plot(single_test, what = "agb", ggplot2 = T, plotly = T)
+plot(single_test, what = "agb")
 ```
 
 ```{r, fig.cap="Aboveground biomass along time in the multiple simulations test."}
-plot(multiple_test, what = "agb", ggplot2 = T)
+plot(multiple_test, what = "agb")
 ```
 
 Finally, you can use the `summaryPlot` function to have an overview of your simulations (the function is not included yet in the current implementation of `RconTroll`).

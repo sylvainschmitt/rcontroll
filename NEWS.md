@@ -11,6 +11,13 @@
 * rm build and model functions
 * vignette bug fix
 
+# RconTROLL 0.1.9012
+* getTROLL.R with examples to automatically add TROLL code and application into RconTROLL package installation
+* run.R with example
+* fake species data for examples #15
+* simplified plot.TROLLsim.R #14 done
+* update options in zzz.R
+
 # RconTROLL 0.1.9011
 * developers guidelines #10 & README
 

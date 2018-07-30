@@ -1,4 +1,5 @@
 #' @import methods
+#' @import ggplot2
 #' @importFrom graphics legend matplot
 #' @importFrom stats sd time
 #' @importFrom utils read.csv read.table write.table
@@ -11,8 +12,6 @@ NULL
 #' @param y Any, TROLLsim or TROLLsimstack. nothing, TROLL simulation or Troll
 #'   aggregated simulation stack to compare with
 #' @param what char. ecosystem output to plot, see details
-#' @param ggplot2 logical. creates ggplot graph
-#' @param plotly logical. use plotly library for interactive plots with ggplot
 #' @param ... other graphical parameters
 #'   
 #' @return Plot the simulations
@@ -43,29 +42,28 @@ NULL
 
 #' @rdname plot.TROLLsim
 #' @export
-setMethod('plot', signature(x="TROLLsim", y="missing"), function(x, y, what, ggplot2 = FALSE, plotly = FALSE, ...) {
-  plot(x = stack(x), what = what, ggplot2 = ggplot2, plotly = plotly, ...)
+setMethod('plot', signature(x="TROLLsim", y="missing"), function(x, y, what, ...) {
+  plot(x = stack(x), what = what, ...)
 })
 
 #' @rdname plot.TROLLsim
 #' @export
-setMethod('plot', signature(x="TROLLsim", y="TROLLsim"), function(x, y, what, ggplot2 = FALSE, plotly = FALSE, ...) {
-  plot(x = stack(x, y), what = what, ggplot2 = ggplot2, plotly = plotly, ...)
+setMethod('plot', signature(x="TROLLsim", y="TROLLsim"), function(x, y, what, ...) {
+  plot(x = stack(x, y), what = what, ...)
 })
 
 #### Simstack ####
 #' @rdname plot.TROLLsim
 #' @export
-setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what, ggplot2 = FALSE, plotly = FALSE, ...) {
-  ggplot2 <- .library_plots(ggplot2, plotly)
-  
+setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what, ...) {
+
   #### AGB, GPP, Litterfall ####
   if(what %in% c('agb', 'gpp', 'litterfall')){
     ylab <- switch(what,
                    'agb' = 'Aboveground biomass (kgC/ha)',
                    'litterfall' = 'Leaf litterfall per month (Mg dry mass/ha/year)',
                    'gpp' = "Total GPPLeaf (MgC/ha)")
-    g <- .get_graph(x, ggplot2, 'Total', what, ylab = ylab, ...)
+    g <- .get_graph(x, 'Total', what, ylab = ylab, ...)
   }
 
   #### Abund, BA, R ####
@@ -86,7 +84,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
                    'ba10' = "Basal area of trees with dbh > 10 cm (stems/ha)", 
                    'Rday' = 'Total day respiration (MgC/ha)', 
                    'Rnight' = 'Total night respiration (MgC/ha)')
-    g <- .get_graph(x, ggplot2, 'Total', slot, what, ylab = ylab, ...)
+    g <- .get_graph(x, 'Total', slot, what, ylab = ylab, ...)
   }
   
   #### Species ####
@@ -106,7 +104,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
                    'distdiversity' = 'Diversity',
                    'rankabund' = 'log of abundance',
                    'distrankabund' = 'log of abundance')
-    g <- .get_graph(x, ggplot2, what, slot, xlab = xlab, ylab = ylab, ...)
+    g <- .get_graph(x, what, slot, xlab = xlab, ylab = ylab, ...)
   }
   
   #### Height, dbh, age ####
@@ -160,39 +158,32 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
                    'distage' = 'log10',
                    'species' = 'identity',
                    'distspecies' = 'identity')
-    g <- .get_hist(x, ggplot2, col, slot, xlab, ylab, xmin, ytrans, ...)
+    g <- .get_hist(x, col, slot, xlab, ylab, xmin, ytrans, ...)
   }
   
   #### Trait ####
   if(what %in% c(names(x@layers[[1]]@sp_par))){
-    g <- .get_density(x, ggplot2, what, 'final_pattern', ...)
+    g <- .get_density(x,what, 'final_pattern', ...)
   }
   if(what %in% paste0('dist',names(x@layers[[1]]@sp_par))){
     col <- unlist(strsplit(what, 'dist'))[2]
-    g <- .get_density(x, ggplot2, col, 'disturbance', ...)
+    g <- .get_density(x, col, 'disturbance', ...)
   }
   
-  if(plotly)
-    return(plotly::ggplotly(g))
-  if(ggplot2)
-    return(g)
+  return(g)
 })
 
 #### Simstack, Simstack ####
 #' @rdname plot.TROLLsim
 #' @export
-setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y, what, ggplot2 = FALSE, plotly = FALSE, ...) {
-  ggplot2 <- .library_plots(ggplot2, plotly)
+setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y, what, ...) {
+
   if(!y@aggregated)
     stop('You need to use aggregated data in second TROLL simulation stack !')
     
   #### AGB, GPP, Litterfall ####
   if(what %in% c('agb', 'gpp', 'litterfall')){
-    g <- plot(x, what = what, ggplot2 = ggplot2, plotly = plotly, ...)
-    if(!ggplot2)
-      stop('No method available to compare TROLLsimstack without ggplot2 yet !')
-    if(plotly)
-      stop('Plotly not compatible with methods to compare TROLLsimstack !')
+    g <- plot(x, what = what, ...)
     g <- .get_graph_control(g, y, 'Total', what)
   }
   
@@ -206,11 +197,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
                    'ba10' = 'ba', 
                    'Rday' = 'R', 
                    'Rngiht' = 'R')
-    g <- plot(x, what = what, ggplot2 = ggplot2, plotly = plotly, ...)
-    if(!ggplot2)
-      stop('No method available to compare TROLLsimstack without ggplot2 yet !')
-    if(plotly)
-      stop('Plotly not compatible with methods to compare TROLLsimstack !')
+    g <- plot(x, what = what, ...)
     g <- .get_graph_control(g, y, 'Total', slot, what)
   }
   
@@ -221,11 +208,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
                    'rankabund' = 'final_pattern',
                    'distdiversity' = 'disturbance',
                    'distrankabund' = 'disturbance')
-    g <-  plot(x, what = what, ggplot2 = ggplot2, plotly = plotly, ...)
-    if(!ggplot2)
-      stop('No method available to compare TROLLsimstack without ggplot2 yet !')
-    if(plotly)
-      stop('Plotly not compatible with methods to compare TROLLsimstack !')
+    g <-  plot(x, what = what, ...)
     g <- .get_graph_control(g, y, what, slot)
   }
   
@@ -240,33 +223,22 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
     stop('Comparisons of two simulations stack density plot is impossible !')
   }
   
-  if(ggplot2)
-    return(g)
+  return(g)
 })
 
 #### Internals ####
-
-.library_plots <- function(ggplot2, plotly){
-  if(plotly)
-    ggplot2 <- TRUE
-  if(plotly && !requireNamespace("plotly", quietly = TRUE))
-    stop('You need to install plotly package to use plotly option !')
-  if(ggplot2 && !requireNamespace("ggplot2", quietly = TRUE))
-    stop('You need to install ggplot2 package to use ggplot2 option !')
-  return(ggplot2)
-}
 
 #### Data ####
 
 .data_basic <- function(x, col, slot, list = NULL){
   if(is.null(list))
-    data <- sapply(x@layers, function(y){
-      slot(y, slot)[,col]
-    })
+  data <- sapply(x@layers, function(y){
+    slot(y, slot)[,col]
+  })
   if(!is.null(list))
-    data <- sapply(x@layers, function(y){
-      slot(y, slot)[[list]][,col]
-    })
+  data <- sapply(x@layers, function(y){
+    slot(y, slot)[[list]][,col]
+  })
   data <- data.frame(data)
   row.names(data) <- seq(1,x@layers[[1]]@par$general$nbiter,1)/x@layers[[1]]@par$general$iter
   return(data)
@@ -388,32 +360,15 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
 
 #### Graphs ####
 
-.graph_basic <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
-  if(col %in% c('diversity', 'distdiversity', 'rankabund', 'distrankabund')){
-    data <- .data_species(x, col, slot)
-  } else {
-    data <- .data_basic(x, 'Total', slot, list)
-  }
-  matplot(data, xlab = xlab, ylab = ylab, ...)
-  legend('bottomright', names(data), fill = 1:6)
-}
-
-.graph_ggplot <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
+.get_graph <- function(x, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
   data <- .data_ggplot(x, col, slot, list)
-  g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'x', y = 'y', colour = 'layer')) +
-    ggplot2::geom_point(size=0.5) +
-    ggplot2::geom_line() +
-    ggplot2::xlab(xlab) +
-    ggplot2::ylab(ylab) +
-    ggplot2::theme_bw()
+  g <- ggplot(data, ggplot2::aes_string(x = 'x', y = 'y', colour = 'layer')) +
+    geom_point(size=0.5) +
+    geom_line() +
+    xlab(xlab) +
+    ylab(ylab) +
+    theme_bw()
   return(g)
-}
-
-.get_graph <- function(x, ggplot2 = FALSE, col, slot, list = NULL, xlab = 'Time (year)', ylab, ...){
-  if(!ggplot2)
-    .graph_basic(x, col, slot, list, xlab , ylab, ...)
-  if(ggplot2)
-    .graph_ggplot(x, col, slot, list, xlab, ylab, ...)
 }
 
 .get_graph_control <- function(g, y, col, slot, list = NULL){
@@ -423,62 +378,38 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
     data <- .data_basic(y, col, slot, list)
   }
   data <- cbind(g$data, data)
-  c <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'x', y = 'y', 
+  c <- ggplot(data, ggplot2::aes_string(x = 'x', y = 'y', 
                                                  colour = 'layer')) +
-    ggplot2::geom_linerange(ggplot2::aes(ymin = min, ymax = max), 
+    geom_linerange(ggplot2::aes(ymin = min, ymax = max), 
                             colour = 'grey') +
-    ggplot2::geom_line() +
-    ggplot2::geom_line(ggplot2::aes_string(x = 'x', y = 'mean'), colour = 'black') +
-    ggplot2::xlab(g$labels$x) +
-    ggplot2::ylab(g$labels$y) +
-    ggplot2::theme_bw()
+    geom_line() +
+    geom_line(ggplot2::aes_string(x = 'x', y = 'mean'), colour = 'black') +
+    xlab(g$labels$x) +
+    ylab(g$labels$y) +
+    theme_bw()
   return(c)
 }
 
 #### Hist ####
 
-.hist_basic <- function(x, col, slot, xlab = 'Time (year)', ylab, xmin, ytrans, ...){
-  stop('Histogram not available yet without ggplot2 option !')
-}
-
-.hist_ggplot <- function(x, col, slot, xlab, ylab, xmin, ytrans, ...){
+.get_hist <- function(x, col, slot, xlab, ylab, xmin, ytrans, ...){
   data <- .data_hist_ggplot(x, col, slot)
-  g <- ggplot2::ggplot(data, ggplot2::aes_string(x = 'values', 
+  ggplot(data, ggplot2::aes_string(x = 'values', 
                                                  colour = 'layer')) +
-    ggplot2::geom_histogram() +
-    ggplot2::scale_x_continuous(limits = c(xmin,NA)) +
-    ggplot2::scale_y_continuous(trans = ytrans) +
-    ggplot2::xlab(xlab) +
-    ggplot2::ylab(ylab) +
-    ggplot2::theme_bw()
-  return(g)
-}
-
-.get_hist <- function(x, ggplot2 = FALSE, col, slot, xlab, ylab, xmin, ytrans, ...){
-  if(!ggplot2)
-    .hist_basic(x, col, slot, xlab , ylab, xmin, ytrans, ...)
-  if(ggplot2)
-    .hist_ggplot(x, col, slot, xlab, ylab, xmin, ytrans, ...)
+    geom_histogram() +
+    scale_x_continuous(limits = c(xmin,NA)) +
+    scale_y_continuous(trans = ytrans) +
+    xlab(xlab) +
+    ylab(ylab) +
+    theme_bw()
 }
 
 #### Density ####
 
-.density_basic <- function(x, col, slot, xlab = 'Time (year)', ...){
-  stop('Density plot not available yet without ggplot2 option !')
-}
-
-.density_ggplot <- function(x, col, slot, ...){
+.get_density <- function(x, col, slot, ...){
   data <- .data_trait_ggplot(x, col, slot)
-  g <- ggplot2::ggplot(data, ggplot2::aes_string('y', colour = 'layer', fill = 'layer')) +
-    ggplot2::geom_density(alpha = 0.1) +
-    ggplot2::xlab(col) +
-    ggplot2::theme_bw()
-  return(g)
-}
-
-.get_density <- function(x, ggplot2 = FALSE, col, slot, ...){
-  if(!ggplot2)
-    .density_basic(x, col, slot, ...)
-  if(ggplot2)
-    .density_ggplot(x, col, slot, ...)
+  ggplot(data, ggplot2::aes_string('y', colour = 'layer', fill = 'layer')) +
+    geom_density(alpha = 0.1) +
+    xlab(col) +
+    theme_bw()
 }

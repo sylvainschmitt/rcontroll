@@ -13,6 +13,7 @@ NULL
 #' @export
 #'
 #' @examples
+#' 
 #' NA
 #'
 loadOutput <- function(name = getOption("RconTroll.name"), 

@@ -4,22 +4,21 @@
 \alias{init}
 \title{Parameters initialization}
 \usage{
-init(path = getOption("RconTroll.path"),
-  input = getOption("RconTroll.init"), overwrite = TRUE, nbcol = 400,
-  nbrows = 400, nbiter = 12, iter = 12, NV = 1, NH = 1, nbout = 4,
-  numesp = 163, p = 0.05, daylight = c(0.03, 0.108, 0.208, 0.304, 0.473,
-  0.617, 0.723, 0.823, 0.925, 0.965, 0.995, 0.988, 1, 0.942, 0.854, 0.766,
-  0.646, 0.493, 0.36, 0.277, 0.183, 0.102, 0.058, 0.022), dayT = c(0.012,
-  0.018, 0.042, 0.087, 0.175, 0.304, 0.445, 0.569, 0.672, 0.767, 0.856, 0.915,
-  0.961, 0.986, 1, 0.985, 0.952, 0.908, 0.863, 0.82, 0.767, 0.699, 0.611,
-  0.498), dayVPD = c(0.768, 0.776, 0.795, 0.82, 0.851, 0.884, 0.912, 0.934,
-  0.95, 0.966, 0.98, 0.989, 0.997, 0.999, 1, 0.9996, 0.99, 0.982, 0.974, 0.966,
-  0.957, 0.945, 0.929, 0.906), klight = 0.9, phi = 0.06, g1 = 3.77,
-  vC = 0.1, DBH0 = 0.01, H0 = 1, ra0 = 0.5, ra1 = 10, de0 = 0.3,
-  de1 = 0.12, dens = 0.8, fbranchstem = 0.35, fcanopy = 0.3,
-  seedrain = 5000, nbseeds = 10, mindeathrate = 0.035, m1 = 0.035,
-  CO2 = 360, species = read.table(getOption("RconTroll.species"), header =
-  TRUE, dec = ".", sep = ""), Tyear = c(24.64982014, 24.60624211, 24.49933474,
+init(path, input, overwrite = TRUE, nbcol = 400, nbrows = 400,
+  nbiter = 12, iter = 12, NV = 1, NH = 1, nbout = 4, numesp = 163,
+  p = 0.05, daylight = c(0.03, 0.108, 0.208, 0.304, 0.473, 0.617, 0.723,
+  0.823, 0.925, 0.965, 0.995, 0.988, 1, 0.942, 0.854, 0.766, 0.646, 0.493, 0.36,
+  0.277, 0.183, 0.102, 0.058, 0.022), dayT = c(0.012, 0.018, 0.042, 0.087,
+  0.175, 0.304, 0.445, 0.569, 0.672, 0.767, 0.856, 0.915, 0.961, 0.986, 1,
+  0.985, 0.952, 0.908, 0.863, 0.82, 0.767, 0.699, 0.611, 0.498),
+  dayVPD = c(0.768, 0.776, 0.795, 0.82, 0.851, 0.884, 0.912, 0.934, 0.95,
+  0.966, 0.98, 0.989, 0.997, 0.999, 1, 0.9996, 0.99, 0.982, 0.974, 0.966, 0.957,
+  0.945, 0.929, 0.906), klight = 0.9, phi = 0.06, g1 = 3.77, vC = 0.1,
+  DBH0 = 0.01, H0 = 1, ra0 = 0.5, ra1 = 10, de0 = 0.3, de1 = 0.12,
+  dens = 0.8, fbranchstem = 0.35, fcanopy = 0.3, seedrain = 5000,
+  nbseeds = 10, mindeathrate = 0.035, m1 = 0.035, CO2 = 360,
+  species = read.table(getOption("RconTROLL.species"), header = TRUE, dec =
+  ".", sep = ""), Tyear = c(24.64982014, 24.60624211, 24.49933474,
   24.96279395, 24.88365139, 24.87594184, 24.98313802, 25.68910135, 26.58033805,
   26.98619405, 25.87259696, 25.16530008), maxT = c(29.08402, 28.86072,
   28.51707, 29.56514, 29.0068, 29.83177, 30.19183, 31.34605, 32.93941, 33.14729,
@@ -146,6 +145,10 @@ parameter file for the TROLL program (input.txt)
 Create the parameter file for the TROLL program
 }
 \examples{
-NA
+
+\dontrun{
+init(path = system.file("tools", package = 'RconTROLL'), 
+     input = "init.txt")
+}
 
 }
