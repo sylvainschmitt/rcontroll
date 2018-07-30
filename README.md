@@ -9,4 +9,4 @@
 
 Function and code to manage and use forest model indivdual-based spatially-explicit TROLL.
 
-**NEW:** `RconTROLL` [developer guidelines](https://github.com/sylvainschmitt/RconTroll/developers_guideline.html) are available [on-line](https://github.com/sylvainschmitt/RconTroll/developers_guideline.html)
+**NEW:** `RconTROLL` [developer guidelines](https://sylvainschmitt.github.io/RconTroll/developers_guidelines.html) are available [on-line](https://sylvainschmitt.github.io/RconTroll/developers_guidelines.html)
