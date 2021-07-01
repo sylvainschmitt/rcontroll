@@ -62,12 +62,12 @@ setMethod("stack", signature(x='list'), function(x, bands=NULL) {
   # a simstack of only one TROLLsim object is structured by default
   if(length(x) == 1 || compareSim(x,stopiffalse = FALSE)){
     s@structured <- TRUE
-    s@nbcols <- x[[1]]@par$general$nbcols
-    s@nbrows <- x[[1]]@par$general$nbrows
-    s@nbiter <- x[[1]]@par$general$nbiter
-    s@iter <- x[[1]]@par$general$iter
-    s@NV <- x[[1]]@par$general$NV
-    s@NH <- x[[1]]@par$general$NH
+    # s@nbcols <- x[[1]]@par$general$nbcols
+    # s@nbrows <- x[[1]]@par$general$nbrows
+    # s@nbiter <- x[[1]]@par$general$nbiter
+    # s@iter <- x[[1]]@par$general$iter
+    # s@NV <- x[[1]]@par$general$NV
+    # s@NH <- x[[1]]@par$general$NH
   }
   
   return(s)

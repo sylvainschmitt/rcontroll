@@ -1,34 +1,32 @@
-Package: RconTROLL
+Package: rcontroll
 Type: Package
-Title: Package for individual-based forest growth simulator TROLL (wip)
-Version: 0.1.9012
-Author: Sylvain SCHMITT and Fabian FISCHER
-Maintainer: Fabian FISCHER <fabian.j.d.fischer@gmx.de>
-URL: https://github.com/fischer-fjd/RconTroll
-BugReports: https://github.com/fischer-fjd/RconTroll/issues
+Title: Package for individual-based forest growth simulator TROLL
+Version: 0.1.0.9001
+Author: Sylvain SCHMITT, Guillaume SALZET, Fabian FISCHER
+Maintainer: Sylvain SCHMITT <sylvain.m.schmitt@gmail.com>
+URL: https://github.com/sylvainschmitt/rcontroll
+BugReports: https://github.com/sylvainschmitt/rcontroll/issues
 Description: Function and code to manage and use indivdual-based and spatially-explicit forest growth model TROLL.
 License: GPL-3
 LazyData: TRUE
 Imports:
     methods,
+    readr,
+    sys,
     ggplot2,
     sp,
     maptools
 Suggests:
     knitr,
     rmarkdown,
-    plotly,
-    entropart,
-    testthat
-RoxygenNote: 6.0.1
+    testthat,
+    covr
+RoxygenNote: 7.1.1
 Collate: 
-    'RconTROLL.R'
     'TROLLsim.R'
     'TROLLsimstack.R'
     'aggregate.TROLLsimstack.R'
     'compareSim.R'
-    'getTROLL.R'
-    'init.R'
     'inventoryFromData.R'
     'inventoryFromOutput.R'
     'loadOutput.R'
@@ -36,7 +34,10 @@ Collate:
     'loadStack.R'
     'plot.TROLLsim.R'
     'print.TROLLsim.R'
-    'run.R'
+    'rcontroll.R'
     'summary.TROLLsim.R'
+    'troll.R'
     'zzz.R'
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

@@ -1,4 +1,9 @@
-# RconTROLL 0.1.9011
+# rcontroll 0.1.0.9001
+* relaunch of the package 
+
+# Archived development
+
+## RconTROLL 0.1.9011
 * Issue [#10](https://github.com/fischer-fjd/RconTroll/issues/6) about package structures
 * develompment guidelines (missing social coding with GitHub section)
 * RconTROLL renaming
@@ -11,32 +16,32 @@
 * rm build and model functions
 * vignette bug fix
 
-# RconTROLL 0.1.9012
+## RconTROLL 0.1.9012
 * getTROLL.R with examples to automatically add TROLL code and application into RconTROLL package installation
 * run.R with example
 * fake species data for examples #15
 * simplified plot.TROLLsim.R #14 done
 * update options in zzz.R
 
-# RconTROLL 0.1.9011
+## RconTROLL 0.1.9011
 * developers guidelines #10 & README
 
-# RconTROLL 0.1.9010
+## RconTROLL 0.1.9010
 * TROLL workflow vignette
 
-# RconTROLL 0.1.9009
+## RconTROLL 0.1.9009
 * Issue [#6](https://github.com/fischer-fjd/RconTroll/issues/6) about species assignment in loadOutput
 * Issue [#8](https://github.com/fischer-fjd/RconTroll/issues/6) about full_final.txt integration
 
-# RconTROLL 0.1.9008
+## RconTROLL 0.1.9008
 * `loadStack` and `loadOutput` recode
 
-# RconTROLL 0.1.9007
+## RconTROLL 0.1.9007
 
 * New possibilities in plotting `what` argument : diversity and rank-abundance (disturbed and final)
 * New possibilities in plotting `what` argument : functional traits density plots (disturbed and final)
 
-# RconTROLL 0.1.9006
+## RconTROLL 0.1.9006
 
 * `loadStack` function
 * Correct `plotly` and `ggplot2` namespaces issues
@@ -52,7 +57,7 @@
 * Corrected part of `goodpractice::gp()` recomendations
 * Add `cran-comment.md` to justify R CMD check NOTEs
 
-# RconTROLL 0.1.9004
+## RconTROLL 0.1.9004
 
 * `TROLLsimstack`: rename compressed in aggregated and document all slot
 * `aggregate.TROLLsimstack` method
@@ -61,13 +66,13 @@
 * `plot.TROLLsimstack` for (stack,stack) to compare with a control
 * `plot.TROLLsim` using `plot.TROLLsimstack`
 
-# RconTROLL 0.1.9003
+## RconTROLL 0.1.9003
 
 * renaming objects and methods (e.g. `TROLLoutput` to `TROLLsim`, `virtualizeFromData` to `inventoryFromData`, etc.)
 * definition of `summary` for class TROLLsim
 * new class TROLLsimstack (with methods `print` and `summary`, the latter not yet fully implemented)
 
-# RconTROLL 0.1.9002
+## RconTROLL 0.1.9002
 
 * Disturbance module integration in `TROLLoutput` class, `load_output` function and `plot.TROLLoutput`method
 * `virtualizeFromOutput` function
@@ -75,6 +80,6 @@
 * Travis-CI continuous integration
 * Codecover integration
 
-# RconTROLL 0.1.9001
+## RconTROLL 0.1.9001
 
 * Initialise package and git repository (GitHub)

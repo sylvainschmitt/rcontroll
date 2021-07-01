@@ -4,14 +4,28 @@
 \alias{inventoryFromData}
 \title{Create inventory}
 \usage{
-inventoryFromData(forest = getOption("RconTroll.forest"),
-  path = getOption("RconTroll.path"), overwrite = FALSE,
-  species = read.table(getOption("RconTroll.species"), header = TRUE, dec =
-  ".", sep = "", row.names = 1), missing = getOption("RconTroll.missing"),
-  spcorrect = TRUE, data, plotcol = "n_parcelle", xcol = "Xutm",
-  ycol = "Yutm", censuscol = "campagne", spcol = c("Genre", "espece"),
-  dbhcol = "dbh_c", alivecol = "status", NV = 1, NH = 1, plots = c(1),
-  year = 1984, alive = 1)
+inventoryFromData(
+  forest = getOption("RconTroll.forest"),
+  path = getOption("RconTroll.path"),
+  overwrite = FALSE,
+  species = read.table(getOption("RconTroll.species"), header = TRUE, dec = ".", sep =
+    "", row.names = 1),
+  missing = getOption("RconTroll.missing"),
+  spcorrect = TRUE,
+  data,
+  plotcol = "n_parcelle",
+  xcol = "Xutm",
+  ycol = "Yutm",
+  censuscol = "campagne",
+  spcol = c("Genre", "espece"),
+  dbhcol = "dbh_c",
+  alivecol = "status",
+  NV = 1,
+  NH = 1,
+  plots = c(1),
+  year = 1984,
+  alive = 1
+)
 }
 \arguments{
 \item{forest}{int. path to the file to create}

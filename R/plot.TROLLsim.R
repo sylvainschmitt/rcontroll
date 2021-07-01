@@ -63,7 +63,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="missing"), function(x, y, what
                    'agb' = 'Aboveground biomass (kgC/ha)',
                    'litterfall' = 'Leaf litterfall per month (Mg dry mass/ha/year)',
                    'gpp' = "Total GPPLeaf (MgC/ha)")
-    g <- .get_graph(x, 'Total', what, ylab = ylab, ...)
+    g <- .get_graph(x, 'total', what, ylab = ylab, ...)
   }
 
   #### Abund, BA, R ####
@@ -240,7 +240,7 @@ setMethod('plot', signature(x="TROLLsimstack", y="TROLLsimstack"), function(x, y
     slot(y, slot)[[list]][,col]
   })
   data <- data.frame(data)
-  row.names(data) <- seq(1,x@layers[[1]]@par$general$nbiter,1)/x@layers[[1]]@par$general$iter
+  row.names(data) <- seq(1,x@layers[[1]]@inputs$general$value[5],1)/x@layers[[1]]@inputs$general$value[6]
   return(data)
 }
 

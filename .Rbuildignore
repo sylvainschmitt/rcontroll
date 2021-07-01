@@ -5,3 +5,6 @@ README.Rmd
 cran-comment.md
 dev
 ^appveyor\.yml$
+^data-raw$
+^\.github$
+^codecov\.yml$

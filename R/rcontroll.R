@@ -1,4 +1,4 @@
-#' RconTROLL
+#' rcontroll
 #'
 #' Function and code to manage and use indivdual-based and spatially-explicit
 #' forest growth model TROLL.

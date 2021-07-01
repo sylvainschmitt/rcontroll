@@ -1,10 +1,8 @@
 ---
 title: "TROLL simulations workflow"
-author: "Sylvain Schmitt and Nino Page"
+author: "Sylvain Schmitt"
 date: '`r Sys.Date()`'
 output: rmarkdown::html_vignette
-  # toc: true
-  # toc_float: yes
 vignette: >
   %\VignetteIndexEntry{TROLL simulations workflow}
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,171 +10,220 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, cache = T, eval=F)
+knitr::opts_chunk$set(echo = T, cache = F, eval=T)
 ```
 
 # Getting started
 
-The vignette is split in the 4 steps of the workflow:
-
-1. Build the `TROLL` application from C++ code
-1. Prepare the modelling with `RconTroll`
-1. Run simulations with the bash scripts and the shell
-1. Read and plot outputs inside R with `RconTroll`
-
-# Prerequisites
-
-The following vignette relies on:
-
-* `TROLL` code [version 2.3.1](https://github.com/TROLL-code/TROLL) in C++
-* `g++` to build `TROLL` code
-* The associated R package `RconTroll` available only on [GitHub](https://github.com/sylvainschmitt/RconTroll)
-* The dependencies of `RconTroll` which are `ggplot2`, `plotly`, and `entropart`.
-
-```{r prep, message=FALSE, warning=FALSE}
-rm(list=ls()) ; invisible(gc())
-# install.packages("devtools")
-# devtools::install_github("sylvainschmitt/RConTroll")
-# devtools::install_github('hadley/ggplot2')
-library(RconTROLL)
-library(ggplot2)
-library(plotly)
-library(entropart)
-library(sp)
-path <- "~/Documents/ECOFOG/TROLL/inst/tools"
-```
-
-# Build TROLL
-
-Once all options are set in the [user option](https://github.com/TROLL-code/TROLL/blob/cd263e58a0f4ef5b861fb9f64000ca9c259c49fc/main_v2.3.2.cpp#L89) part of the C++ code of `TROLL`, we compile the code to build the `TROLL` application. You can directly compile the code with the `g++`application inside the shell or with the `build`function from `RconTroll`. Beware, always add the `.exe` extension under windows OS (not mandatory with UNIX).
-
-Within shell:
-```{bash, eval=FALSE}
-cd ~/Documents/ECOFOG/TROLL/inst/tools
-g++ -Ofast -o troll main_2.3.1.cpp
-```
-
-# Prepare modelling
-
-To do the modelling we need to prepare parameters inside the initialization file. You can either modify an already existing initialization file or use the `init` function from `RconTroll`. The `init` function may be used with a single list of species and their traits, but many other variables (environment, simulation settings, etc) can be modified if needed. Beware, the version of `RconTroll` should correspond to the version of `Troll`to correctly build the initialization file.
-
-```{r message=FALSE, warning=FALSE, eval=F}
-init(path = path,
-     species = read.table(file.path(path, "species.txt"), 
-                          header = TRUE, dec = ".", sep = ""))
-```
-
-# Run simulations
-
-## Single run
-
-First we need to create the new directories to store the simulation outputs. We can do it either inside the shell or inside R.
-
-Within shell:
-```{bash, eval=F}
-cd ~/Documents/ECOFOG/TROLL/inst/tools
-mkdir test_single_run
-```
-
-Within R:
-```{r message=FALSE, warning=FALSE}
-dir.create(file.path(path, 'test_single_run'))
-```
-
-Finally we can directly launch the run inside the shell (see multiple runs section if you want to write a bash with R to do it).
-
-```{bash, eval=FALSE}
-cd ~/Documents/ECOFOG/TROLL/inst/tools
-./troll -i'input.txt' -o'./test_single_run/test'
-```
-
-Note : `test` is the name of our simulation, so as every output file from this simulation will be named "test_0_....""
-
-## Multiple runs
-
-Now we are ready to try a multiple run. It's fairly the same except that we suggest to write a script to create a bash. The bash depend depends on the number of simulations we want to do, and the number of CPU cores our cluster/computer has. The number of cores (or parallel simulations) you choose to use should never exceed your machine's number of available cores (often minus one to keep resources for the main instance of R).
+**OUTPUT Reduced**
 
 ```{r}
-# Parameters
-cores <- 3 # available cores
-cores <- parallel::detectCores()-1 # automatic detection
-n <- 6 # number of simulations
-sim <- paste('test', 1:n, sep = "_") # simulation names
+library(rcontroll)
+library(tidyverse)
 
-# Init
-dir.create(file.path(path, 'test_multiple_run')) #Creates a super-directory that will contain the simulations stack.
-invisible(sapply(sim, function(s) dir.create(file.path(path, 'test_multiple_run/', s)))) #Creates sub-directories, each one named after and containing one simulation's outputs.
-
-# Bash
-if('test_multiple_run.sh' %in% list.files(path))
-   unlink(file.path(path, 'test_multiple_run.sh')) #Important ! if a .sh file (a bash commands file) already exists with the same name, we need to erase it in order to avoid confusions.
-bash <- file(file.path(path,
-                       'test_multiple_run.sh'), open = 'a')
-#"open = a" means that we will be writing directly into the file in the following lines.
-cat(' #!/bin/bash  \n\n', file = bash, append = TRUE) #Every .sh should start wy this line. nota : \n significates "go to following line" in the text.
-cat(' echo "multiple run test parrallel model in TROLL" \n\n',
-    file = bash, append = TRUE) #nota : echo "x" is equivalent to print in R, or cout in cpp ; append = TRUE is NEVER to be forgotten. It means that the line is added to the file instead of overwriting the existing content.
-
-for(i in seq_len(length(sim))){
-  command <- paste0('./troll',
-                    ' -i"', "input", '.txt"',
-                    ' -o./', "test_multiple_run",
-                    '/', sim[i],
-                    '/', sim[i], ' &\n')
-  cat(command, file = bash, append = TRUE)
-  if(i %/% (cores/2) == i/(cores/2)){
-    cat('wait\n', file = bash, append = TRUE)
-  } #Puts a 'wait' every time that i is proportional to the number of cores you declared upper, in order to wait for your group of simulations to be finished before launching another.
-}
-cat('wait\n', file = bash, append = TRUE)
-cat(' echo "TROLL all jobs done"  \n\n', file = bash, append = TRUE)
-close(bash)
+data("TROLLv3_input")
+data("TROLLv3_species")
+data("TROLLv3_climatedaytime365")
+data("TROLLv3_daytimevar")
+data("TROLLv3_soil")
+sim <- troll(name = "test",
+      path = "/home/sylvain/Documents/ECOFOG/rcontroll",
+      general = TROLLv3_input,
+      species = TROLLv3_species,
+      climate = TROLLv3_climatedaytime365,
+      daily = TROLLv3_daytimevar,
+      soil = TROLLv3_soil)
 ```
- 
-Then we run the created bash inside the shell.
+**summary method**
 
-```{bash, eval=FALSE}
-cd ~/Documents/ECOFOG/TROLL/inst/tools
-sh test_multiple_run.sh
+```{r}
+summary(sim)
 ```
 
-Note: We wish to include the bash creation R code as a future function inside `RconTroll` package.
+**possible autoplot**
 
-# Load and plot Outputs
-
-## Load
-
-To load a single simulation our multiple simulations outputs, we use the `loadOutput`, resp. `loadStack`, functions from `RconTroll`.
-
-```{r message=FALSE, warning=FALSE}
-single_test <- loadOutput(name = "test",
-           path = file.path(path, "test_single_run/"))
-multiple_test <- loadStack(file.path(path, "test_multiple_run/"))
+```{r}
+sim@agb %>% 
+  mutate(iter = 1:nrow(.)) %>% 
+  reshape2::melt("iter", variable.name = "species", 
+                 value.name = "agb") %>% 
+  mutate(iter = iter/sim@inputs$general$value[6]) %>% 
+  ggplot(aes(iter, agb, group = species,
+             col = (species == "total"))) +
+  geom_line() +
+  scale_color_manual("Total", values = c("grey", "red")) +
+  scale_y_log10() +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  xlab("Time (year)") +
+  ylab("Aboveground biomass (AGB, MgC/ha)")
 ```
 
-## Plot
 
-Every output (except "100yearsofsolitude") can be plotted with the package's implementation of the `plot` method. `plot` method can be used with one simulation, two simulations, one stack, one stack and one simulation, or with two stacks. The argument `what` is what you want to plot. Please see the `RconTroll` help (`?plot.TROLLsim`). You can use R basics graphics, `ggplot2` option for graphics built with ggplot2 engine, and `plotly` option for dynamic html graphics.
 
-For example, let's look at the aboveground biomass of our simulations.
+<!-- The vignette is split in the 4 steps of the workflow: -->
 
-```{r message=FALSE, warning=FALSE, fig.cap="Aboveground biomass along time in the single simulation test. The graphic is dynamic."}
-plot(single_test, what = "agb")
-```
+<!-- 1. Build the `TROLL` application from C++ code -->
+<!-- 1. Prepare the modelling with `RconTroll` -->
+<!-- 1. Run simulations with the bash scripts and the shell -->
+<!-- 1. Read and plot outputs inside R with `RconTroll` -->
 
-```{r, fig.cap="Aboveground biomass along time in the multiple simulations test."}
-plot(multiple_test, what = "agb")
-```
 
-Finally, you can use the `summaryPlot` function to have an overview of your simulations (the function is not included yet in the current implementation of `RconTroll`).
 
-```{r, fig.height=8, fig.width=8, fig.cap="Summary graphics of the multiple simulations test."}
-source("https://raw.githubusercontent.com/EcoFoG/TROLL/sylvain-master-thesis/R/summaryPlot.R")
-summaryPlot(multiple_test)
-```
 
-# Conclusion
+<!-- # Prerequisites -->
 
-This is just an example of a workflow to combine the use of C++, R, and shell to do simulations with `TROLL`. You can modify and extend it. And any further implementation useful for the `TROLL` community can be suggested and added to the development of the `RconTroll` package.
+<!-- The following vignette relies on: -->
 
-*Enjoy your simulations.*
+<!-- * `TROLL` code [version 2.3.1](https://github.com/TROLL-code/TROLL) in C++ -->
+<!-- * `g++` to build `TROLL` code -->
+<!-- * The associated R package `RconTroll` available only on [GitHub](https://github.com/sylvainschmitt/RconTroll) -->
+<!-- * The dependencies of `RconTroll` which are `ggplot2`, `plotly`, and `entropart`. -->
+
+<!-- ```{r prep, message=FALSE, warning=FALSE, eval=F} -->
+<!-- rm(list=ls()) ; invisible(gc()) -->
+<!-- # install.packages("devtools") -->
+<!-- # devtools::install_github("sylvainschmitt/RConTroll") -->
+<!-- # devtools::install_github('hadley/ggplot2') -->
+<!-- library(RconTROLL) -->
+<!-- library(ggplot2) -->
+<!-- library(plotly) -->
+<!-- library(entropart) -->
+<!-- library(sp) -->
+<!-- path <- "~/Documents/ECOFOG/TROLL/inst/tools" -->
+<!-- ``` -->
+
+<!-- # Build TROLL -->
+
+<!-- Once all options are set in the [user option](https://github.com/TROLL-code/TROLL/blob/cd263e58a0f4ef5b861fb9f64000ca9c259c49fc/main_v2.3.2.cpp#L89) part of the C++ code of `TROLL`, we compile the code to build the `TROLL` application. You can directly compile the code with the `g++`application inside the shell or with the `build`function from `RconTroll`. Beware, always add the `.exe` extension under windows OS (not mandatory with UNIX). -->
+
+<!-- Within shell: -->
+<!-- ```{bash, eval=FALSE} -->
+<!-- cd ~/Documents/ECOFOG/TROLL/inst/tools -->
+<!-- g++ -Ofast -o troll main_2.3.1.cpp -->
+<!-- ``` -->
+
+<!-- # Prepare modelling -->
+
+<!-- To do the modelling we need to prepare parameters inside the initialization file. You can either modify an already existing initialization file or use the `init` function from `RconTroll`. The `init` function may be used with a single list of species and their traits, but many other variables (environment, simulation settings, etc) can be modified if needed. Beware, the version of `RconTroll` should correspond to the version of `Troll`to correctly build the initialization file. -->
+
+<!-- ```{r message=FALSE, warning=FALSE, eval=F} -->
+<!-- init(path = path, -->
+<!--      species = read.table(file.path(path, "species.txt"),  -->
+<!--                           header = TRUE, dec = ".", sep = "")) -->
+<!-- ``` -->
+
+<!-- # Run simulations -->
+
+<!-- ## Single run -->
+
+<!-- First we need to create the new directories to store the simulation outputs. We can do it either inside the shell or inside R. -->
+
+<!-- Within shell: -->
+<!-- ```{bash, eval=F} -->
+<!-- cd ~/Documents/ECOFOG/TROLL/inst/tools -->
+<!-- mkdir test_single_run -->
+<!-- ``` -->
+
+<!-- Within R: -->
+<!-- ```{r message=FALSE, warning=FALSE} -->
+<!-- dir.create(file.path(path, 'test_single_run')) -->
+<!-- ``` -->
+
+<!-- Finally we can directly launch the run inside the shell (see multiple runs section if you want to write a bash with R to do it). -->
+
+<!-- ```{bash, eval=FALSE} -->
+<!-- cd ~/Documents/ECOFOG/TROLL/inst/tools -->
+<!-- ./troll -i'input.txt' -o'./test_single_run/test' -->
+<!-- ``` -->
+
+<!-- Note : `test` is the name of our simulation, so as every output file from this simulation will be named "test_0_...."" -->
+
+<!-- ## Multiple runs -->
+
+<!-- Now we are ready to try a multiple run. It's fairly the same except that we suggest to write a script to create a bash. The bash depend depends on the number of simulations we want to do, and the number of CPU cores our cluster/computer has. The number of cores (or parallel simulations) you choose to use should never exceed your machine's number of available cores (often minus one to keep resources for the main instance of R). -->
+
+<!-- ```{r} -->
+<!-- # Parameters -->
+<!-- cores <- 3 # available cores -->
+<!-- cores <- parallel::detectCores()-1 # automatic detection -->
+<!-- n <- 6 # number of simulations -->
+<!-- sim <- paste('test', 1:n, sep = "_") # simulation names -->
+
+<!-- # Init -->
+<!-- dir.create(file.path(path, 'test_multiple_run')) #Creates a super-directory that will contain the simulations stack. -->
+<!-- invisible(sapply(sim, function(s) dir.create(file.path(path, 'test_multiple_run/', s)))) #Creates sub-directories, each one named after and containing one simulation's outputs. -->
+
+<!-- # Bash -->
+<!-- if('test_multiple_run.sh' %in% list.files(path)) -->
+<!--    unlink(file.path(path, 'test_multiple_run.sh')) #Important ! if a .sh file (a bash commands file) already exists with the same name, we need to erase it in order to avoid confusions. -->
+<!-- bash <- file(file.path(path, -->
+<!--                        'test_multiple_run.sh'), open = 'a') -->
+<!-- #"open = a" means that we will be writing directly into the file in the following lines. -->
+<!-- cat(' #!/bin/bash  \n\n', file = bash, append = TRUE) #Every .sh should start wy this line. nota : \n significates "go to following line" in the text. -->
+<!-- cat(' echo "multiple run test parrallel model in TROLL" \n\n', -->
+<!--     file = bash, append = TRUE) #nota : echo "x" is equivalent to print in R, or cout in cpp ; append = TRUE is NEVER to be forgotten. It means that the line is added to the file instead of overwriting the existing content. -->
+
+<!-- for(i in seq_len(length(sim))){ -->
+<!--   command <- paste0('./troll', -->
+<!--                     ' -i"', "input", '.txt"', -->
+<!--                     ' -o./', "test_multiple_run", -->
+<!--                     '/', sim[i], -->
+<!--                     '/', sim[i], ' &\n') -->
+<!--   cat(command, file = bash, append = TRUE) -->
+<!--   if(i %/% (cores/2) == i/(cores/2)){ -->
+<!--     cat('wait\n', file = bash, append = TRUE) -->
+<!--   } #Puts a 'wait' every time that i is proportional to the number of cores you declared upper, in order to wait for your group of simulations to be finished before launching another. -->
+<!-- } -->
+<!-- cat('wait\n', file = bash, append = TRUE) -->
+<!-- cat(' echo "TROLL all jobs done"  \n\n', file = bash, append = TRUE) -->
+<!-- close(bash) -->
+<!-- ``` -->
+
+<!-- Then we run the created bash inside the shell. -->
+
+<!-- ```{bash, eval=FALSE} -->
+<!-- cd ~/Documents/ECOFOG/TROLL/inst/tools -->
+<!-- sh test_multiple_run.sh -->
+<!-- ``` -->
+
+<!-- Note: We wish to include the bash creation R code as a future function inside `RconTroll` package. -->
+
+<!-- # Load and plot Outputs -->
+
+<!-- ## Load -->
+
+<!-- To load a single simulation our multiple simulations outputs, we use the `loadOutput`, resp. `loadStack`, functions from `RconTroll`. -->
+
+<!-- ```{r message=FALSE, warning=FALSE} -->
+<!-- single_test <- loadOutput(name = "test", -->
+<!--            path = file.path(path, "test_single_run/")) -->
+<!-- multiple_test <- loadStack(file.path(path, "test_multiple_run/")) -->
+<!-- ``` -->
+
+<!-- ## Plot -->
+
+<!-- Every output (except "100yearsofsolitude") can be plotted with the package's implementation of the `plot` method. `plot` method can be used with one simulation, two simulations, one stack, one stack and one simulation, or with two stacks. The argument `what` is what you want to plot. Please see the `RconTroll` help (`?plot.TROLLsim`). You can use R basics graphics, `ggplot2` option for graphics built with ggplot2 engine, and `plotly` option for dynamic html graphics. -->
+
+<!-- For example, let's look at the aboveground biomass of our simulations. -->
+
+<!-- ```{r message=FALSE, warning=FALSE, fig.cap="Aboveground biomass along time in the single simulation test. The graphic is dynamic."} -->
+<!-- plot(single_test, what = "agb") -->
+<!-- ``` -->
+
+<!-- ```{r, fig.cap="Aboveground biomass along time in the multiple simulations test."} -->
+<!-- plot(multiple_test, what = "agb") -->
+<!-- ``` -->
+
+<!-- Finally, you can use the `summaryPlot` function to have an overview of your simulations (the function is not included yet in the current implementation of `RconTroll`). -->
+
+<!-- ```{r, fig.height=8, fig.width=8, fig.cap="Summary graphics of the multiple simulations test."} -->
+<!-- source("https://raw.githubusercontent.com/EcoFoG/TROLL/sylvain-master-thesis/R/summaryPlot.R") -->
+<!-- summaryPlot(multiple_test) -->
+<!-- ``` -->
+
+<!-- # Conclusion -->
+
+<!-- This is just an example of a workflow to combine the use of C++, R, and shell to do simulations with `TROLL`. You can modify and extend it. And any further implementation useful for the `TROLL` community can be suggested and added to the development of the `RconTroll` package. -->
+
+<!-- *Enjoy your simulations.* -->

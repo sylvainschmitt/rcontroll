@@ -4,8 +4,12 @@
 \alias{inventoryFromOutput}
 \title{Create inventory from output}
 \usage{
-inventoryFromOutput(x, forest = getOption("RconTroll.forest"),
-  path = getOption("RconTroll.path"), overwrite = TRUE)
+inventoryFromOutput(
+  x,
+  forest = getOption("RconTroll.forest"),
+  path = getOption("RconTroll.path"),
+  overwrite = TRUE
+)
 }
 \arguments{
 \item{x}{TROLLsim}

@@ -14,8 +14,6 @@
 
 \item{species}{char. path to the species input data (default: package extdata folder)}
 
-\item{species}{char. path to the species input data (default: package extdata folder)}
-
 \item{forest}{char. name of the forest inventory input file (default: forest.txt)}
 }
 \description{

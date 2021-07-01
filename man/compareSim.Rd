@@ -4,8 +4,16 @@
 \alias{compareSim}
 \title{Compare parameters of two or more TROLL simulations}
 \usage{
-compareSim(sim, ..., rowcols = TRUE, duration = TRUE, dimension = TRUE,
-  species = FALSE, stopiffalse = TRUE, showwarning = FALSE)
+compareSim(
+  sim,
+  ...,
+  rowcols = TRUE,
+  duration = TRUE,
+  dimension = TRUE,
+  species = FALSE,
+  stopiffalse = TRUE,
+  showwarning = FALSE
+)
 }
 \arguments{
 \item{sim}{TROLL.sim object}

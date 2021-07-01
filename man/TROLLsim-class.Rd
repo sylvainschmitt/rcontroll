@@ -20,35 +20,23 @@ This is an S4 class to represent TROLL outputs.
 
 \item{\code{ba}}{list. ba data frames}
 
-\item{\code{dbh}}{df. dbh data frame}
-
 \item{\code{death}}{list. death data frames}
-
-\item{\code{disturbance}}{df. tree killed in disturbance data frame}
 
 \item{\code{final_pattern}}{df. final pattern data frame}
 
-\item{\code{full_final}}{df. full final pattern data frame (save TROLL sim)}
-
 \item{\code{gpp}}{df. gpp data frame}
 
-\item{\code{info}}{list. model info}
+\item{\code{info}}{chr. model info}
 
 \item{\code{litterfall}}{df. litterfall data frame}
 
 \item{\code{npp}}{df. npp data frame}
 
-\item{\code{par}}{df. par data frame}
-
-\item{\code{paramspace}}{list. model space parameters}
-
-\item{\code{paramsylviculture}}{list. model sylviculture parameters}
+\item{\code{inputs}}{list. model inputs (general, species, climate, daily, soil)}
 
 \item{\code{ppfd0}}{df. ground level ppfd data frames}
 
 \item{\code{R}}{list. respiration data frames}
-
-\item{\code{sp_par}}{df. species par data frame}
 
 \item{\code{vertd}}{df. vertd data.frame}
 }}
