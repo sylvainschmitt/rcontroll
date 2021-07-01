@@ -1,4 +1,4 @@
 library(testthat)
-library(RconTROLL)
+library(rcontroll)
 
-test_check("RconTROLL")
+test_check("rcontroll")
