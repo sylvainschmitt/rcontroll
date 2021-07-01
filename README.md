@@ -1,7 +1,7 @@
 # RconTROLL
 
-[![R build status](https://github.com/sylvainschmitt/RconTroll/workflows/R-CMD-check/badge.svg)](https://github.com/sylvainschmitt/RconTroll/actions)
-[![Codecov test coverage](https://codecov.io/gh/sylvainschmitt/RconTroll/branch/master/graph/badge.svg)](https://codecov.io/gh/sylvainschmitt/RconTroll?branch=master)
+[![R build status](https://github.com/sylvainschmitt/rcontroll/workflows/R-CMD-check/badge.svg)](https://github.com/sylvainschmitt/rcontroll/actions)
+[![Codecov test coverage](https://codecov.io/gh/sylvainschmitt/rcontroll/branch/master/graph/badge.svg)](https://codecov.io/gh/sylvainschmitt/rcontroll?branch=master)
 
 *Package for individual-based forest growth simulator TROLL (work in progress)*
 
