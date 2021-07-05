@@ -2,19 +2,15 @@ on:
   push:
     branches:
       - main
-      - master
-      - dev
   pull_request:
     branches:
       - main
-      - master
-      - dev
 
 name: test-coverage
 
 jobs:
   test-coverage:
-    runs-on: macOS-latest
+    runs-on: linux-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
