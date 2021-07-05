@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9007
+* TROLL binaries for windows #1
+
 # rcontroll 0.1.0.9006
 * load_output read all, consolidated output for TROLL_full #5
 * plot_ecosystem base plot for TROLL_full #11
