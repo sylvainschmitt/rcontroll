@@ -42,9 +42,8 @@ simulation outputs in the path folder
 Run a TROLL simulation
 }
 \examples{
-
 \dontrun{
- example
+example
 }
 
 }

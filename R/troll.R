@@ -1,4 +1,4 @@
-#' @include loadOutput.R
+#' @include load_output.R
 #' @importFrom readr write_tsv
 #' @importFrom sys exec_wait
 #' @importFrom utils timestamp
@@ -23,41 +23,54 @@ NULL
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
-#'  example
+#' example
 #' }
-#' 
-troll <- function(
-  name = NULL,
-  path = NULL,
-  troll = NULL,
-  # troll = system.file("troll", "TROLL.out", package = "RconTroll", mustWork = TRUE),
-  general = data.frame(),
-  species = data.frame(),
-  climate = data.frame(),
-  daily = data.frame(),
-  overwrite = TRUE,
-  verbose = TRUE
-){
+#'
+troll <- function(name = NULL,
+                  path = NULL,
+                  troll = NULL,
+                  # troll = system.file("troll",
+                  #                     "TROLL.out",
+                  #                     package = "RconTroll",
+                  #                     mustWork = TRUE),
+                  general = data.frame(),
+                  species = data.frame(),
+                  climate = data.frame(),
+                  daily = data.frame(),
+                  overwrite = TRUE,
+                  verbose = TRUE) {
 
   # check all inputs with internal
-  if(is.null(name))
-    name <- paste0("sim_", gsub(" ", "_", timestamp(prefix = "", suffix = "", quiet = T)))
-  if(is.null(path))
-    path <- "." # to be improved with tmp using zzz.R
-  
+  if (is.null(name)) {
+    name <- paste0(
+      "sim_",
+      gsub(
+        " ", "_",
+        timestamp(
+          prefix = "",
+          suffix = "",
+          quiet = T
+        )
+      )
+    )
+  }
+  if (is.null(path)) {
+    path <- "."
+  } # to be improved with tmp using zzz.R
+
   # creating folder
-  if(name %in% list.dirs(path, full.names = FALSE)[-1]){
-    if(!overwrite)
-      stop('Outputs already exist, use overwrite = T.')
+  if (name %in% list.dirs(path, full.names = FALSE)[-1]) {
+    if (!overwrite) {
+      stop("Outputs already exist, use overwrite = T.")
+    }
     path_o <- file.path(path, name)
     unlink(path_o, recursive = TRUE)
   } else {
     path_o <- file.path(path, name)
   }
   dir.create(path_o)
-  
+
   # save input as files
   general_path <- file.path(path, name, paste0(name, "_input_general.txt"))
   species_path <- file.path(path, name, paste0(name, "_input_species.txt"))
@@ -67,19 +80,22 @@ troll <- function(
   write_tsv(species, file = species_path)
   write_tsv(climate, file = climate_path)
   write_tsv(daily, file = daily_path)
- 
+
   # command
-  troll <- "/home/sylvain/Documents/ECOFOG/rcontroll/inst/troll/TROLL.out" # hardcoded for test
+  troll <- "/home/sylvain/Documents/ECOFOG/rcontroll/inst/troll/TROLL.out"
   output <- file.path(path, name, name)
-  command <- paste0(troll,
-                    ' -i', general_path, 
-                    ' -s', species_path,
-                    ' -m', climate_path,
-                    " -d", daily_path,
-                    ' -o', output)
-  if(verbose)
+  command <- paste0(
+    troll,
+    " -i", general_path,
+    " -s", species_path,
+    " -m", climate_path,
+    " -d", daily_path,
+    " -o", output
+  )
+  if (verbose) {
     message(command)
-  
+  }
+
   # run
   log <- system(command, intern = TRUE)
   write(log, file.path(path, name, paste0(name, "_log.txt")))

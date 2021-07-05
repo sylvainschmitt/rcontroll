@@ -3,21 +3,20 @@ NULL
 
 #' Function to provide summary of TROLL outputs
 #'
-#' @param object TROLLsim or TROLLsimstack
+#' @param object trollsim or trollstack
 #' @param ... unused argument
 #'
 #' @return Print in console
 #'
 #' @examples
 #' NA
+#' @name summary.trollsim
 #'
-#' @name summary.TROLLsim
-#' 
 NULL
 
 #' @export
-#' @rdname summary.TROLLsim
-setMethod('summary', 'TROLLsim', function(object, ...) {
+#' @rdname summary.trollsim
+setMethod("summary", "trollsim", function(object, ...) {
   cat("Simulation:", object@name)
   cat(object@info)
 })

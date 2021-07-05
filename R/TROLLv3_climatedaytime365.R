@@ -14,5 +14,5 @@
 #'   \item{VaporPressureDeficit}{vapour pressure deficit (VPD, Pa)}
 #'   \item{DayTimeVapourPressureDeficitVPDbasic}{daytime basic VPD (Pa)}
 #'   \item{DaytimeMeanVapourPressureDeficit}{daytime mean VPF (Pa)} }
-#'   
+#'
 "TROLLv3_climatedaytime365"

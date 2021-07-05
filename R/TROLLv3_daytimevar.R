@@ -6,5 +6,5 @@
 #'   \item{starttime}{?} \item{endtime}{?} \item{vardaytime_light}{daytime
 #'   variation in light} \item{vardaytime_vpd}{daytime variation in vapor
 #'   pressure deficit} \item{vardaytime_T}{daytime variation in temperature}}
-#'   
+#'
 "TROLLv3_daytimevar"

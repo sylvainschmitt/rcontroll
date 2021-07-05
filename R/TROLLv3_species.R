@@ -9,5 +9,5 @@
 #'   \item{s_hmax}{maximum height} \item{s_ah}{height-diameter allometry
 #'   coefficient} \item{s_regionalfreq}{regional frequency} \item{s_tlp}{Turgor
 #'   loss point} \item{s_drymass}{leaf dry mass} }
-#'   
+#'
 "TROLLv3_species"

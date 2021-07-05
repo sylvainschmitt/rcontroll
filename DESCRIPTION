@@ -24,16 +24,16 @@ Suggests:
     reshape2
 RoxygenNote: 7.1.1
 Collate: 
-    'TROLLsim.R'
     'TROLLv3_climatedaytime12.R'
     'TROLLv3_climatedaytime365.R'
     'TROLLv3_daytimevar.R'
     'TROLLv3_input.R'
     'TROLLv3_species.R'
-    'loadOutput.R'
-    'print.TROLLsim.R'
+    'trollsim.R'
+    'load_output.R'
+    'print.trollsim.R'
     'rcontroll.R'
-    'summary.TROLLsim.R'
+    'summary.trollsim.R'
     'troll.R'
 VignetteBuilder: knitr
 Depends: 

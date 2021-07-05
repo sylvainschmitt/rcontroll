@@ -3,20 +3,19 @@ NULL
 
 #' Function to print or show TROLL outputs.
 #'
-#' @param x TROLLsim or TROLLsim
+#' @param x trollsim or trollstack
 #' @param ... unused argument
 #'
 #' @return Print or show in console
 #'
 #' @examples
 #' NA
-#'
-#' @name print.TROLLsim
+#' @name print.trollsim
 NULL
 
 #' @export
-#' @rdname print.TROLLsim
-setMethod('print', 'TROLLsim', function(x, ...) {
+#' @rdname print.trollsim
+setMethod("print", "trollsim", function(x, ...) {
   cat("Simulation:", x@name)
   cat(x@info)
 })
