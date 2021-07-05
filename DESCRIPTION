@@ -22,9 +22,7 @@ Suggests:
     markdown,
     knitr,
     rmarkdown,
-    testthat,
-    covr, 
-    tidyverse
+    testthat
 RoxygenNote: 7.1.1
 Collate: 
     'TROLLv3_climatedaytime12.R'
