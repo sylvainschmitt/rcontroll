@@ -1,6 +1,9 @@
+# rcontroll 0.1.0.9004
+* TROLL binaries for unix #1
+
 # rcontroll 0.1.0.9003
 * opened dev branch
-* opened documentation for data
+* opened documentation for data #10
 
 # rcontroll 0.1.0.9002
 * opened old branch and cleaned main branch
