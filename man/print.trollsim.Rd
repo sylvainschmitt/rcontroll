@@ -3,14 +3,19 @@
 \name{print.trollsim}
 \alias{print.trollsim}
 \alias{print,trollsim-method}
+\alias{show,trollsim-method}
 \title{Function to print or show TROLL outputs.}
 \usage{
 \S4method{print}{trollsim}(x, ...)
+
+\S4method{show}{trollsim}(object)
 }
 \arguments{
 \item{x}{trollsim or trollstack}
 
 \item{...}{unused argument}
+
+\item{object}{trollsim or trollstack}
 }
 \value{
 Print or show in console

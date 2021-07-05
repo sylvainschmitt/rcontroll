@@ -6,11 +6,10 @@ test_that("troll", {
   TROLLv3_input$value[5] <- 10 # iterations
   sim <- troll(
     name = "test",
-    path = "/home/sylvain/Documents/ECOFOG/rcontroll",
-    general = TROLLv3_input,
+    global = TROLLv3_input,
     species = TROLLv3_species,
     climate = TROLLv3_climatedaytime365,
     daily = TROLLv3_daytimevar
   )
-  expect_s4_class(sim, "TROLLsim")
+  expect_s4_class(sim, "trollsim")
 })

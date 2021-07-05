@@ -15,46 +15,18 @@ knitr::opts_chunk$set(echo = T, cache = F, eval=T)
 
 # Getting started
 
-**OUTPUT Reduced**
-
-```{r}
+```{r test, fig.width=10, fig.width=10}
 library(rcontroll)
-library(tidyverse)
-library(reshape2)
-
 data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
 TROLLv3_input$value[5] <- 10 # iterations
 sim <- troll(name = "test",
-      path = "/home/sylvain/Documents/ECOFOG/rcontroll",
-      general = TROLLv3_input,
-      species = TROLLv3_species,
-      climate = TROLLv3_climatedaytime365,
-      daily = TROLLv3_daytimevar)
-```
-**summary method**
-
-```{r}
-summary(sim)
-```
-
-**possible autoplot**
-
-```{r}
-sim@agb %>% 
-  mutate(iter = 1:nrow(.)) %>% 
-  melt("iter", variable.name = "species", 
-                 value.name = "agb") %>% 
-  mutate(iter = iter/sim@inputs$general$value[6]) %>% 
-  ggplot(aes(iter, agb, group = species,
-             col = (species == "total"))) +
-  geom_line() +
-  scale_color_manual("Total", values = c("grey", "red")) +
-  scale_y_log10() +
-  theme_bw() +
-  theme(legend.position = "bottom") +
-  xlab("Time (year)") +
-  ylab("Aboveground biomass (AGB, MgC/ha)")
+             global = TROLLv3_input,
+             species = TROLLv3_species,
+             climate = TROLLv3_climatedaytime365,
+             daily = TROLLv3_daytimevar,
+             verbose = F)
+plot_ecosystem(sim)
 ```

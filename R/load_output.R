@@ -1,5 +1,7 @@
 #' @include trollsim.R
 #' @importFrom readr read_tsv cols read_file
+#' @importFrom dplyr bind_rows n
+#' @importFrom reshape2 melt dcast
 NULL
 
 #' Function to load TROLL output
@@ -7,7 +9,7 @@ NULL
 #' @param name char. Name given to the model output
 #' @param path char. Path where the model is saved
 #'
-#' @return an S4 \linkS4class{TROLLsim} class object
+#' @return an S4 \linkS4class{trollsim} class object
 #'
 #' @export
 #'
@@ -17,10 +19,10 @@ NULL
 load_output <- function(name = NULL,
                         path = NULL) {
 
-  #### Inputs ####
+  #inputs and log
   inputs <- lapply(
     list(
-      general = "general",
+      global = "global",
       species = "species",
       climate = "climate",
       daily = "daily"
@@ -31,95 +33,56 @@ load_output <- function(name = NULL,
       )
     }
   )
-
-  info <- read_file(file.path(path, paste0(name, "_0_info.txt")))
+  inputs$forest <- data.frame()
   log <- read_file(file.path(path, paste0(name, "_log.txt")))
-  agb <- read_tsv(file.path(path, paste0(name, "_0_agb.txt")),
-    col_names = c(species$s_name, "total"), col_types = cols()
-  )
-  ba <- read_tsv(file.path(path, paste0(name, "_0_ba.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  ba10 <- read_tsv(file.path(path, paste0(name, "_0_ba10.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  abund <- read_tsv(file.path(path, paste0(name, "_0_abund.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  abu10 <- read_tsv(file.path(path, paste0(name, "_0_abu10.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  abu30 <- read_tsv(file.path(path, paste0(name, "_0_abu30.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  gpp <- read_tsv(file.path(path, paste0(name, "_0_gpp.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  npp <- read_tsv(file.path(path, paste0(name, "_0_npp.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  rday <- read_tsv(file.path(path, paste0(name, "_0_Rday.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  rnight <- read_tsv(file.path(path, paste0(name, "_0_Rnight.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  rstem <- read_tsv(file.path(path, paste0(name, "_0_Rnight.txt")),
-    col_names = c("iter", species$s_name, "total"), col_types = cols()
-  )
-  litterfall <- read_tsv(file.path(path, paste0(name, "_0_litterfall.txt")),
-    col_types = cols()
-  ) # broken
-  ppfd0 <- read_tsv(file.path(path, paste0(name, "_0_ppfd0.txt")),
-    col_names = c("iter", "measure", "mean", "var"), col_types = cols()
-  )
-  death <- read_tsv(file.path(path, paste0(name, "_0_death.txt")),
-    col_names = paste0("X", 1:6), col_types = cols()
-  ) # col to be defined
-  death1 <- data.frame() # not understood
-  death2 <- data.frame() # not understood
-  death3 <- data.frame() # not understood
-  deathrate <- read_tsv(file.path(path, paste0(name, "_0_deathrate.txt")),
-    col_names = paste0("X", 1:4), col_types = cols()
-  ) # col to be defined
-  final_pattern <- read_tsv(
-    file.path(path, paste0(
-      name,
-      "_0_final_pattern.txt"
-    )),
-    col_types = cols()
-  )
-  vertd <- read_tsv(file.path(path, paste0(name, "_0_vertd.txt")),
-    col_names = c("height", "vertd"), col_types = cols()
-  )
-  x <- TROLLsim(
-    name = name,
-    path = path,
-    abundances = list(
-      abund = abund,
-      abu10 = abu10,
-      abu30 = abu30
-    ),
-    agb = agb,
-    ba = list(ba = ba, ba10 = ba10),
-    death = list(
-      death = death,
-      death1 = death1,
-      death2 = death2,
-      death3 = death3,
-      deathrate = deathrate
-    ),
-    final_pattern = final_pattern,
-    gpp = gpp,
-    info = info,
-    log = log,
-    litterfall = litterfall,
-    npp = npp,
-    inputs = inputs,
-    ppfd0 = ppfd0,
-    R = list(rday = rday, rnight = rnight, rstem = rstem),
-    vertd = vertd
-  )
 
-  return(x)
+  #species outputs
+  species_outputs1 <- lapply(list(
+    ba = "ba",
+    ba10 = "ba10",
+    abund = "abund",
+    abu10 = "abu10",
+    abu30 = "abu30",
+    gpp = "gpp",
+    npp = "npp",
+    rday = "Rday",
+    rnight = "Rnight",
+    rstem = "Rstem"
+  ), function(x) {
+    read_tsv(file.path(path, paste0(name, "_0_", x, ".txt")),
+      col_names = c("iter", inputs$species$s_name, "total"),
+      col_types = cols()
+    ) %>%
+      melt("iter", variable.name = "species")
+  }) %>%
+    bind_rows(.id = "variable")
+
+  species_outputs2 <- lapply(list(
+    agb = "agb",
+    litterfall = "litterfall"
+  ), function(x) {
+    read_tsv(file.path(path, paste0(name, "_0_", x, ".txt")),
+      col_names = c(inputs$species$s_name, "total"),
+      col_types = cols()
+    ) %>%
+      mutate(iter = 0:(n() - 1)) %>%
+      melt("iter", variable.name = "species")
+  }) %>%
+    bind_rows(.id = "variable")
+
+  species_outputs <- bind_rows(
+    species_outputs1,
+    species_outputs2
+  ) %>%
+    dcast(iter + species ~ variable)
+
+  return(
+    trollsim(
+      name = name,
+      path = path,
+      species_outputs = species_outputs,
+      inputs = inputs,
+      log = log
+    )
+  )
 }

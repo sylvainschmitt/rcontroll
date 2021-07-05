@@ -7,8 +7,9 @@
 troll(
   name = NULL,
   path = NULL,
-  troll = NULL,
-  general = data.frame(),
+  troll_path = NULL,
+  troll_exe = "TROLL_full.out",
+  global = data.frame(),
   species = data.frame(),
   climate = data.frame(),
   daily = data.frame(),
@@ -21,9 +22,13 @@ troll(
 
 \item{path}{char. path to the simulation (tmp if NULL)}
 
-\item{troll}{chr. path to troll executable (default in the package)}
+\item{troll_path}{chr. path to troll executable (default in the package)}
 
-\item{general}{df. general parameters}
+\item{troll_exe}{chr. name of troll executable (TROLL_abc.out,
+TROLL_full.out, TROLL_full_forest.out, TROLL_reduced.out,
+TROLL_reduced_forest.out)}
+
+\item{global}{df. global parameters}
 
 \item{species}{df. species parameters}
 

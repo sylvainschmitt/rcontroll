@@ -4,97 +4,51 @@
 #'
 #' @slot name char. model name
 #' @slot path char. path to the model
-#' @slot abundances list. abundances data frames
-#' @slot agb df. agb data frame
-#' @slot ba list. ba data frames
-#' @slot death list. death data frames
-#' @slot final_pattern df. final pattern data frame
-#' @slot gpp df. gpp data frame
-#' @slot info chr. model info
+#' @slot species_outputs df. species and ecosystem metrics
+#' @slot inputs list. model inputs (general, species, climate, daily, forest)
 #' @slot log chr. model log
-#' @slot litterfall df. litterfall data frame
-#' @slot npp df. npp data frame
-#' @slot inputs list. model inputs (general, species, climate, daily, soil)
-#' @slot ppfd0 df. ground level ppfd data frames
-#' @slot R list. respiration data frames
-#' @slot vertd df. vertd data.frame
 #'
-#' @name trollsim
 #' @export
 setClass(
   "trollsim",
   representation(
     name = "character",
     path = "character",
-    abundances = "list",
-    agb = "data.frame",
-    ba = "list",
-    death = "list",
-    final_pattern = "data.frame",
-    gpp = "data.frame",
-    info = "character",
-    log = "character",
-    litterfall = "data.frame",
-    npp = "data.frame",
+    species_outputs = "data.frame",
     inputs = "list",
-    ppfd0 = "data.frame",
-    R = "list",
-    vertd = "data.frame"
+    log = "character"
   ),
   prototype(
     name = character(),
     path = character(),
-    abundances = list(),
-    agb = data.frame(),
-    ba = list(),
-    death = list(),
-    final_pattern = data.frame(),
-    gpp = data.frame(),
-    info = character(),
-    log = character(),
-    litterfall = data.frame(),
-    npp = data.frame(),
+    species_outputs = data.frame(),
     inputs = list(),
-    ppfd0 = data.frame(),
-    R = list(),
-    vertd = data.frame()
+    log = character()
   )
 )
 
+#' An S4 class to represent TROLL simulations
+#'
+#' This is an S4 class to represent TROLL simulations.
+#'
+#' @param name char. model name
+#' @param path char. path to the model
+#' @param species_outputs df. species and ecosystem metrics
+#' @param inputs list. model inputs (general, species, climate, daily, forest)
+#' @param log chr. model log
+#'
 #' @export
 #' @rdname trollsim
 trollsim <- function(name = character(),
                      path = character(),
-                     abundances = list(),
-                     agb = data.frame(),
-                     ba = list(),
-                     death = list(),
-                     final_pattern = data.frame(),
-                     gpp = data.frame(),
-                     info = character(),
-                     log = character(),
-                     litterfall = data.frame(),
-                     npp = data.frame(),
+                     species_outputs = data.frame(),
                      inputs = list(),
-                     ppfd0 = data.frame(),
-                     r = list(),
-                     vertd = data.frame()) {
+                     log = character()) {
   return(new("trollsim",
     name = name,
     path = path,
-    abundances = abundances,
-    agb = agb,
-    ba = ba,
-    death = death,
-    final_pattern = final_pattern,
-    gpp = gpp,
-    info = info,
-    log = log,
-    litterfall = litterfall,
-    npp = npp,
+    species_outputs = species_outputs,
     inputs = inputs,
-    ppfd0 = ppfd0,
-    r = r,
-    vertd = vertd
+    log = log
   ))
 }

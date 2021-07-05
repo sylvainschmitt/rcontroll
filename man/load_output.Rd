@@ -12,7 +12,7 @@ load_output(name = NULL, path = NULL)
 \item{path}{char. Path where the model is saved}
 }
 \value{
-an S4 \linkS4class{TROLLsim} class object
+an S4 \linkS4class{trollsim} class object
 }
 \description{
 Function to load TROLL output

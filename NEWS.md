@@ -1,3 +1,13 @@
+# rcontroll 0.1.0.9006
+* load_output read all, consolidated output for TROLL_full #5
+* plot_ecosystem base plot for TROLL_full #11
+* print, summary # 10
+* troll binary path, tmp, unlink for TROLL_full #3
+* trollsim consolidated outputs for TROLL_full #2
+* zzz.R tmp
+* test-troll working
+* update workflow.Rmd
+
 # rcontroll 0.1.0.9005
 * tidyverse style guide #14
 
