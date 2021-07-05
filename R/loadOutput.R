@@ -23,7 +23,6 @@ loadOutput <- function(name = NULL,
   species <- read_tsv(file.path(path, paste0(name, '_input_species.txt')), col_types = cols())
   climate <- read_tsv(file.path(path, paste0(name, '_input_climate.txt')), col_types = cols())
   daily <- read_tsv(file.path(path, paste0(name, '_input_daily.txt')), col_types = cols())
-  soil <- read_tsv(file.path(path, paste0(name, '_input_soil.txt')), col_types = cols())
   
   #### Model  ####
   info <- read_file(file.path(path, paste0(name, '_0_info.txt')))
@@ -121,13 +120,13 @@ loadOutput <- function(name = NULL,
     final_pattern = final_pattern,
     gpp = gpp,
     info = info,
+    log = log,
     litterfall = litterfall,
     npp = npp,
     inputs = list(general = general,
                   species = species,
                   climate = climate,
-                  daily = daily,
-                  soil = soil),
+                  daily = daily),
     ppfd0 = ppfd0,
     R = list(rday = rday, rnight = rnight, rstem = rstem),
     vertd = vertd)

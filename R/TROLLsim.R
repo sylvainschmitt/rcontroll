@@ -11,12 +11,12 @@
 #'@slot final_pattern df. final pattern data frame
 #'@slot gpp df. gpp data frame
 #'@slot info chr. model info
+#'@slot log chr. model log
 #'@slot litterfall df. litterfall data frame
 #'@slot npp df. npp data frame
 #'@slot inputs list. model inputs (general, species, climate, daily, soil)
 #'@slot ppfd0 df. ground level ppfd data frames
 #'@slot R list. respiration data frames
-# @slot site list. site data frames
 #'@slot vertd df. vertd data.frame
 #'
 #'@export
@@ -31,6 +31,7 @@ setClass('TROLLsim',
            final_pattern = 'data.frame',
            gpp = 'data.frame',
            info = 'character',
+           log = 'character',
            litterfall = 'data.frame',
            npp = 'data.frame',
            inputs = 'list',
@@ -48,6 +49,7 @@ setClass('TROLLsim',
            final_pattern = data.frame(),
            gpp = data.frame(),
            info = character(),
+           log = character(),
            litterfall = data.frame(),
            npp = data.frame(),
            inputs = list(),
@@ -67,6 +69,7 @@ TROLLsim <- function(
   final_pattern = data.frame(),
   gpp = data.frame(),
   info = character(),
+  log = character(),
   litterfall = data.frame(),
   npp = data.frame(),
   inputs = list(),
@@ -84,6 +87,7 @@ TROLLsim <- function(
              final_pattern = final_pattern,
              gpp = gpp,
              info = info,
+             log = log,
              litterfall = litterfall,
              npp = npp,
              inputs = inputs,

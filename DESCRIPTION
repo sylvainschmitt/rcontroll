@@ -11,33 +11,24 @@ License: GPL-3
 LazyData: TRUE
 Imports:
     methods,
+    utils,
     readr,
-    sys,
-    ggplot2,
-    sp,
-    maptools
+    sys
 Suggests:
     knitr,
     rmarkdown,
     testthat,
-    covr
+    covr, 
+    tidyverse,
+    reshape2
 RoxygenNote: 7.1.1
 Collate: 
     'TROLLsim.R'
-    'TROLLsimstack.R'
-    'aggregate.TROLLsimstack.R'
-    'compareSim.R'
-    'inventoryFromData.R'
-    'inventoryFromOutput.R'
     'loadOutput.R'
-    'stack.TROLLsim.R'
-    'loadStack.R'
-    'plot.TROLLsim.R'
     'print.TROLLsim.R'
     'rcontroll.R'
     'summary.TROLLsim.R'
     'troll.R'
-    'zzz.R'
 VignetteBuilder: knitr
 Depends: 
-    R (>= 2.10)
+    R (>= 3.6)

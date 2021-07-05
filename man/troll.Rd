@@ -12,12 +12,13 @@ troll(
   species = data.frame(),
   climate = data.frame(),
   daily = data.frame(),
-  soil = data.frame(),
   overwrite = TRUE,
   verbose = TRUE
 )
 }
 \arguments{
+\item{name}{char. model name}
+
 \item{path}{char. path to the simulation (tmp if NULL)}
 
 \item{troll}{chr. path to troll executable (default in the package)}
@@ -29,8 +30,6 @@ troll(
 \item{climate}{df. climate parameters}
 
 \item{daily}{df. daily variation parameters}
-
-\item{soil}{df. soil parameters}
 
 \item{overwrite}{bool. overwrite previous outputs}
 
@@ -45,9 +44,7 @@ Run a TROLL simulation
 \examples{
 
 \dontrun{
-run(path = system.file("tools", package = 'RconTROLL'),
-    name = "test", app = getOption("RconTroll.app"),
-    input = system.file("tools", "init.txt", package = 'RconTROLL'))
+ example
 }
 
 }

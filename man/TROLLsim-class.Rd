@@ -28,6 +28,8 @@ This is an S4 class to represent TROLL outputs.
 
 \item{\code{info}}{chr. model info}
 
+\item{\code{log}}{chr. model log}
+
 \item{\code{litterfall}}{df. litterfall data frame}
 
 \item{\code{npp}}{df. npp data frame}

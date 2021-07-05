@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9002
+* opened old branch and cleaned main branch
+
 # rcontroll 0.1.0.9001
 * relaunch of the package 
 
