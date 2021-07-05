@@ -30,6 +30,7 @@ plot_ecosystem <- function(sim) {
     ggplot(aes(iter, value)) +
     geom_line() +
     facet_wrap(~variable, scales = "free_y") +
-    theme_bw()
+    theme_bw() +
+    xlab("Time (year)")
   return(g)
 }

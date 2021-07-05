@@ -1,21 +1,20 @@
 ---
-title: "TROLL simulations workflow"
-author: "Sylvain Schmitt"
-date: '`r Sys.Date()`'
+title: "Simulation workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{TROLL simulations workflow}
+  %\VignetteIndexEntry{Simulation workflow}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, cache = F, eval=T)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
 
-# Getting started
-
-```{r test, fig.width=10, fig.width=10}
+```{r test, fig.width=6, fig.height=6}
 library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")

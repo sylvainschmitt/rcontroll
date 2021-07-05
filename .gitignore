@@ -8,3 +8,4 @@
 *_files
 vignettes/*.html
 test
+inst/doc
