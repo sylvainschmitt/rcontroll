@@ -7,14 +7,13 @@
 troll(
   name = NULL,
   path = NULL,
-  troll_path = NULL,
-  troll_exe = "TROLL_full.out",
+  full = TRUE,
+  abc = FALSE,
   global = data.frame(),
   species = data.frame(),
   climate = data.frame(),
   daily = data.frame(),
-  overwrite = TRUE,
-  verbose = TRUE
+  overwrite = TRUE
 )
 }
 \arguments{
@@ -22,11 +21,11 @@ troll(
 
 \item{path}{char. path to the simulation (tmp if NULL)}
 
-\item{troll_path}{chr. path to troll executable (default in the package)}
+\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
+TRUE)}
 
-\item{troll_exe}{chr. name of troll executable (TROLL_abc.out,
-TROLL_full.out, TROLL_full_forest.out, TROLL_reduced.out,
-TROLL_reduced_forest.out)}
+\item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
+FALSE)}
 
 \item{global}{df. global parameters}
 
@@ -38,7 +37,9 @@ TROLL_reduced_forest.out)}
 
 \item{overwrite}{bool. overwrite previous outputs}
 
-\item{verbose}{bool. display models information}
+\item{troll_exe}{chr. name of troll executable (TROLL_abc.out,
+TROLL_full.out, TROLL_full_forest.out, TROLL_reduced.out,
+TROLL_reduced_forest.out)}
 }
 \value{
 simulation outputs in the path folder

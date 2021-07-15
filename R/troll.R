@@ -10,7 +10,10 @@ NULL
 #'
 #' @param name char. model name
 #' @param path char. path to the simulation (tmp if NULL)
-#' @param troll_path chr. path to troll executable (default in the package)
+#' @param full bool. TROLL with full outputs, if not reduced outputs (default
+#'   TRUE)
+#' @param abc bool. TROLL with abc outputs, forcing reduced outputs (default
+#'   FALSE)
 #' @param troll_exe chr. name of troll executable (TROLL_abc.out,
 #'   TROLL_full.out, TROLL_full_forest.out, TROLL_reduced.out,
 #'   TROLL_reduced_forest.out)
@@ -19,7 +22,6 @@ NULL
 #' @param climate df. climate parameters
 #' @param daily df. daily variation parameters
 #' @param overwrite bool. overwrite previous outputs
-#' @param verbose bool. display models information
 #'
 #' @return simulation outputs in the path folder
 #'
@@ -29,17 +31,29 @@ NULL
 #' \dontrun{
 #' example
 #' }
-#'
+#' 
 troll <- function(name = NULL,
                   path = NULL,
-                  troll_path = NULL,
-                  troll_exe = "TROLL_full.out",
+                  full = TRUE,
+                  abc = FALSE,
                   global = data.frame(),
                   species = data.frame(),
                   climate = data.frame(),
                   daily = data.frame(),
-                  overwrite = TRUE,
-                  verbose = TRUE) {
+                  overwrite = TRUE) {
+  # for tests
+  # data("TROLLv3_input")
+  # data("TROLLv3_species")
+  # data("TROLLv3_climatedaytime365")
+  # data("TROLLv3_daytimevar")
+  # TROLLv3_input$value[5] <- 10 # iterations
+  # global <- TROLLv3_input
+  # species <- TROLLv3_species 
+  # climate <- TROLLv3_climatedaytime12
+  # daily <- TROLLv3_daytimevar
+  # full = F
+  # abc = T
+  # path <- getwd()
 
   # check all inputs
 
@@ -76,11 +90,33 @@ troll <- function(name = NULL,
   dir.create(path_o)
 
   # troll exe
-  if (is.null(troll_path)) {
-    os <- .Platform$OS.type
-    troll_path <- system.file("troll", os, package = "rcontroll")
+  os <- .Platform$OS.type
+  troll_path <- system.file("troll", os, package = "rcontroll")
+  ext <- switch(os, 
+                "unix" = ".out", 
+                "win" = ".exe")
+  type <- NULL
+  if(full){
+    if(abc)
+      stop("ABC and full outputs are not compatible.")
+    message("Simualtion with full outputs.")
+    type <- "full"
+    troll <- file.path(troll_path, paste0("TROLL_full", ext))
   }
-  troll <- file.path(troll_path, troll_exe)
+  if(!full){
+    message("Simualtion with reduced outputs.")
+    type <- "reduced"
+    troll <- file.path(troll_path, paste0("TROLL_reduced", ext))
+  }
+  if(abc){
+    if(full)
+      stop("ABC and full outputs are not compatible.")
+    message("Simualtion with ABC outputs.")
+    type <- "abc"
+    troll <- file.path(troll_path, paste0("TROLL_abc", ext))
+  }
+  if(is.null(type))
+    stop("TROLL executable was not found.")
 
   # save input as files
   global_path <- file.path(path, name, paste0(name, "_input_global.txt"))
@@ -101,17 +137,26 @@ troll <- function(name = NULL,
     " -d", daily_path,
     " -o", file.path(path, name, name)
   )
-  if (verbose) {
-    message(command)
-  }
+  message(command)
 
   # run
   log <- system(command, intern = TRUE)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
 
-  # outputs
+  # cleaning outputs
   lapply(list(
     "100yearsofsolitude",
+    "abc_biomass",
+    "chm_potential",
+    "abc_LAI",
+    "abc_PAIfield",
+    "abc_PAIfieldALS",
+    "abc_species",
+    "abc_species10",
+    "abc_traitconservation",
+    "abc_traits",
+    "abc_traits10",
+    "chm",
     "cica",
     "dbh",
     "death", # not using it for the moment
@@ -139,7 +184,9 @@ troll <- function(name = NULL,
   ), function(x) {
     unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
   })
-  sim <- load_output(name, file.path(path, name))
+  
+  # loading outputs
+  sim <- load_output(name, file.path(path, name), type)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
   }

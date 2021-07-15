@@ -4,12 +4,14 @@
 \alias{load_output}
 \title{Function to load TROLL output}
 \usage{
-load_output(name = NULL, path = NULL)
+load_output(name = NULL, path = NULL, type = NULL)
 }
 \arguments{
-\item{name}{char. Name given to the model output}
+\item{name}{char. name given to the model output}
 
-\item{path}{char. Path where the model is saved}
+\item{path}{char. path where the model is saved}
+
+\item{type}{char. type of simulation (full, reduce or abc)}
 }
 \value{
 an S4 \linkS4class{trollsim} class object

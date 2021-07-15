@@ -6,17 +6,17 @@ NULL
 #'
 #' This is an S4 class to represent TROLL simulations with abc outputs.
 #'
-#' @slot abc_outputs df. ABC metrics
+#' @slot abc_outputs list.. ABC metrics
 #'
 #' @export
 setClass(
   "trollsimabc",
   contains = 'trollsimreduced',
   representation(
-    abc_outputs = "data.frame"
+    abc_outputs = "list"
   ),
   prototype(
-    abc_outputs = data.frame()
+    abc_outputs = list()
   )
 )
 
@@ -27,7 +27,7 @@ setClass(
 #' @param name char. model name
 #' @param path char. path to the model
 #' @param reduced_outputs df. species and ecosystem metrics
-#' @param abc_outputs df. species and ecosystem metrics
+#' @param abc_outputs list. species and ecosystem metrics
 #' @param inputs list. model inputs (general, species, climate, daily, forest)
 #' @param log chr. model log
 #'
@@ -36,7 +36,7 @@ setClass(
 trollsimabc <- function(name = character(),
                         path = character(),
                         reduced_outputs = data.frame(),
-                        abc_outputs = data.frame(),
+                        abc_outputs = list(),
                         inputs = list(),
                         log = character()) {
   return(new("trollsimabc",

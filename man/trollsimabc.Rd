@@ -8,7 +8,7 @@ trollsimabc(
   name = character(),
   path = character(),
   reduced_outputs = data.frame(),
-  abc_outputs = data.frame(),
+  abc_outputs = list(),
   inputs = list(),
   log = character()
 )
@@ -20,7 +20,7 @@ trollsimabc(
 
 \item{reduced_outputs}{df. species and ecosystem metrics}
 
-\item{abc_outputs}{df. species and ecosystem metrics}
+\item{abc_outputs}{list. species and ecosystem metrics}
 
 \item{inputs}{list. model inputs (general, species, climate, daily, forest)}
 

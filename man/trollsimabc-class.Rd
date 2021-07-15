@@ -10,6 +10,6 @@ This is an S4 class to represent TROLL simulations with abc outputs.
 \section{Slots}{
 
 \describe{
-\item{\code{abc_outputs}}{df. ABC metrics}
+\item{\code{abc_outputs}}{list.. ABC metrics}
 }}
 
