@@ -21,6 +21,10 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
 
       - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install libcurl4-openssl-dev
 
       - name: Query dependencies
         run: |
@@ -38,8 +42,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "covr"))
+          install.packages(c("remotes"))
           remotes::install_deps(dependencies = TRUE)
+          remotes::install_cran("covr")
         shell: Rscript {0}
 
       - name: Test coverage
