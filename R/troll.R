@@ -13,10 +13,7 @@ NULL
 #' @param full bool. TROLL with full outputs, if not reduced outputs (default
 #'   TRUE)
 #' @param abc bool. TROLL with abc outputs, forcing reduced outputs (default
-#'   FALSE)
-#' @param troll_exe chr. name of troll executable (TROLL_abc.out,
-#'   TROLL_full.out, TROLL_full_forest.out, TROLL_reduced.out,
-#'   TROLL_reduced_forest.out)
+#'   FALSE)d
 #' @param global df. global parameters
 #' @param species df. species parameters
 #' @param climate df. climate parameters

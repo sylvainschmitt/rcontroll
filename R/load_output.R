@@ -45,7 +45,7 @@ load_output <- function(name = NULL,
                 "full" =   trollsimfull(
                   name = name,
                   path = path,
-                  species_outputs = .load_species_outputs(name, path),
+                  species_outputs = .load_species_outputs(name, path, inputs = inputs),
                   inputs = inputs,
                   log = log
                 ),
@@ -76,7 +76,8 @@ load_output <- function(name = NULL,
 # Internals
 
 .load_species_outputs <- function(name = NULL,
-                                  path = NULL){
+                                  path = NULL,
+                                  inputs = NULL){
   species_outputs1 <- lapply(list(
     ba = "ba",
     ba10 = "ba10",

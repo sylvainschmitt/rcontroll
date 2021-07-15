@@ -25,7 +25,7 @@ troll(
 TRUE)}
 
 \item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
-FALSE)}
+FALSE)d}
 
 \item{global}{df. global parameters}
 
@@ -36,10 +36,6 @@ FALSE)}
 \item{daily}{df. daily variation parameters}
 
 \item{overwrite}{bool. overwrite previous outputs}
-
-\item{troll_exe}{chr. name of troll executable (TROLL_abc.out,
-TROLL_full.out, TROLL_full_forest.out, TROLL_reduced.out,
-TROLL_reduced_forest.out)}
 }
 \value{
 simulation outputs in the path folder
