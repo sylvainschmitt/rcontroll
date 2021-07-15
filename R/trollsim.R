@@ -1,10 +1,12 @@
+#' @import methods
+NULL
+
 #' An S4 class to represent TROLL simulations
 #'
 #' This is an S4 class to represent TROLL simulations.
 #'
 #' @slot name char. model name
 #' @slot path char. path to the model
-#' @slot species_outputs df. species and ecosystem metrics
 #' @slot inputs list. model inputs (general, species, climate, daily, forest)
 #' @slot log chr. model log
 #'
@@ -14,14 +16,12 @@ setClass(
   representation(
     name = "character",
     path = "character",
-    species_outputs = "data.frame",
     inputs = "list",
     log = "character"
   ),
   prototype(
     name = character(),
     path = character(),
-    species_outputs = data.frame(),
     inputs = list(),
     log = character()
   )
@@ -33,7 +33,6 @@ setClass(
 #'
 #' @param name char. model name
 #' @param path char. path to the model
-#' @param species_outputs df. species and ecosystem metrics
 #' @param inputs list. model inputs (general, species, climate, daily, forest)
 #' @param log chr. model log
 #'
@@ -41,13 +40,11 @@ setClass(
 #' @rdname trollsim
 trollsim <- function(name = character(),
                      path = character(),
-                     species_outputs = data.frame(),
                      inputs = list(),
                      log = character()) {
   return(new("trollsim",
     name = name,
     path = path,
-    species_outputs = species_outputs,
     inputs = inputs,
     log = log
   ))

@@ -77,7 +77,7 @@ load_output <- function(name = NULL,
     dcast(iter + species ~ variable)
 
   return(
-    trollsim(
+    trollsimfull(
       name = name,
       path = path,
       species_outputs = species_outputs,

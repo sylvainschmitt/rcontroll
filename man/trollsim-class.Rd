@@ -14,8 +14,6 @@ This is an S4 class to represent TROLL simulations.
 
 \item{\code{path}}{char. path to the model}
 
-\item{\code{species_outputs}}{df. species and ecosystem metrics}
-
 \item{\code{inputs}}{list. model inputs (general, species, climate, daily, forest)}
 
 \item{\code{log}}{chr. model log}

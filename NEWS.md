@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9008
+* trollsimclasses #2
+
 # rcontroll 0.1.0.9007
 * TROLL binaries for windows #1
 

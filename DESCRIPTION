@@ -37,6 +37,9 @@ Collate:
     'rcontroll.R'
     'summary.trollsim.R'
     'troll.R'
+    'trollsimreduced.R'
+    'trollsimabc.R'
+    'trollsimfull.R'
     'utils-pipe.R'
     'zzz.R'
 VignetteBuilder: knitr
