@@ -92,22 +92,23 @@ troll <- function(name = NULL,
   ext <- switch(os, 
                 "unix" = ".out", 
                 "win" = ".exe")
+  
+  
+  if(full & abc)
+    stop("ABC and full outputs are not compatible.")
+  
   type <- NULL
-  if(full){
-    if(abc)
-      stop("ABC and full outputs are not compatible.")
+  if(full & !abc){
     message("Simualtion with full outputs.")
     type <- "full"
     troll <- file.path(troll_path, paste0("TROLL_full", ext))
   }
-  if(!full){
+  if(!full & !abc){
     message("Simualtion with reduced outputs.")
     type <- "reduced"
     troll <- file.path(troll_path, paste0("TROLL_reduced", ext))
   }
-  if(abc){
-    if(full)
-      stop("ABC and full outputs are not compatible.")
+  if(!full & abc){
     message("Simualtion with ABC outputs.")
     type <- "abc"
     troll <- file.path(troll_path, paste0("TROLL_abc", ext))
@@ -186,7 +187,7 @@ troll <- function(name = NULL,
   sim <- load_output(name, file.path(path, name), type)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
-  }
+  } # set path to null
 
   return(sim)
 }

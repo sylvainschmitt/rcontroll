@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9010
+* compile_troll and unix binaries #1
+
 # rcontroll 0.1.0.9009
 * troll and load_output for all trollsimclasses #3 & #5
 

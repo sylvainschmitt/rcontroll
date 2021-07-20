@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
-data("TROLLv3_climatedaytime365")
+data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
 TROLLv3_input$value[5] <- 10 # iterations
 sim <- troll(name = "test",
@@ -26,7 +26,7 @@ sim <- troll(name = "test",
              abc = FALSE,
              global = TROLLv3_input,
              species = TROLLv3_species,
-             climate = TROLLv3_climatedaytime365,
+             climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
 plot_ecosystem(sim)
 ```

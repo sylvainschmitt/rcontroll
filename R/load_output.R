@@ -136,9 +136,9 @@ load_output <- function(name = NULL,
                           "transmittance", "transmittanceALS"),
                         function(x)
                           read_tsv(
-                            file.path(path, paste0(name, "_0_abc_", "chm", ".txt"),
-                                      col_names = F,
+                            file.path(path, paste0(name, "_0_abc_", x, ".txt")),
+                                      col_names = FALSE,
                                       col_types = cols()
-                            )))
+                            ))
   return(abc_outputs)
 }
