@@ -33,7 +33,7 @@ compile_troll <- function(
   
   # check all inputs
   if(!all(unlist(lapply(list(full, random, forest, abc), class)) == "logical"))
-    stop("full, random, forest, abc, and overwrite should be logical.")
+    stop("full, random, forest, and abc should be logical.")
   
   # get cpp
   cpp <- system.file("troll", "main.cpp", package = "rcontroll", mustWork = TRUE)

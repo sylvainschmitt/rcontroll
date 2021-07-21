@@ -1,3 +1,19 @@
+# rcontroll 0.1.0.9011
+* #2 trollsim:
+    * parameters as a named vector
+    * forest and random as parameters
+    * final_pattern
+    * architecture for stacks
+* #3 troll:
+    * work with all binaries
+    * forest and random parameters
+    * final_pattern
+* #4 load_output:
+    * parameters as a named vector
+    * forest and random as parameters
+    * final_pattern
+    * consolidated reduced outputs
+
 # rcontroll 0.1.0.9010
 * compile_troll and unix binaries #1
 

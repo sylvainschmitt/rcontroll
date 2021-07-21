@@ -13,11 +13,15 @@ NULL
 #' @param full bool. TROLL with full outputs, if not reduced outputs (default
 #'   TRUE)
 #' @param abc bool. TROLL with abc outputs, forcing reduced outputs (default
-#'   FALSE)d
+#'   FALSE)
+#' @param random bool. TROLL with random outputs, if not the seed is fixed
+#'   (default TRUE)
 #' @param global df. global parameters
 #' @param species df. species parameters
 #' @param climate df. climate parameters
 #' @param daily df. daily variation parameters
+#' @param forest df. TROLL with forest input, if null start from an empty grid
+#'   (default NULL)
 #' @param overwrite bool. overwrite previous outputs
 #'
 #' @return simulation outputs in the path folder
@@ -33,10 +37,12 @@ troll <- function(name = NULL,
                   path = NULL,
                   full = TRUE,
                   abc = FALSE,
-                  global = data.frame(),
-                  species = data.frame(),
-                  climate = data.frame(),
-                  daily = data.frame(),
+                  random = TRUE,
+                  global,
+                  species,
+                  climate,
+                  daily,
+                  forest = NULL,
                   overwrite = TRUE) {
   # for tests
   # data("TROLLv3_input")
@@ -53,7 +59,18 @@ troll <- function(name = NULL,
   # path <- getwd()
 
   # check all inputs
+  if(!all(unlist(lapply(list(full, random, abc, overwrite), class)) == "logical"))
+    stop("full, random, abc, and overwrite should be logical.")
+  if(!all(unlist(lapply(list(name, path), class)) %in% c("character", "NULL")))
+    stop("name and path should be character or null.")
+  if(!all(unlist(lapply(list(global, species, climate, daily), inherits, c("data.frame", "NULL")))))
+    stop("global, species, climate, and daily should be a data frame.")
+  if(!(class(forest) %in% c("data.frame", "NULL")))
+    stop("forest should be a data frame or null.")
 
+  if(!is.null(forest))
+    stop("forest not implemented yet!")
+  
   # model name
   if (is.null(name)) {
     name <- paste0(
@@ -86,46 +103,49 @@ troll <- function(name = NULL,
   }
   dir.create(path_o)
 
-  # troll exe
-  os <- .Platform$OS.type
-  troll_path <- system.file("troll", os, package = "rcontroll")
-  ext <- switch(os, 
-                "unix" = ".out", 
-                "win" = ".exe")
-  
-  
+  # type
   if(full & abc)
     stop("ABC and full outputs are not compatible.")
-  
-  type <- NULL
-  if(full & !abc){
-    message("Simualtion with full outputs.")
+  if(full & !abc)
     type <- "full"
-    troll <- file.path(troll_path, paste0("TROLL_full", ext))
-  }
-  if(!full & !abc){
-    message("Simualtion with reduced outputs.")
+  if(!full & !abc)
     type <- "reduced"
-    troll <- file.path(troll_path, paste0("TROLL_reduced", ext))
-  }
-  if(!full & abc){
-    message("Simualtion with ABC outputs.")
+  if(!full & abc)
     type <- "abc"
-    troll <- file.path(troll_path, paste0("TROLL_abc", ext))
-  }
-  if(is.null(type))
-    stop("TROLL executable was not found.")
+  
+  # troll exe
+  troll <- file.path(
+    system.file("troll", .Platform$OS.type, package = "rcontroll", mustWork = TRUE),
+    paste0(
+      "TROLL_",
+      ifelse(full, "full", "reduced"), "_",
+      ifelse(abc, "abc", "nonabc"), "_",
+      ifelse(!is.null(forest), "forest", "nonforest"), "_",
+      ifelse(random, "random", "nonrandom"),
+      switch(.Platform$OS.type, 
+             "unix" = ".out", 
+             "win" = ".exe")
+    )
+  )  
+  if(!file.exists(troll))
+    stop(paste("TROLL executable:", troll, "is not available."))
 
   # save input as files
   global_path <- file.path(path, name, paste0(name, "_input_global.txt"))
   species_path <- file.path(path, name, paste0(name, "_input_species.txt"))
   climate_path <- file.path(path, name, paste0(name, "_input_climate.txt"))
   daily_path <- file.path(path, name, paste0(name, "_input_daily.txt"))
+  if(!is.null(forest))
+    forest_path <- file.path(path, name, paste0(name, "_input_forest.txt"))
   write_tsv(global, file = global_path)
   write_tsv(species, file = species_path)
   write_tsv(climate, file = climate_path)
   write_tsv(daily, file = daily_path)
-
+  if(!is.null(forest))
+    write_tsv(forest, file = forest_path)
+  if(!random)
+    cat("nonrandom", file = file.path(path, name, paste0(name, "_nonrandom.txt")))
+  
   # command
   command <- paste0(
     troll,
@@ -162,7 +182,6 @@ troll <- function(name = NULL,
     "death2",
     "death3",
     "deathrate", # not using it for the moment
-    "final_pattern", # not using it for the moment
     "info",
     "leafdens1",
     "leafdens2",
@@ -187,7 +206,8 @@ troll <- function(name = NULL,
   sim <- load_output(name, file.path(path, name), type)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
-  } # set path to null
+    sim@path <- character()
+  }
 
   return(sim)
 }

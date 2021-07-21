@@ -22,8 +22,10 @@ data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
 TROLLv3_input$value[5] <- 10 # iterations
 sim <- troll(name = "test",
+             # path = "./",
              full = TRUE,
-             abc = FALSE,
+             abc = FALSE, 
+             random = TRUE,
              global = TROLLv3_input,
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,

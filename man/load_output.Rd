@@ -4,7 +4,7 @@
 \alias{load_output}
 \title{Function to load TROLL output}
 \usage{
-load_output(name = NULL, path = NULL, type = NULL)
+load_output(name, path, type)
 }
 \arguments{
 \item{name}{char. name given to the model output}

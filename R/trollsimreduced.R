@@ -24,24 +24,32 @@ setClass(
 #'
 #' This is an S4 class to represent TROLL simulations.
 #'
-#' @param name char. model name
-#' @param path char. path to the model
-#' @param reduced_outputs df. species and ecosystem metrics
-#' @param inputs list. model inputs (general, species, climate, daily, forest)
-#' @param log chr. model log
+#' @param name char. simulation name
+#' @param path char. path to the simulation
+#' @param parameters numeric. parameters of the simulation (general inputs, random, forest)
+#' @param inputs list. simulation inputs (species, climate, daily, forest)
+#' @param log chr. simulation log
+#' @param final_pattern df. simulation final forest
+#' @param reduced_outputs df. ecosystem metrics
 #'
 #' @export
 #' @rdname trollsimreduced
-trollsimreduced <- function(name = character(),
-                            path = character(),
-                            reduced_outputs = data.frame(),
-                            inputs = list(),
-                            log = character()) {
+trollsimreduced <- function(
+  name = character(),
+  path = character(),
+  parameters = numeric(),
+  inputs = list(),
+  log = character(),
+  final_pattern = data.frame(),
+  reduced_outputs = data.frame()
+) {
   return(new("trollsimreduced",
              name = name,
              path = path,
-             reduced_outputs = reduced_outputs,
+             parameters = parameters,
              inputs = inputs,
-             log = log
+             log = log,
+             final_pattern = final_pattern,
+             reduced_outputs = reduced_outputs
   ))
 }

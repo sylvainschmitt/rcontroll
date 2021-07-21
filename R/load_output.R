@@ -17,12 +17,14 @@ NULL
 #' @examples
 #'
 #' NA
-load_output <- function(name = NULL,
-                        path = NULL,
-                        type = NULL) {
+load_output <- function(name,
+                        path,
+                        type) {
   # Check inputs
+  if(!all(unlist(lapply(list(name, path, type), class)) %in% c("character")))
+    stop("name, path, and type should be character.")
 
-  #inputs and log
+  # troll sim
   inputs <- lapply(
     list(
       global = "global",
@@ -36,35 +38,51 @@ load_output <- function(name = NULL,
       )
     }
   )
-  inputs$forest <- data.frame()
+  forest <- file.path(path, paste0(name, paste0("_input_forest.txt")))
+  forestop <- file.exists(forest)
+  inputs$forest <- NULL
+  if(forestop)
+    inputs$forest <- read_tsv(forest, col_types = cols())
+  random <- !file.exists(file.path(path, paste0(name, paste0("_nonrandom.txt"))))
+  parameters <- inputs$global$value
+  names(parameters) <- inputs$global$param
+  parameters['forest'] <- as.numeric(forestop)
+  parameters['random'] <- as.numeric(random)
   log <- read_file(file.path(path, paste0(name, "_log.txt")))
-
+  final_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_final_pattern.txt"))),
+                            col_types = cols())
 
   sim <- switch(type,
                 
                 "full" =   trollsimfull(
                   name = name,
                   path = path,
-                  species_outputs = .load_species_outputs(name, path, inputs = inputs),
+                  parameters = parameters,
                   inputs = inputs,
-                  log = log
+                  log = log,
+                  final_pattern = final_pattern,
+                  species_outputs = .load_species_outputs(name, path, inputs = inputs)
                 ),
                 
                 "reduced" =   trollsimreduced(
                   name = name,
                   path = path,
-                  reduced_outputs = .load_reduced_outputs(name, path),
+                  parameters = parameters,
                   inputs = inputs,
-                  log = log
+                  log = log,
+                  final_pattern = final_pattern,
+                  reduced_outputs = .load_reduced_outputs(name, path)
                 ),
                 
                 "abc" =   trollsimabc(
                   name = name,
                   path = path,
-                  reduced_outputs = .load_reduced_outputs(name, path),
-                  abc_outputs = .load_abc_outputs(name, path),
+                  parameters = parameters,
                   inputs = inputs,
-                  log = log
+                  log = log,
+                  final_pattern = final_pattern,
+                  reduced_outputs = .load_reduced_outputs(name, path),
+                  abc_outputs = .load_abc_outputs(name, path)
                 )
                 
   )
@@ -122,9 +140,8 @@ load_output <- function(name = NULL,
 
 .load_reduced_outputs <- function(name = NULL,
                                   path = NULL){
-  warning("Colnames to be defined.")
   reduced_outputs <- read_tsv(file.path(path, paste0(name, "_0_", "outputs", ".txt")),
-                              col_names = F,
+                              col_names = c("iter", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
                               col_types = cols())
   return(reduced_outputs)
 }

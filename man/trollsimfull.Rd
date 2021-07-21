@@ -7,21 +7,27 @@
 trollsimfull(
   name = character(),
   path = character(),
-  species_outputs = data.frame(),
+  parameters = numeric(),
   inputs = list(),
-  log = character()
+  log = character(),
+  final_pattern = data.frame(),
+  species_outputs = data.frame()
 )
 }
 \arguments{
-\item{name}{char. model name}
+\item{name}{char. simulation name}
 
-\item{path}{char. path to the model}
+\item{path}{char. path to the simulation}
+
+\item{parameters}{numeric. parameters of the simulation (general inputs, random, forest)}
+
+\item{inputs}{list. simulation inputs (species, climate, daily, forest)}
+
+\item{log}{chr. simulation log}
+
+\item{final_pattern}{df. simulation final forest}
 
 \item{species_outputs}{df. species and ecosystem metrics}
-
-\item{inputs}{list. model inputs (general, species, climate, daily, forest)}
-
-\item{log}{chr. model log}
 }
 \description{
 This is an S4 class to represent TROLL simulations.

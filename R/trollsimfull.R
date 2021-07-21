@@ -24,24 +24,32 @@ setClass(
 #'
 #' This is an S4 class to represent TROLL simulations.
 #'
-#' @param name char. model name
-#' @param path char. path to the model
+#' @param name char. simulation name
+#' @param path char. path to the simulation
+#' @param parameters numeric. parameters of the simulation (general inputs, random, forest)
+#' @param inputs list. simulation inputs (species, climate, daily, forest)
+#' @param log chr. simulation log
+#' @param final_pattern df. simulation final forest
 #' @param species_outputs df. species and ecosystem metrics
-#' @param inputs list. model inputs (general, species, climate, daily, forest)
-#' @param log chr. model log
 #'
 #' @export
 #' @rdname trollsimfull
-trollsimfull <- function(name = character(),
-                         path = character(),
-                         species_outputs = data.frame(),
-                         inputs = list(),
-                         log = character()) {
+trollsimfull <- function(
+  name = character(),
+  path = character(),
+  parameters = numeric(),
+  inputs = list(),
+  log = character(),
+  final_pattern = data.frame(),
+  species_outputs = data.frame()
+) {
   return(new("trollsimfull",
              name = name,
              path = path,
-             species_outputs = species_outputs,
+             parameters = parameters,
              inputs = inputs,
-             log = log
+             log = log,
+             final_pattern = final_pattern,
+             species_outputs = species_outputs
   ))
 }

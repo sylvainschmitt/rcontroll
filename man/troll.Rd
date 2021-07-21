@@ -9,10 +9,12 @@ troll(
   path = NULL,
   full = TRUE,
   abc = FALSE,
-  global = data.frame(),
-  species = data.frame(),
-  climate = data.frame(),
-  daily = data.frame(),
+  random = TRUE,
+  global,
+  species,
+  climate,
+  daily,
+  forest = NULL,
   overwrite = TRUE
 )
 }
@@ -25,7 +27,10 @@ troll(
 TRUE)}
 
 \item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
-FALSE)d}
+FALSE)}
+
+\item{random}{bool. TROLL with random outputs, if not the seed is fixed
+(default TRUE)}
 
 \item{global}{df. global parameters}
 
@@ -34,6 +39,9 @@ FALSE)d}
 \item{climate}{df. climate parameters}
 
 \item{daily}{df. daily variation parameters}
+
+\item{forest}{df. TROLL with forest input, if null start from an empty grid
+(default NULL)}
 
 \item{overwrite}{bool. overwrite previous outputs}
 }

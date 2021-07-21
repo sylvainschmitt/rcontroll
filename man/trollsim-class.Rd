@@ -10,12 +10,16 @@ This is an S4 class to represent TROLL simulations.
 \section{Slots}{
 
 \describe{
-\item{\code{name}}{char. model name}
+\item{\code{name}}{char. simulation name}
 
-\item{\code{path}}{char. path to the model}
+\item{\code{path}}{char. path to the simulation}
 
-\item{\code{inputs}}{list. model inputs (general, species, climate, daily, forest)}
+\item{\code{parameters}}{numeric. parameters of the simulation (general inputs, random, forest)}
 
-\item{\code{log}}{chr. model log}
+\item{\code{inputs}}{list. simulation inputs (species, climate, daily, forest)}
+
+\item{\code{log}}{chr. simulation log}
+
+\item{\code{final_pattern}}{df. simulation final forest}
 }}
 
