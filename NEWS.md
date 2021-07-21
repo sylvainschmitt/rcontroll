@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9012
+* autoplot.trollsim #11
+
 # rcontroll 0.1.0.9011
 * #2 trollsim:
     * parameters as a named vector

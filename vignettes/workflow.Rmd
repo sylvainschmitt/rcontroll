@@ -14,13 +14,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r test, fig.width=6, fig.height=6}
+# Data
+
+```{r data}
 library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
 TROLLv3_input$value[5] <- 10 # iterations
+```
+
+# Full
+
+```{r full}
 sim <- troll(name = "test",
              # path = "./",
              full = TRUE,
@@ -30,5 +37,42 @@ sim <- troll(name = "test",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-plot_ecosystem(sim)
+sim
 ```
+
+```{r fullG1}
+autoplot(sim, 
+         what = "ecosystem", 
+         variables = c("abund", "agb"), 
+         species = "total")
+```
+
+```{r fullG2}
+autoplot(sim, what = "final pattern")
+```
+
+# Reduced
+
+```{r reduced}
+sim <- troll(name = "test",
+             # path = "./",
+             full = FALSE,
+             abc = FALSE, 
+             random = TRUE,
+             global = TROLLv3_input,
+             species = TROLLv3_species,
+             climate = TROLLv3_climatedaytime12,
+             daily = TROLLv3_daytimevar)
+sim
+```
+```{r reducedG1}
+autoplot(sim, 
+         what = "ecosystem", 
+         variables = c("N", "AGB"), 
+         species = "total")
+```
+
+```{r reducedG2}
+autoplot(sim, what = "final pattern")
+```
+

@@ -8,7 +8,7 @@
 \S4method{summary}{trollsim}(object, ...)
 }
 \arguments{
-\item{object}{trollsim or trollstack}
+\item{object}{trollsim}
 
 \item{...}{unused argument}
 }

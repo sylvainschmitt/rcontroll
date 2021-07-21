@@ -3,7 +3,7 @@ NULL
 
 #' Function to provide summary of TROLL outputs
 #'
-#' @param object trollsim or trollstack
+#' @param object trollsim
 #' @param ... unused argument
 #'
 #' @return Print in console
