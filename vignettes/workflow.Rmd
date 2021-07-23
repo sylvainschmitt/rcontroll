@@ -21,6 +21,7 @@ library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
+data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
 TROLLv3_input$value[5] <- 10 # iterations
 ```
