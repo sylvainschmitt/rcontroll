@@ -1,7 +1,6 @@
-#' @include trollsim.R
-#' @include trollsimfull.R
-#' @include trollsimreduced.R
-#' @include trollsimabc.R
+#' @include trollstackfull.R
+#' @include trollstackreduced.R
+#' @include trollstackabc.R
 #' @import methods
 #' @import ggplot2
 #' @importFrom dplyr filter mutate select
@@ -9,7 +8,7 @@
 #' @importFrom viridis scale_color_viridis
 NULL
 
-#' Function to plot TROLL outputs
+#' Function to plot TROLL stack
 #'
 #' @param object trollsim
 #' @param what char. "final pattern" or "ecosystem"
@@ -24,19 +23,13 @@ NULL
 #' @examples
 #' NA
 #'
-#' @name autoplot.trollsim
+#' @name autoplot.trollstack
 #'   
 NULL
 
 #' @export
-#' @rdname autoplot.trollsim
-setMethod("autoplot", "trollsim", function(object, what, ...) {
-  stop("trollsim is a prototype and does not have an autoplot method")
-})
-
-#' @export
-#' @rdname autoplot.trollsim
-setMethod("autoplot", "trollsimfull", 
+#' @rdname autoplot.trollstack
+setMethod("autoplot", "trollstackfull", 
           function(
             object, 
             what = "ecosystem",
@@ -64,7 +57,8 @@ setMethod("autoplot", "trollsimfull",
                 scale_size_continuous("DBH (cm)", range = c(0.1, 1)) +
                 scale_color_viridis(guide = "none", discrete = T) +
                 coord_equal() +
-                xlab("X") + ylab("Y")
+                xlab("X") + ylab("Y") +
+                facet_wrap(~ simulation)
             
             # ecosystem
             if(what == "ecosystem")
@@ -72,20 +66,20 @@ setMethod("autoplot", "trollsimfull",
                 filter(species %in% species) %>%
                 mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>%
                 select(-species) %>%
-                melt("iter") %>%
+                melt(c("iter", "simulation")) %>%
                 filter(variable %in% variables) %>% 
-                ggplot(aes(iter, value)) +
+                ggplot(aes(iter, value, col = simulation)) +
                 geom_line() +
-                facet_wrap(~variable, scales = "free_y") +
+                facet_wrap(~ variable, scales = "free_y") +
                 theme_bw() +
-                xlab("Time (year)")    
+                xlab("Time (year)")
             
             return(g)
           })
 
 #' @export
-#' @rdname autoplot.trollsim
-setMethod("autoplot", "trollsimreduced", 
+#' @rdname autoplot.trollstack
+setMethod("autoplot", "trollstackreduced", 
           function(
             object, 
             what = "ecosystem",
@@ -109,32 +103,33 @@ setMethod("autoplot", "trollsimreduced",
                 scale_size_continuous("DBH (cm)", range = c(0.1, 1)) +
                 scale_color_viridis(guide = "none", discrete = T) +
                 coord_equal() +
-                xlab("X") + ylab("Y")
+                xlab("X") + ylab("Y") +
+                facet_wrap(~ simulation)
             
             # ecosystem
             if(what == "ecosystem")
               g <- object@reduced_outputs %>%
                 mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>%
                 select(-species) %>%
-                melt("iter") %>%
+                melt(c("iter", "simulation")) %>%
                 filter(variable %in% variables) %>% 
-                ggplot(aes(iter, value)) +
+                ggplot(aes(iter, value, col = simulation)) +
                 geom_line() +
                 facet_wrap(~variable, scales = "free_y") +
                 theme_bw() +
-                xlab("Time (year)")    
+                xlab("Time (year)")
             
             return(g)
           })
 
 #' @export
-#' @rdname autoplot.trollsim
-setMethod("autoplot", "trollsimabc", 
+#' @rdname autoplot.trollstack
+setMethod("autoplot", "trollstackabc", 
           function(
             object, 
             what
           ) {
-            stop("No autoplot methods implemented for trollsimabc yet.")
+            stop("No autoplot methods implemented for trollstackabc yet.")
           })
 
 

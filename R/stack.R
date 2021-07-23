@@ -1,6 +1,6 @@
 #' @include troll.R
 #' @include merge_stack.R
-#' @importFrom parallel detectCores makeCluster
+#' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach %dopar%
 #' @importFrom iterators icount

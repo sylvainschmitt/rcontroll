@@ -4,7 +4,7 @@ NULL
 #' Function to print or show TROLL outputs.
 #'
 #' @param x trollsim or trollstack
-#' @param object trollsim or trollstack
+#' @param object trollsim  or trollstack
 #' @param ... unused argument
 #'
 #' @return Print or show in console
@@ -20,6 +20,8 @@ setMethod("print", "trollsim", function(x, ...) {
   cat("Object of class :", class(x)[1], "\n")
   cat("Name :", x@name, "\n")
   cat("Path :", x@path, "\n")
+  if(is.stack(x))
+    cat("Number of simulations :", length(unique(x@inputs$global$simulation)), "\n")
   cat("Forest :", as.logical(x@parameters["forest"]), "\n")
   cat("Random :", as.logical(x@parameters["random"]), "\n\n")
   cat("2D discrete network: horizontal step = ",

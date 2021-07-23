@@ -15,7 +15,7 @@
 
 \item{...}{unused argument}
 
-\item{object}{trollsim or trollstack}
+\item{object}{trollsim  or trollstack}
 }
 \value{
 Print or show in console

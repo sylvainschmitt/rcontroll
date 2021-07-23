@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.size = 6
 )
 ```
 
@@ -19,6 +20,8 @@ knitr::opts_chunk$set(
 ## Data
 
 ```{r datasim}
+library(dplyr)
+library(tidyr)
 library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
@@ -84,7 +87,7 @@ autoplot(sim, what = "final pattern")
 
 ## Data
 
-```{r datasim}
+```{r datastack}
 library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
@@ -101,9 +104,9 @@ TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 ## Full
 
 ```{r fullstack}
-sim <- stack(name = "test",
-             c("seed50000", "seed500"),
-             # path = "./",
+sim <- stack(name = "test", 
+             simulations = c("seed50000", "seed500"),
+             # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
              full = TRUE,
              abc = FALSE,
              random = TRUE,
@@ -113,4 +116,37 @@ sim <- stack(name = "test",
              daily = TROLLv3_daytimevar)
 sim
 ```
+
+```{r fullstackG1}
+autoplot(sim, 
+         what = "ecosystem", 
+         variables = c("abund", "agb"), 
+         species = "total")
+```
+
+```{r fullstackG2}
+autoplot(sim, what = "final pattern")
+```
+
 ## Reduced
+
+```{r reducedstack}
+sim <- stack(name = "test",
+             simulations = c("seed50000", "seed500"),
+             # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
+             full = FALSE,
+             abc = FALSE, 
+             random = TRUE,
+             global = TROLLv3_input_stack,
+             species = TROLLv3_species,
+             climate = TROLLv3_climatedaytime12,
+             daily = TROLLv3_daytimevar)
+sim
+```
+
+```{r reducedstackG1}
+autoplot(sim, 
+         what = "ecosystem", 
+         variables = c("N", "AGB"), 
+         species = "total")
+```

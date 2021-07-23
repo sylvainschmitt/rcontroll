@@ -26,7 +26,8 @@ Suggests:
     markdown,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    tidyr
 RoxygenNote: 7.1.1
 Collate: 
     'TROLLv3_climatedaytime12.R'
@@ -39,17 +40,20 @@ Collate:
     'trollsimabc.R'
     'trollsimfull.R'
     'autoplot.trollsim.R'
+    'trollstackabc.R'
+    'trollstackreduced.R'
+    'trollstackfull.R'
+    'autoplot.trollstack.R'
     'compile_troll.R'
+    'is.stack.R'
     'load_output.R'
     'merge_stack.R'
+    'load_stack.R'
     'print.trollsim.R'
     'rcontroll.R'
     'troll.R'
     'stack.R'
     'summary.trollsim.R'
-    'trollstackabc.R'
-    'trollstackfull.R'
-    'trollstackreduced.R'
     'utils-pipe.R'
     'zzz.R'
 VignetteBuilder: knitr
