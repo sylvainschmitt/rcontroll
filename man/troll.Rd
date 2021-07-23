@@ -7,13 +7,15 @@
 troll(
   name = NULL,
   path = NULL,
-  troll = NULL,
-  general = data.frame(),
-  species = data.frame(),
-  climate = data.frame(),
-  daily = data.frame(),
-  overwrite = TRUE,
-  verbose = TRUE
+  full = TRUE,
+  abc = FALSE,
+  random = TRUE,
+  global,
+  species,
+  climate,
+  daily,
+  forest = NULL,
+  overwrite = TRUE
 )
 }
 \arguments{
@@ -21,9 +23,16 @@ troll(
 
 \item{path}{char. path to the simulation (tmp if NULL)}
 
-\item{troll}{chr. path to troll executable (default in the package)}
+\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
+TRUE)}
 
-\item{general}{df. general parameters}
+\item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
+FALSE)}
+
+\item{random}{bool. TROLL with random outputs, if not the seed is fixed
+(default TRUE)}
+
+\item{global}{df. global parameters}
 
 \item{species}{df. species parameters}
 
@@ -31,9 +40,10 @@ troll(
 
 \item{daily}{df. daily variation parameters}
 
-\item{overwrite}{bool. overwrite previous outputs}
+\item{forest}{df. TROLL with forest input, if null start from an empty grid
+(default NULL)}
 
-\item{verbose}{bool. display models information}
+\item{overwrite}{bool. overwrite previous outputs}
 }
 \value{
 simulation outputs in the path folder
@@ -42,9 +52,8 @@ simulation outputs in the path folder
 Run a TROLL simulation
 }
 \examples{
-
 \dontrun{
- example
+example
 }
 
 }

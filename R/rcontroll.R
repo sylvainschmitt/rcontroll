@@ -6,8 +6,8 @@
 #' @section Section functions: \describe{
 #' To define.
 #' }
-#' 
+#'
 #' @docType package
 #' @name rcontroll
 NULL
-#> NULL
+# > NULL

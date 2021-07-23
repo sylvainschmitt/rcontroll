@@ -2,17 +2,17 @@ on:
   push:
     branches:
       - main
-      - master
+      - dev
   pull_request:
     branches:
       - main
-      - master
+      - dev
 
 name: test-coverage
 
 jobs:
   test-coverage:
-    runs-on: macOS-latest
+    runs-on: ubuntu-20.04
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -21,6 +21,10 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
 
       - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install libcurl4-openssl-dev
 
       - name: Query dependencies
         run: |
@@ -44,5 +48,5 @@ jobs:
         shell: Rscript {0}
 
       - name: Test coverage
-        run: covr::codecov()
+        run: covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")
         shell: Rscript {0}

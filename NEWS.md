@@ -1,3 +1,54 @@
+# rcontroll 0.1.0.9012
+* autoplot.trollsim #11
+
+# rcontroll 0.1.0.9011
+* #2 trollsim:
+    * parameters as a named vector
+    * forest and random as parameters
+    * final_pattern
+    * architecture for stacks
+* #3 troll:
+    * work with all binaries
+    * forest and random parameters
+    * final_pattern
+* #4 load_output:
+    * parameters as a named vector
+    * forest and random as parameters
+    * final_pattern
+    * consolidated reduced outputs
+
+# rcontroll 0.1.0.9010
+* compile_troll and unix binaries #1
+
+# rcontroll 0.1.0.9009
+* troll and load_output for all trollsimclasses #3 & #5
+
+# rcontroll 0.1.0.9008
+* trollsimclasses #2
+
+# rcontroll 0.1.0.9007
+* TROLL binaries for windows #1
+
+# rcontroll 0.1.0.9006
+* load_output read all, consolidated output for TROLL_full #5
+* plot_ecosystem base plot for TROLL_full #11
+* print, summary # 10
+* troll binary path, tmp, unlink for TROLL_full #3
+* trollsim consolidated outputs for TROLL_full #2
+* zzz.R tmp
+* test-troll working
+* update workflow.Rmd
+
+# rcontroll 0.1.0.9005
+* tidyverse style guide #14
+
+# rcontroll 0.1.0.9004
+* TROLL binaries for unix #1
+
+# rcontroll 0.1.0.9003
+* opened dev branch
+* opened documentation for data #10
+
 # rcontroll 0.1.0.9002
 * opened old branch and cleaned main branch
 

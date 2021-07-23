@@ -1,7 +1,7 @@
 Package: rcontroll
 Type: Package
 Title: Package for individual-based forest growth simulator TROLL
-Version: 0.1.0.9001
+Version: 0.1.0
 Author: Sylvain SCHMITT, Guillaume SALZET, Fabian FISCHER
 Maintainer: Sylvain SCHMITT <sylvain.m.schmitt@gmail.com>
 URL: https://github.com/sylvainschmitt/rcontroll
@@ -10,25 +10,40 @@ Description: Function and code to manage and use indivdual-based and spatially-e
 License: GPL-3
 LazyData: TRUE
 Imports:
-    methods,
-    utils,
-    readr,
-    sys
+    methods (>= 3.6.3),
+    utils (>= 3.6.3),
+    readr (>= 1.4.0),
+    sys (>= 3.4),
+    dplyr (>= 1.0.2),
+    magrittr (>= 2.0.1),
+    reshape2 (>= 1.4.4),
+    ggplot2 (>= 3.3.2),
+    viridis (>= 0.5.1)
 Suggests:
+    markdown,
     knitr,
     rmarkdown,
-    testthat,
-    covr, 
-    tidyverse,
-    reshape2
+    testthat
 RoxygenNote: 7.1.1
 Collate: 
-    'TROLLsim.R'
-    'loadOutput.R'
-    'print.TROLLsim.R'
+    'TROLLv3_climatedaytime12.R'
+    'TROLLv3_climatedaytime365.R'
+    'TROLLv3_daytimevar.R'
+    'TROLLv3_input.R'
+    'TROLLv3_species.R'
+    'trollsim.R'
+    'trollsimreduced.R'
+    'trollsimabc.R'
+    'trollsimfull.R'
+    'autoplot.trollsim.R'
+    'compile_troll.R'
+    'load_output.R'
+    'print.trollsim.R'
     'rcontroll.R'
-    'summary.TROLLsim.R'
+    'summary.trollsim.R'
     'troll.R'
+    'utils-pipe.R'
+    'zzz.R'
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
