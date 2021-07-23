@@ -46,6 +46,7 @@ Collate:
     'trollstackfull.R'
     'autoplot.trollstack.R'
     'compile_troll.R'
+    'generate_parameters.R'
     'is.stack.R'
     'load_output.R'
     'merge_stack.R'

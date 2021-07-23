@@ -2,6 +2,7 @@
 
 export("%>%")
 export(compile_troll)
+export(generate_parameters)
 export(load_output)
 export(load_stack)
 export(stack)

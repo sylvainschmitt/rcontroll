@@ -95,14 +95,9 @@ compile_troll <- function(
     )
   )  
   
-  # compiler
-  
-  
   # compile
   command <- paste0(
-    switch(os, 
-           "unix" = "g++ ", 
-           "windows" = "C:/msys64/mingw64/bin/gcc.exe "),
+    "g++ ",
     cpp2,
     " -O3 -o ",
     out,
