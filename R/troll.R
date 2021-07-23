@@ -124,7 +124,7 @@ troll <- function(name = NULL,
       ifelse(random, "random", "nonrandom"),
       switch(.Platform$OS.type, 
              "unix" = ".out", 
-             "win" = ".exe")
+             "windows" = ".exe")
     )
   )  
   if(!file.exists(troll))
