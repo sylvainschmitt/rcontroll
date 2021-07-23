@@ -18,7 +18,10 @@ Imports:
     magrittr (>= 2.0.1),
     reshape2 (>= 1.4.4),
     ggplot2 (>= 3.3.2),
-    viridis (>= 0.5.1)
+    viridis (>= 0.5.1),
+    parallel (>= 3.6.3),
+    doParallel (>= 1.0.16),
+    foreach (>= 1.5.1)
 Suggests:
     markdown,
     knitr,
@@ -38,10 +41,12 @@ Collate:
     'autoplot.trollsim.R'
     'compile_troll.R'
     'load_output.R'
+    'merge_stack.R'
     'print.trollsim.R'
     'rcontroll.R'
-    'summary.trollsim.R'
     'troll.R'
+    'stack.R'
+    'summary.trollsim.R'
     'trollstackabc.R'
     'trollstackfull.R'
     'trollstackreduced.R'

@@ -8,7 +8,7 @@ NULL
 #'
 #' Run a TROLL simulation
 #'
-#' @param name char. model name
+#' @param name char. model name (if NULL timestamp)
 #' @param path char. path to the simulation (tmp if NULL)
 #' @param full bool. TROLL with full outputs, if not reduced outputs (default
 #'   TRUE)
@@ -24,7 +24,7 @@ NULL
 #'   (default NULL)
 #' @param overwrite bool. overwrite previous outputs
 #'
-#' @return simulation outputs in the path folder
+#' @return trollsim
 #'
 #' @export
 #'

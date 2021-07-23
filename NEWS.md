@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9014
+* stack #8
+
 # rcontroll 0.1.0.9013
 * trollstack #6
 
