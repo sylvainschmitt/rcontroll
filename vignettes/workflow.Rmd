@@ -11,7 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.size = 6
+  fig.height = 8,
+  fig.width = 8
 )
 ```
 
@@ -77,10 +78,6 @@ autoplot(sim,
          what = "ecosystem", 
          variables = c("N", "AGB"), 
          species = "total")
-```
-
-```{r reducedsimG2}
-autoplot(sim, what = "final pattern")
 ```
 
 # Stacks

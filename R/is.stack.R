@@ -9,11 +9,11 @@
 #' 
 is.stack <- function(x) {
   res <- FALSE
-  if(inherits(x, "trollsimfull"))
+  if(inherits(x, "trollstackfull"))
     res <- TRUE
-  if(inherits(x, "trollsimreduced"))
+  if(inherits(x, "trollstackreduced"))
     res <- TRUE
-  if(inherits(x, "trollsimabc"))
+  if(inherits(x, "trollstackabc"))
     res <- TRUE
   return(res)
 }
