@@ -91,8 +91,8 @@ compile_troll <- function(
       ifelse(random, "random", "nonrandom"),
       switch(os, 
              "unix" = ".out", 
-             "windows" = ".exe")
-    )
+             "windows" = ".exe -I C:\\rtools40\\mingw64\\include") # Need to use Rtools40 and install gsl library through Rtools bash shell (see : https://github.com/r-windows/rtools-packages)
+    ) #TODO : Adapt path to architecture on OS == windows
   )  
   
   # compiler
@@ -102,7 +102,7 @@ compile_troll <- function(
   command <- paste0(
     switch(os, 
            "unix" = "g++ ", 
-           "windows" = "C:/msys64/mingw64/bin/gcc.exe "),
+           "windows" = "C:\\rtools40\\mingw64\\bin\\g++.exe "), #TODO : Adapt path to architecture on OS == windows
     cpp2,
     " -O3 -o ",
     out,
