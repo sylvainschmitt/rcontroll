@@ -75,7 +75,8 @@ autoplot(sim, what = "final pattern")
 ## Reduced
 
 ```{r reducedsim}
-sim <- troll(name = "test",
+sim <- troll(name = "test1",
+             overwrite = TRUE,   
              # path = "./",
              full = FALSE,
              abc = FALSE, 
@@ -115,7 +116,7 @@ TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 ## Full
 
 ```{r fullstack}
-sim <- stack(name = "test", 
+sim <- stack(name = "test3", 
              simulations = c("seed50000", "seed500"),
              # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
              full = TRUE,
