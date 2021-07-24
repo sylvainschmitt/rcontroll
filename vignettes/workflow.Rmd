@@ -16,20 +16,34 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Libraries
+
+```{r libs}
+library(dplyr)
+library(tidyr)
+library(rcontroll)
+iters <- 10
+```
+
+
+# Generate parameters
+
+```{r genPar}
+generate_parameters(cols = 400, rows = 400) %>% 
+  head()
+```
+
 # Simulations
 
 ## Data
 
 ```{r datasim}
-library(dplyr)
-library(tidyr)
-library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
-TROLLv3_input$value[5] <- 10 # iterations
+TROLLv3_input$value[5] <- iters # iterations
 ```
 
 ## Full
@@ -91,7 +105,7 @@ data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
-TROLLv3_input$value[5] <- 10 # iterations
+TROLLv3_input$value[5] <- iters # iterations
 TROLLv3_input_stack <- TROLLv3_input %>% 
   mutate(simulation = list(c("seed50000", "seed500"))) %>% 
   unnest(simulation)

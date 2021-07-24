@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9016
+* generate_parameters #12
+
 # rcontroll 0.1.0.9015
 * load_stack #9, print, show, summary stack #10, autoplot.stack #16, is.stack
 
