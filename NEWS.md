@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9017
+* corrected autoplot functions #11 #16
+* first attempt 1000 years vignette #13
+
 # rcontroll 0.1.0.9016
 * generate_parameters #12
 
