@@ -64,13 +64,12 @@ setMethod("autoplot", "trollstackfull",
             if(what == "ecosystem")
               g <- object@species_outputs %>%
                 filter(species %in% selected_species) %>%
-                mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>%
-                select(-species) %>%
-                melt(c("iter", "simulation")) %>%
+                mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>% 
+                melt(c("iter", "simulation","species")) %>%
                 filter(variable %in% variables) %>% 
-                ggplot(aes(iter, value, col = simulation)) +
+                ggplot(aes(iter, value, col = species, linetype = simulation)) +
                 geom_line() +
-                facet_wrap(~ variable, scales = "free_y") +
+                facet_wrap(~ variable , scales = "free_y") +
                 theme_bw() +
                 xlab("Time (year)")
             
@@ -109,11 +108,10 @@ setMethod("autoplot", "trollstackreduced",
             # ecosystem
             if(what == "ecosystem")
               g <- object@reduced_outputs %>%
-                mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>%
-                select(-species) %>%
-                melt(c("iter", "simulation")) %>%
+                mutate(iter = as.numeric(iter / object@parameters["iterperyear"]))  %>%
+                melt(c("iter","simulation")) %>%
                 filter(variable %in% variables) %>% 
-                ggplot(aes(iter, value, col = simulation)) +
+                ggplot(aes(iter, value, linetype = simulation)) +
                 geom_line() +
                 facet_wrap(~variable, scales = "free_y") +
                 theme_bw() +

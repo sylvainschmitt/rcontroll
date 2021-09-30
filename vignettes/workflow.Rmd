@@ -51,7 +51,7 @@ data("TROLLv3_daytimevar")
 ```{r fullsim}
 TROLLv3_input$value[6] <- 12 # Nb iterations per Year
 TROLLv3_input$value[5] <- Nyears*12 # iterations
-sim <- troll(#name = "test",
+sim1 <- troll(#name = "test",
              # path = "./",
              full = TRUE,
              abc = FALSE, 
@@ -60,18 +60,18 @@ sim <- troll(#name = "test",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-sim
+sim1
 ```
 
 ```{r fullsimG1}
-autoplot(sim, 
+autoplot(sim1, 
          what = "ecosystem", 
          variables = c("abund", "ba"), 
          selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```
 
 ```{r fullsimG2}
-autoplot(sim, what = "final pattern")
+autoplot(sim1, what = "final pattern")
 ```
 
 ## Reduced
@@ -79,7 +79,7 @@ autoplot(sim, what = "final pattern")
 ```{r reducedsim}
 TROLLv3_input$value[6] <- 12 # Nb iterations per Year
 TROLLv3_input$value[5] <- Nyears*12 # iterations
-sim <- troll(name = "test1",
+sim2 <- troll(name = "test1",
              overwrite = TRUE,   
              # path = "./",
              full = FALSE,
@@ -89,11 +89,11 @@ sim <- troll(name = "test1",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-sim
+sim2
 ```
 
 ```{r reducedsimG1}
-autoplot(sim, 
+autoplot(sim2, 
          what = "ecosystem", 
          variables = c("N", "AGB"), 
          selected_species = "total")
@@ -110,7 +110,7 @@ data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
-Nyears <- 1
+Nyears <-  1
 TROLLv3_input$value[6] <- 12 # Nb iterations per Year
 TROLLv3_input$value[5] <- Nyears*12 # iterations
 TROLLv3_input_stack <- TROLLv3_input %>% 
@@ -122,7 +122,7 @@ TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 ## Full
 
 ```{r fullstack}
-sim <- stack(name = "test3", 
+sim_STK1 <- stack(name = "test3", 
              simulations = c("seed50000", "seed500"),
              # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
              full = TRUE,
@@ -132,24 +132,24 @@ sim <- stack(name = "test3",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-sim
+sim_STK1
 ```
 
 ```{r fullstackG1}
-autoplot(sim, 
+autoplot(sim_STK1, 
          what = "ecosystem", 
          variables = c("abund", "agb"), 
-         selected_species = "total")
+         selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```
 
 ```{r fullstackG2}
-autoplot(sim, what = "final pattern")
+autoplot(sim_STK1, what = "final pattern")
 ```
 
 ## Reduced
 
 ```{r reducedstack}
-sim <- stack(name = "test",
+sim_STK2 <- stack(name = "test",
              simulations = c("seed50000", "seed500"),
              # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
              full = FALSE,
@@ -159,11 +159,11 @@ sim <- stack(name = "test",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-sim
+sim_STK2
 ```
 
 ```{r reducedstackG1}
-autoplot(sim, 
+autoplot(sim_STK2, 
          what = "ecosystem", 
          variables = c("N", "AGB"))
 ```
