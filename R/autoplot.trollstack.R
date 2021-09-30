@@ -35,7 +35,7 @@ setMethod("autoplot", "trollstackfull",
             what = "ecosystem",
             variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
                           "litterfall", "npp", "rday", "rnight", "rstem"), 
-            species = "total"
+            selected_species = "total"
           ) {
             # dplyr
             species <- iter <- value <- variable <- dbh <- s_name <- NULL
@@ -46,15 +46,15 @@ setMethod("autoplot", "trollstackfull",
             if(!all(variables %in% c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
                                      "litterfall", "npp", "rday", "rnight", "rstem")))
               stop('variables should be "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or "rstem"')
-            if(!all(species %in% c(object@inputs$species$s_name, "total")))
-              stop(paste('species should be', paste(object@inputs$species$s_name, collapse = ", "), "or total."))
+            if(!all(selected_species %in% c(object@inputs$species$s_name, "total")))
+              stop(paste('selected_species should be', paste(object@inputs$species$s_name, collapse = ", "), "or total."))
             
             # final pattern
             if(what == "final pattern")
               g <- ggplot(object@final_pattern, aes(col, row, size = dbh, col = s_name)) +
                 geom_point() +
                 theme_bw() +
-                scale_size_continuous("DBH (cm)", range = c(0.1, 1)) +
+                scale_size_continuous("DBH (m)", range = c(0.1, 5)) +
                 scale_color_viridis(guide = "none", discrete = T) +
                 coord_equal() +
                 xlab("X") + ylab("Y") +
@@ -63,7 +63,7 @@ setMethod("autoplot", "trollstackfull",
             # ecosystem
             if(what == "ecosystem")
               g <- object@species_outputs %>%
-                filter(species %in% species) %>%
+                filter(species %in% selected_species) %>%
                 mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>%
                 select(-species) %>%
                 melt(c("iter", "simulation")) %>%
@@ -100,7 +100,7 @@ setMethod("autoplot", "trollstackreduced",
               g <- ggplot(object@final_pattern, aes(col, row, size = dbh, col = s_name)) +
                 geom_point() +
                 theme_bw() +
-                scale_size_continuous("DBH (cm)", range = c(0.1, 1)) +
+                scale_size_continuous("DBH (m)", range = c(0.1, 5)) +
                 scale_color_viridis(guide = "none", discrete = T) +
                 coord_equal() +
                 xlab("X") + ylab("Y") +

@@ -75,6 +75,7 @@ troll <- function(name = NULL,
   if (is.null(name)) {
     name <- paste0(
       "sim_",
+      gsub(":", "-",
       gsub(
         " ", "_",
         timestamp(
@@ -82,7 +83,7 @@ troll <- function(name = NULL,
           suffix = "",
           quiet = T
         )
-      )
+      ))
     )
   }
   
