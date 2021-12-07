@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9018
+* add progress bar in stack function with doSNOW package
+* R CMD check done: dev branch
+
 # rcontroll 0.1.0.9017
 * corrected autoplot functions #11 #16
 * first attempt 1000 years vignette #13

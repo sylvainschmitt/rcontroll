@@ -2,8 +2,10 @@
 #' @include merge_stack.R
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
+#' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach foreach %dopar%
 #' @importFrom iterators icount
+#' @importFrom utils setTxtProgressBar txtProgressBar
 NULL
 
 #' Stack
@@ -146,10 +148,13 @@ stack <- function(name = NULL,
   }
   
   # stack
-  cl <- makeCluster(cores)
-  registerDoParallel(cl)
+  cl <- makeCluster(cores, outfile = "")
+  registerDoSNOW(cl)
+  pb <- txtProgressBar(max = length(simulations), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
   stack_res <- foreach(i=1:length(simulations),
-                   .packages = c("rcontroll")) %dopar% {
+                   .packages = c("rcontroll"),.options.snow = opts) %dopar% {
                      sim <- simulations[i]
                      troll(
                        name = sim,
@@ -165,6 +170,7 @@ stack <- function(name = NULL,
                        overwrite = overwrite
                      )
                    }
+  close(pb)
   stopCluster(cl)
   names(stack_res) <- simulations
   stack_res[[1]]@name <- name

@@ -33,7 +33,7 @@ setMethod("print", "trollsim", function(x, ...) {
   )
   cat("Number of iterations : ", x@parameters["nbiter"], "\n")
   cat("Duration of timestep : ", 1 / x@parameters["iterperyear"] * 365, "days \n")
-  cat("Number of Species    : ", nrow(x@inputs$species), "\n\n")
+  cat("Number of Species    : ", length(unique(x@inputs$species$s_name)), "\n\n")
 })
 
 #' @export

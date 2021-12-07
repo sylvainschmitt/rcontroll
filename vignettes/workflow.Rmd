@@ -38,11 +38,12 @@ generate_parameters(cols = 250, rows = 250) %>%
 ## Data
 
 ```{r datasim}
-data("TROLLv3_input")
-data("TROLLv3_species")
-data("TROLLv3_climatedaytime12")
+TROLLv3_species <- read.csv("~/Documents/v3/TROLLv3_species_NP.txt", sep="")
+TROLLv3_climatedaytime12 <- read.delim("~/Documents/v3/TROLLv3_climatedaytime12.txt", header=TRUE)
 data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
+TROLLv3_input <- generate_parameters(cols = 250, rows = 250)
+
 
 ```
 
@@ -79,9 +80,8 @@ autoplot(sim1, what = "final pattern")
 ```{r reducedsim}
 TROLLv3_input$value[6] <- 12 # Nb iterations per Year
 TROLLv3_input$value[5] <- Nyears*12 # iterations
-sim2 <- troll(name = "test1",
-             overwrite = TRUE,   
-             # path = "./",
+sim2 <- troll(name="Long_term_simulation_t10-5_21-10-21",
+             overwrite = TRUE,
              full = FALSE,
              abc = FALSE, 
              random = TRUE,
@@ -131,7 +131,7 @@ sim_STK1 <- stack(name = "test3",
              global = TROLLv3_input_stack,
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar)
+             daily = TROLLv3_daytimevar,cores = 2)
 sim_STK1
 ```
 
@@ -158,12 +158,12 @@ sim_STK2 <- stack(name = "test",
              global = TROLLv3_input_stack,
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar)
+             daily = TROLLv3_daytimevar,cores = 2)
 sim_STK2
 ```
 
 ```{r reducedstackG1}
 autoplot(sim_STK2, 
          what = "ecosystem", 
-         variables = c("N", "AGB"))
+         variables = c("N", "BA10"))
 ```

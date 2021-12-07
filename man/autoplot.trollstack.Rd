@@ -12,7 +12,7 @@
   what = "ecosystem",
   variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall",
     "npp", "rday", "rnight", "rstem"),
-  species = "total"
+  selected_species = "total"
 )
 
 \S4method{autoplot}{trollstackreduced}(
