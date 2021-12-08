@@ -1,3 +1,8 @@
+# rcontroll 0.1.0.9019
+* initiating all vignettes
+* doc2word.sh for sharing on gdrive
+* TROLL vignette
+
 # rcontroll 0.1.0.9018
 * add progress bar in stack function with doSNOW package
 * R CMD check done: dev branch

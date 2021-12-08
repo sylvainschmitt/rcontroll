@@ -1,0 +1,19 @@
+---
+title: "Calibration of the TROLL model across forest habitats in French Guiana"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calibration of the TROLL model across forest habitats in French Guiana}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.height = 8,
+  fig.width = 8
+)
+```
+
+@gsalzet can you suggest a detailed plan here?

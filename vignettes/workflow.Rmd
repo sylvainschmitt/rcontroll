@@ -1,8 +1,8 @@
 ---
-title: "Simulation workflow"
+title: "A simple workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Simulation workflow}
+  %\VignetteIndexEntry{A simple workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,12 +11,12 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.height = 8,
-  fig.width = 8
+  fig.height = 6,
+  fig.width = 6
 )
 ```
 
-# Libraries
+# Setup
 
 ```{r libs}
 library(dplyr)
@@ -30,12 +30,10 @@ Nyears <- 1
 
 ```{r genPar}
 generate_parameters(cols = 250, rows = 250) %>% 
-  head()
+  knitr::kable()
 ```
 
-# Simulations
-
-## Data
+# Simple simulation
 
 ```{r datasim}
 data("TROLLv3_input")
@@ -44,8 +42,6 @@ data("TROLLv3_climatedaytime12")
 data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
 ```
-
-## Full
 
 ```{r fullsim}
 TROLLv3_input$value[6] <- 12 # Nb iterations per Year
@@ -73,34 +69,7 @@ autoplot(sim1,
 autoplot(sim1, what = "final pattern")
 ```
 
-## Reduced
-
-```{r reducedsim}
-TROLLv3_input$value[6] <- 12 # Nb iterations per Year
-TROLLv3_input$value[5] <- Nyears*12 # iterations
-sim2 <- troll(name = "test",
-              # path = "./",
-              overwrite = TRUE,
-              full = FALSE,
-              abc = FALSE, 
-              random = TRUE,
-              global = TROLLv3_input,
-              species = TROLLv3_species,
-              climate = TROLLv3_climatedaytime12,
-              daily = TROLLv3_daytimevar)
-sim2
-```
-
-```{r reducedsimG1}
-autoplot(sim2, 
-         what = "ecosystem", 
-         variables = c("N", "AGB"), 
-         selected_species = "total")
-```
-
-# Stacks
-
-## Data
+# Stack of simulations
 
 ```{r datastack}
 library(rcontroll)
@@ -117,8 +86,6 @@ TROLLv3_input_stack <- TROLLv3_input %>%
   unnest(simulation)
 TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 ```
-
-## Full
 
 ```{r fullstack}
 sim_stack1 <- stack(name = "test3", 
@@ -144,27 +111,4 @@ autoplot(sim_stack1,
 
 ```{r fullstackG2}
 autoplot(sim_stack1, what = "final pattern")
-```
-
-## Reduced
-
-```{r reducedstack}
-sim_stack2 <- stack(name = "test",
-             simulations = c("seed50000", "seed500"),
-             # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
-             full = FALSE,
-             abc = FALSE, 
-             random = TRUE,
-             global = TROLLv3_input_stack,
-             species = TROLLv3_species,
-             climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar,
-             cores = 2)
-sim_stack2
-```
-
-```{r reducedstackG1}
-autoplot(sim_stack2, 
-         what = "ecosystem", 
-         variables = c("N", "BA10"))
 ```

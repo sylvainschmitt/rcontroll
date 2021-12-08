@@ -8,3 +8,5 @@
 *_files
 test
 inst/doc
+*.docx
+doc
