@@ -8,7 +8,7 @@ NULL
 #'
 #' Run a TROLL simulation
 #'
-#' @param name char. model name
+#' @param name char. model name (if NULL timestamp)
 #' @param path char. path to the simulation (tmp if NULL)
 #' @param full bool. TROLL with full outputs, if not reduced outputs (default
 #'   TRUE)
@@ -24,7 +24,7 @@ NULL
 #'   (default NULL)
 #' @param overwrite bool. overwrite previous outputs
 #'
-#' @return simulation outputs in the path folder
+#' @return trollsim
 #'
 #' @export
 #'
@@ -57,7 +57,7 @@ troll <- function(name = NULL,
   # full = F
   # abc = T
   # path <- getwd()
-
+  
   # check all inputs
   if(!all(unlist(lapply(list(full, random, abc, overwrite), class)) == "logical"))
     stop("full, random, abc, and overwrite should be logical.")
@@ -67,7 +67,7 @@ troll <- function(name = NULL,
     stop("global, species, climate, and daily should be a data frame.")
   if(!(class(forest) %in% c("data.frame", "NULL")))
     stop("forest should be a data frame or null.")
-
+  
   if(!is.null(forest))
     stop("forest not implemented yet!")
   
@@ -75,6 +75,7 @@ troll <- function(name = NULL,
   if (is.null(name)) {
     name <- paste0(
       "sim_",
+      gsub(":", "-",
       gsub(
         " ", "_",
         timestamp(
@@ -82,10 +83,10 @@ troll <- function(name = NULL,
           suffix = "",
           quiet = T
         )
-      )
+      ))
     )
   }
-
+  
   # model path
   tmp <- FALSE
   if (is.null(path)) {
@@ -102,7 +103,7 @@ troll <- function(name = NULL,
     path_o <- file.path(path, name)
   }
   dir.create(path_o)
-
+  
   # type
   if(full & abc)
     stop("ABC and full outputs are not compatible.")
@@ -124,12 +125,12 @@ troll <- function(name = NULL,
       ifelse(random, "random", "nonrandom"),
       switch(.Platform$OS.type, 
              "unix" = ".out", 
-             "win" = ".exe")
+             "windows" = ".exe")
     )
   )  
   if(!file.exists(troll))
     stop(paste("TROLL executable:", troll, "is not available."))
-
+  
   # save input as files
   global_path <- file.path(path, name, paste0(name, "_input_global.txt"))
   species_path <- file.path(path, name, paste0(name, "_input_species.txt"))
@@ -156,11 +157,11 @@ troll <- function(name = NULL,
     " -o", file.path(path, name, name)
   )
   message(command)
-
+  
   # run
   log <- system(command, intern = TRUE)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
-
+  
   # cleaning outputs
   lapply(list(
     "100yearsofsolitude",
@@ -208,6 +209,6 @@ troll <- function(name = NULL,
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()
   }
-
+  
   return(sim)
 }

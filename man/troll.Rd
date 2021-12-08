@@ -19,7 +19,7 @@ troll(
 )
 }
 \arguments{
-\item{name}{char. model name}
+\item{name}{char. model name (if NULL timestamp)}
 
 \item{path}{char. path to the simulation (tmp if NULL)}
 
@@ -46,7 +46,7 @@ FALSE)}
 \item{overwrite}{bool. overwrite previous outputs}
 }
 \value{
-simulation outputs in the path folder
+trollsim
 }
 \description{
 Run a TROLL simulation

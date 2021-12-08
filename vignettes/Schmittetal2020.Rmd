@@ -1,0 +1,21 @@
+---
+title: "Replication of the virtual experiment by Schmitt et al. (2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Replication of the virtual experiment by Schmitt et al. (2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.height = 8,
+  fig.width = 8
+)
+```
+
+1. Quick introduction to the main results from Schmitt et al. (2020).
+1. Simple reproduction with *rcontroll* default data as Rmarkdown included in SI.
+1. Quickly describe how much we find back the main result.

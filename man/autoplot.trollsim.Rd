@@ -6,7 +6,7 @@
 \alias{autoplot,trollsimfull-method}
 \alias{autoplot,trollsimreduced-method}
 \alias{autoplot,trollsimabc-method}
-\title{Function to provide summary of TROLL outputs}
+\title{Function to plot TROLL outputs}
 \usage{
 \S4method{autoplot}{trollsim}(object, what, ...)
 
@@ -15,14 +15,14 @@
   what = "ecosystem",
   variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall",
     "npp", "rday", "rnight", "rstem"),
-  species = "total"
+  selected_species = "total"
 )
 
 \S4method{autoplot}{trollsimreduced}(
   object,
   what = "ecosystem",
   variables = c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
-  species = "total"
+  selected_species = "total"
 )
 
 \S4method{autoplot}{trollsimabc}(object, what)
@@ -38,13 +38,13 @@
 "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or
 "rstem"; reduced outputs: "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"}
 
-\item{species}{char. species name or total}
+\item{selected_species}{char. species name or total}
 }
 \value{
 ggplot2 object
 }
 \description{
-Function to provide summary of TROLL outputs
+Function to plot TROLL outputs
 }
 \examples{
 NA

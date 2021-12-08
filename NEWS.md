@@ -1,3 +1,28 @@
+# rcontroll 0.1.0.9019
+* initiating all vignettes
+* doc2word.sh for sharing on gdrive
+* TROLL vignette
+
+# rcontroll 0.1.0.9018
+* add progress bar in stack function with doSNOW package
+* R CMD check done: dev branch
+
+# rcontroll 0.1.0.9017
+* corrected autoplot functions #11 #16
+* first attempt 1000 years vignette #13
+
+# rcontroll 0.1.0.9016
+* generate_parameters #12
+
+# rcontroll 0.1.0.9015
+* load_stack #9, print, show, summary stack #10, autoplot.stack #16, is.stack
+
+# rcontroll 0.1.0.9014
+* stack #8
+
+# rcontroll 0.1.0.9013
+* trollstack #6
+
 # rcontroll 0.1.0.9012
 * autoplot.trollsim #11
 

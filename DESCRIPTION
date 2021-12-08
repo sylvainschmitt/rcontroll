@@ -18,13 +18,19 @@ Imports:
     magrittr (>= 2.0.1),
     reshape2 (>= 1.4.4),
     ggplot2 (>= 3.3.2),
-    viridis (>= 0.5.1)
+    viridis (>= 0.5.1),
+    parallel (>= 3.6.3),
+    doParallel (>= 1.0.16),
+    doSNOW (>= 1.0.19),
+    foreach (>= 1.5.1),
+    iterators (>= 1.0.13)
 Suggests:
     markdown,
     knitr,
     rmarkdown,
-    testthat
-RoxygenNote: 7.1.1
+    testthat,
+    tidyr
+RoxygenNote: 7.1.2
 Collate: 
     'TROLLv3_climatedaytime12.R'
     'TROLLv3_climatedaytime365.R'
@@ -36,12 +42,21 @@ Collate:
     'trollsimabc.R'
     'trollsimfull.R'
     'autoplot.trollsim.R'
+    'trollstackabc.R'
+    'trollstackreduced.R'
+    'trollstackfull.R'
+    'autoplot.trollstack.R'
     'compile_troll.R'
+    'generate_parameters.R'
+    'is.stack.R'
     'load_output.R'
+    'merge_stack.R'
+    'load_stack.R'
     'print.trollsim.R'
     'rcontroll.R'
-    'summary.trollsim.R'
     'troll.R'
+    'stack.R'
+    'summary.trollsim.R'
     'utils-pipe.R'
     'zzz.R'
 VignetteBuilder: knitr

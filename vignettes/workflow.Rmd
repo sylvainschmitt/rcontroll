@@ -1,8 +1,8 @@
 ---
-title: "Simulation workflow"
+title: "A simple workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Simulation workflow}
+  %\VignetteIndexEntry{A simple workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,69 +10,105 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.height = 6,
+  fig.width = 6
 )
 ```
 
-# Data
+# Setup
 
-```{r data}
+```{r libs}
+library(dplyr)
+library(tidyr)
+library(rcontroll)
+Nyears <- 1
+```
+
+
+# Generate parameters
+
+```{r genPar}
+generate_parameters(cols = 250, rows = 250) %>% 
+  knitr::kable()
+```
+
+# Simple simulation
+
+```{r datasim}
+data("TROLLv3_input")
+data("TROLLv3_species")
+data("TROLLv3_climatedaytime12")
+data("TROLLv3_climatedaytime365")
+data("TROLLv3_daytimevar")
+```
+
+```{r fullsim}
+TROLLv3_input$value[6] <- 12 # Nb iterations per Year
+TROLLv3_input$value[5] <- Nyears*12 # iterations
+sim1 <- troll(name = "test",
+              # path = "./",
+              full = TRUE,
+              abc = FALSE, 
+              random = TRUE,
+              global = TROLLv3_input,
+              species = TROLLv3_species,
+              climate = TROLLv3_climatedaytime12,
+              daily = TROLLv3_daytimevar)
+sim1
+```
+
+```{r fullsimG1}
+autoplot(sim1, 
+         what = "ecosystem", 
+         variables = c("abund", "ba"), 
+         selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
+```
+
+```{r fullsimG2}
+autoplot(sim1, what = "final pattern")
+```
+
+# Stack of simulations
+
+```{r datastack}
 library(rcontroll)
 data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
+data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
-TROLLv3_input$value[5] <- 10 # iterations
+Nyears <-  1
+TROLLv3_input$value[6] <- 12 # Nb iterations per Year
+TROLLv3_input$value[5] <- Nyears*12 # iterations
+TROLLv3_input_stack <- TROLLv3_input %>% 
+  mutate(simulation = list(c("seed50000", "seed500"))) %>% 
+  unnest(simulation)
+TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 ```
 
-# Full
-
-```{r full}
-sim <- troll(name = "test",
-             # path = "./",
+```{r fullstack}
+sim_stack1 <- stack(name = "test3", 
+             simulations = c("seed50000", "seed500"),
+             # path = "/home/sylvain/Documents/ECOFOG/rcontroll",
              full = TRUE,
-             abc = FALSE, 
+             abc = FALSE,
              random = TRUE,
-             global = TROLLv3_input,
+             global = TROLLv3_input_stack,
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar)
-sim
+             daily = TROLLv3_daytimevar,
+             cores = 2)
+sim_stack1
 ```
 
-```{r fullG1}
-autoplot(sim, 
+```{r fullstackG1}
+autoplot(sim_stack1, 
          what = "ecosystem", 
          variables = c("abund", "agb"), 
-         species = "total")
+         selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```
 
-```{r fullG2}
-autoplot(sim, what = "final pattern")
+```{r fullstackG2}
+autoplot(sim_stack1, what = "final pattern")
 ```
-
-# Reduced
-
-```{r reduced}
-sim <- troll(name = "test",
-             # path = "./",
-             full = FALSE,
-             abc = FALSE, 
-             random = TRUE,
-             global = TROLLv3_input,
-             species = TROLLv3_species,
-             climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar)
-sim
-```
-```{r reducedG1}
-autoplot(sim, 
-         what = "ecosystem", 
-         variables = c("N", "AGB"), 
-         species = "total")
-```
-
-```{r reducedG2}
-autoplot(sim, what = "final pattern")
-```
-
