@@ -144,6 +144,7 @@ stack <- function(name = NULL,
   }
   
   # stack
+  i <- NULL
   cl <- makeCluster(cores, outfile = "")
   registerDoSNOW(cl)
   pb <- txtProgressBar(max = length(simulations), style = 3)
@@ -204,6 +205,8 @@ stack <- function(name = NULL,
 }
 
 .prep_input <- function(input, simulations){
+  simulation <- NULL
+  
   if("simulation" %in% colnames(input)){
     if(!all(as.character(unique(input$simulation)) %in% simulations))
       stop("Simulations names in your inputs don't match indicated simulations names.")

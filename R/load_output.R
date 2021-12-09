@@ -86,6 +86,8 @@ load_output <- function(name,
                                   path = NULL,
                                   inputs = NULL,
                                   thin = NULL){
+  iter <- NULL
+  
   species_outputs1 <- lapply(list(
     ba = "ba",
     ba10 = "ba10",
@@ -134,6 +136,8 @@ load_output <- function(name,
 .load_reduced_outputs <- function(name = NULL,
                                   path = NULL,
                                   thin = NULL){
+  iter <- NULL
+  
   reduced_outputs <- read_tsv(file.path(path, paste0(name, "_0_", "outputs", ".txt")),
                               col_names = c("iter", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
                               col_types = cols())

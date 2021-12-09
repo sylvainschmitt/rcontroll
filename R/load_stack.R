@@ -5,7 +5,9 @@ NULL
 #'
 #' @param name char. name given to the stack output
 #' @param path char. path where the stack is saved
-#'
+#' @param thin int. vector of integers corresponding to iterations to be kept
+#'   (default NULL)
+#'   
 #' @return an S4 \linkS4class{trollsim} class object
 #'
 #' @export
@@ -15,7 +17,7 @@ NULL
 #' NA
 load_stack <- function(name,
                         path,
-                        type) {
+                       thin = NULL) {
   # Check inputs
   if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
     stop("name and path should be character.")
@@ -23,11 +25,11 @@ load_stack <- function(name,
   simulations <- list.files(path = file.path(path, name))
   stack_res <- lapply(simulations, function(sim)  load_output(sim, 
                                                               file.path(path, name, sim), 
-                                                              type))
+                                                              thin = thin))
   names(stack_res) <- simulations
   stack_res <- trollstack(
     name = name,
-    path = path_o,
+    path = path,
     parameters = stack_res[[1]]@parameters,
     inputs = list(
       global = lapply(stack_res, slot, "inputs") %>% 

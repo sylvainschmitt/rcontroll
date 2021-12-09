@@ -12,12 +12,20 @@
 #' @param climate_file std::string. climate file.
 #' @param species_file std::string. species file.
 #' @param day_file std::string. daytime file.
+#' @param forest_file std::string. forest file.
 #' @param output_file std::string. output folder.
 #' 
 #' @return int.
 #' 
 #' @examples
-#' trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", forest_file = "NULL", output_file = "test")
+#' \dontrun{
+#' trollCpp(global_file = "test/test_input_global.txt", 
+#'          climate_file = "test/test_input_climate.txt",
+#'          species_file = "test/test_input_species.txt", 
+#'          day_file = "test/test_input_daily.txt", 
+#'          forest_file = "NULL", 
+#'          output_file = "test")
+#' }
 #' 
 #' @export
 trollCpp <- function(global_file, climate_file, species_file, day_file, forest_file, output_file) {

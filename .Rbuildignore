@@ -9,3 +9,4 @@ dev
 ^\.github$
 ^codecov\.yml$
 ^test
+.covrignore

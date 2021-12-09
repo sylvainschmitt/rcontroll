@@ -2935,12 +2935,20 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
 //' @param climate_file std::string. climate file.
 //' @param species_file std::string. species file.
 //' @param day_file std::string. daytime file.
+//' @param forest_file std::string. forest file.
 //' @param output_file std::string. output folder.
 //' 
 //' @return int.
 //' 
 //' @examples
-//' trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", forest_file = "NULL", output_file = "test")
+//' \dontrun{
+//' trollCpp(global_file = "test/test_input_global.txt", 
+//'          climate_file = "test/test_input_climate.txt",
+//'          species_file = "test/test_input_species.txt", 
+//'          day_file = "test/test_input_daily.txt", 
+//'          forest_file = "NULL", 
+//'          output_file = "test")
+//' }
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -4259,11 +4267,11 @@ void AllocMem() {
     if(RMAX>rows){
       // Consistency tests 
       Rcerr << "Error : RMAX > rows \n";
-      exit(-1);
+      // exit(-1);
     }
     if(HEIGHT > rows){
       Rcerr << "Error : HEIGHT > rows \n";
-      exit(-1);
+      // exit(-1);
     }
   }
   

@@ -1,4 +1,7 @@
 # rcontroll 0.1.0.9024
+* adding tests and fixing check
+
+# rcontroll 0.1.0.9024
 * adding forest_path to work with FromData but is not correctly programmed in the cpp
 
 # rcontroll 0.1.0.9023

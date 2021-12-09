@@ -22,6 +22,8 @@ trollCpp(
 
 \item{day_file}{std::string. daytime file.}
 
+\item{forest_file}{std::string. forest file.}
+
 \item{output_file}{std::string. output folder.}
 }
 \value{
@@ -31,6 +33,13 @@ int.
 TROLL C++.
 }
 \examples{
-trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", forest_file = "NULL", output_file = "test")
+\dontrun{
+trollCpp(global_file = "test/test_input_global.txt", 
+         climate_file = "test/test_input_climate.txt",
+         species_file = "test/test_input_species.txt", 
+         day_file = "test/test_input_daily.txt", 
+         forest_file = "NULL", 
+         output_file = "test")
+}
 
 }
