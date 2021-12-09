@@ -47,7 +47,7 @@ data("TROLLv3_daytimevar")
 TROLLv3_input$value[6] <- 12 # Nb iterations per Year
 TROLLv3_input$value[5] <- Nyears*12 # iterations
 sim1 <- troll(name = "test",
-              # path = "./",
+              # path = "../",
               full = TRUE,
               abc = FALSE, 
               random = TRUE,

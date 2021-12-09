@@ -23,7 +23,8 @@ Imports:
     doParallel (>= 1.0.16),
     doSNOW (>= 1.0.19),
     foreach (>= 1.5.1),
-    iterators (>= 1.0.13)
+    iterators (>= 1.0.13),
+    Rcpp (>= 1.0.6)
 Suggests:
     markdown,
     knitr,
@@ -32,6 +33,7 @@ Suggests:
     tidyr
 RoxygenNote: 7.1.2
 Collate: 
+    'RcppExports.R'
     'TROLLv3_climatedaytime12.R'
     'TROLLv3_climatedaytime365.R'
     'TROLLv3_daytimevar.R'
@@ -46,13 +48,13 @@ Collate:
     'trollstackreduced.R'
     'trollstackfull.R'
     'autoplot.trollstack.R'
-    'compile_troll.R'
     'generate_parameters.R'
     'is.stack.R'
     'load_output.R'
     'merge_stack.R'
     'load_stack.R'
     'print.trollsim.R'
+    'rcontroll-package.R'
     'rcontroll.R'
     'troll.R'
     'stack.R'
@@ -62,3 +64,5 @@ Collate:
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
+LinkingTo: 
+    Rcpp

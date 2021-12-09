@@ -114,22 +114,9 @@ troll <- function(name = NULL,
   if(!full & abc)
     type <- "abc"
   
-  # troll exe
-  troll <- file.path(
-    system.file("troll", .Platform$OS.type, package = "rcontroll", mustWork = TRUE),
-    paste0(
-      "TROLL_",
-      ifelse(full, "full", "reduced"), "_",
-      ifelse(abc, "abc", "nonabc"), "_",
-      ifelse(!is.null(forest), "forest", "nonforest"), "_",
-      ifelse(random, "random", "nonrandom"),
-      switch(.Platform$OS.type, 
-             "unix" = ".out", 
-             "windows" = ".exe")
-    )
-  )  
-  if(!file.exists(troll))
-    stop(paste("TROLL executable:", troll, "is not available."))
+  # DEV #
+  if(!full | abc | !random)
+    stop("This is the Rcpp branch only including standard full random non abc TROLL.")
   
   # save input as files
   global_path <- file.path(path, name, paste0(name, "_input_global.txt"))
@@ -147,19 +134,14 @@ troll <- function(name = NULL,
   if(!random)
     cat("nonrandom", file = file.path(path, name, paste0(name, "_nonrandom.txt")))
   
-  # command
-  command <- paste0(
-    troll,
-    " -i", global_path,
-    " -s", species_path,
-    " -m", climate_path,
-    " -d", daily_path,
-    " -o", file.path(path, name, name)
-  )
-  message(command)
-  
   # run
-  log <- system(command, intern = TRUE)
+  log <- capture.output(
+    trollCpp(global_file = global_path, 
+             climate_file = climate_path, 
+             species_file = species_path, 
+             day_file = daily_path, 
+             output_file = file.path(path, name, name)
+    ))
   write(log, file.path(path, name, paste0(name, "_log.txt")))
   
   # cleaning outputs
@@ -188,6 +170,7 @@ troll <- function(name = NULL,
     "leafdens2",
     "leafdens3",
     "NDDfield",
+    "litterfall",
     "par",
     "site1",
     "ppfd0", # not using it for the moment

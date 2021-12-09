@@ -117,8 +117,7 @@ load_output <- function(name,
     bind_rows(.id = "variable")
   
   species_outputs2 <- lapply(list(
-    agb = "agb",
-    litterfall = "litterfall"
+    agb = "agb"
   ), function(x) {
     read_tsv(file.path(path, paste0(name, "_0_", x, ".txt")),
              col_names = c(inputs$species$s_name, "total"),

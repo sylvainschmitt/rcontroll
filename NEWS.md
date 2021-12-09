@@ -1,3 +1,11 @@
+# rcontroll 0.1.0.9020
+* seamless integration of trollCpp thanks to Rcpp !
+* updated troll.R & load_output
+* rm inst/troll & compile troll
+* rm climate365 & soil
+* vignette calibration & Schmitt2020
+* rm doc2word.sh
+
 # rcontroll 0.1.0.9019
 * initiating all vignettes
 * doc2word.sh for sharing on gdrive
