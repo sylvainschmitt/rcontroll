@@ -59,7 +59,10 @@ generate_parameters(
   LL_parameterization = 1,
   LA_regulation = 2,
   sapwood = 1,
-  seedsadditional = 0
+  seedsadditional = 0,
+  OUTPUT_reduced = 0,
+  FromData = 0,
+  NONRANDOM = 0
 )
 }
 \arguments{
@@ -172,6 +175,12 @@ generate_parameters(
 \item{sapwood}{num.}
 
 \item{seedsadditional}{num.}
+
+\item{OUTPUT_reduced}{num.}
+
+\item{FromData}{num.}
+
+\item{NONRANDOM}{num.}
 }
 \value{
 a data frame of global parameters

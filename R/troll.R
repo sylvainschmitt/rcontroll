@@ -1,7 +1,7 @@
 #' @include load_output.R
 #' @importFrom readr write_tsv
 #' @importFrom sys exec_wait
-#' @importFrom utils timestamp
+#' @importFrom utils timestamp capture.output
 NULL
 
 #' TROLL
@@ -10,19 +10,16 @@ NULL
 #'
 #' @param name char. model name (if NULL timestamp)
 #' @param path char. path to the simulation (tmp if NULL)
-#' @param full bool. TROLL with full outputs, if not reduced outputs (default
-#'   TRUE)
-#' @param abc bool. TROLL with abc outputs, forcing reduced outputs (default
-#'   FALSE)
-#' @param random bool. TROLL with random outputs, if not the seed is fixed
-#'   (default TRUE)
 #' @param global df. global parameters
 #' @param species df. species parameters
 #' @param climate df. climate parameters
 #' @param daily df. daily variation parameters
 #' @param forest df. TROLL with forest input, if null start from an empty grid
 #'   (default NULL)
+#' @param verbose bool. show TROLL outputs in the console
 #' @param overwrite bool. overwrite previous outputs
+#' @param thin int. vector of integers corresponding to iterations to be kept
+#'   (default NULL)
 #'
 #' @return trollsim
 #'
@@ -35,15 +32,14 @@ NULL
 #' 
 troll <- function(name = NULL,
                   path = NULL,
-                  full = TRUE,
-                  abc = FALSE,
-                  random = TRUE,
                   global,
                   species,
                   climate,
                   daily,
                   forest = NULL,
-                  overwrite = TRUE) {
+                  verbose = TRUE,
+                  overwrite = TRUE,
+                  thin = NULL) {
   # for tests
   # data("TROLLv3_input")
   # data("TROLLv3_species")
@@ -59,17 +55,14 @@ troll <- function(name = NULL,
   # path <- getwd()
   
   # check all inputs
-  if(!all(unlist(lapply(list(full, random, abc, overwrite), class)) == "logical"))
-    stop("full, random, abc, and overwrite should be logical.")
+  if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
+    stop("overwrite should be logical.")
   if(!all(unlist(lapply(list(name, path), class)) %in% c("character", "NULL")))
     stop("name and path should be character or null.")
   if(!all(unlist(lapply(list(global, species, climate, daily), inherits, c("data.frame", "NULL")))))
     stop("global, species, climate, and daily should be a data frame.")
   if(!(class(forest) %in% c("data.frame", "NULL")))
     stop("forest should be a data frame or null.")
-  
-  if(!is.null(forest))
-    stop("forest not implemented yet!")
   
   # model name
   if (is.null(name)) {
@@ -104,33 +97,6 @@ troll <- function(name = NULL,
   }
   dir.create(path_o)
   
-  # type
-  if(full & abc)
-    stop("ABC and full outputs are not compatible.")
-  if(full & !abc)
-    type <- "full"
-  if(!full & !abc)
-    type <- "reduced"
-  if(!full & abc)
-    type <- "abc"
-  
-  # troll exe
-  troll <- file.path(
-    system.file("troll", .Platform$OS.type, package = "rcontroll", mustWork = TRUE),
-    paste0(
-      "TROLL_",
-      ifelse(full, "full", "reduced"), "_",
-      ifelse(abc, "abc", "nonabc"), "_",
-      ifelse(!is.null(forest), "forest", "nonforest"), "_",
-      ifelse(random, "random", "nonrandom"),
-      switch(.Platform$OS.type, 
-             "unix" = ".out", 
-             "windows" = ".exe")
-    )
-  )  
-  if(!file.exists(troll))
-    stop(paste("TROLL executable:", troll, "is not available."))
-  
   # save input as files
   global_path <- file.path(path, name, paste0(name, "_input_global.txt"))
   species_path <- file.path(path, name, paste0(name, "_input_species.txt"))
@@ -144,22 +110,19 @@ troll <- function(name = NULL,
   write_tsv(daily, file = daily_path)
   if(!is.null(forest))
     write_tsv(forest, file = forest_path)
-  if(!random)
-    cat("nonrandom", file = file.path(path, name, paste0(name, "_nonrandom.txt")))
-  
-  # command
-  command <- paste0(
-    troll,
-    " -i", global_path,
-    " -s", species_path,
-    " -m", climate_path,
-    " -d", daily_path,
-    " -o", file.path(path, name, name)
-  )
-  message(command)
+  if(is.null(forest))
+    forest_path <- "NULL"
   
   # run
-  log <- system(command, intern = TRUE)
+  log <- capture.output(
+    trollCpp(global_file = global_path, 
+             climate_file = climate_path, 
+             species_file = species_path, 
+             day_file = daily_path, 
+             forest_file = forest_path, 
+             output_file = file.path(path, name, name)
+    ), 
+    split = verbose)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
   
   # cleaning outputs
@@ -188,6 +151,7 @@ troll <- function(name = NULL,
     "leafdens2",
     "leafdens3",
     "NDDfield",
+    "litterfall",
     "par",
     "site1",
     "ppfd0", # not using it for the moment
@@ -204,7 +168,7 @@ troll <- function(name = NULL,
   })
   
   # loading outputs
-  sim <- load_output(name, file.path(path, name), type)
+  sim <- load_output(name, file.path(path, name), thin = thin)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()

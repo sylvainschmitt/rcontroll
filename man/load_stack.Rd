@@ -4,14 +4,15 @@
 \alias{load_stack}
 \title{Function to load TROLL stack}
 \usage{
-load_stack(name, path, type)
+load_stack(name, path, thin = NULL)
 }
 \arguments{
 \item{name}{char. name given to the stack output}
 
 \item{path}{char. path where the stack is saved}
 
-\item{type}{char. type of simulation (full, reduce or abc)}
+\item{thin}{int. vector of integers corresponding to iterations to be kept
+(default NULL)}
 }
 \value{
 an S4 \linkS4class{trollsim} class object

@@ -4,14 +4,15 @@
 \alias{load_output}
 \title{Function to load TROLL output}
 \usage{
-load_output(name, path, type)
+load_output(name, path, thin = NULL)
 }
 \arguments{
 \item{name}{char. name given to the model output}
 
 \item{path}{char. path where the model is saved}
 
-\item{type}{char. type of simulation (full, reduce or abc)}
+\item{thin}{int. vector of integers corresponding to iterations to be kept
+(default NULL)}
 }
 \value{
 an S4 \linkS4class{trollsim} class object
