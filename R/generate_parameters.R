@@ -55,6 +55,9 @@
 #' @param LA_regulation num. 
 #' @param sapwood num. 
 #' @param seedsadditional num. 
+#' @param OUTPUT_reduced num.
+#' @param FromData num.
+#' @param NONRANDOM num.
 #' 
 #' @return a data frame of global parameters
 #'
@@ -118,7 +121,10 @@ generate_parameters <- function(
   LL_parameterization = 1,
   LA_regulation = 2,
   sapwood = 1,
-  seedsadditional = 0
+  seedsadditional = 0,
+  OUTPUT_reduced = 0,
+  FromData = 0,
+  NONRANDOM = 0
 ){
   # check args
   if(!all(unlist(lapply(
@@ -131,7 +137,8 @@ generate_parameters <- function(
          corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
          leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
          m, m1, Cair, LL_parameterization, LA_regulation, 
-         sapwood, seedsadditional), class)) == "numeric"))
+         sapwood, seedsadditional, OUTPUT_reduced, FromData, NONRANDOM), 
+    class)) == "numeric"))
     stop("parameters should be numeric.")
   
   data.frame(
@@ -147,7 +154,8 @@ generate_parameters <- function(
               "corr_N_P", "corr_N_LMA", "corr_P_LMA", "leafdem_resolution", 
               "p_tfsecondary", "hurt_decay", "crown_gap_fraction", 
               "m", "m1", "Cair", "_LL_parameterization", 
-              "_LA_regulation", "_sapwood", "_seedsadditional"),
+              "_LA_regulation", "_sapwood", "_seedsadditional",
+              "_OUTPUT_reduced", "_FromData", "_NONRANDOM"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
              NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
              absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
@@ -157,7 +165,7 @@ generate_parameters <- function(
              corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
              leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
              m, m1, Cair, LL_parameterization, LA_regulation, 
-             sapwood, seedsadditional),
+             sapwood, seedsadditional, OUTPUT_reduced, FromData, NONRANDOM),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",
@@ -213,8 +221,10 @@ generate_parameters <- function(
       "/* LL parameterizations: Reich empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */",
       "/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */",
       "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */",
-      "/* excess biomass into seeds after maturation (0,1) */"
+      "/* excess biomass into seeds after maturation (0,1) */",
+      "/* reduced set of output files */",
+      "/* if defined, an additional input file can be provided to start simulations from an existing data set or a simulated data set (5 parameters are needed: x and y coordinates, dbh, species_label, species */",
+      "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, for bug fixing */"
     )
   )
-  
 }

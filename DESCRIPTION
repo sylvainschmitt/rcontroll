@@ -44,7 +44,6 @@ Collate:
     'autoplot.trollstack.R'
     'generate_parameters.R'
     'load_output.R'
-    'merge_stack.R'
     'load_stack.R'
     'print.trollsim.R'
     'rcontroll-package.R'

@@ -8,9 +8,6 @@ stack(
   name = NULL,
   simulations,
   path = NULL,
-  full = TRUE,
-  abc = FALSE,
-  random = TRUE,
   global,
   species,
   climate,
@@ -26,15 +23,6 @@ stack(
 \item{simulations}{char. simulations names}
 
 \item{path}{char. path to the stack (tmp if NULL)}
-
-\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
-TRUE)}
-
-\item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
-FALSE)}
-
-\item{random}{bool. TROLL with random outputs, if not the seed is fixed
-(default TRUE)}
 
 \item{global}{df. global parameters, add a simulation column for repeated
 simulations}

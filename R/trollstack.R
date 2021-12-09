@@ -22,18 +22,18 @@ setClass(
 #' @param inputs list. simulation inputs (species, climate, daily, forest)
 #' @param log chr. simulation log
 #' @param final_pattern df. simulation final forest
-#' @param species_outputs df. species and ecosystem metrics
+#' @param outputs df. species and ecosystem metrics (reduced or full)
 #'
 #' @export
 #' @rdname trollstack
-trollstackfull <- function(
+trollstack <- function(
   name = character(),
   path = character(),
   parameters = numeric(),
   inputs = list(),
   log = character(),
   final_pattern = data.frame(),
-  species_outputs = data.frame()
+  outputs = data.frame()
 ) {
   return(new("trollstack",
              name = name,
@@ -42,6 +42,6 @@ trollstackfull <- function(
              inputs = inputs,
              log = log,
              final_pattern = final_pattern,
-             species_outputs = species_outputs
+             outputs = outputs
   ))
 }

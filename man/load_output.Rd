@@ -4,15 +4,12 @@
 \alias{load_output}
 \title{Function to load TROLL output}
 \usage{
-load_output(name, path, type)
+load_output(name, path, full)
 }
 \arguments{
 \item{name}{char. name given to the model output}
 
 \item{path}{char. path where the model is saved}
-
-\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
-TRUE)}
 }
 \value{
 an S4 \linkS4class{trollsim} class object

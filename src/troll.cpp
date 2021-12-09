@@ -93,19 +93,19 @@ fstream out,out2; //!< Global variable: output files
 fstream output[40];//!< Global variable: output files 
 
 // USER CONTROLS. Options that can be turned on (1) or off (0). This comes at computational cost: where routines have to be called frequently, if-conditioning should be done as far outside the loop as possible (e.g. for DAYTIMELIGHT outside voxel loops) .Options are set below, but inclusion in parameter sheet needed (for control from R) 
-bool _NONRANDOM=1;     //!< User control: If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, for bug fixing 
 bool _GPPcrown=0;      //!< User control: This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. 
 bool _BASICTREEFALL=1; //!< User control: if defined: treefall is a source of tree death (and if TREEFALL not defined, this is modeled through simple comparison between tree height and a threshold t_Ct, if not defined, treefall is not represented as a separated and independent source of death, but instead, all tree death are due to the deathrate value) 
 bool _DAYTIMELIGHT=1;  //!< User control: if defined: the rate of carbon assimilation integrates an average daily fluctuation of light (thanks to GPPDaily). Should be defined to ensure an appropriate use of Farquhar model; deprecated, but renamed as DAYTIMELIGHT for clarity's sake since v.2.5 
 bool _SEEDTRADEOFF=0;  //!< User control: if defined: the number of seeds produced by each tree is determined by the tree NPP allocated to reproduction and the species seed mass, otherwise the number of seeds is fixed; besides, seedling recruitment in one site is not made by randomly and 'equiprobably' picking one species among the seeds present at that site but the probability of recruitment among the present seeds is proportional to the number of seeds (in s_Seed[site]) time the seed mass of each species 
 bool _NDD=0;           //!< User control: if defined, negative density dependant processes affect both the probability of seedling recruitment and the local tree death rate. The term of density-dependance is computed as the sum of conspecific tree basal area divided by their distance to the focal tree within a neighbourhood (circle of radius 15m) 
 bool _CROWN_MM=0;      //!< User control: new in v.2.4.1: Michaelis Menten allometry for crowns instead of power law, since v.2.5: not a macro anymore, but set at runtime (little overhead since queried only once at birth and once per timestep), !!!: power law is the default. If Michaelis Menten type allometry is activated, the parameters have to be changed in input sheet accordingly 
-bool _OUTPUT_reduced=0;//!< User control: reduced set of output files 
-bool _FromData=0;      //!< User control: if defined, an additional input file can be provided to start simulations from an existing data set or a simulated data set (5 parameters are needed: x and y coordinates, dbh, species_label, species 
 bool _sapwood;         //!< User control: two ways of parameterising sapwood density: constant thickness (0), Fyllas, but with lower limit (1) 
 bool _seedsadditional; //!< User control: excess carbon into seeds? no/yes=(0/1) 
 bool _LL_parameterization;   //!< User control: two ways for parameterising leaf lifespan: empirical (derived by Sylvain Schmitt, TODO: from which data?), Kikuzawa model (0,1) 
-int _LA_regulation;     //!< User control: three ways of parameterising leaf dynamic allocation: no regulation (0), never exceed LAImax, i.e. the maximum LAI under full sunlight (1), adjust LAI to the current light environment (2). To switch between option 1 and 2, only one line is necessary in leafarea_max 
+int _LA_regulation;    //!< User control: three ways of parameterising leaf dynamic allocation: no regulation (0), never exceed LAImax, i.e. the maximum LAI under full sunlight (1), adjust LAI to the current light environment (2). To switch between option 1 and 2, only one line is necessary in leafarea_max 
+bool _OUTPUT_reduced;  //!< User control: reduced set of output files 
+bool _FromData;        //!< User control: if defined, an additional input file can be provided to start simulations from an existing data set or a simulated data set (5 parameters are needed: x and y coordinates, dbh, species_label, species 
+bool _NONRANDOM;       //!< User control: If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, for bug fixing 
 
 // GLOBAL PARAMETERS OF THE SIMULATION 
 int sites;      //!< Global variable: number of pixels in the scene (cols*rows) 
@@ -3303,6 +3303,12 @@ void AssignValueGlobal(string parameter_name, string parameter_value){
     SetParameter(parameter_name, parameter_value, _sapwood, bool(0), bool(1), bool(1), quiet);
   } else if(parameter_name == "_seedsadditional"){
     SetParameter(parameter_name, parameter_value, _seedsadditional, bool(0), bool(1), bool(0), quiet);
+  } else if(parameter_name == "_OUTPUT_reduced"){
+    SetParameter(parameter_name, parameter_value, _OUTPUT_reduced, bool(0), bool(1), bool(0), quiet);
+  } else if(parameter_name == "_FromData"){
+    SetParameter(parameter_name, parameter_value, _FromData, bool(0), bool(1), bool(0), quiet);
+  } else if(parameter_name == "_NONRANDOM"){
+    SetParameter(parameter_name, parameter_value, _NONRANDOM, bool(0), bool(1), bool(0), quiet);
   }
   
   // !!!: TODO, implement NDD parameters
@@ -3353,8 +3359,8 @@ void AssignValueSpecies(Species &S, string parameter_name, string parameter_valu
 void ReadInputGeneral(){
   fstream In(inputfile, ios::in);
   if(In){
-    string parameter_names[53] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional"};
-    int nb_parameters = 53;
+    string parameter_names[56] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional", "_OUTPUT_reduced", "_FromData", "_NONRANDOM"};
+    int nb_parameters = 56;
     vector<string> parameter_values(nb_parameters,"");
     
     cout << endl << "Reading in file: " << inputfile << endl;

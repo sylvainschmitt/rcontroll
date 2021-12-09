@@ -30,9 +30,7 @@ NULL
 setMethod("autoplot", "trollsim", function(
   object, 
   what = "ecosystem",
-  variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
-                "litterfall", "npp", "rday", "rnight", "rstem",
-                "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"), 
+  variables = NULL, 
   selected_species = "total"
 ) {
   # dplyr
@@ -41,16 +39,22 @@ setMethod("autoplot", "trollsim", function(
   # check parameters
   if(!(what %in% c("final pattern", "ecosystem")))
     stop("what should be final pattern or ecosystem")
-  if(!all(variables %in% c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
+  if(object@parameters["_OUTPUT_reduced"] == 0 & !is.null(variables) &
+     !all(variables %in% c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
                            "litterfall", "npp", "rday", "rnight", "rstem")))
     stop('variables should be "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or "rstem"')
-  if(!all(variables %in% c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB")))
+  if(object@parameters["_OUTPUT_reduced"] == 1 & !is.null(variables) &
+     !all(variables %in% c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB")))
     stop('variables should be "N", "N10", "N30", "BA10", "NPP", "GPP", or "AGB"')
-  if(!all(selected_species %in% c(object@inputs$species$s_name, "total")))
+  if(object@parameters["_OUTPUT_reduced"] == 0 &
+     !all(selected_species %in% c(object@inputs$species$s_name, "total")))
     stop(paste('selected_species should be', paste(object@inputs$species$s_name, collapse = ", "), "or total."))
+  if(object@parameters["_OUTPUT_reduced"] == 1 &
+     !all(selected_species %in% c("total")))
+    stop(paste('selected_species should be total when using reduced outputs'))
   
   # final pattern
-  if(what == "final pattern")
+  if(object@parameters["_OUTPUT_reduced"] == 0 & what == "final pattern")
     g <- ggplot(object@final_pattern, aes(col, row, size = dbh, col = s_name)) +
       geom_point() +
       theme_bw() +
@@ -58,18 +62,12 @@ setMethod("autoplot", "trollsim", function(
       scale_color_viridis(guide = "none", discrete = T) +
       coord_equal() +
       xlab("X") + ylab("Y")
-  if(what == "final pattern")
-    g <- ggplot(object@final_pattern, aes(col, row, size = dbh, col = s_name)) +
-      geom_point() +
-      theme_bw() +
-      scale_size_continuous("DBH (m)", range = c(0.1, 3)) +
-      scale_color_viridis(guide = "none", discrete = T) +
-      coord_equal() +
-      xlab("X") + ylab("Y")
+  if(object@parameters["_OUTPUT_reduced"] == 1 & what == "final pattern")
+    stop(paste('no final pattern available with reduced outputs'))
   
   # ecosystem
   if(what == "ecosystem")
-    g <- object@species_outputs %>%
+    g <- object@outputs %>%
       filter(species %in% selected_species) %>%
       mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>% 
       melt(c("iter","species")) %>%
@@ -79,6 +77,6 @@ setMethod("autoplot", "trollsim", function(
       facet_wrap(~variable, scales = "free_y") +
       theme_bw() +
       xlab("Time (year)")    
-  
+    
   return(g)
 })

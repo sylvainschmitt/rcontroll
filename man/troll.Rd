@@ -7,9 +7,6 @@
 troll(
   name = NULL,
   path = NULL,
-  full = TRUE,
-  abc = FALSE,
-  random = TRUE,
   global,
   species,
   climate,
@@ -22,12 +19,6 @@ troll(
 \item{name}{char. model name (if NULL timestamp)}
 
 \item{path}{char. path to the simulation (tmp if NULL)}
-
-\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
-TRUE)}
-
-\item{random}{bool. TROLL with random outputs, if not the seed is fixed
-(default TRUE)}
 
 \item{global}{df. global parameters}
 

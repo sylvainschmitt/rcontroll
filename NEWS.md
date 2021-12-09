@@ -1,3 +1,8 @@
+# rcontroll 0.1.0.9022
+* adding OUTPUT_reduced, FromData and NONRANDOM to general parameters with a lot of consequent changes
+* adding a thinning parameter
+* simplified vignette
+
 # rcontroll 0.1.0.9021
 * simplifying trollsim and trollstack to one
 

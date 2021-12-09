@@ -1,6 +1,6 @@
 #' @include trollsim.R
 #' @importFrom readr read_tsv cols read_file
-#' @importFrom dplyr bind_rows n
+#' @importFrom dplyr bind_rows n filter
 #' @importFrom reshape2 melt dcast
 NULL
 
@@ -8,8 +8,8 @@ NULL
 #'
 #' @param name char. name given to the model output
 #' @param path char. path where the model is saved
-#' @param full bool. TROLL with full outputs, if not reduced outputs (default
-#'   TRUE)
+#' @param thin int. vector of integers corresponding to iterations to be kept
+#'   (default NULL)
 #'
 #' @return an S4 \linkS4class{trollsim} class object
 #'
@@ -20,12 +20,10 @@ NULL
 #' NA
 load_output <- function(name,
                         path,
-                        full) {
+                        thin = NULL) {
   # Check inputs
   if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
     stop("name and path should be character.")
-  if(!all(unlist(lapply(list(full), class)) %in% c("logical")))
-    stop("full should be logical.")
 
   # troll sim
   inputs <- lapply(
@@ -41,21 +39,22 @@ load_output <- function(name,
       )
     }
   )
-  forest <- file.path(path, paste0(name, paste0("_input_forest.txt")))
-  forestop <- file.exists(forest)
-  inputs$forest <- NULL
-  if(forestop)
-    inputs$forest <- read_tsv(forest, col_types = cols())
-  random <- !file.exists(file.path(path, paste0(name, paste0("_nonrandom.txt"))))
+  
   parameters <- inputs$global$value
   names(parameters) <- inputs$global$param
-  parameters['forest'] <- as.numeric(forestop)
-  parameters['random'] <- as.numeric(random)
   log <- read_file(file.path(path, paste0(name, "_log.txt")))
-  final_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_final_pattern.txt"))),
-                            col_types = cols())
   
-  if(full)
+  inputs$forest <- data.frame()
+  if(parameters["_FromData"] == 1)
+    inputs$forest <- read_tsv(file.path(path, paste0(name, paste0("_input_forest.txt"))),
+                              col_types = cols())
+  
+  final_pattern <- data.frame()
+  if(parameters["_OUTPUT_reduced"] == 0)
+    final_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_final_pattern.txt"))),
+                              col_types = cols())
+  
+  if(parameters["_OUTPUT_reduced"] == 0)
     return(
       trollsim(
         name = name,
@@ -64,7 +63,7 @@ load_output <- function(name,
         inputs = inputs,
         log = log,
         final_pattern = final_pattern,
-        outputs = .load_species_outputs(name, path, inputs = inputs)
+        outputs = .load_species_outputs(name, path, inputs = inputs, thin = thin)
       )
     )
   else
@@ -76,7 +75,7 @@ load_output <- function(name,
         inputs = inputs,
         log = log,
         final_pattern = final_pattern,
-        outputs = .load_reduced_outputs(name, path)
+        outputs = .load_reduced_outputs(name, path, thin = thin)
       )
     )
 }
@@ -85,7 +84,8 @@ load_output <- function(name,
 
 .load_species_outputs <- function(name = NULL,
                                   path = NULL,
-                                  inputs = NULL){
+                                  inputs = NULL,
+                                  thin = NULL){
   species_outputs1 <- lapply(list(
     ba = "ba",
     ba10 = "ba10",
@@ -124,13 +124,23 @@ load_output <- function(name,
   ) %>%
     dcast(iter + species ~ variable)
   
+  if(!is.null(thin))
+    species_outputs <- species_outputs %>% 
+    filter(iter %in% thin)
+  
   return(species_outputs)
 }
 
 .load_reduced_outputs <- function(name = NULL,
-                                  path = NULL){
+                                  path = NULL,
+                                  thin = NULL){
   reduced_outputs <- read_tsv(file.path(path, paste0(name, "_0_", "outputs", ".txt")),
                               col_names = c("iter", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
                               col_types = cols())
+  
+  if(!is.null(thin))
+    reduced_outputs <- reduced_outputs %>% 
+      filter(iter %in% thin)
+  
   return(reduced_outputs)
 }

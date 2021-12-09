@@ -11,7 +11,7 @@ NULL
 #' @slot inputs list. simulation inputs (species, climate, daily, forest)
 #' @slot log chr. simulation log
 #' @slot final_pattern df. simulation final forest
-##' @slot outputs df. species and ecosystem metrics (reduced or full)
+#' @slot outputs df. species and ecosystem metrics (reduced or full)
 #'
 #' @export
 setClass(
@@ -46,7 +46,7 @@ setClass(
 #' @param inputs numeric. simulation inputs (species, climate, daily, forest)
 #' @param log chr. simulation log
 #' @param final_pattern df. simulation final forest
-##' @slot outputs df. species and ecosystem metrics (reduced or full)
+#' @slot outputs df. species and ecosystem metrics (reduced or full)
 #'
 #' @export
 #' @rdname trollsim
