@@ -1,13 +1,13 @@
 #' @include load_output.R
-#' @include merge_stack.R
 NULL
 
 #' Function to load TROLL stack
 #'
 #' @param name char. name given to the stack output
 #' @param path char. path where the stack is saved
-#' @param type char. type of simulation (full, reduce or abc)
-#'
+#' @param thin int. vector of integers corresponding to iterations to be kept
+#'   (default NULL)
+#'   
 #' @return an S4 \linkS4class{trollsim} class object
 #'
 #' @export
@@ -17,19 +17,43 @@ NULL
 #' NA
 load_stack <- function(name,
                         path,
-                        type) {
+                       thin = NULL) {
   # Check inputs
-  if(!all(unlist(lapply(list(name, path, type), class)) %in% c("character")))
-    stop("name, path, and type should be character.")
+  if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
+    stop("name and path should be character.")
 
   simulations <- list.files(path = file.path(path, name))
   stack_res <- lapply(simulations, function(sim)  load_output(sim, 
                                                               file.path(path, name, sim), 
-                                                              type))
+                                                              thin = thin))
   names(stack_res) <- simulations
-  stack_res[[1]]@name <- name
-  stack_res[[1]]@path <- path_o
-  stack_res <- .merge_stack(stack_res)
+  stack_res <- trollstack(
+    name = name,
+    path = path,
+    parameters = stack_res[[1]]@parameters,
+    inputs = list(
+      global = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "global") %>% 
+        bind_rows(.id = "simulation"),
+      species = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "species") %>% 
+        bind_rows(.id = "simulation"),
+      climate = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "climate") %>% 
+        bind_rows(.id = "simulation"),
+      daily = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "daily") %>% 
+        bind_rows(.id = "simulation"),
+      forest = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "forest") %>% 
+        bind_rows(.id = "simulation")
+    ),
+    log = paste(lapply(stack_res, slot, "log")),
+    final_pattern = lapply(stack_res, slot, "final_pattern") %>% 
+      bind_rows(.id = "simulation"),
+    outputs = lapply(stack_res, slot, "outputs") %>% 
+      bind_rows(.id = "simulation")
+  )
   
   return(stack_res)
 }

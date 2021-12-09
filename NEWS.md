@@ -1,3 +1,29 @@
+# rcontroll 0.1.0.9024
+* adding tests and fixing check
+
+# rcontroll 0.1.0.9024
+* adding forest_path to work with FromData but is not correctly programmed in the cpp
+
+# rcontroll 0.1.0.9023
+* cout and cerr to Rcout and Rcerr
+* adding a verbose to troll and stack
+
+# rcontroll 0.1.0.9022
+* adding OUTPUT_reduced, FromData and NONRANDOM to general parameters with a lot of consequent changes
+* adding a thinning parameter
+* simplified vignette
+
+# rcontroll 0.1.0.9021
+* simplifying trollsim and trollstack to one
+
+# rcontroll 0.1.0.9020
+* seamless integration of trollCpp thanks to Rcpp !
+* updated troll.R & load_output
+* rm inst/troll & compile troll
+* rm climate365 & soil
+* vignette calibration & Schmitt2020
+* rm doc2word.sh
+
 # rcontroll 0.1.0.9019
 * initiating all vignettes
 * doc2word.sh for sharing on gdrive

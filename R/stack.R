@@ -1,11 +1,11 @@
 #' @include troll.R
-#' @include merge_stack.R
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach foreach %dopar%
 #' @importFrom iterators icount
 #' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom dplyr bind_rows
 NULL
 
 #' Stack
@@ -15,12 +15,6 @@ NULL
 #' @param name char. stack name (if NULL timestamp)
 #' @param simulations char. simulations names
 #' @param path char. path to the stack (tmp if NULL)
-#' @param full bool. TROLL with full outputs, if not reduced outputs (default
-#'   TRUE)
-#' @param abc bool. TROLL with abc outputs, forcing reduced outputs (default
-#'   FALSE)
-#' @param random bool. TROLL with random outputs, if not the seed is fixed
-#'   (default TRUE)
 #' @param global df. global parameters, add a simulation column for repeated
 #'   simulations
 #' @param species df. species parameters, add a simulation column for repeated
@@ -31,9 +25,12 @@ NULL
 #'   repeated simulations
 #' @param forest df. TROLL with forest input, if null start from an empty grid,
 #'   add a simulation column for repeated simulations (default NULL)
+#' @param verbose bool. show TROLL outputs in the console
 #' @param cores int. number of cores for parallelization, if NULL available
 #'   cores - 1 (default NULL)
 #' @param overwrite bool. overwrite previous outputs
+#' @param thin int. vector of integers corresponding to iterations to be kept
+#'   (default NULL)
 #'
 #' @return trollstack
 #'
@@ -47,16 +44,15 @@ NULL
 stack <- function(name = NULL,
                   simulations,
                   path = NULL,
-                  full = TRUE,
-                  abc = FALSE,
-                  random = TRUE,
                   global,
                   species,
                   climate,
                   daily,
                   forest = NULL,
+                  verbose = TRUE,
                   cores = NULL,
-                  overwrite = TRUE) {
+                  overwrite = TRUE,
+                  thin = NULL) {
   # for tests
   # data("TROLLv3_input")
   # data("TROLLv3_species")
@@ -148,6 +144,7 @@ stack <- function(name = NULL,
   }
   
   # stack
+  i <- NULL
   cl <- makeCluster(cores, outfile = "")
   registerDoSNOW(cl)
   pb <- txtProgressBar(max = length(simulations), style = 3)
@@ -159,23 +156,46 @@ stack <- function(name = NULL,
                      troll(
                        name = sim,
                        path = sim_path[[sim]],
-                       full = full,
-                       abc = abc,
-                       random = random,
                        global = global[[sim]],
                        species = species[[sim]],
                        climate = climate[[sim]],
                        daily = daily[[sim]],
                        forest = forest[[sim]],
-                       overwrite = overwrite
+                       verbose = verbose,
+                       overwrite = overwrite,
+                       thin = thin
                      )
                    }
   close(pb)
   stopCluster(cl)
   names(stack_res) <- simulations
-  stack_res[[1]]@name <- name
-  stack_res[[1]]@path <- path_o
-  stack_res <- .merge_stack(stack_res)
+  stack_res <- trollstack(
+    name = stack_res[[1]]@name,
+    path = path_o,
+    parameters = stack_res[[1]]@parameters,
+    inputs = list(
+      global = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "global") %>% 
+        bind_rows(.id = "simulation"),
+      species = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "species") %>% 
+        bind_rows(.id = "simulation"),
+      climate = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "climate") %>% 
+        bind_rows(.id = "simulation"),
+      daily = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "daily") %>% 
+        bind_rows(.id = "simulation"),
+      forest = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "forest") %>% 
+        bind_rows(.id = "simulation")
+    ),
+    log = paste(lapply(stack_res, slot, "log")),
+    final_pattern = lapply(stack_res, slot, "final_pattern") %>% 
+      bind_rows(.id = "simulation"),
+    outputs = lapply(stack_res, slot, "outputs") %>% 
+      bind_rows(.id = "simulation")
+  )
   
   # unlink stack path with tmp
   if(tmp)
@@ -185,6 +205,8 @@ stack <- function(name = NULL,
 }
 
 .prep_input <- function(input, simulations){
+  simulation <- NULL
+  
   if("simulation" %in% colnames(input)){
     if(!all(as.character(unique(input$simulation)) %in% simulations))
       stop("Simulations names in your inputs don't match indicated simulations names.")

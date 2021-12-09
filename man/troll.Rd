@@ -7,30 +7,20 @@
 troll(
   name = NULL,
   path = NULL,
-  full = TRUE,
-  abc = FALSE,
-  random = TRUE,
   global,
   species,
   climate,
   daily,
   forest = NULL,
-  overwrite = TRUE
+  verbose = TRUE,
+  overwrite = TRUE,
+  thin = NULL
 )
 }
 \arguments{
 \item{name}{char. model name (if NULL timestamp)}
 
 \item{path}{char. path to the simulation (tmp if NULL)}
-
-\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
-TRUE)}
-
-\item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
-FALSE)}
-
-\item{random}{bool. TROLL with random outputs, if not the seed is fixed
-(default TRUE)}
 
 \item{global}{df. global parameters}
 
@@ -43,7 +33,12 @@ FALSE)}
 \item{forest}{df. TROLL with forest input, if null start from an empty grid
 (default NULL)}
 
+\item{verbose}{bool. show TROLL outputs in the console}
+
 \item{overwrite}{bool. overwrite previous outputs}
+
+\item{thin}{int. vector of integers corresponding to iterations to be kept
+(default NULL)}
 }
 \value{
 trollsim

@@ -1,6 +1,0 @@
-layer_thickness	proportion_Silt	proportion_Clay	proportion_Sand
-0.15	9.9	54.4	35.7
-0.35	15.4	56.8	27.8
-0.6	7.5	71.6	21
-1.2	7.2	70.5	22.3
-1.65	6.1	79.7	14.2

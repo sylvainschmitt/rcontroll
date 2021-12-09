@@ -20,10 +20,11 @@ setMethod("print", "trollsim", function(x, ...) {
   cat("Object of class :", class(x)[1], "\n")
   cat("Name :", x@name, "\n")
   cat("Path :", x@path, "\n")
-  if(is.stack(x))
+  if(inherits(x, "trollstackfull"))
     cat("Number of simulations :", length(unique(x@inputs$global$simulation)), "\n")
-  cat("Forest :", as.logical(x@parameters["forest"]), "\n")
-  cat("Random :", as.logical(x@parameters["random"]), "\n\n")
+  cat("Reduced :", as.logical(x@parameters["_OUTPUT_reduced"]), "\n")
+  cat("From data :", as.logical(x@parameters["_FromData"]), "\n")
+  cat("Random :", !as.logical(x@parameters["_NONRANDOM"]), "\n\n")
   cat("2D discrete network: horizontal step = ",
       x@parameters["NV"], "m, one tree per 1 m^2 \n"
   )

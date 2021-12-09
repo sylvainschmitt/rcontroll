@@ -54,3 +54,6 @@ _LL_parameterization	1	/* LL parameterizations: Reich empirical, Kikuzawa model,
 _LA_regulation	2	/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */
 _sapwood	1	/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */
 _seedsadditional	0	/* excess biomass into seeds after maturation (0,1) */
+_OUTPUT_reduced	0	/* reduced set of output files */
+_FromData	0	/* if defined, an additional input file can be provided to start simulations from an existing data set or a simulated data set (5 parameters are needed: x and y coordinates, dbh, species_label, species */
+_NONRANDOM	0	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, for bug fixing */

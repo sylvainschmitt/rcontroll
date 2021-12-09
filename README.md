@@ -34,23 +34,15 @@ devtools::install_github("sylvainschmitt/rcontroll")
 
 ```r
 library(rcontroll)
-data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
-data("TROLLv3_climatedaytime365")
 data("TROLLv3_daytimevar")
-TROLLv3_input$value[6] <- 12 # Nb iterations per Year
-TROLLv3_input$value[5] <- Nyears*12 # iterations
 sim <- troll(name = "test",
-              # path = "./",
-              full = TRUE,
-              abc = FALSE, 
-              random = TRUE,
-              global = TROLLv3_input,
-              species = TROLLv3_species,
-              climate = TROLLv3_climatedaytime12,
-              daily = TROLLv3_daytimevar)
-autoplot(sim1, 
+             global = generate_parameters(iterperyear = 12, nbiter = 12*1),
+             species = TROLLv3_species,
+             climate = TROLLv3_climatedaytime12,
+             daily = TROLLv3_daytimevar)
+autoplot(sim, 
          what = "ecosystem", 
          variables = c("abund", "ba"), 
          selected_species = c("Cecropia_obtusa","Dicorynia_guianensis",

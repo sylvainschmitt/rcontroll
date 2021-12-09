@@ -7,3 +7,6 @@
 #'   \item{description}{description of the parameter} }
 #'
 "TROLLv3_input"
+
+# TROLLv3_input <- read_tsv("inst/extdata/TROLLv3_input.txt")
+# usethis::use_data(TROLLv3_input, overwrite = T)

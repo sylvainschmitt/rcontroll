@@ -21,5 +21,7 @@ This is an S4 class to represent TROLL simulations.
 \item{\code{log}}{chr. simulation log}
 
 \item{\code{final_pattern}}{df. simulation final forest}
+
+\item{\code{outputs}}{df. species and ecosystem metrics (reduced or full)}
 }}
 
