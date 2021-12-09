@@ -50,7 +50,7 @@ sim <- troll(name = "test",
               species = TROLLv3_species,
               climate = TROLLv3_climatedaytime12,
               daily = TROLLv3_daytimevar)
-autoplot(sim1, 
+autoplot(sim, 
          what = "ecosystem", 
          variables = c("abund", "ba"), 
          selected_species = c("Cecropia_obtusa","Dicorynia_guianensis",
