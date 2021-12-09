@@ -1,7 +1,7 @@
 #' @include load_output.R
 #' @importFrom readr write_tsv
 #' @importFrom sys exec_wait
-#' @importFrom utils timestamp
+#' @importFrom utils timestamp capture.output
 NULL
 
 #' TROLL
@@ -16,6 +16,7 @@ NULL
 #' @param daily df. daily variation parameters
 #' @param forest df. TROLL with forest input, if null start from an empty grid
 #'   (default NULL)
+#' @param verbose bool. show TROLL outputs in the console
 #' @param overwrite bool. overwrite previous outputs
 #' @param thin int. vector of integers corresponding to iterations to be kept
 #'   (default NULL)
@@ -36,6 +37,7 @@ troll <- function(name = NULL,
                   climate,
                   daily,
                   forest = NULL,
+                  verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
   # for tests
@@ -119,7 +121,8 @@ troll <- function(name = NULL,
              species_file = species_path, 
              day_file = daily_path, 
              output_file = file.path(path, name, name)
-    ))
+    ), 
+    split = verbose)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
   
   # cleaning outputs

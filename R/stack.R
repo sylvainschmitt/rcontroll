@@ -25,6 +25,7 @@ NULL
 #'   repeated simulations
 #' @param forest df. TROLL with forest input, if null start from an empty grid,
 #'   add a simulation column for repeated simulations (default NULL)
+#' @param verbose bool. show TROLL outputs in the console
 #' @param cores int. number of cores for parallelization, if NULL available
 #'   cores - 1 (default NULL)
 #' @param overwrite bool. overwrite previous outputs
@@ -48,6 +49,7 @@ stack <- function(name = NULL,
                   climate,
                   daily,
                   forest = NULL,
+                  verbose = TRUE,
                   cores = NULL,
                   overwrite = TRUE,
                   thin = NULL) {
@@ -158,6 +160,7 @@ stack <- function(name = NULL,
                        climate = climate[[sim]],
                        daily = daily[[sim]],
                        forest = forest[[sim]],
+                       verbose = verbose,
                        overwrite = overwrite,
                        thin = thin
                      )

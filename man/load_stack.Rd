@@ -10,8 +10,6 @@ load_stack(name, path, type)
 \item{name}{char. name given to the stack output}
 
 \item{path}{char. path where the stack is saved}
-
-\item{type}{char. type of simulation (full, reduce or abc)}
 }
 \value{
 an S4 \linkS4class{trollsim} class object

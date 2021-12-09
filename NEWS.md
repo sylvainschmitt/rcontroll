@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9023
+* cout and cerr to Rcout and Rcerr
+* adding a verbose to troll and stack
+
 # rcontroll 0.1.0.9022
 * adding OUTPUT_reduced, FromData and NONRANDOM to general parameters with a lot of consequent changes
 * adding a thinning parameter

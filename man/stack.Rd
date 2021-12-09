@@ -13,8 +13,10 @@ stack(
   climate,
   daily,
   forest = NULL,
+  verbose = TRUE,
   cores = NULL,
-  overwrite = TRUE
+  overwrite = TRUE,
+  thin = NULL
 )
 }
 \arguments{
@@ -39,10 +41,15 @@ repeated simulations}
 \item{forest}{df. TROLL with forest input, if null start from an empty grid,
 add a simulation column for repeated simulations (default NULL)}
 
+\item{verbose}{bool. show TROLL outputs in the console}
+
 \item{cores}{int. number of cores for parallelization, if NULL available
 cores - 1 (default NULL)}
 
 \item{overwrite}{bool. overwrite previous outputs}
+
+\item{thin}{int. vector of integers corresponding to iterations to be kept
+(default NULL)}
 }
 \value{
 trollstack

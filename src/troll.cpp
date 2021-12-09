@@ -794,7 +794,7 @@ public:
   leafFluxes dailyFluxesLeaf(float, float, float); //!< Computation of average C assimilation rate and water evapotranspiration per leaf area across daily variation in light (PPFD), vapor pressure deficit (VPD) and temperature (T); valid with option _DAYTIMELIGHT 
   void OutputTreeStandard(fstream& output); //!< Standard outputs during the simulation -- written to file
   void OutputTreeStandard(); //!< Standard outputs during the simulation -- written to screen in real time
-  // !!!UPDATE: question, why are these two functions needed? the first function with cout as an argument is the same as the second function, no? question2: why are these functions only available in WATER mode?
+  // !!!UPDATE: question, why are these two functions needed? the first function with Rcout as an argument is the same as the second function, no? question2: why are these functions only available in WATER mode?
 #else
   float DeathRate(float, int);  //!< Death rate function
   float GPPleaf(float, float, float);    //!< Farquhar von Caemmerer Berry model -- computation of the light-limited leaf-level average C assimilation rate per m^2 (micromol/m^2/s) -- depends on daily variation in light (PPFD), vapor pressure deficit (VPD) and temperature (T)
@@ -990,7 +990,7 @@ void Tree::BirthFromInput(int species_label, int site0, float dbh, float height,
   t_dbhmature=t_dbhmax*0.5; //this correponds to the mean thresholds of tree size to maturity, according to Visser et al. 2016 Functional Ecology (suited to both understory short-statured species, and top canopy large-statured species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
   
   if(t_dbh > 1.5 * t_dbhmax){
-    cout << t_site << " WARNING: t_dbh > 1.5 * t_dbhmax. t_dbh: " << t_dbh << " t_dbhmax: " << t_dbhmax << ". We reset t_dbhmax to t_dbh" << endl;
+    Rcout << t_site << " WARNING: t_dbh > 1.5 * t_dbhmax. t_dbh: " << t_dbh << " t_dbhmax: " << t_dbhmax << ". We reset t_dbhmax to t_dbh" << endl;
     t_dbhmax = t_dbh;
     //t_intraspecific_multiplier_dbhmax = t_dbhmax/(t_s->s_dbhmax);
   }
@@ -1152,8 +1152,8 @@ void Tree::Water_availability() {
     float sumG=0.0;
     t_phi_root=0.0;
     if(isnan(t_phi_root)) {
-      cout << "nan t_phi_root" << endl;
-      cout << t_phi_root << endl;
+      Rcout << "nan t_phi_root" << endl;
+      Rcout << t_phi_root << endl;
     }
     for(int l=0; l<nblayers_soil; l++) {
       deep_bound=exp(-3.0*i_root_depth*layer_depth[l]);
@@ -1165,12 +1165,12 @@ void Tree::Water_availability() {
       
       t_phi_root+=t_soil_layer_weight[l]*KsPhi[l][site_DCELL[t_site]];   //the water potential in the root zone is computed as the weighted mean of the soil water potential in each soil layer in the DCELL where the tree stands. Note that KsPhi was here not computed as Ks[l][site_DCELL[t_site]]*soil_phi3D[l][site_DCELL[t_site]], to avoid some potential divergence for very low water content, and due to the limit of float type, but directly as the exact power of SWC -- see in UpdateField.
       if(isnan(t_phi_root)) {
-        cout << "nan t_phi_root: " << endl;
-        cout << l << "\t" << t_soil_layer_weight[l] << "\t" << KsPhi[l][site_DCELL[t_site]] << endl;
+        Rcout << "nan t_phi_root: " << endl;
+        Rcout << l << "\t" << t_soil_layer_weight[l] << "\t" << KsPhi[l][site_DCELL[t_site]] << endl;
       }
       t_soil_layer_weight[l]*=Ks[l][site_DCELL[t_site]];
       
-      //if(t_soil_layer_weight[l]<=0) cout << "t_soil_layer_weight[l]=" << t_soil_layer_weight[l] << " t_root_biomass[l]=" << t_root_biomass[l] << " Ks=" << Ks[l][site_DCELL[t_site]] << " Ks*Phi soil =" << KsPhi[l][site_DCELL[t_site]] << " phi soil=" <<   soil_phi3D[l][site_DCELL[t_site]] << endl;
+      //if(t_soil_layer_weight[l]<=0) Rcout << "t_soil_layer_weight[l]=" << t_soil_layer_weight[l] << " t_root_biomass[l]=" << t_root_biomass[l] << " Ks=" << Ks[l][site_DCELL[t_site]] << " Ks*Phi soil =" << KsPhi[l][site_DCELL[t_site]] << " phi soil=" <<   soil_phi3D[l][site_DCELL[t_site]] << endl;
       //t_soil_layer_weight[l]=t_root_biomass[l]*10/(-log(sqrt(PI*t_root_biomass[l]*10)*0.001));
       //t_phi_root+=t_soil_layer_weight[l]*fmaxf(0.0,(KsPhi2[l][site_DCELL[t_site]]-KsPhi[l][site_DCELL[t_site]]*t_s->s_tlp));  //the water potential in the root zone is computed as the weighted mean of the soil water potential in each soil layer
       //t_soil_layer_weight[l]*=fmaxf(0.0,(KsPhi[l][site_DCELL[t_site]]-Ks[l][site_DCELL[t_site]]*t_s->s_tlp));
@@ -1178,9 +1178,9 @@ void Tree::Water_availability() {
       shallow_bound=deep_bound;
       
       if(t_soil_layer_weight[l]<0.0 || isnan(t_soil_layer_weight[l])) {
-        cout << "incorrect soil_layer_weight: " << endl;
-        cout << l << "\t" << t_soil_layer_weight[l] << "\t" << t_root_biomass[l] << "\t" << Ks[l][site_DCELL[t_site]] << "\t" << KsPhi[l][site_DCELL[t_site]] << "\t" << -log(sqrt(PI*t_root_biomass[l]*10)*0.001) << "\t" << deep_bound << "\t" << shallow_bound ;
-        cout <<endl;
+        Rcout << "incorrect soil_layer_weight: " << endl;
+        Rcout << l << "\t" << t_soil_layer_weight[l] << "\t" << t_root_biomass[l] << "\t" << Ks[l][site_DCELL[t_site]] << "\t" << KsPhi[l][site_DCELL[t_site]] << "\t" << -log(sqrt(PI*t_root_biomass[l]*10)*0.001) << "\t" << deep_bound << "\t" << shallow_bound ;
+        Rcout <<endl;
       }
     }
     
@@ -1191,8 +1191,8 @@ void Tree::Water_availability() {
       }
       t_phi_root*=isumG;
       if (isnan(t_phi_root)) {
-        cout << "nan t_phi_root" << endl;
-        cout << isumG << endl;
+        Rcout << "nan t_phi_root" << endl;
+        Rcout << isumG << endl;
       }
     }
     else {
@@ -1200,15 +1200,15 @@ void Tree::Water_availability() {
       for (int l=0; l<nblayers_soil; l++) {
         t_phi_root+=t_root_biomass[l]*soil_phi3D[l][site_DCELL[t_site]];
         if (isnan(t_phi_root)) {
-          cout << "nan t_phi_root" << endl;
-          cout << t_root_biomass[l] << "\t" << soil_phi3D[l][site_DCELL[t_site]] << endl;
+          Rcout << "nan t_phi_root" << endl;
+          Rcout << t_root_biomass[l] << "\t" << soil_phi3D[l][site_DCELL[t_site]] << endl;
         }
         t_soil_layer_weight[l]=t_root_biomass[l]*iRootB;
       }
       t_phi_root*=iRootB;
       if (isnan(t_phi_root)) {
-        cout << "nan t_phi_root" << endl;
-        cout << iRootB << endl;
+        Rcout << "nan t_phi_root" << endl;
+        Rcout << iRootB << endl;
       }
     }
     
@@ -1217,29 +1217,29 @@ void Tree::Water_availability() {
       sum_weight+=t_soil_layer_weight[l];
     }
     if (sum_weight>1.5) {
-      cout << "Weird weights in Water_availability; sum_weight=" << sum_weight << " sumG=" << sumG << " total_root_biomass=" << total_root_biomass << " t_phi_root=" << t_phi_root ;
+      Rcout << "Weird weights in Water_availability; sum_weight=" << sum_weight << " sumG=" << sumG << " total_root_biomass=" << total_root_biomass << " t_phi_root=" << t_phi_root ;
       if (sumG>0.0) {
         float isumG=1.0/sumG;
-        cout << " isumG=" << isumG << endl;
+        Rcout << " isumG=" << isumG << endl;
       }
-      cout << "t_soil_layer_weight[l]: ";
+      Rcout << "t_soil_layer_weight[l]: ";
       for (int l=0; l<nblayers_soil; l++) {
-        cout <<t_soil_layer_weight[l] << "\t";
+        Rcout <<t_soil_layer_weight[l] << "\t";
       }
-      cout << endl;
-      cout << "soil_phi: ";
+      Rcout << endl;
+      Rcout << "soil_phi: ";
       for (int l=0; l<nblayers_soil; l++) {
-        cout << soil_phi3D[l][site_DCELL[t_site]] << "\t";
+        Rcout << soil_phi3D[l][site_DCELL[t_site]] << "\t";
       }
-      cout << endl;
+      Rcout << endl;
       
     }
     
     t_phi_root-=0.01*t_Tree_Height; // this is to account for the tree height effect on leaf water potential and stress, when the water column and the leaf water potential are not explicitely accounted for. //! !!!: FF, where from? 
     
     if (isnan(t_phi_root)) {
-      cout << "nan t_phi_root" << endl;
-      cout << t_Tree_Height << endl;
+      Rcout << "nan t_phi_root" << endl;
+      Rcout << t_Tree_Height << endl;
     }
     
     //! Tree water stress factors
@@ -1255,9 +1255,9 @@ void Tree::Water_availability() {
     
     
     if (t_WSF < 0.0 || t_WSF_A < 0.0 || t_WSF>1.0 || t_WSF_A >1.0 ||t_phi_root >0.0 || isnan(t_WSF) || isnan(t_WSF_A) || isnan(t_phi_root)) {
-      cout << "incorrect value in one of WSF, WSF_A, t_phi_root " << endl;
-      cout <<t_WSF << "\t" << t_phi_root << "\t" << S[t_sp_lab].s_tlp  << "\t" << t_dbh << "\t" << t_Tree_Height << "\t" << t_age << "\t" << S[t_sp_lab].s_phi_lethal << "\t" << sumG;
-      cout <<endl;
+      Rcout << "incorrect value in one of WSF, WSF_A, t_phi_root " << endl;
+      Rcout <<t_WSF << "\t" << t_phi_root << "\t" << S[t_sp_lab].s_tlp  << "\t" << t_dbh << "\t" << t_Tree_Height << "\t" << t_age << "\t" << S[t_sp_lab].s_phi_lethal << "\t" << sumG;
+      Rcout <<endl;
     }
   }
 }
@@ -1275,9 +1275,9 @@ void Tree::Water_uptake() {
     while (t_root_depth > depth && l < nblayers_soil) {
       Transpiration[l][site_DCELL[t_site]] += t_soil_layer_weight[l] * t_transpiration;
       if (t_soil_layer_weight[l] < 0.0 || t_transpiration < 0.0 ) {
-        cout << setprecision(10);
-        cout << "Problem with soil_layer_weight and transpiration at site: " << t_site << " layer: " << l << " depth: " << depth << endl;
-        cout << t_soil_layer_weight[l] << "\t" << t_transpiration << "\n";
+        Rcout << setprecision(10);
+        Rcout << "Problem with soil_layer_weight and transpiration at site: " << t_site << " layer: " << l << " depth: " << depth << endl;
+        Rcout << t_soil_layer_weight[l] << "\t" << t_transpiration << "\n";
       } // debugging, should probably be commented in published code
       depth = layer_depth[l]; // moved by FF so that both indices (depth, l) are updated next to each other
       l++;
@@ -1488,7 +1488,7 @@ leafFluxes Tree::FluxesLeaf(float PPFD, float VPD, float T) {
   float VcmaxT =t_Vcmax*LookUp_VcmaxT[convT]*t_WSF_A;
   float JmaxT  =t_Jmax*LookUp_JmaxT[convT]*t_WSF_A;
   
-  //cout << "g1=" << g1 << " T=" << T << " VcamxT=" << VcmaxT << " t_WSF_A=" << t_WSF_A << endl;
+  //Rcout << "g1=" << g1 << " T=" << T << " VcamxT=" << VcmaxT << " t_WSF_A=" << t_WSF_A << endl;
   
   //Farquhar - -von Caemmerer - Berry model of carbon assimilation rate 
   float I = alpha * PPFD;
@@ -1496,7 +1496,7 @@ leafFluxes Tree::FluxesLeaf(float PPFD, float VPD, float T) {
   //float J = fmaxf(0.0,(I+JmaxT-sqrt((JmaxT+I)*(JmaxT+I)-4.0*theta*JmaxT*I))*0.5/theta);
   float A = fminf(VcmaxT/(fci+KmT),0.25*J/(fci+2.0*GammaT))*(fci-GammaT);
   
-  //cout << "I= " << I << " J=" <<J << " A=" << A << endl;
+  //Rcout << "I= " << I << " J=" <<J << " A=" << A << endl;
   
   //Medlyn et al. 2011 model of stomatal conductance 
   
@@ -1506,7 +1506,7 @@ leafFluxes Tree::FluxesLeaf(float PPFD, float VPD, float T) {
   leafFluxes F;
   F.carbon_flux = A;
   F.water_flux= lT;
-  //cout << "carbon_flux=" << F.carbon_flux << " water_flux=" << F.water_flux << endl;
+  //Rcout << "carbon_flux=" << F.carbon_flux << " water_flux=" << F.water_flux << endl;
   
   return F;
 }
@@ -1519,13 +1519,13 @@ leafFluxes Tree::dailyFluxesLeaf(float PPFD, float VPD, float T) {
   float dailylT=0.0;
   
   for(int i=0; i < nbsteps_varday; i++) {
-    //cout << "i=" << i << endl;
+    //Rcout << "i=" << i << endl;
     float ppfd_vardaytimestep = PPFD * varday_light[i];
-    //cout << "i=" << i << " daily_light[i]" << daily_light[i] << " ppfd_haldhour=" <<ppfd_vardaytimestep << endl;
+    //Rcout << "i=" << i << " daily_light[i]" << daily_light[i] << " ppfd_haldhour=" <<ppfd_vardaytimestep << endl;
     float vpd_vardaytimestep = VPD * varday_vpd[i];
-    //cout << "i=" << i << " daily_light[i]=" << daily_light[i] << " ppfd_haldhour=" <<ppfd_vardaytimestep <<  " daily_vpd[i]=" << daily_vpd[i] << " vpd_haldhour=" <<vpd_vardaytimestep <<endl;
+    //Rcout << "i=" << i << " daily_light[i]=" << daily_light[i] << " ppfd_haldhour=" <<ppfd_vardaytimestep <<  " daily_vpd[i]=" << daily_vpd[i] << " vpd_haldhour=" <<vpd_vardaytimestep <<endl;
     float t_vardaytimestep = T * varday_T[i];
-    //cout << "i=" << i << " daily_light[i]=" << daily_light[i] << " ppfd_haldhour=" <<ppfd_vardaytimestep <<  " daily_vpd[i]=" << daily_vpd[i] << " vpd_haldhour=" <<vpd_vardaytimestep << " daily_T[i]=" << daily_T[i] << " t_haldhour=" <<t_vardaytimestep <<endl;
+    //Rcout << "i=" << i << " daily_light[i]=" << daily_light[i] << " ppfd_haldhour=" <<ppfd_vardaytimestep <<  " daily_vpd[i]=" << daily_vpd[i] << " vpd_haldhour=" <<vpd_vardaytimestep << " daily_T[i]=" << daily_T[i] << " t_haldhour=" <<t_vardaytimestep <<endl;
     leafFluxes fluxes_vardaytimestep = FluxesLeaf(ppfd_vardaytimestep,vpd_vardaytimestep,t_vardaytimestep);
     
 #ifdef FF_todiscuss
@@ -1538,7 +1538,7 @@ leafFluxes Tree::dailyFluxesLeaf(float PPFD, float VPD, float T) {
     dailyA += fluxes_vardaytimestep.carbon_flux;
     dailylT += fluxes_vardaytimestep.water_flux;
 #endif
-    //cout << dailyA << endl;
+    //Rcout << dailyA << endl;
     // deprecated in v.2.4.1: compute GPP only if enough light is available threshold is arbitrary, but set to be low: in full sunlight ppfd is aroung 700 W/m2, and even at dawn, it is ca 3% of the max value, or 20 W/m2. The minimum threshold is set to 0.1 W/m2
     // Future update: compute slightly more efficiently, using 3-hourly values? This will have to be aligned with climate forcing layers (e.g. NCAR)
   }
@@ -1548,8 +1548,8 @@ leafFluxes Tree::dailyFluxesLeaf(float PPFD, float VPD, float T) {
   leafFluxes dailyF;
   dailyF.carbon_flux =dailyA;
   dailyF.water_flux = dailylT;
-  //cout << dailyA << endl;
-  //cout << dailyF.carbon_flux << endl ;
+  //Rcout << dailyA << endl;
+  //Rcout << dailyF.carbon_flux << endl ;
   
   return dailyF;
 }
@@ -1572,7 +1572,7 @@ float Tree::GPPleaf(float PPFD, float VPD, float T) {
   //Parameters for Farquhar model, with temperature dependencies 
   int convT= int(iTaccuracy*T); //temperature data at a resolution of Taccuracy=0.1°C -- stored in lookup tables ranging from 0°C to 50°C ---
   
-  //if(convT>500 || isnan(convT) || convT <0) cout << t_site << " | convT: " << convT << " | T: " << T << " | PPFD: " << PPFD << " | VPD: " << VPD << endl;
+  //if(convT>500 || isnan(convT) || convT <0) Rcout << t_site << " | convT: " << convT << " | T: " << T << " | PPFD: " << PPFD << " | VPD: " << VPD << endl;
   float KmT    =LookUp_KmT[convT];
   float GammaT =LookUp_GammaT[convT];
   
@@ -1598,12 +1598,12 @@ float Tree::dailyGPPleaf(float PPFD, float VPD, float T) {
   float dailyA=0.0;
   
   for(int i=0; i < nbsteps_varday; i++) {
-    //cout << t_site << " i: " << i << " tempRday: " << tempRday << endl;
+    //Rcout << t_site << " i: " << i << " tempRday: " << tempRday << endl;
     float ppfd_vardaytimestep = PPFD * varday_light[i];
     float vpd_vardaytimestep = VPD * varday_vpd[i];
     float t_vardaytimestep = T * varday_T[i];
     if(ppfd_vardaytimestep > 0.1) dailyA += Tree::GPPleaf(ppfd_vardaytimestep,vpd_vardaytimestep,t_vardaytimestep);
-    //else { cout << endl << t_site << " species: " << t_s->s_name << " t_age: " << t_age << " PPFD: " << ppfd_vardaytimestep << " vpd_vardaytimestep " << vpd_vardaytimestep << " t_vardaytimestep: " << t_vardaytimestep << " GPPleaf: " << Tree::GPPleaf(ppfd_vardaytimestep,vpd_vardaytimestep,t_vardaytimestep) << endl;}
+    //else { Rcout << endl << t_site << " species: " << t_s->s_name << " t_age: " << t_age << " PPFD: " << ppfd_vardaytimestep << " vpd_vardaytimestep " << vpd_vardaytimestep << " t_vardaytimestep: " << t_vardaytimestep << " GPPleaf: " << Tree::GPPleaf(ppfd_vardaytimestep,vpd_vardaytimestep,t_vardaytimestep) << endl;}
     // deprecated in v.2.4.1: compute GPP only if enough light is available threshold is arbitrary, but set to be low: in full sunlight ppfd is aroung 700 W/m2, and even at dawn, it is ca 3% of the max value, or 20 W/m2. The minimum threshold is set to 0.1 W/m2
     // Future update: compute slightly more efficiently, using 3-hourly values? This will have to be aligned with climate forcing layers (e.g. NCAR)
     
@@ -1660,7 +1660,7 @@ float Tree::dailyGPPcrown(float PPFD, float VPD, float T, float LAI) {
 
 float Tree::Rdayleaf(float T) {
   int convT= int(iTaccuracy*T);
-  //if(T < 0 || isnan(T) || T > 50) cout << t_site << " species: " << t_s->s_name << " convT: " << T << endl;
+  //if(T < 0 || isnan(T) || T > 50) Rcout << t_site << " species: " << t_s->s_name << " convT: " << T << endl;
   float Rday_leaf = t_Rdark*LookUp_Rday[convT];
   return Rday_leaf;
 }
@@ -2113,14 +2113,14 @@ void Tree::CalcRespGPP(){
           t_GPP += leafarea_layer * dailyF.carbon_flux;                   // !!!: check consistency! Maybe passing by reference could also be an idea?
           t_transpiration += leafarea_layer * dailyF.water_flux;          // !!!: check consistency! Maybe passing by reference could also be an idea?
         }
-        if(isnan(t_transpiration) || t_transpiration < 0.0) cout << "Problem at site: " <<  t_site << " transpiration: " << t_transpiration << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << " t_WSF_A: " << t_WSF_A << " t_WSF: " << t_WSF << endl << endl;
+        if(isnan(t_transpiration) || t_transpiration < 0.0) Rcout << "Problem at site: " <<  t_site << " transpiration: " << t_transpiration << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << " t_WSF_A: " << t_WSF_A << " t_WSF: " << t_WSF << endl << endl;
 #else
         t_GPP += leafarea_layer * Tree::dailyGPPleaf(PPFD, VPD, Tmp);
-        //if(isnan(t_GPP) || t_GPP < 0.0 || PPFD == 0.0) cout << "Problem at site: " <<  t_site << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << endl << endl;
+        //if(isnan(t_GPP) || t_GPP < 0.0 || PPFD == 0.0) Rcout << "Problem at site: " <<  t_site << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << endl << endl;
 #endif
         t_Rday += leafarea_layer * Tree::dailyRdayleaf(Tmp);
         leafarea_cumulated += leafarea_layer;
-        //if(t_dbh > 0.2) cout << crown_above_top - h << "PPFD: " << PPFD << " VPD: " << VPD << " Tmp: " << Tmp << " leafarea_layer: " << endl;
+        //if(t_dbh > 0.2) Rcout << crown_above_top - h << "PPFD: " << PPFD << " VPD: " << VPD << " Tmp: " << Tmp << " leafarea_layer: " << endl;
       }
       
       // Averaging across layers. To check consistency, leafarea_layer can be added up and the sum compared to t_leafarea 
@@ -2553,10 +2553,10 @@ void Tree::OutputTreeStandard(fstream& output){
 }
 // Standard outputs during the simulation -- written to screen in real time
 void Tree::OutputTreeStandard(){
-  cout << iter << "\t" << t_site << "\t" << t_sp_lab << "\t" << t_Tree_Height << "\t" << t_dbh << "\t" << t_litter << "\t" << t_age << "\t" << t_leafarea << "\t" << t_youngLA<< "\t" << t_matureLA << "\t" << t_oldLA << "\t" << t_Crown_Radius << "\t" << t_Crown_Depth <<"\t" << t_GPP  <<"\t" << t_NPP <<"\t" << t_Rstem <<"\t" << t_Rday  <<"\t" << t_Rnight << "\t"  << LAI3D[int(t_Tree_Height)][t_site+SBORD] << "\t" << LAI3D[int(t_Tree_Height-t_Crown_Depth)+1][t_site+SBORD] << "\t" << t_root_depth << "\t" << t_phi_root << "\t" << t_WSF;
-  for (int l=0; l<nblayers_soil; l++) cout << "\t" << t_root_biomass[l];
-  for (int l=0; l<nblayers_soil; l++) cout << "\t" << t_soil_layer_weight[l];
-  cout << endl;
+  Rcout << iter << "\t" << t_site << "\t" << t_sp_lab << "\t" << t_Tree_Height << "\t" << t_dbh << "\t" << t_litter << "\t" << t_age << "\t" << t_leafarea << "\t" << t_youngLA<< "\t" << t_matureLA << "\t" << t_oldLA << "\t" << t_Crown_Radius << "\t" << t_Crown_Depth <<"\t" << t_GPP  <<"\t" << t_NPP <<"\t" << t_Rstem <<"\t" << t_Rday  <<"\t" << t_Rnight << "\t"  << LAI3D[int(t_Tree_Height)][t_site+SBORD] << "\t" << LAI3D[int(t_Tree_Height-t_Crown_Depth)+1][t_site+SBORD] << "\t" << t_root_depth << "\t" << t_phi_root << "\t" << t_WSF;
+  for (int l=0; l<nblayers_soil; l++) Rcout << "\t" << t_root_biomass[l];
+  for (int l=0; l<nblayers_soil; l++) Rcout << "\t" << t_soil_layer_weight[l];
+  Rcout << endl;
 }
 #endif
 
@@ -2967,13 +2967,13 @@ void trollCpp(
   bufi_daytimevar = &day_file[0] ;
   buf = &output_file[0] ;
   
-  if(_DAYTIMELIGHT == 1) cout << "Activated Module: Dailylight" << endl;
-  if(_GPPcrown == 1) cout << "Activated Module: FastGPP" << endl;
-  if(_BASICTREEFALL == 1) cout << "Activated Module: BASICTREEFALL" << endl;
-  if(_NDD == 1) cout << "Activated Module: NDD" << endl;
-  if(_SEEDTRADEOFF == 1) cout << "Activated Module: SEEDTRADEOFF" << endl;
-  if(_FromData == 1) cout << "Activated Module: FromData" << endl;
-  if(_OUTPUT_reduced == 1) cout << "Activated Module: OUTPUT_reduced" << endl;
+  if(_DAYTIMELIGHT == 1) Rcout << "Activated Module: Dailylight" << endl;
+  if(_GPPcrown == 1) Rcout << "Activated Module: FastGPP" << endl;
+  if(_BASICTREEFALL == 1) Rcout << "Activated Module: BASICTREEFALL" << endl;
+  if(_NDD == 1) Rcout << "Activated Module: NDD" << endl;
+  if(_SEEDTRADEOFF == 1) Rcout << "Activated Module: SEEDTRADEOFF" << endl;
+  if(_FromData == 1) Rcout << "Activated Module: FromData" << endl;
+  if(_OUTPUT_reduced == 1) Rcout << "Activated Module: OUTPUT_reduced" << endl;
   
   //!*********************
   //!** Initializations **
@@ -3024,7 +3024,7 @@ void trollCpp(
   Trandgsl = gsl_rng_default;
   gslrand = gsl_rng_alloc (Trandgsl);
   
-  cout << "Easy MPI rank: " << easympi_rank << endl;
+  Rcout << "Easy MPI rank: " << easympi_rank << endl;
   
   unsigned long int t = (unsigned long int) time(NULL);
   unsigned long int seed = 3*t + 2*(easympi_rank+1)+1;
@@ -3033,7 +3033,7 @@ void trollCpp(
   
   gsl_rng_set(gslrand, seed);
   
-  cout<< "On proc #" << easympi_rank << " seed: " << seed << endl;
+  Rcout<< "On proc #" << easympi_rank << " seed: " << seed << endl;
   
   // input files
   sprintf(inputfile,"%s",bufi);
@@ -3046,12 +3046,12 @@ void trollCpp(
   }
   
   sprintf(outputinfo,"%s_%i_par.txt",buf, easympi_rank); // Files with general output info 
-  cout<< "On proc #" << easympi_rank << " seed: " << seed <<  endl;
+  Rcout<< "On proc #" << easympi_rank << " seed: " << seed <<  endl;
   out.open(outputinfo, ios::out);
-  if(!out) cerr<< "ERROR with par file"<< endl;
+  if(!out) Rcerr<< "ERROR with par file"<< endl;
   sprintf(outputinfo,"%s_%i_info.txt",buf, easympi_rank);
   out2.open(outputinfo, ios::out);
-  if(!out2) cerr<< "ERROR with info file"<< endl;
+  if(!out2) Rcerr<< "ERROR with info file"<< endl;
   
   Initialise();           // Read global parameters 
   AllocMem();             // Memory allocation 
@@ -3067,13 +3067,13 @@ void trollCpp(
   BirthInit();            // Initial configuration of the forest 
   out.close();
   
-  cout << "klight is: " << klight << endl;
-  cout << "CO2 concentration is: " << Cair << endl;
-  cout << "Number of species: " << nbspp << endl << endl;
+  Rcout << "klight is: " << klight << endl;
+  Rcout << "CO2 concentration is: " << Cair << endl;
+  Rcout << "Number of species: " << nbspp << endl << endl;
   
   for(int spp = 1; spp <= nbspp; spp++){
     double prob_species = double(S[spp].s_nbext);
-    //cout << "prob_species: " << prob_species << endl;
+    //Rcout << "prob_species: " << prob_species << endl;
     p_species[spp - 1] = prob_species;
   }
   
@@ -3128,15 +3128,15 @@ void trollCpp(
   MPI_Reduce(&durf,&durf,1,MPI_FLOAT,MPI_SUM,0,MPI_COMM_WORLD);
 #endif
   if(!mpi_rank) {
-    cout << "\n";
+    Rcout << "\n";
 #ifdef MPI
     out2 << "Number of processors : "<< mpi_size << "\n";
 #endif
     out2 << "Average computation time : "<< durf/float(mpi_size) << " seconds.\n";
     out2 << "End of simulation.\n";
-    cout << "\nNumber of processors : "<< mpi_size << "\n";
-    cout << "Average computation time : "<< durf/float(mpi_size) << " seconds.\n";
-    cout << "End of simulation.\n";
+    Rcout << "\nNumber of processors : "<< mpi_size << "\n";
+    Rcout << "Average computation time : "<< durf/float(mpi_size) << " seconds.\n";
+    Rcout << "End of simulation.\n";
   }
   out2.close();
   
@@ -3169,14 +3169,14 @@ void SetParameter(string &parameter_name, string &parameter_value, N &parameter,
   if(isnumeric){
     if(numeric >= parameter_min && numeric <= parameter_max){
       parameter = numeric;
-      if(!quiet) cout << parameter_name << ": " << parameter << endl;
+      if(!quiet) Rcout << parameter_name << ": " << parameter << endl;
     } else {
       parameter = parameter_default;
-      cout << "Warning. Value provided for '" << parameter_name << "' (" << numeric << ") is outside the allowed range (" << parameter_min << ", " << parameter_max << "). Set to default: " << parameter_default << endl;
+      Rcout << "Warning. Value provided for '" << parameter_name << "' (" << numeric << ") is outside the allowed range (" << parameter_min << ", " << parameter_max << "). Set to default: " << parameter_default << endl;
     }
   } else {
     parameter = parameter_default;
-    cout << "Warning. Value provided for '" << parameter_name << "' (" << parameter_value << ") is not a " << typeid(numeric).name() << ". Set to default: " << parameter_default << endl;
+    Rcout << "Warning. Value provided for '" << parameter_name << "' (" << parameter_value << ") is not a " << typeid(numeric).name() << ". Set to default: " << parameter_default << endl;
   }
 }
 
@@ -3185,10 +3185,10 @@ void SetParameter(string &parameter_name, string &parameter_value, N &parameter,
 void SetParameter(string &parameter_name, string &parameter_value, string &parameter, string parameter_default, bool quiet) {
   if(!parameter_value.empty()){
     parameter = parameter_value;
-    if(!quiet) cout << parameter_name << ": " << parameter << endl;
+    if(!quiet) Rcout << parameter_name << ": " << parameter << endl;
   } else {
     parameter = parameter_default;
-    cout << "Warning. String for '" << parameter_name << "' is empty" << ". Set to default: '" << parameter_default << "'" << endl;
+    Rcout << "Warning. String for '" << parameter_name << "' is empty" << ". Set to default: '" << parameter_default << "'" << endl;
   }
 }
 
@@ -3363,7 +3363,7 @@ void ReadInputGeneral(){
     int nb_parameters = 56;
     vector<string> parameter_values(nb_parameters,"");
     
-    cout << endl << "Reading in file: " << inputfile << endl;
+    Rcout << endl << "Reading in file: " << inputfile << endl;
     In.getline(buffer,256,'\n');
     string parameter_name, parameter_value;
     
@@ -3382,9 +3382,9 @@ void ReadInputGeneral(){
     sites_per_dcell = length_dcell*length_dcell;
     nbdcells = int(sites/sites_per_dcell);
     linear_nb_dcells = int(cols/length_dcell);
-    cout << "rows: " << rows << " cols: " << cols << " HEIGHT: " << HEIGHT << endl;
-    cout << "Number of dcells: " << nbdcells << endl;
-    cout << "Lin number of dcells: " << linear_nb_dcells << endl;
+    Rcout << "rows: " << rows << " cols: " << cols << " HEIGHT: " << HEIGHT << endl;
+    Rcout << "Number of dcells: " << nbdcells << endl;
+    Rcout << "Lin number of dcells: " << linear_nb_dcells << endl;
 #ifdef WATER
     i_sites_per_dcell=1.0/float(sites_per_dcell);
 #endif
@@ -3399,11 +3399,11 @@ void ReadInputGeneral(){
     cov_P_LMA = corr_P_LMA * sigma_P * sigma_LMA;
     
     if(cov_N_P == 0.0 || cov_N_LMA == 0.0 || cov_P_LMA == 0.0){
-      cerr << "\nCovariance matrix N,P,LMA could not be decomposed. Using uncorrelated variation of trait values instead" << endl;
+      Rcerr << "\nCovariance matrix N,P,LMA could not be decomposed. Using uncorrelated variation of trait values instead" << endl;
       covariance_status = 0;
     }
     else{
-      cout << "Correlation status. corr_N_P: " << corr_N_P << " cov_N_LMA: " << corr_N_LMA << " corr_P_LMA: " << corr_P_LMA << endl;
+      Rcout << "Correlation status. corr_N_P: " << corr_N_P << " cov_N_LMA: " << corr_N_LMA << " corr_P_LMA: " << corr_P_LMA << endl;
       covariance_status = 1;
       // Initialise covariance matrix for N, P, LMA
       mcov_N_P_LMA = gsl_matrix_alloc(3,3);
@@ -3418,11 +3418,11 @@ void ReadInputGeneral(){
       gsl_matrix_set(mcov_N_P_LMA,2,2,sigma_LMA*sigma_LMA);
       
       // Cholesky decomposition for multivariate draw
-      cout << "\nCovariance matrix N,P,LMA: " << endl;
-      for(int mrow=0; mrow<3;mrow++) cout << gsl_matrix_get(mcov_N_P_LMA, mrow, 0) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 1) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 2) << endl;
+      Rcout << "\nCovariance matrix N,P,LMA: " << endl;
+      for(int mrow=0; mrow<3;mrow++) Rcout << gsl_matrix_get(mcov_N_P_LMA, mrow, 0) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 1) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 2) << endl;
       gsl_linalg_cholesky_decomp1(mcov_N_P_LMA);
-      cout << "\nCovariance matrix N,P,LMA (after Cholesky decomposition) " << endl;
-      for(int mrow=0; mrow<3;mrow++) cout << gsl_matrix_get(mcov_N_P_LMA, mrow, 0) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 1) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 2) << endl;
+      Rcout << "\nCovariance matrix N,P,LMA (after Cholesky decomposition) " << endl;
+      for(int mrow=0; mrow<3;mrow++) Rcout << gsl_matrix_get(mcov_N_P_LMA, mrow, 0) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 1) << "\t" << gsl_matrix_get(mcov_N_P_LMA, mrow, 2) << endl;
       // allocating mean and result vectors for multivariate draw
       mu_N_P_LMA = gsl_vector_alloc(3);
       for(int j=0;j<3;j++) gsl_vector_set(mu_N_P_LMA,j,0.0); // zero means
@@ -3438,13 +3438,13 @@ void ReadInputGeneral(){
     // apparent quantum yield to electron transport in mol e-/mol photons see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP. alpha is fixed at 0.3 mol e-/mol photons in Medlyn et al 2002, but see equ8 and Appendix 1 in Farquahr et al 1980: it seems that alpha should vary with leaf thickness: there is a fraction of incident light which is lost by absorption by other leaf parts than the chloroplast lamellae, and this fraction f may increase with leaf thickness. With the values of the paper: alpha= 0.5*(1-f)=0.5*(1-0.23)=0.385, but this is a theoretical value and observations often report lower values (see ex discussion in medlyn et al 2005 Tree phsyiology, Lore Veeryckt values, Mercado et al 2009 Table 10, Domingues et al. 2014)
   }
   else{
-    cout << "ERROR. General input file could not be read." << endl;
+    Rcout << "ERROR. General input file could not be read." << endl;
   }
 }
 
 //! Global function: This function reads inputs from the species input file 
 void ReadInputSpecies(){
-  cout << endl << "Reading in file: " << inputfile_species << endl;
+  Rcout << endl << "Reading in file: " << inputfile_species << endl;
   fstream InSpecies(inputfile_species, ios::in);
   if(InSpecies){
     // possible parameters to initialise vector<string> parameter_names{"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_seedmass","s_regionalfreq","s_tlp","s_drymass"};
@@ -3469,11 +3469,11 @@ void ReadInputSpecies(){
         }
       }
       if(index == -1){
-        cout << "Ignoring unknown parameter: " << parameter_name << ". Parameters must be one of:";
+        Rcout << "Ignoring unknown parameter: " << parameter_name << ". Parameters must be one of:";
         for(int i = 0; i < nb_parameters; i++){
-          cout << "\t" << parameter_names[i];
+          Rcout << "\t" << parameter_names[i];
         }
-        cout << endl;
+        Rcout << endl;
       }
       parameter_index.push_back(index);
     }
@@ -3510,10 +3510,10 @@ void ReadInputSpecies(){
     
     if(nb_parameterlines > 0){
       nbspp = nb_parameterlines;
-      cout << "Successfully initialised " << nbspp << " species from file." << endl;
+      Rcout << "Successfully initialised " << nbspp << " species from file." << endl;
     } else {
       nbspp = 1;
-      cout << "WARNING! Species file was empty. A default species is initialized." << endl;
+      Rcout << "WARNING! Species file was empty. A default species is initialized." << endl;
       vector<string> parameter_values(nb_parameters,"");
       Species species_default;
       for(int i = 0; i < nb_parameters; i++){
@@ -3524,11 +3524,11 @@ void ReadInputSpecies(){
     
     for(int sp=1;sp<=nbspp;sp++) {
       S[sp].Init();
-      //cout << S[sp].s_name << " dmax: " << S[sp].s_dbhmax << endl;
+      //Rcout << S[sp].s_name << " dmax: " << S[sp].s_dbhmax << endl;
     }
-    cout << "Successfully read in species file." << endl;
+    Rcout << "Successfully read in species file." << endl;
   } else {
-    cout<< "ERROR with the species file" << endl;
+    Rcout<< "ERROR with the species file" << endl;
   }
   
   InSpecies.close();
@@ -3537,7 +3537,7 @@ void ReadInputSpecies(){
 //! Global function: This function reads inputs from the environmental daily variation input file 
 void ReadInputDailyvar(){
   // currently very simple reading in, only basic error checking 
-  cout << endl << "Reading in file: " << inputfile_daytimevar << endl;
+  Rcout << endl << "Reading in file: " << inputfile_daytimevar << endl;
   
   fstream InDaily(inputfile_daytimevar, ios::in);
   
@@ -3562,7 +3562,7 @@ void ReadInputDailyvar(){
       varday_light.push_back(varday_light_current);
       varday_vpd.push_back(varday_vpd_current);
       varday_T.push_back(varday_T_current);
-      //cout << "at: " << starttime_current << " vardaytime_light: " << varday_light[nbsteps_varday] << " vardaytime_vpd: " << varday_vpd[nbsteps_varday] << " vardaytime_T: "<< varday_T[nbsteps_varday] << endl;
+      //Rcout << "at: " << starttime_current << " vardaytime_light: " << varday_light[nbsteps_varday] << " vardaytime_vpd: " << varday_vpd[nbsteps_varday] << " vardaytime_T: "<< varday_T[nbsteps_varday] << endl;
       nbsteps_varday++;
     }
     
@@ -3570,19 +3570,19 @@ void ReadInputDailyvar(){
     totday_light = 0.0;
     for (int i = 0; i < nbsteps_varday; i++) totday_light += varday_light[i];
 #endif
-    cout << "Read in: " << nbsteps_varday << " timesteps per day, covering " << nbhours_covered << " hours of the day." << endl;
-    cout << "Successfully read in daytime variation file" << endl;
+    Rcout << "Read in: " << nbsteps_varday << " timesteps per day, covering " << nbhours_covered << " hours of the day." << endl;
+    Rcout << "Successfully read in daytime variation file" << endl;
     inv_nbsteps_varday = 1.0/float(nbsteps_varday);
   }
   else{
-    cout<< "ERROR with the daily variation file" << endl;
+    Rcout<< "ERROR with the daily variation file" << endl;
   }
 }
 
 //! Global function: This function reads inputs from the environmental monthly variation input file 
 //! - v.3.0 of the code suppose that environment is periodic (a period = a year), if one want to make climate vary, with interannual variation and climate change along the simulation, one just need to provide the full climate input of the whole simulation (ie number of columns=iter and not iterperyear) and change iterperyear by nbiter here.
 void ReadInputClimate(){
-  cout << endl << "Reading in file: " << inputfile_climate << endl;
+  Rcout << endl << "Reading in file: " << inputfile_climate << endl;
   
   fstream InClim(inputfile_climate, ios::in);
   
@@ -3590,7 +3590,7 @@ void ReadInputClimate(){
     // we go through all lines in the input file 
     iterperyear = 0;
     InClim.getline(buffer,256,'\n');
-    //cout << "Header line: " << buffer << endl;
+    //Rcout << "Header line: " << buffer << endl;
     
     string line;
     while(getline(InClim, line)){
@@ -3610,12 +3610,12 @@ void ReadInputClimate(){
       VapourPressureDeficit.push_back(VapourPressureDeficit_current);
       DailyVapourPressureDeficit.push_back(DailyVapourPressureDeficit_current);
       DailyMeanVapourPressureDeficit.push_back(DailyMeanVapourPressureDeficit_current);
-      //cout << Temperature_current << "\t" <<  DailyMeanTemperature_current << "\t" <<  NightTemperature_current << "\t" <<  Rainfall_current << "\t" <<  WindSpeed_current << "\t" <<  DailyMeanIrradiance_current << "\t" <<  MeanIrradiance_current << "\t" <<  SaturatedVapourPressure_current << "\t" <<  VapourPressure_current << "\t" <<  VapourPressureDeficit_current << "\t" <<  DailyVapourPressureDeficit_current << "\t" <<  DailyMeanVapourPressureDeficit_current << endl;
+      //Rcout << Temperature_current << "\t" <<  DailyMeanTemperature_current << "\t" <<  NightTemperature_current << "\t" <<  Rainfall_current << "\t" <<  WindSpeed_current << "\t" <<  DailyMeanIrradiance_current << "\t" <<  MeanIrradiance_current << "\t" <<  SaturatedVapourPressure_current << "\t" <<  VapourPressure_current << "\t" <<  VapourPressureDeficit_current << "\t" <<  DailyVapourPressureDeficit_current << "\t" <<  DailyMeanVapourPressureDeficit_current << endl;
       iterperyear++;
     }
     
     timestep=1.0/float(iterperyear);
-    cout << "Read in climate data for " << iterperyear << " iterations per year." << endl;
+    Rcout << "Read in climate data for " << iterperyear << " iterations per year." << endl;
     // choose average conditions 
     WDailyMean_year = tDailyMean_year = VPDDailyMean_year = Tnight_year = temp_year = 0.0;
     
@@ -3631,7 +3631,7 @@ void ReadInputClimate(){
     tDailyMean_year *= 1.0/float(iterperyear);
     VPDDailyMean_year *= 1.0/float(iterperyear);
     
-    //cout << "WDailyMean: " << WDailyMean_year << endl;
+    //Rcout << "WDailyMean: " << WDailyMean_year << endl;
     Tnight_year *= 1.0/float(iterperyear);
     temp_year *= 1.0/float(iterperyear);
     
@@ -3648,10 +3648,10 @@ void ReadInputClimate(){
     VPDbasic=VapourPressureDeficit[iter%iterperyear];
     VPDday=DailyVapourPressureDeficit[iter%iterperyear];
     
-    cout << "Successfully read the climate file" << endl;
+    Rcout << "Successfully read the climate file" << endl;
   }
   else{
-    cout<< "ERROR with the climate file" << endl;
+    Rcout<< "ERROR with the climate file" << endl;
   }
   InClim.close();
 }
@@ -3661,7 +3661,7 @@ void ReadInputClimate(){
 //! - in v.3.0, all soil parameters (Sat_SWC, Res_SWC) are computed from soil texture data (%clay, %silt, %sand) provided in input for each layer. If additional information is available from the field (soil pH, organic content, dry bulk density, cation exchange capacity), this could be also provided in input and used to refine the computation of these soil parameters (see Table 2 in Marthews et al. 2014 Geoscientific Model Development and Hodnett & Tomasella 2002 Geoderma -- for tropical soils). Alternatively, if no local field soil data is available, these soil parameters (Sat_SWC, Res_SWC) should be drawn from global maps and databases --see Marthews et al. 2014, and directly provided in input. ==> ccl: to standardize the input file, the soil parameters (Sat_SWC, Res_SWC) should probably be provided in input, and the computation of those properties from the available local data (here %clay, %silt, %sand) made using a new function of RconTROLL (and not here)
 //! - Sat_SWC and Res_SWC are here computed according Tomasella & Hodnett 1998 from soil texture information (see Table 2 in Marthews et al. 2014)
 void ReadInputSoil(){
-  cout << endl << "Reading in file: " << inputfile_soil << endl;
+  Rcout << endl << "Reading in file: " << inputfile_soil << endl;
   fstream InSoil(inputfile_soil, ios::in);
   
   if(InSoil){
@@ -3689,9 +3689,9 @@ void ReadInputSoil(){
       
       nblayers_soil++;
     }
-    cout << "Read in: " << nblayers_soil << " soil layers" << endl;
+    Rcout << "Read in: " << nblayers_soil << " soil layers" << endl;
     
-    if(NULL==(layer_depth=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc layer_depth" << endl;
+    if(NULL==(layer_depth=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc layer_depth" << endl;
     float cumulative_depth=0.0;
     for (int l=0; l<nblayers_soil; l++) {
       cumulative_depth+=layer_thickness[l];
@@ -3699,44 +3699,44 @@ void ReadInputSoil(){
     }
     // (added in the header but kept in here) in this version, all soil parameters (Sat_SWC, Res_SWC) are computed from soil texture data (%clay, %silt, %sand) provided in input for each layer. If additional information is available from the field (soil pH, organic content, dry bulk density, cation exchange capacity), this could be also provided in input and used to refine the computation of these soil parameters (see Table 2 in Marthews et al. 2014 Geoscientific Model Development and Hodnett & Tomasella 2002 Geoderma -- for tropical soils). Alternatively, if no local field soil data is available, these soil parameters (Sat_SWC, Res_SWC) should be drawn from global maps and databases --see Marthews et al. 2014, and directly provided in input. ==> ccl: to standardize the input file, the soil parameters (Sat_SWC, Res_SWC) should probably be provided in input, and the computation of those properties from the available local data (here %clay, %silt, %sand) made using a new function of RconTROLL (and not here)
     // (added in the header but kept in here) Sat_SWC and Res_SWC are here computed according Tomasella & Hodnett 1998 from soil texture information (see Table 2 in Marthews et al. 2014)
-    if(NULL==(Sat_SWC=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc Sat_SW" << endl;
-    if(NULL==(Max_SWC=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc Max_SW" << endl;
+    if(NULL==(Sat_SWC=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc Sat_SW" << endl;
+    if(NULL==(Max_SWC=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc Max_SW" << endl;
     
     for (int l=0; l<nblayers_soil; l++) {
       Sat_SWC[l]= 0.01*(40.61+(0.165*proportion_Silt[l])+(0.162*proportion_Clay[l])+(0.00137*proportion_Silt[l]*proportion_Silt[l])+(0.000018*proportion_Silt[l]*proportion_Silt[l]*proportion_Clay[l])); // this is the Tomasella & Hodnett 1998 tropical texture-based pedotransfer function, as reported in Table 2 of Marthews et al. 2014. in m3.m-3
       Max_SWC[l]=Sat_SWC[l]*sites_per_dcell*LH*LH*layer_thickness[l]; // in m3
-      cout << "layer " << l << " Vol=" << sites_per_dcell*LH*LH*layer_thickness[l]<< " m3; Sat_SWC =" << Sat_SWC[l] << " MAX_SWC =" << Max_SWC[l] << " m3." << endl;
+      Rcout << "layer " << l << " Vol=" << sites_per_dcell*LH*LH*layer_thickness[l]<< " m3; Sat_SWC =" << Sat_SWC[l] << " MAX_SWC =" << Max_SWC[l] << " m3." << endl;
     }
     
-    if(NULL==(Ksat=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc Ksat" << endl;
+    if(NULL==(Ksat=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc Ksat" << endl;
     for (int l=0; l<nblayers_soil; l++) {
       Ksat[l]=0.007055556*pow(10,(-0.60-(0.0064*proportion_Clay[l])+(0.0126*proportion_Sand[l]))); // according to Cosby et al. 1984 (the only expression of k_sat reported in Table 2 of Marthews et al. 2014). k_sat is here in mm/s or equivalently in kg/m2/s.
-      cout << "layer " << l << " Ksat=" << Ksat[l] <<"mm/s or kg/m2/s  "<< Ksat[l]*9.8/18 << endl;
+      Rcout << "layer " << l << " Ksat=" << Ksat[l] <<"mm/s or kg/m2/s  "<< Ksat[l]*9.8/18 << endl;
     }
     
-    if(NULL==(Res_SWC=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc Res_SW" << endl;
-    if(NULL==(Min_SWC=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc Max_SW" << endl;
+    if(NULL==(Res_SWC=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc Res_SW" << endl;
+    if(NULL==(Min_SWC=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc Max_SW" << endl;
     
     for (int l=0; l<nblayers_soil; l++) {
       Res_SWC[l]= 0.01*fmax(0.0,(-2.094+(0.047*proportion_Silt[l])+(0.431*proportion_Clay[l])-(0.00827*proportion_Silt[l]*proportion_Clay[l]))); // this is the Tomasella & Hodnett 1998 tropical texture-based pedotransfer function, as reported in Table 2 of Marthews et al. 2014.
       Min_SWC[l]=Res_SWC[l]*sites_per_dcell*LH*LH*layer_thickness[l];
-      cout << "layer " << l << " Vol=" << sites_per_dcell*LH*LH*layer_thickness[l] << "m3; Res=" << Res_SWC[l]<<  " MIN_SWC =" << Min_SWC[l] << " m3" << endl;
+      Rcout << "layer " << l << " Vol=" << sites_per_dcell*LH*LH*layer_thickness[l] << "m3; Res=" << Res_SWC[l]<<  " MIN_SWC =" << Min_SWC[l] << " m3" << endl;
     }
     
-    if(NULL==(phi_e=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc phi_e" << endl;
-    if(NULL==(b=new float[nblayers_soil])) cerr<<"!!! Mem_Alloc b" << endl;
+    if(NULL==(phi_e=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc phi_e" << endl;
+    if(NULL==(b=new float[nblayers_soil])) Rcerr<<"!!! Mem_Alloc b" << endl;
     for (int l=0; l<nblayers_soil; l++) {
       //phi_e[l]=-0.001*(0.285+(0.000733*proportion_Silt[l]*proportion_Silt[l])-(0.00013*proportion_Silt[l]*proportion_Clay[l])+(0.0000036*proportion_Silt[l]*proportion_Silt[l]*proportion_Clay[l])); // according to Tomasella & Hodnett 1998 tropical texture-based pedotransfer function, as reported in Table 2 of Marthews et al. 2014. phi_e is here in MPa.
       //b[l]=exp(1.197+(0.00417*proportion_Silt[l])-(0.0045*proportion_Clay[l])+(0.000894*proportion_Silt[l]*proportion_Clay[l])-(0.00001*proportion_Silt[l]*proportion_Silt[l]*proportion_Clay[l])); // according to Tomasella & Hodnett 1998 tropical texture-based pedotransfer function, as reported in Table 2 of Marthews et al. 2014.
       phi_e[l]=-0.00000001*pow(10.0,(2.17-(0.0063*proportion_Clay[l])-(0.0158*proportion_Sand[l])))*(1000*9.80665); // according to Cosby et al. 1984, non -tropical and texture-based but widely used, as reported in Table 2 in Marthews et al. 2014. In MPa.
       b[l]=3.10+0.157*proportion_Clay[l]-0.003*proportion_Sand[l]; // according to Cosby et al. 1984, non -tropical and texture-based but widely used, as reported in Table 2 in Marthews et al. 2014. Dimensionless.
-      cout << "layer " << l << " phi_e=" << phi_e[l] << "\t" << "b=" << b[l] <<endl;
+      Rcout << "layer " << l << " phi_e=" << phi_e[l] << "\t" << "b=" << b[l] <<endl;
     }
-    cout << "Successfully read the soil file" << endl;
+    Rcout << "Successfully read the soil file" << endl;
   } else {
-    cout<< "ERROR with the soil file" << endl;
+    Rcout<< "ERROR with the soil file" << endl;
   }
-  cout << endl;
+  Rcout << endl;
 }
 #endif
 
@@ -3810,15 +3810,15 @@ void InitialiseIntraspecific(){
     max_intraspecific_dbhmax = fmaxf(max_intraspecific_dbhmax,d_intraspecific_dbhmax[i]);
     min_intraspecific_dbhmax = fminf(min_intraspecific_dbhmax,d_intraspecific_dbhmax[i]);
   }
-  cout << endl << "Intraspecific variation initialisation: " << endl;
-  cout << "Max and min allometry deviation, lognormal (height): " << max_intraspecific_height << " | " << min_intraspecific_height << endl;
-  cout << "Max and min allometry deviation, lognormal (crown radius): " << max_intraspecific_CR << " | " << min_intraspecific_CR << endl;
-  cout << "Max and min trait deviation, lognormal (N): " << max_intraspecific_N << " | " << min_intraspecific_N << endl;
-  cout << "Max and min trait deviation, lognormal (P): " << max_intraspecific_P << " | " << min_intraspecific_P << endl;
-  cout << "Max and min trait deviation, lognormal (LMA): " << max_intraspecific_LMA << " | " << min_intraspecific_LMA << endl;
-  cout << "Max and min allometry deviation, normal (crown depth): " << max_intraspecific_CD << " | " << min_intraspecific_CD << endl;
-  cout << "Max and min trait deviation, normal (wsg): " << max_intraspecific_wsg << " | " << min_intraspecific_wsg << endl;
-  cout << "Max and min trait deviation, lognormal (dmax): " << max_intraspecific_dbhmax << " | " << min_intraspecific_dbhmax << endl;
+  Rcout << endl << "Intraspecific variation initialisation: " << endl;
+  Rcout << "Max and min allometry deviation, lognormal (height): " << max_intraspecific_height << " | " << min_intraspecific_height << endl;
+  Rcout << "Max and min allometry deviation, lognormal (crown radius): " << max_intraspecific_CR << " | " << min_intraspecific_CR << endl;
+  Rcout << "Max and min trait deviation, lognormal (N): " << max_intraspecific_N << " | " << min_intraspecific_N << endl;
+  Rcout << "Max and min trait deviation, lognormal (P): " << max_intraspecific_P << " | " << min_intraspecific_P << endl;
+  Rcout << "Max and min trait deviation, lognormal (LMA): " << max_intraspecific_LMA << " | " << min_intraspecific_LMA << endl;
+  Rcout << "Max and min allometry deviation, normal (crown depth): " << max_intraspecific_CD << " | " << min_intraspecific_CD << endl;
+  Rcout << "Max and min trait deviation, normal (wsg): " << max_intraspecific_wsg << " | " << min_intraspecific_wsg << endl;
+  Rcout << "Max and min trait deviation, lognormal (dmax): " << max_intraspecific_dbhmax << " | " << min_intraspecific_dbhmax << endl;
 }
 
 //! Global function: initialise lookup tables
@@ -3830,14 +3830,14 @@ void InitialiseLookUpTables(){
   nbTbins=500;
   float Taccuracy=0.1;
   iTaccuracy=1.0/Taccuracy;
-  cout << endl << "Built-in maximal temperature: " << float(nbTbins)*Taccuracy <<endl;
-  if(NULL==(LookUp_KmT=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_KmT" << endl;
-  if(NULL==(LookUp_GammaT=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_GammaT" << endl;
-  if(NULL==(LookUp_VcmaxT=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_VcmaxT" << endl;
-  if(NULL==(LookUp_JmaxT=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_JmaxT" << endl;
-  if(NULL==(LookUp_Rday=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_Rday" << endl;
-  if(NULL==(LookUp_Rstem=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_Rstem" << endl;
-  if(NULL==(LookUp_Rnight=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_Rnight" << endl;
+  Rcout << endl << "Built-in maximal temperature: " << float(nbTbins)*Taccuracy <<endl;
+  if(NULL==(LookUp_KmT=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_KmT" << endl;
+  if(NULL==(LookUp_GammaT=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_GammaT" << endl;
+  if(NULL==(LookUp_VcmaxT=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_VcmaxT" << endl;
+  if(NULL==(LookUp_JmaxT=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_JmaxT" << endl;
+  if(NULL==(LookUp_Rday=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_Rday" << endl;
+  if(NULL==(LookUp_Rstem=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_Rstem" << endl;
+  if(NULL==(LookUp_Rnight=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_Rnight" << endl;
   for(int i=0;i<nbTbins;i++) { // loop over "T" in GPPleaf()
     float temper=float(i)*Taccuracy;
     // !!!UPDATE provide references for these eqautions
@@ -3855,10 +3855,10 @@ void InitialiseLookUpTables(){
   // look up table for flux averaging/integration 
   // division into absorption prior to current voxel (absorb_prev) and absorption in current voxel (absorb_delta) 
   // prior absorption has a maximum of 20 m2/m3, while absorption within one voxel can maximally reach 10 m2/m3
-  if(NULL==(LookUp_flux_absorption=new float[80000])) cerr<<"!!! Mem_Alloc LookUp_flux" << endl;
-  if(NULL==(LookUp_flux=new float[80000])) cerr<<"!!! Mem_Alloc LookUp_flux" << endl;
-  if(NULL==(LookUp_VPD=new float[80000])) cerr<<"!!! Mem_Alloc LookUp_VPD" << endl;
-  if(NULL==(LookUp_T=new float[80000])) cerr<<"!!! Mem_Alloc LookUp_VPD" << endl;
+  if(NULL==(LookUp_flux_absorption=new float[80000])) Rcerr<<"!!! Mem_Alloc LookUp_flux" << endl;
+  if(NULL==(LookUp_flux=new float[80000])) Rcerr<<"!!! Mem_Alloc LookUp_flux" << endl;
+  if(NULL==(LookUp_VPD=new float[80000])) Rcerr<<"!!! Mem_Alloc LookUp_VPD" << endl;
+  if(NULL==(LookUp_T=new float[80000])) Rcerr<<"!!! Mem_Alloc LookUp_VPD" << endl;
   for(int i=0;i<400;i++) { // loop over "absorb" in Fluxh()
     for(int j=0;j<200;j++){
       float absorb_prev=float(i)/20.0;
@@ -4021,7 +4021,7 @@ void InitialiseOutputStreams(){
       sprintf(nnn,"%s_%i_abund.txt",buf, easympi_rank);
       output[0].open(nnn, ios::out);
       if (!output[0]) {
-        cout<< "ERROR with abund file"<< endl;
+        Rcout<< "ERROR with abund file"<< endl;
       }
       sprintf(nnn,"%s_%i_abu10.txt",buf, easympi_rank);
       output[1].open(nnn, ios::out);
@@ -4136,9 +4136,9 @@ void Initialise() {
 #ifdef WATER
     // FF: not sure this check is necessary anymore (it's a check for memory allocation problems, I presume?), but I kept it just in case
     if (&T_site.t_soil_layer_weight[0] == &T_site.t_root_biomass[4]) {
-      cout << "Warning mem_alloc root biomass and soil layer weight at site " << site << ": " << endl;
-      cout << "t_soil_layer_weight adresses: " << &T_site.t_soil_layer_weight[0] << "\t" << &T_site.t_soil_layer_weight[1] << "\t" << &T_site.t_soil_layer_weight[2] << "\t" << &T_site.t_soil_layer_weight[3] << "\t" << &T_site.t_soil_layer_weight[4] << endl;
-      cout << "t_root biomass adresses: " << &T_site.t_root_biomass[0] << "\t" << &T_site.t_root_biomass[1] << "\t" << &T_site.t_root_biomass[2] << "\t" << &T_site.t_root_biomass[3] << "\t" << &T_site.t_root_biomass[4] << endl;
+      Rcout << "Warning mem_alloc root biomass and soil layer weight at site " << site << ": " << endl;
+      Rcout << "t_soil_layer_weight adresses: " << &T_site.t_soil_layer_weight[0] << "\t" << &T_site.t_soil_layer_weight[1] << "\t" << &T_site.t_soil_layer_weight[2] << "\t" << &T_site.t_soil_layer_weight[3] << "\t" << &T_site.t_soil_layer_weight[4] << endl;
+      Rcout << "t_root biomass adresses: " << &T_site.t_root_biomass[0] << "\t" << &T_site.t_root_biomass[1] << "\t" << &T_site.t_root_biomass[2] << "\t" << &T_site.t_root_biomass[3] << "\t" << &T_site.t_root_biomass[4] << endl;
     }
 #endif
   }
@@ -4160,17 +4160,17 @@ void InitialiseABC(){
   col_end = cols-margin;
   sites_abc = (row_end - row_start) * (col_end - col_start);
   isites_abc = 1.0/float(sites_abc);
-  cout << "row start: " << row_start << " | row end: " << row_end << " | sites_abc: " << sites_abc << endl;
+  Rcout << "row start: " << row_start << " | row end: " << row_end << " | sites_abc: " << sites_abc << endl;
   // counter for recursive function (gap patches) 
   nbvisited = 0;
   // distributions for simulated and empirical CHM 
   // precomputed, not directly deduced from empirical fields, as a separate algorithm is used (from LAStools) 
-  if (NULL==(chm_field_previous=new int[sites])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(chm_field_current=new int[sites])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(chm_field_previous_ALS=new int[sites])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(chm_field_current_ALS=new int[sites])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(chm_field_changes=new int[sites])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(chm_field_changes_ALS=new int[sites])) cerr<<"!!! Mem_Alloc\n";
+  if (NULL==(chm_field_previous=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(chm_field_current=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(chm_field_previous_ALS=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(chm_field_current_ALS=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(chm_field_changes=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(chm_field_changes_ALS=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
   for(int s=0;s<sites;s++){
     chm_field_previous[s] = 0;
     chm_field_current[s] = 0;
@@ -4180,13 +4180,13 @@ void InitialiseABC(){
     chm_field_changes_ALS[s] = 0;
   }
   // field for simulated transmittance 
-  if (NULL==(transmittance_simulatedALS=new float*[HEIGHT+1])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(transmittance_direct=new float*[HEIGHT+1])) cerr<<"!!! Mem_Alloc\n";
-  if (NULL==(transmittance_simulatedALS_sampling=new int*[HEIGHT+1])) cerr<<"!!! Mem_Alloc\n";
+  if (NULL==(transmittance_simulatedALS=new float*[HEIGHT+1])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(transmittance_direct=new float*[HEIGHT+1])) Rcerr<<"!!! Mem_Alloc\n";
+  if (NULL==(transmittance_simulatedALS_sampling=new int*[HEIGHT+1])) Rcerr<<"!!! Mem_Alloc\n";
   for(int h=0;h<(HEIGHT+1);h++){
-    if (NULL==(transmittance_simulatedALS[h]=new float[sites])) cerr<<"!!! Mem_Alloc\n";
-    if (NULL==(transmittance_direct[h]=new float[sites])) cerr<<"!!! Mem_Alloc\n";
-    if (NULL==(transmittance_simulatedALS_sampling[h]=new int[sites])) cerr<<"!!! Mem_Alloc\n";
+    if (NULL==(transmittance_simulatedALS[h]=new float[sites])) Rcerr<<"!!! Mem_Alloc\n";
+    if (NULL==(transmittance_direct[h]=new float[sites])) Rcerr<<"!!! Mem_Alloc\n";
+    if (NULL==(transmittance_simulatedALS_sampling[h]=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
   }
   // set it to default 1 (full visibility) 
   for(int row=0;row<rows;row++){
@@ -4214,9 +4214,9 @@ void InitialiseFromData(){
   int data_read=0, data_initialised=0; // diagnostics
   float height_max=0; // diagnostics
   nblivetrees=0;
-  cout << "Reading from file " << inputfile_data << "\n";
+  Rcout << "Reading from file " << inputfile_data << "\n";
   In.getline(buffer,256,'\n'); // skip header lines
-  cout << "Header line skipped \n";
+  Rcout << "Header line skipped \n";
   float dbh, height, CR, CD, var_height,var_CR,var_CD,CrownDisplacement,Nmass,Pmass,LMA,wsg,leafarea;
   int row, col, species_label;// s_fd = t_s... pointer 
   string species_name;
@@ -4233,14 +4233,14 @@ void InitialiseFromData(){
       data_initialised++;
     }
     else{
-      cout << "WARNING: tree of species: " << species_name << " at: " << col << " | " << row << " could not be initialized." << endl;
+      Rcout << "WARNING: tree of species: " << species_name << " at: " << col << " | " << row << " could not be initialized." << endl;
     }
     data_read++;
   }
-  cout << "\n" << data_read << " rows read from file. " << data_initialised << " rows usable for initialisation from data. \n";
-  cout << "Maximum height of trees included is: " << height_max << "\n";
-  cout << "NBtrees from Data:\t" << nblivetrees << "\n";
-  cout << "Initialisation from data finished \n";
+  Rcout << "\n" << data_read << " rows read from file. " << data_initialised << " rows usable for initialisation from data. \n";
+  Rcout << "Maximum height of trees included is: " << height_max << "\n";
+  Rcout << "NBtrees from Data:\t" << nblivetrees << "\n";
+  Rcout << "Initialisation from data finished \n";
   In.close();
 }
 
@@ -4259,92 +4259,92 @@ void AllocMem() {
   //  RMAX = int(r);
   SBORD = cols*RMAX;
   dbhmaxincm = int(100.*d);
-  cout << "SBORD: " << SBORD << endl;
+  Rcout << "SBORD: " << SBORD << endl;
   if(!mpi_rank){
-    //cout << "HEIGHT : " << HEIGHT << " RMAX : " << RMAX << " DBH : " << DBH <<"\n"; cout.flush();
+    //Rcout << "HEIGHT : " << HEIGHT << " RMAX : " << RMAX << " DBH : " << DBH <<"\n"; Rcout.flush();
     if(RMAX>rows){
       // Consistency tests 
-      cerr << "Error : RMAX > rows \n";
+      Rcerr << "Error : RMAX > rows \n";
       exit(-1);
     }
     if(HEIGHT > rows){
-      cerr << "Error : HEIGHT > rows \n";
+      Rcerr << "Error : HEIGHT > rows \n";
       exit(-1);
     }
   }
   
   //** Initialization of dynamic Fields **
   //**************************************
-  if(NULL==(nbdbh=new int[dbhmaxincm])) cerr<<"!!! Mem_Alloc\n";                         // Field for DBH histogram 
-  if(NULL==(layer=new float[HEIGHT+1])) cerr<<"!!! Mem_Alloc\n";                         // Field for variables averaged by vertical layer 
+  if(NULL==(nbdbh=new int[dbhmaxincm])) Rcerr<<"!!! Mem_Alloc\n";                         // Field for DBH histogram 
+  if(NULL==(layer=new float[HEIGHT+1])) Rcerr<<"!!! Mem_Alloc\n";                         // Field for variables averaged by vertical layer 
 #ifdef Output_ABC
-  if(NULL==(abundances_species=new int[nbspp+1])) cerr<<"!!! Mem_Alloc\n";               // vector to save species abundances every recorded timestep 
-  if(NULL==(abundances_species10=new int[nbspp+1])) cerr<<"!!! Mem_Alloc\n";               // vector to save species abundances every recorded timestep (dbh > 10cm) 
-  if(NULL==(biomass_species=new float[nbspp+1])) cerr<<"!!! Mem_Alloc\n";               // vector to save species abundances every recorded timestep (dbh > 10cm) 
+  if(NULL==(abundances_species=new int[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species abundances every recorded timestep 
+  if(NULL==(abundances_species10=new int[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species abundances every recorded timestep (dbh > 10cm) 
+  if(NULL==(biomass_species=new float[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species abundances every recorded timestep (dbh > 10cm) 
   
-  if(NULL==(traits_species=new float*[nbspp+1])) cerr<<"!!! Mem_Alloc\n";               // vector to save species traits every recorded timestep 
+  if(NULL==(traits_species=new float*[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species traits every recorded timestep 
   
   for(int spp=0;spp<(nbspp+1);spp++)
     if(NULL==(traits_species[spp]=new float[10]))
-      cerr<<"!!! Mem_Alloc\n";
-    if(NULL==(traits_species10=new float*[nbspp+1])) cerr<<"!!! Mem_Alloc\n";               // vector to save species traits every recorded timestep  (dbh > 10cm) 
+      Rcerr<<"!!! Mem_Alloc\n";
+    if(NULL==(traits_species10=new float*[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species traits every recorded timestep  (dbh > 10cm) 
     for(int spp=0;spp<(nbspp+1);spp++)
       if(NULL==(traits_species10[spp]=new float[10]))
-        cerr<<"!!! Mem_Alloc\n";
+        Rcerr<<"!!! Mem_Alloc\n";
 #endif
-      if(NULL==(SPECIES_GERM=new int[nbspp+1])) cerr<<"!!! Mem_Alloc\n";  // Field for democratic seed germination 
-      if(NULL==(SPECIES_SEEDS=new int*[sites]))  cerr<<"!!! Mem_Alloc\n"; // Field of seeds 
+      if(NULL==(SPECIES_GERM=new int[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";  // Field for democratic seed germination 
+      if(NULL==(SPECIES_SEEDS=new int*[sites]))  Rcerr<<"!!! Mem_Alloc\n"; // Field of seeds 
       for(int site=0;site<sites;site++)                           // For each processor, we define a stripe above (labelled 0) and a stripe below (1). Each stripe is SBORD in width.
         if (NULL==(SPECIES_SEEDS[site]=new int[nbspp+1]))       // ALL the sites need to be updated.
-          cerr<<"!!! Mem_Alloc\n";
+          Rcerr<<"!!! Mem_Alloc\n";
         for(int site=0;site<sites;site++)
           for(int spp=0;spp<=nbspp;spp++)
             SPECIES_SEEDS[site][spp] = 0;
-        if(NULL==(p_seed=new double[sites])) cerr<<"!!! Mem_Alloc\n";
-        if(NULL==(n_seed=new unsigned int[sites])) cerr<<"!!! Mem_Alloc\n";
+        if(NULL==(p_seed=new double[sites])) Rcerr<<"!!! Mem_Alloc\n";
+        if(NULL==(n_seed=new unsigned int[sites])) Rcerr<<"!!! Mem_Alloc\n";
         
         double prob_seed = 1.0/double(sites);
         for(int i = 0; i < sites; i++) p_seed[i] = prob_seed;
         for(int i = 0; i < sites; i++) n_seed[i] = 0;
         
-        if(NULL==(p_species=new double[nbspp])) cerr<<"!!! Mem_Alloc\n";
-        if(NULL==(n_species=new unsigned int[nbspp])) cerr<<"!!! Mem_Alloc\n";
+        if(NULL==(p_species=new double[nbspp])) Rcerr<<"!!! Mem_Alloc\n";
+        if(NULL==(n_species=new unsigned int[nbspp])) Rcerr<<"!!! Mem_Alloc\n";
         
         for(int i = 0; i < nbspp; i++) n_species[i] = 0;
         
-        if(_SEEDTRADEOFF) if (NULL==(PROB_S=new float[nbspp+1])) cerr<<"!!! Mem_Alloc\n";
-        if(_NDD) if (NULL==(PROB_S=new float[nbspp+1])) cerr<<"!!! Mem_Alloc\n";
-        //  if (NULL==(persist=new long int[nbiter])) cerr<<"!!! Mem_Alloc\n";                  // Field for persistence 
-        //  if (NULL==(distr=new int[cols])) cerr<<"!!! Mem_Alloc\n";
+        if(_SEEDTRADEOFF) if (NULL==(PROB_S=new float[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";
+        if(_NDD) if (NULL==(PROB_S=new float[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";
+        //  if (NULL==(persist=new long int[nbiter])) Rcerr<<"!!! Mem_Alloc\n";                  // Field for persistence 
+        //  if (NULL==(distr=new int[cols])) Rcerr<<"!!! Mem_Alloc\n";
         
         if(NULL==(LAI3D=new float*[HEIGHT+1]))                                                   // Field 3D 
-          cerr<<"!!! Mem_Alloc\n";                                                            // Trees at the border of the simulated forest need to know the canopy occupancy by trees in the neighboring processor.
+          Rcerr<<"!!! Mem_Alloc\n";                                                            // Trees at the border of the simulated forest need to know the canopy occupancy by trees in the neighboring processor.
         for(int h=0;h<(HEIGHT+1);h++)                                                          // For each processor, we define a stripe above (labelled 0) and a stripe below (1). Each stripe is SBORD in width.
           if (NULL==(LAI3D[h]=new float[sites+2*SBORD]))                                   // ALL the sites need to be updated.
-            cerr<<"!!! Mem_Alloc\n";
+            Rcerr<<"!!! Mem_Alloc\n";
           for(int h=0;h<(HEIGHT+1);h++)
             for(int site=0;site<sites+2*SBORD;site++)
               LAI3D[h][site] = 0.0;
           if (NULL==(Thurt[0]=new unsigned short[3*sites]))                                       // Field for treefall impacts 
-            cerr<<"!!! Mem_Alloc\n";
+            Rcerr<<"!!! Mem_Alloc\n";
           for(int i=1;i<3;i++)
             if (NULL==(Thurt[i]=new unsigned short[sites]))
-              cerr<<"!!! Mem_Alloc\n";
+              Rcerr<<"!!! Mem_Alloc\n";
             
 #ifdef WATER
-            if(NULL==(SWC3D=new float*[nblayers_soil])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(soil_phi3D=new float*[nblayers_soil])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Ks=new float*[nblayers_soil])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(KsPhi=new float*[nblayers_soil])) cerr<<"!!! Mem_Alloc\n";
-            //if (NULL==(KsPhi2=new float*[nblayers_soil])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Transpiration=new float*[nblayers_soil])) cerr<<"!!! Mem_Alloc\n";
+            if(NULL==(SWC3D=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(soil_phi3D=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Ks=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(KsPhi=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
+            //if (NULL==(KsPhi2=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Transpiration=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
             for(int l=0;l<nblayers_soil;l++) {
-              if(NULL==(SWC3D[l]=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-              if(NULL==(soil_phi3D[l]=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-              if(NULL==(Ks[l]=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-              if(NULL==(KsPhi[l]=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-              //if (NULL==(KsPhi2[l]=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-              if(NULL==(Transpiration[l]=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
+              if(NULL==(SWC3D[l]=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+              if(NULL==(soil_phi3D[l]=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+              if(NULL==(Ks[l]=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+              if(NULL==(KsPhi[l]=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+              //if (NULL==(KsPhi2[l]=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+              if(NULL==(Transpiration[l]=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
               for(int dcell=0; dcell<nbdcells; dcell++) {
                 SWC3D[l][dcell]=Max_SWC[l];
                 soil_phi3D[l][dcell]=0.0;
@@ -4353,16 +4353,16 @@ void AllocMem() {
                 //KsPhi2[l][dcell]=0.0;
                 Transpiration[l][dcell]=0.0;
                 if (SWC3D[l][dcell]<=0.0) {
-                  cout <<SWC3D[l][dcell] << "\t" <<Max_SWC[l] << "\n";
+                  Rcout <<SWC3D[l][dcell] << "\t" <<Max_SWC[l] << "\n";
                 }
               }
             }
-            if(NULL==(LAI_DCELL=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Interception=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Throughfall=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Runoff=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Leakage=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
-            if(NULL==(Evaporation=new float[nbdcells])) cerr<<"!!! Mem_Alloc\n";
+            if(NULL==(LAI_DCELL=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Interception=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Throughfall=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Runoff=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Leakage=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
+            if(NULL==(Evaporation=new float[nbdcells])) Rcerr<<"!!! Mem_Alloc\n";
             for(int dcell=0; dcell<nbdcells; dcell++) {
               LAI_DCELL[dcell]=0.0;
               Interception[dcell]=0.0;
@@ -4371,7 +4371,7 @@ void AllocMem() {
               Leakage[dcell]=0.0;
               Evaporation[dcell]=0.0;
             }
-            if(NULL==(site_DCELL=new int[sites])) cerr<<"!!! Mem_Alloc\n";
+            if(NULL==(site_DCELL=new int[sites])) Rcerr<<"!!! Mem_Alloc\n";
             for(int site=0;site<sites;site++) {
               int x = site%cols;
               int y = site/cols;
@@ -4384,10 +4384,10 @@ void AllocMem() {
 #ifdef MPI // Fields for MPI operations 
             for(i=0;i<2;i++){ //  Two fields: one for the CL north (0) one for the CL south (1) 
               if(NULL==(LAIc[i]=new unsigned short*[HEIGHT+1])) // These fields contain the light info in the neighboring procs (2*SBORD in width, not SBORD !). They are used to update local fields 
-                cerr<<"!!! Mem_Alloc\n";
+                Rcerr<<"!!! Mem_Alloc\n";
               for(h=0;h<(HEIGHT+1);h++)
                 if (NULL==(LAIc[i][h]=new unsigned short[2*SBORD]))
-                  cerr<<"!!! Mem_Alloc\n";
+                  Rcerr<<"!!! Mem_Alloc\n";
             }
 #endif
 }
@@ -4400,7 +4400,7 @@ void BirthInit() {
 #ifdef MPI
   MPI_Barrier(MPI_COMM_WORLD);
 #endif
-  cout<<endl;
+  Rcout<<endl;
 }
 
 
@@ -4448,16 +4448,16 @@ void UpdateSeeds() {
     // acceleration, using the multinomial distribution 
     int ha = sites/10000;
     gsl_ran_multinomial(gslrand, sites, Cseedrain * ha, p_seed, n_seed);
-    cout << sites << " Seedrain: " << Cseedrain * ha << endl;
+    Rcout << sites << " Seedrain: " << Cseedrain * ha << endl;
     int seedsadded = 0;
     for(int s = 0; s < sites; s++){
       //if(T[s].t_age == 0){
       int nbseeds = n_seed[s];
-      //cout << "Site: " << s << " nbseeds: " << nbseeds << " nbspp: " << nbspp << endl;
+      //Rcout << "Site: " << s << " nbseeds: " << nbseeds << " nbspp: " << nbspp << endl;
       gsl_ran_multinomial(gslrand, nbspp, nbseeds, p_species, n_species);
       for(int spp = 1; spp <= nbspp; spp++){
         int nbseeds_species = n_species[spp-1];
-        //cout << "Site: " << s << " Species: " << spp << " nbseeds: " << nbseeds_species << endl;
+        //Rcout << "Site: " << s << " Species: " << spp << " nbseeds: " << nbseeds_species << endl;
         if(nbseeds_species > 0){
           SPECIES_SEEDS[s][spp] = 1;
           seedsadded++;
@@ -4486,7 +4486,7 @@ void UpdateSeeds() {
       if(seedsadded_species > 0) nbspecies_affected++;
       seedsadded_effective += seedsadded_species;
     }
-    cout << "Trees_mature: " << trees_mature << " Nbseedsadded: " << seedsadded << " effective: " << seedsadded_effective << " nbspeciesaffected: " << nbspecies_affected << endl;
+    Rcout << "Trees_mature: " << trees_mature << " Nbseedsadded: " << seedsadded << " effective: " << seedsadded_effective << " nbspeciesaffected: " << nbspecies_affected << endl;
   }
 }
 
@@ -4621,12 +4621,12 @@ void UpdateField() {
     for (int l=0; l<nblayers_soil; l++) {
       w_uptake=fminf(Transpiration[l][d],(SWC3D[l][d]-Min_SWC[l]));
       if (Transpiration[l][d]<0.0 ||  isnan(Transpiration[l][d]) || isnan(w_uptake) || (SWC3D[l][d]-Min_SWC[l])<0 ) {
-        cout << "l=" << l << " d= "<< d <<" transpiration=" << Transpiration[l][d] << " and SWC3D[l][d]=" << SWC3D[l][d] << " and Min_SWC[l]=" << Min_SWC[l] << " and SWC3D[l][d]-Min_SWC[l]=" << SWC3D[l][d]-Min_SWC[l] << endl;
+        Rcout << "l=" << l << " d= "<< d <<" transpiration=" << Transpiration[l][d] << " and SWC3D[l][d]=" << SWC3D[l][d] << " and Min_SWC[l]=" << Min_SWC[l] << " and SWC3D[l][d]-Min_SWC[l]=" << SWC3D[l][d]-Min_SWC[l] << endl;
       }
       SWC3D[l][d]-=w_uptake;
       SWC3D[l][d]=fmaxf(SWC3D[l][d],Min_SWC[l]);
       if (Transpiration[l][d]<0.0 ||  isnan(Transpiration[l][d]) || isnan(w_uptake) || (SWC3D[l][d]-Min_SWC[l])<0 ) {
-        cout << "After w_uptake, l=" << l << " d= "<< d <<" transpiration=" << Transpiration[l][d] << " and SWC3D[l][d]=" << SWC3D[l][d] << " and Min_SWC[l]=" << Min_SWC[l] << " and SWC3D[l][d]-Min_SWC[l]=" << SWC3D[l][d]-Min_SWC[l] << endl;
+        Rcout << "After w_uptake, l=" << l << " d= "<< d <<" transpiration=" << Transpiration[l][d] << " and SWC3D[l][d]=" << SWC3D[l][d] << " and Min_SWC[l]=" << Min_SWC[l] << " and SWC3D[l][d]-Min_SWC[l]=" << SWC3D[l][d]-Min_SWC[l] << endl;
       }
     }
     
@@ -4645,7 +4645,7 @@ void UpdateField() {
     //sites_per_dcell*LH*LH*0.001 is to convert te amount of water in mm, ie. in 10-3 m3/m2, to the amount of water evaporated for the focal dcell in m3
     
     Evaporation[d]=fminf(e,(SWC3D[0][d]-Min_SWC[0])); // the amount of water evaporated from the soil cannot result in a water content below the residual water content. A model depending on soil matric potential would not need this.
-    if(Evaporation[d]<0 || isnan(Evaporation[d])  || (SWC3D[0][d]-Min_SWC[0])<0) cout << "evaporation=" << Evaporation[d] << " and e=" << e << " and SWC3D[0][d]=" << SWC3D[0][d] << " and Min_SWC[0]=" << Min_SWC[0] << "and SWC3D[0][d]-Min_SWC[0]=" << SWC3D[0][d]-Min_SWC[0] << endl;
+    if(Evaporation[d]<0 || isnan(Evaporation[d])  || (SWC3D[0][d]-Min_SWC[0])<0) Rcout << "evaporation=" << Evaporation[d] << " and e=" << e << " and SWC3D[0][d]=" << SWC3D[0][d] << " and Min_SWC[0]=" << Min_SWC[0] << "and SWC3D[0][d]-Min_SWC[0]=" << SWC3D[0][d]-Min_SWC[0] << endl;
     
     SWC3D[0][d]-=Evaporation[d];
     
@@ -4656,8 +4656,8 @@ void UpdateField() {
     Throughfall[d]*=sites_per_dcell*LH*LH*0.001; // to convert in absolute amount of water entering the soil voxel in m3
     
     if(isnan(Throughfall[d]) || (Throughfall[d]) <0 ) {
-      cout << "Incorrect throughfall" << endl;
-      cout << precip << "\t" << Interception[d] << "\t" << LAI_DCELL[d] << endl;
+      Rcout << "Incorrect throughfall" << endl;
+      Rcout << precip << "\t" << Interception[d] << "\t" << LAI_DCELL[d] << endl;
     }
     
     float in=Throughfall[d];
@@ -4668,15 +4668,15 @@ void UpdateField() {
           in-=(Max_SWC[l]-SWC3D[l][d]);
           SWC3D[l][d]=Max_SWC[l];
           if(isnan(SWC3D[l][d]) || (SWC3D[l][d]-Min_SWC[l])<=0) {
-            cout << "incorrect SWC3D, Min/Max_SWC" << endl;
-            cout <<Max_SWC[l] << endl;
+            Rcout << "incorrect SWC3D, Min/Max_SWC" << endl;
+            Rcout <<Max_SWC[l] << endl;
           }
         }
         else{
           SWC3D[l][d]+=in;
           if (isnan(SWC3D[l][d]) || (SWC3D[l][d]-Min_SWC[l])<0) {
-            cout << "incorrect SWC3D, Min/Max_SWC" << endl;
-            cout << Throughfall[d] << "\t" <<in <<"\t" <<  precip << "\t" << Interception[d] << "\t" << LAI_DCELL[d] << endl;
+            Rcout << "incorrect SWC3D, Min/Max_SWC" << endl;
+            Rcout << Throughfall[d] << "\t" <<in <<"\t" <<  precip << "\t" << Interception[d] << "\t" << LAI_DCELL[d] << endl;
           }
           in=0.0;
         }
@@ -4704,7 +4704,7 @@ void UpdateField() {
       KsPhi[l][d]=Ksat[l]*phi_e[l]*pow(theta, 2.5+b[l]); //Ks times soil_phi3D, computed directly as the exact power of theta.
       
       if (isnan(soil_phi3D[l][d]) || isnan(Ks[l][d]) ||  isnan(KsPhi[l][d]) || (SWC3D[l][d]-Min_SWC[l])<0) //|| KsPhi[l][d]==0.0 || Ks[l][d]==0.0 || soil_phi3D[l][d]==0.0)
-        cout << "In bucket model, layer " << l << " dcell " << d << " theta=" << theta << " SWC3D[l][d]-Min_SWC[l]=" << (SWC3D[l][d]-Min_SWC[l]) << " soil_phi3D[l][d]=" << soil_phi3D[l][d] << " Ksat=" << Ksat[l] << " phi_e=" << phi_e[l] <<" b[l]=" << b[l] << " KsPhi[l][d]=" << KsPhi[l][d] << " Ks[l][d]=" << Ks[l][d] << endl ;
+        Rcout << "In bucket model, layer " << l << " dcell " << d << " theta=" << theta << " SWC3D[l][d]-Min_SWC[l]=" << (SWC3D[l][d]-Min_SWC[l]) << " soil_phi3D[l][d]=" << soil_phi3D[l][d] << " Ksat=" << Ksat[l] << " phi_e=" << phi_e[l] <<" b[l]=" << b[l] << " KsPhi[l][d]=" << KsPhi[l][d] << " Ks[l][d]=" << Ks[l][d] << endl ;
       //KsPhi2[l][d]=Ksat[l]*phi_e[l]*pow(theta, 2.5);
       // we may want to shift to the van Genuchten-Mualem expressions of soil_phi3D and Ks, as the van genuchten-Mualem model is currently defacto the more santard soil hydraulic model (see ref in Table 1 in Marthews et al. 2014). To do so, see if we have data of soil pH, cation exchange capacity, organic carbon content, to explicitly compute the parameters with Hodnett & Tomasella 2002 (as recommended by Marthews et al. 2014 -- Table 2; or instead directly use the parameter provided by the map in Marthews et al. 2014.
     }
@@ -4722,7 +4722,7 @@ void FillSeed(int col, int row, int spp) {
       //if(T[site].t_age == 0){
       if(_SEEDTRADEOFF) SPECIES_SEEDS[site][spp]++; // ifdef SEEDTRADEOFF, SPECIES_SEEDS[site][spp] is the number of seeds of this species at that site 
       else SPECIES_SEEDS[site][spp] = 1;     // If s_Seed[site] = 0, site is not occupied, if s_Seed[site] > 1, s_Seed[site] is the age of the youngest seed  
-      //cout << "site: " << site << " spp: " << spp << " Seed added!!! " << endl;
+      //Rcout << "site: " << site << " spp: " << spp << " Seed added!!! " << endl;
       //}
     }
   }
@@ -4937,8 +4937,8 @@ void Average(void){
       }
     }
     
-    cout.setf(ios::fixed,ios::floatfield);
-    cout.precision(5);
+    Rcout.setf(ios::fixed,ios::floatfield);
+    Rcout.precision(5);
     
 #ifdef CHECK_CARBON
     float carbon_stored_leaves_previous, carbon_stored_trunk_previous = 0.0,carbon_stored_free_previous = 0.0, carbon_assimilated_total_previous = 0.0, carbon_net_total_previous = 0.0;
@@ -4972,13 +4972,13 @@ void Average(void){
     
     float factor_weight = 0.000001; // factor to convert carbon from g to tons
     
-    cout << iter << "\tTrunkC: " << carbon_stored_trunk *  factor_weight << " LeavesC: " << carbon_stored_leaves *  factor_weight  << " FreeC: " << carbon_stored_free *  factor_weight << " Total AssimC: " << carbon_assimilated_total *  factor_weight << " Total NetC: " << carbon_net_total *  factor_weight << endl;
-    cout << iter << "\tTrunkC change: " << (carbon_stored_trunk - carbon_stored_trunk_previous) *  factor_weight << " LeavesC: " << (carbon_stored_leaves - carbon_stored_leaves_previous) *  factor_weight  << " FreeC: " << (carbon_stored_free - carbon_stored_free_previous) *  factor_weight << endl;
+    Rcout << iter << "\tTrunkC: " << carbon_stored_trunk *  factor_weight << " LeavesC: " << carbon_stored_leaves *  factor_weight  << " FreeC: " << carbon_stored_free *  factor_weight << " Total AssimC: " << carbon_assimilated_total *  factor_weight << " Total NetC: " << carbon_net_total *  factor_weight << endl;
+    Rcout << iter << "\tTrunkC change: " << (carbon_stored_trunk - carbon_stored_trunk_previous) *  factor_weight << " LeavesC: " << (carbon_stored_leaves - carbon_stored_leaves_previous) *  factor_weight  << " FreeC: " << (carbon_stored_free - carbon_stored_free_previous) *  factor_weight << endl;
 #endif
-    cout.setf(ios::fixed,ios::floatfield);
-    cout.precision(2);
+    Rcout.setf(ios::fixed,ios::floatfield);
+    Rcout.precision(2);
     
-    cout << iter << "\tTrees (1/ha): " << sum1 << " | " << sum10 << " | " << sum30 << " *** nbdead (%): " << 100.0*nbdead_n1 * inbhectares/sum1 << " | " << 100.0*nbdead_n10 * inbhectares/sum10 << " | " << 100.0*nbdead_n30 * inbhectares/sum30 << " *** AGB (t/ha): " << round(agb/1000.0) << " GPP (MgC/ha/yr) " << gpp*iterperyear << " NPP " << npp*iterperyear << " litterfall (Mg/ha/yr) " << litterfall*iterperyear << endl;
+    Rcout << iter << "\tTrees (1/ha): " << sum1 << " | " << sum10 << " | " << sum30 << " *** nbdead (%): " << 100.0*nbdead_n1 * inbhectares/sum1 << " | " << 100.0*nbdead_n10 * inbhectares/sum10 << " | " << 100.0*nbdead_n30 * inbhectares/sum30 << " *** AGB (t/ha): " << round(agb/1000.0) << " GPP (MgC/ha/yr) " << gpp*iterperyear << " NPP " << npp*iterperyear << " litterfall (Mg/ha/yr) " << litterfall*iterperyear << endl;
     
     if(_OUTPUT_reduced){
       output[0] << sum1 << "\t";                                                     //total number of trees (dbh>1cm=DBH0)
@@ -5099,7 +5099,7 @@ void Average(void){
   MPI_Reduce(Mortality,Mortality,4,MPI_FLOAT,MPI_SUM,0,MPI_COMM_WORLD);
   MPI_Reduce(&S[spp].s_output_field[6],&S[spp].s_output_field[6],5,MPI_FLOAT,MPI_MAX,0,MPI_COMM_WORLD);
 #endif
-  cout.flush();
+  Rcout.flush();
 }
 
 //##############################################
@@ -5220,7 +5220,7 @@ void OutputCHM(fstream& output_CHM){
       output_CHM << s << "\t" << int(s/cols) << "\t" << int(s%cols) << "\t"  << height_canopy+1 << "\t" << LAI3D[0][s+SBORD] << "\t" << chm_field_current[s] << "\t" << chm_temporary[s] << endl;
   }
 #else
-  cout << "site" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "LAI" << endl;
+  Rcout << "site" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "LAI" << endl;
   for(int s=0;s<sites;s++){
     int height_canopy=0;
     for(int h=0;h<(HEIGHT+1);h++)
@@ -5536,15 +5536,15 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
 // Global ABC function: output general ABC statistics
 //##############################################
 void OutputABC(){
-  cout << " ABC: Conservation of Traits " << endl;
+  Rcout << " ABC: Conservation of Traits " << endl;
   OutputABCConservationTraits(output[11]);
-  cout << " ABC: Ground data " << endl;
+  Rcout << " ABC: Ground data " << endl;
   OutputABC_ground(output[12]);
-  cout << " ABC: CHM simulation " << endl;
+  Rcout << " ABC: CHM simulation " << endl;
   OutputABC_CHM(output[13], output[14], output[19]);
-  cout << " ABC: Transmittance simulation " << endl;
+  Rcout << " ABC: Transmittance simulation " << endl;
   OutputABC_transmittance(output[15], output[16]);
-  cout << " ABC: Species outputs " << endl;
+  Rcout << " ABC: Species outputs " << endl;
   OutputABC_species(output[23], output[24],output[25], output[26], output[27]);
 }
 

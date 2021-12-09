@@ -7,8 +7,7 @@
 \S4method{autoplot}{trollstack}(
   object,
   what = "ecosystem",
-  variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall",
-    "npp", "rday", "rnight", "rstem", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
+  variables = NULL,
   selected_species = "total"
 )
 }

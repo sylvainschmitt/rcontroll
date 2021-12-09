@@ -80,6 +80,7 @@ sim_stack <- stack(name = "test3",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar,
+             verbose = F,
              cores = 2,
              thin = c(1,5,10))
 ```

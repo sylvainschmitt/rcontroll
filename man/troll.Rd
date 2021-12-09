@@ -12,7 +12,9 @@ troll(
   climate,
   daily,
   forest = NULL,
-  overwrite = TRUE
+  verbose = TRUE,
+  overwrite = TRUE,
+  thin = NULL
 )
 }
 \arguments{
@@ -31,7 +33,12 @@ troll(
 \item{forest}{df. TROLL with forest input, if null start from an empty grid
 (default NULL)}
 
+\item{verbose}{bool. show TROLL outputs in the console}
+
 \item{overwrite}{bool. overwrite previous outputs}
+
+\item{thin}{int. vector of integers corresponding to iterations to be kept
+(default NULL)}
 }
 \value{
 trollsim
