@@ -11,7 +11,8 @@ load_output(name, path, type)
 
 \item{path}{char. path where the model is saved}
 
-\item{type}{char. type of simulation (full, reduce or abc)}
+\item{full}{bool. TROLL with full outputs, if not reduced outputs (default
+TRUE)}
 }
 \value{
 an S4 \linkS4class{trollsim} class object

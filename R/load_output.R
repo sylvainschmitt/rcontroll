@@ -1,4 +1,4 @@
-#' @include trollsim.R trollsimfull.R trollsimreduced.R trollsimabc.R
+#' @include trollsim.R
 #' @importFrom readr read_tsv cols read_file
 #' @importFrom dplyr bind_rows n
 #' @importFrom reshape2 melt dcast
@@ -8,7 +8,8 @@ NULL
 #'
 #' @param name char. name given to the model output
 #' @param path char. path where the model is saved
-#' @param type char. type of simulation (full, reduce or abc)
+#' @param full bool. TROLL with full outputs, if not reduced outputs (default
+#'   TRUE)
 #'
 #' @return an S4 \linkS4class{trollsim} class object
 #'
@@ -19,10 +20,12 @@ NULL
 #' NA
 load_output <- function(name,
                         path,
-                        type) {
+                        full) {
   # Check inputs
-  if(!all(unlist(lapply(list(name, path, type), class)) %in% c("character")))
-    stop("name, path, and type should be character.")
+  if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
+    stop("name and path should be character.")
+  if(!all(unlist(lapply(list(full), class)) %in% c("logical")))
+    stop("full should be logical.")
 
   # troll sim
   inputs <- lapply(
@@ -51,44 +54,31 @@ load_output <- function(name,
   log <- read_file(file.path(path, paste0(name, "_log.txt")))
   final_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_final_pattern.txt"))),
                             col_types = cols())
-
-  sim <- switch(type,
-                
-                "full" =   trollsimfull(
-                  name = name,
-                  path = path,
-                  parameters = parameters,
-                  inputs = inputs,
-                  log = log,
-                  final_pattern = final_pattern,
-                  species_outputs = .load_species_outputs(name, path, inputs = inputs)
-                ),
-                
-                "reduced" =   trollsimreduced(
-                  name = name,
-                  path = path,
-                  parameters = parameters,
-                  inputs = inputs,
-                  log = log,
-                  final_pattern = final_pattern,
-                  reduced_outputs = .load_reduced_outputs(name, path)
-                ),
-                
-                "abc" =   trollsimabc(
-                  name = name,
-                  path = path,
-                  parameters = parameters,
-                  inputs = inputs,
-                  log = log,
-                  final_pattern = final_pattern,
-                  reduced_outputs = .load_reduced_outputs(name, path),
-                  abc_outputs = .load_abc_outputs(name, path)
-                )
-                
-  )
   
-    
-  return(sim)
+  if(full)
+    return(
+      trollsim(
+        name = name,
+        path = path,
+        parameters = parameters,
+        inputs = inputs,
+        log = log,
+        final_pattern = final_pattern,
+        outputs = .load_species_outputs(name, path, inputs = inputs)
+      )
+    )
+  else
+    return(
+      trollsim(
+        name = name,
+        path = path,
+        parameters = parameters,
+        inputs = inputs,
+        log = log,
+        final_pattern = final_pattern,
+        outputs = .load_reduced_outputs(name, path)
+      )
+    )
 }
 
 # Internals
@@ -143,18 +133,4 @@ load_output <- function(name,
                               col_names = c("iter", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
                               col_types = cols())
   return(reduced_outputs)
-}
-
-.load_abc_outputs <- function(name = NULL,
-                              path = NULL){
-  warning("Colnames to be defined and outputs to be consolidated.")
-  abc_outputs <- lapply(c("chm", "chmALS", "chmpotential", "ground",
-                          "transmittance", "transmittanceALS"),
-                        function(x)
-                          read_tsv(
-                            file.path(path, paste0(name, "_0_abc_", x, ".txt")),
-                                      col_names = FALSE,
-                                      col_types = cols()
-                            ))
-  return(abc_outputs)
 }

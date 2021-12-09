@@ -11,6 +11,7 @@ NULL
 #' @slot inputs list. simulation inputs (species, climate, daily, forest)
 #' @slot log chr. simulation log
 #' @slot final_pattern df. simulation final forest
+##' @slot outputs df. species and ecosystem metrics (reduced or full)
 #'
 #' @export
 setClass(
@@ -21,7 +22,8 @@ setClass(
     parameters = "numeric",
     inputs = "list",
     log = "character",
-    final_pattern = "data.frame"
+    final_pattern = "data.frame",
+    outputs = "data.frame"
   ),
   prototype(
     name = character(),
@@ -29,7 +31,8 @@ setClass(
     parameters = numeric(),
     inputs = list(),
     log = character(),
-    final_pattern = data.frame()
+    final_pattern = data.frame(),
+    outputs = data.frame()
   )
 )
 
@@ -43,6 +46,7 @@ setClass(
 #' @param inputs numeric. simulation inputs (species, climate, daily, forest)
 #' @param log chr. simulation log
 #' @param final_pattern df. simulation final forest
+##' @slot outputs df. species and ecosystem metrics (reduced or full)
 #'
 #' @export
 #' @rdname trollsim
@@ -52,7 +56,8 @@ trollsim <- function(
   parameters = numeric(),
   inputs = list(),
   log = character(),
-  final_pattern = data.frame()
+  final_pattern = data.frame(),
+  outputs = data.frame()
 ) {
   return(new("trollsim",
              name = name,
@@ -60,6 +65,7 @@ trollsim <- function(
              parameters = parameters,
              inputs = inputs,
              log = log,
-             final_pattern = final_pattern
+             final_pattern = final_pattern,
+             outputs = outputs
   ))
 }

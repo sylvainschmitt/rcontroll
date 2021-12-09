@@ -3,42 +3,28 @@
 \name{autoplot.trollsim}
 \alias{autoplot.trollsim}
 \alias{autoplot,trollsim-method}
-\alias{autoplot,trollsimfull-method}
-\alias{autoplot,trollsimreduced-method}
-\alias{autoplot,trollsimabc-method}
 \title{Function to plot TROLL outputs}
 \usage{
-\S4method{autoplot}{trollsim}(object, what, ...)
-
-\S4method{autoplot}{trollsimfull}(
+\S4method{autoplot}{trollsim}(
   object,
   what = "ecosystem",
   variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall",
-    "npp", "rday", "rnight", "rstem"),
+    "npp", "rday", "rnight", "rstem", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
   selected_species = "total"
 )
-
-\S4method{autoplot}{trollsimreduced}(
-  object,
-  what = "ecosystem",
-  variables = c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
-  selected_species = "total"
-)
-
-\S4method{autoplot}{trollsimabc}(object, what)
 }
 \arguments{
 \item{object}{trollsim}
 
 \item{what}{char. "final pattern" or "ecosystem"}
 
-\item{...}{unused argument}
-
 \item{variables}{char. full outputs: "species", "abu10", "abu30", "abund",
 "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or
 "rstem"; reduced outputs: "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"}
 
 \item{selected_species}{char. species name or total}
+
+\item{...}{unused argument}
 }
 \value{
 ggplot2 object

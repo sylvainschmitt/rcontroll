@@ -2,27 +2,15 @@
 % Please edit documentation in R/autoplot.trollstack.R
 \name{autoplot.trollstack}
 \alias{autoplot.trollstack}
-\alias{autoplot,trollstackfull-method}
-\alias{autoplot,trollstackreduced-method}
-\alias{autoplot,trollstackabc-method}
 \title{Function to plot TROLL stack}
 \usage{
-\S4method{autoplot}{trollstackfull}(
+\S4method{autoplot}{trollstack}(
   object,
   what = "ecosystem",
   variables = c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall",
-    "npp", "rday", "rnight", "rstem"),
+    "npp", "rday", "rnight", "rstem", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
   selected_species = "total"
 )
-
-\S4method{autoplot}{trollstackreduced}(
-  object,
-  what = "ecosystem",
-  variables = c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
-  species = "total"
-)
-
-\S4method{autoplot}{trollstackabc}(object, what)
 }
 \arguments{
 \item{object}{trollsim}

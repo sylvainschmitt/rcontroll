@@ -26,9 +26,6 @@ troll(
 \item{full}{bool. TROLL with full outputs, if not reduced outputs (default
 TRUE)}
 
-\item{abc}{bool. TROLL with abc outputs, forcing reduced outputs (default
-FALSE)}
-
 \item{random}{bool. TROLL with random outputs, if not the seed is fixed
 (default TRUE)}
 

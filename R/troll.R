@@ -12,8 +12,6 @@ NULL
 #' @param path char. path to the simulation (tmp if NULL)
 #' @param full bool. TROLL with full outputs, if not reduced outputs (default
 #'   TRUE)
-#' @param abc bool. TROLL with abc outputs, forcing reduced outputs (default
-#'   FALSE)
 #' @param random bool. TROLL with random outputs, if not the seed is fixed
 #'   (default TRUE)
 #' @param global df. global parameters
@@ -104,16 +102,6 @@ troll <- function(name = NULL,
   }
   dir.create(path_o)
   
-  # type
-  if(full & abc)
-    stop("ABC and full outputs are not compatible.")
-  if(full & !abc)
-    type <- "full"
-  if(!full & !abc)
-    type <- "reduced"
-  if(!full & abc)
-    type <- "abc"
-  
   # DEV #
   if(!full | abc | !random)
     stop("This is the Rcpp branch only including standard full random non abc TROLL.")
@@ -187,7 +175,7 @@ troll <- function(name = NULL,
   })
   
   # loading outputs
-  sim <- load_output(name, file.path(path, name), type)
+  sim <- load_output(name, file.path(path, name), full)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()

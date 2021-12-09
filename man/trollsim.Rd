@@ -10,7 +10,8 @@ trollsim(
   parameters = numeric(),
   inputs = list(),
   log = character(),
-  final_pattern = data.frame()
+  final_pattern = data.frame(),
+  outputs = data.frame()
 )
 }
 \arguments{
@@ -29,3 +30,9 @@ trollsim(
 \description{
 This is an S4 class to represent TROLL simulations.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{outputs}}{df. species and ecosystem metrics (reduced or full)}
+}}
+

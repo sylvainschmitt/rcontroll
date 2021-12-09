@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9021
+* simplifying trollsim and trollstack to one
+
 # rcontroll 0.1.0.9020
 * seamless integration of trollCpp thanks to Rcpp !
 * updated troll.R & load_output
