@@ -2940,7 +2940,7 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
 //' @return int.
 //' 
 //' @examples
-//' trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", output_file = "test")
+//' trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", forest_file = "NULL", output_file = "test")
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -2949,22 +2949,16 @@ void trollCpp(
     std::string climate_file,
     std::string species_file,
     std::string day_file,
+    std::string forest_file,
     std::string output_file
 ) {
-  
-  // int main(
-  //     std::string global_file,
-  //     std::string climate_file,
-  //     std::string species_file,
-  //     std::string day_file,
-  //     std::string output_file
-  // ) {
-  
+
   // From Rcpp acceptable input to TROLL char*
   bufi = &global_file[0] ;
   bufi_climate = &climate_file[0] ;
   bufi_species = &species_file[0] ;
   bufi_daytimevar = &day_file[0] ;
+  bufi_data = &forest_file[0] ;
   buf = &output_file[0] ;
   
   if(_DAYTIMELIGHT == 1) Rcout << "Activated Module: Dailylight" << endl;

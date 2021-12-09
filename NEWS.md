@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9024
+* adding forest_path to work with FromData but is not correctly programmed in the cpp
+
 # rcontroll 0.1.0.9023
 * cout and cerr to Rcout and Rcerr
 * adding a verbose to troll and stack

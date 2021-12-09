@@ -22,14 +22,10 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(tidyr)
 library(rcontroll)
-Nyears <- 1
-data("TROLLv3_input")
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
-TROLLv3_input$value[6] <- 12 # Nb iterations per Year
-TROLLv3_input$value[5] <- Nyears*12 # iterations
-TROLLv3_input_stack <- TROLLv3_input %>% 
+TROLLv3_input_stack <- generate_parameters(iterperyear = 12, nbiter = 12*1) %>% 
   mutate(simulation = list(c("seed50000", "seed500"))) %>% 
   unnest(simulation)
 TROLLv3_input_stack[62,2] <- 500 # Cseedrain
@@ -48,8 +44,8 @@ generate_parameters(cols = 250, rows = 250) %>%
 
 ```{r fullsim}
 sim <- troll(name = "test",
-             path = "../",
-             global = generate_parameters(OUTPUT_reduced = 0, NONRANDOM = 0, FromData = 0),
+             # path = "../",
+             global = generate_parameters(iterperyear = 12, nbiter = 12*1),
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)

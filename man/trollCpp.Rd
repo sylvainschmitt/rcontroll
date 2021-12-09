@@ -4,7 +4,14 @@
 \alias{trollCpp}
 \title{TROLL C++}
 \usage{
-trollCpp(global_file, climate_file, species_file, day_file, output_file)
+trollCpp(
+  global_file,
+  climate_file,
+  species_file,
+  day_file,
+  forest_file,
+  output_file
+)
 }
 \arguments{
 \item{global_file}{std::string. global parameters file.}
@@ -24,6 +31,6 @@ int.
 TROLL C++.
 }
 \examples{
-trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", output_file = "test")
+trollCpp(global_file = "test/test_input_global.txt", climate_file = "test/test_input_climate.txt", species_file = "test/test_input_species.txt", day_file = "test/test_input_daily.txt", forest_file = "NULL", output_file = "test")
 
 }

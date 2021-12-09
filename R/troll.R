@@ -64,9 +64,6 @@ troll <- function(name = NULL,
   if(!(class(forest) %in% c("data.frame", "NULL")))
     stop("forest should be a data frame or null.")
   
-  if(!is.null(forest))
-    stop("forest not implemented yet!")
-  
   # model name
   if (is.null(name)) {
     name <- paste0(
@@ -113,6 +110,8 @@ troll <- function(name = NULL,
   write_tsv(daily, file = daily_path)
   if(!is.null(forest))
     write_tsv(forest, file = forest_path)
+  if(is.null(forest))
+    forest_path <- "NULL"
   
   # run
   log <- capture.output(
@@ -120,6 +119,7 @@ troll <- function(name = NULL,
              climate_file = climate_path, 
              species_file = species_path, 
              day_file = daily_path, 
+             forest_file = forest_path, 
              output_file = file.path(path, name, name)
     ), 
     split = verbose)
