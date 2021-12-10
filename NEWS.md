@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9025
+* doc & vignette
+
 # rcontroll 0.1.0.9024
 * adding tests and fixing check
 

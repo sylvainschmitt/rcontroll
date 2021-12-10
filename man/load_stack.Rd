@@ -2,25 +2,29 @@
 % Please edit documentation in R/load_stack.R
 \name{load_stack}
 \alias{load_stack}
-\title{Function to load TROLL stack}
+\title{Function to load TROLL stack outputs}
 \usage{
 load_stack(name, path, thin = NULL)
 }
 \arguments{
-\item{name}{char. name given to the stack output}
+\item{name}{char. Name given to the model output.}
 
-\item{path}{char. path where the stack is saved}
+\item{path}{char. Path where the model is saved.}
 
-\item{thin}{int. vector of integers corresponding to iterations to be kept
-(default NULL)}
+\item{thin}{int. Vector of integers corresponding to the iterations to be
+kept to reduce outputs size, default is NULL and corresponds to no
+thinning.}
 }
 \value{
 an S4 \linkS4class{trollsim} class object
 }
 \description{
-Function to load TROLL stack
+Function to load TROLL stack outputs
 }
 \examples{
 
-NA
+\dontrun{
+ load_stack("test", "./")
+}
+
 }

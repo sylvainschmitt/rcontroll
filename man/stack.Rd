@@ -20,46 +20,52 @@ stack(
 )
 }
 \arguments{
-\item{name}{char. stack name (if NULL timestamp)}
+\item{name}{char. Stack name (if NULL timestamp).}
 
-\item{simulations}{char. simulations names}
+\item{simulations}{char. Simulations names.}
 
-\item{path}{char. path to the stack (tmp if NULL)}
+\item{path}{char. Path to save the simulations outputs, the default is null
+corresponding to a simulation in memory without saved intermediary files.}
 
-\item{global}{df. global parameters, add a simulation column for repeated
-simulations}
+\item{global}{df. Global parameters.}
 
-\item{species}{df. species parameters, add a simulation column for repeated
-simulations}
+\item{species}{df. Species parameters.}
 
-\item{climate}{df. climate parameters, add a simulation column for repeated
-simulations}
+\item{climate}{df. Climate parameters.}
 
-\item{daily}{df. daily variation parameters, add a simulation column for
-repeated simulations}
+\item{daily}{df. Daily variation parameters.}
 
-\item{forest}{df. TROLL with forest input, if null start from an empty grid,
-add a simulation column for repeated simulations (default NULL)}
+\item{forest}{df. TROLL with forest input, if null start from an empty grid
+(default NULL).}
 
-\item{verbose}{bool. show TROLL outputs in the console}
+\item{verbose}{bool. Show TROLL outputs in the console.}
 
-\item{cores}{int. number of cores for parallelization, if NULL available
-cores - 1 (default NULL)}
+\item{cores}{int. Number of cores for parallelization, if NULL available
+cores - 1 (default NULL).}
 
-\item{overwrite}{bool. overwrite previous outputs}
+\item{overwrite}{bool. Overwrite previous outputs.}
 
-\item{thin}{int. vector of integers corresponding to iterations to be kept
-(default NULL)}
+\item{thin}{int. Vector of integers corresponding to the iterations to be
+kept to reduce outputs size, default is NULL and corresponds to no
+thinning.}
 }
 \value{
 trollstack
 }
 \description{
-Run a TROLL stack
+Run a TROLL stack.
 }
 \examples{
 \dontrun{
-example
+stack(name = "test3", 
+simulations = c("seed50000", "seed500"),
+global = TROLLv3_input_stack,
+species = TROLLv3_species,
+climate = TROLLv3_climatedaytime12,
+daily = TROLLv3_daytimevar,
+verbose = F,
+cores = 2,
+thin = c(1,5,10))
 }
 
 }

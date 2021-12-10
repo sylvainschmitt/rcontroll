@@ -10,7 +10,7 @@ A data frame with 12 rows and 12 variables: \describe{
   \item{DaytimeMeanTemperature}{mean day temperature (degree C)}
   \item{NightTemperature}{night temperature (degree C)}
   \item{Rainfall}{rainfall (mm)} \item{WindSpeed}{wind speed (km/h)}
-  \item{DaytimeMeanIrradiance}{daityime mean irradiance (?)}
+  \item{DaytimeMeanIrradiance}{daityime mean irradiance}
   \item{MeanIrradiance}{mean irradiance (?)}
   \item{SaturatedVapourPressure}{saturated vapour pressure (Pa)}
   \item{VapourPressure}{vapour pressure (Pa)}

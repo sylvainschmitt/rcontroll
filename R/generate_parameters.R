@@ -1,70 +1,92 @@
 #' Generate parameters
 #'
-#' @param cols num. 
-#' @param rows num. 
-#' @param HEIGHT num. 
-#' @param length_dcell num. 
-#' @param nbiter num. 
-#' @param iterperyear num. 
-#' @param NV num. 
-#' @param NH num. 
-#' @param nbout num. 
-#' @param nbspp num. 
-#' @param SWtoPPFD num. 
-#' @param p_nonvert num. 
-#' @param klight num. 
-#' @param phi num. 
-#' @param absorptance_leaves num. 
-#' @param theta num. 
-#' @param g1 num. 
-#' @param vC num. 
-#' @param DBH0 num. 
-#' @param H0 num. 
-#' @param CR_min num. 
-#' @param CR_a num. 
-#' @param CR_b num. 
-#' @param CD_a num. 
-#' @param CD_b num. 
-#' @param CD0 num. 
-#' @param shape_crown num. 
-#' @param dens num. 
-#' @param fallocwood num. 
-#' @param falloccanopy num. 
-#' @param Cseedrain num. 
-#' @param nbs0 num. 
-#' @param sigma_height num. 
-#' @param sigma_CR num. 
-#' @param sigma_CD num. 
-#' @param sigma_P num. 
-#' @param sigma_N num. 
-#' @param sigma_LMA num. 
-#' @param sigma_wsg num. 
-#' @param sigma_dbhmax num. 
-#' @param corr_CR_height num. 
-#' @param corr_N_P num. 
-#' @param corr_N_LMA num. 
-#' @param corr_P_LMA num. 
-#' @param leafdem_resolution num. 
-#' @param p_tfsecondary num. 
-#' @param hurt_decay num. 
-#' @param crown_gap_fraction num. 
-#' @param m num. 
-#' @param m1 num. 
-#' @param Cair num. 
-#' @param LL_parameterization num. 
-#' @param LA_regulation num. 
-#' @param sapwood num. 
-#' @param seedsadditional num. 
-#' @param OUTPUT_reduced num.
-#' @param FromData num.
-#' @param NONRANDOM num.
-#' 
+#' Function to generate the global parameters used in the TROLL simulation. All
+#' parameters have a default values used in French Guiana simulations.
+#'
+#' @param cols num. Number of columns.
+#' @param rows num. Number of rows.
+#' @param HEIGHT num. Vertical extent of simulation.
+#' @param length_dcell num. Linear size of a dcell.
+#' @param nbiter num. Total number of timesteps.
+#' @param iterperyear num. Number of iteration per year.
+#' @param NV num. Vertical number of cells (per m).
+#' @param NH num. Horizontal number of cells (per m).
+#' @param nbout num. Number of outputs.
+#' @param nbspp num. Number of species
+#' @param SWtoPPFD num. Convert short wave irradiance to PAR photons.
+#' @param p_nonvert num. Light incidence parameter (difference through turbid
+#'   medium).
+#' @param klight num. Light attenuation in the canopy following a Beer-Lambert
+#'   law.
+#' @param phi num. Quantum yield (in micromol C/micromol photon).
+#' @param absorptance_leaves num. Absorptance of individual leaves.
+#' @param theta num. Parameter of the Farquhar model.
+#' @param g1 num. Parameter g1 of Medlyn et al stomatal conductance model.
+#' @param vC num. Variance of the flexion moment.
+#' @param DBH0 num. Initial diameter at breast height (m).
+#' @param H0 num. Initial height (m).
+#' @param CR_min num. Minimum crown radius (in m).
+#' @param CR_a num. Crown radius log intercept or Michaelis Menten initial
+#'   growth.
+#' @param CR_b num. Crown radius log slope or Michaelis Menten asymptotic CR.
+#' @param CD_a num. Crown depth intercept (absolute value).
+#' @param CD_b num. Crown depth slope (as fraction of tree height).
+#' @param CD0 num. Initial crown depth (in m).
+#' @param shape_crown num. Crown shape parameter.
+#' @param dens num. Initial leaf density (m^2/m^2).
+#' @param fallocwood num. Fraction of biomass allocated to above ground wood
+#'   (branch turnover+stem).
+#' @param falloccanopy num. Fraction of biomass allocated to canopy (leaves +
+#'   reproductive organs + twigs).
+#' @param Cseedrain num. Constant used to scale total seed rain per hectare
+#'   across species.
+#' @param nbs0 num. Number of seeds produced and dispersed by each mature tree
+#'   when SEEDTRADEOFF is not defined.
+#' @param sigma_height num. Intraspecific variation in tree height (lognormal).
+#' @param sigma_CR num. Intraspecific variation in crown radius (lognormal).
+#' @param sigma_CD num. Intraspecific variation in crown depth (lognormal).
+#' @param sigma_P num. Intraspecific variation in leaf phosphorus (lognormal).
+#' @param sigma_N num. Intraspecific variation in leaf nitrogen (lognormal).
+#' @param sigma_LMA num. Intraspecific variation in leaf mass per area
+#'   (lognormal).
+#' @param sigma_wsg num. Intraspecific variation in wood specific gravity.
+#' @param sigma_dbhmax num. Intraspecific variation in maximum diameter.
+#' @param corr_CR_height num. Correlation coefficient between crown radius and
+#'   tree height.
+#' @param corr_N_P num. Correlation coefficient between leaf nitrogen and leaf
+#'   phosphorus.
+#' @param corr_N_LMA num. Correlation coefficient between leaf nitrogen and leaf
+#'   mass per area
+#' @param corr_P_LMA num. Correlation coefficient between leaf phosphorus and
+#'   leaf mass per area
+#' @param leafdem_resolution num. Resolution of leaf demography model.
+#' @param p_tfsecondary num. Probability of secondary treefall.
+#' @param hurt_decay num. Parameter determining how tree damages are repaired.
+#' @param crown_gap_fraction num. Fraction of gaps in the crown.
+#' @param m num. Minimal death rate.
+#' @param m1 num. Slope of death rate m1.
+#' @param Cair num. Atmospheric CO2 concentration in micromol/mol.
+#' @param LL_parameterization num. Leaf lifespan parameterizations: Reich
+#'   empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2).
+#' @param LA_regulation num. Dynamic LA regulation: off, 1.0, 0.75, or 0.5
+#'   (0,1,2,3).
+#' @param sapwood num. Sapwood parameterizations: constant thickness (0.04),
+#'   Fyllas percentage, Fyllas lower limit (0,1,2).
+#' @param seedsadditional num. Excess biomass into seeds after maturation (0,1).
+#' @param OUTPUT_reduced num. Reduced set of output files.
+#' @param FromData num. If defined, an additional input file can be provided to
+#'   start simulations from an existing data set or a simulated data set (5
+#'   parameters are needed: x and y coordinates, dbh, species_label, species)
+#' @param NONRANDOM num. If _NONRANDOM == 1, the seeds for the random number
+#'   generators will be kept fixed at 1, for bug fixing.
+#'
 #' @return a data frame of global parameters
 #'
 #' @export
 #'
 #' @examples
-#' NA
+#' 
+#' generate_parameters()
 #' 
 generate_parameters <- function(
   cols = 200,

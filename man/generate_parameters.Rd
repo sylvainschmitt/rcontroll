@@ -66,129 +66,149 @@ generate_parameters(
 )
 }
 \arguments{
-\item{cols}{num.}
+\item{cols}{num. Number of columns.}
 
-\item{rows}{num.}
+\item{rows}{num. Number of rows.}
 
-\item{HEIGHT}{num.}
+\item{HEIGHT}{num. Vertical extent of simulation.}
 
-\item{length_dcell}{num.}
+\item{length_dcell}{num. Linear size of a dcell.}
 
-\item{nbiter}{num.}
+\item{nbiter}{num. Total number of timesteps.}
 
-\item{iterperyear}{num.}
+\item{iterperyear}{num. Number of iteration per year.}
 
-\item{NV}{num.}
+\item{NV}{num. Vertical number of cells (per m).}
 
-\item{NH}{num.}
+\item{NH}{num. Horizontal number of cells (per m).}
 
-\item{nbout}{num.}
+\item{nbout}{num. Number of outputs.}
 
-\item{nbspp}{num.}
+\item{nbspp}{num. Number of species}
 
-\item{SWtoPPFD}{num.}
+\item{SWtoPPFD}{num. Convert short wave irradiance to PAR photons.}
 
-\item{p_nonvert}{num.}
+\item{p_nonvert}{num. Light incidence parameter (difference through turbid
+medium).}
 
-\item{klight}{num.}
+\item{klight}{num. Light attenuation in the canopy following a Beer-Lambert
+law.}
 
-\item{phi}{num.}
+\item{phi}{num. Quantum yield (in micromol C/micromol photon).}
 
-\item{absorptance_leaves}{num.}
+\item{absorptance_leaves}{num. Absorptance of individual leaves.}
 
-\item{theta}{num.}
+\item{theta}{num. Parameter of the Farquhar model.}
 
-\item{g1}{num.}
+\item{g1}{num. Parameter g1 of Medlyn et al stomatal conductance model.}
 
-\item{vC}{num.}
+\item{vC}{num. Variance of the flexion moment.}
 
-\item{DBH0}{num.}
+\item{DBH0}{num. Initial diameter at breast height (m).}
 
-\item{H0}{num.}
+\item{H0}{num. Initial height (m).}
 
-\item{CR_min}{num.}
+\item{CR_min}{num. Minimum crown radius (in m).}
 
-\item{CR_a}{num.}
+\item{CR_a}{num. Crown radius log intercept or Michaelis Menten initial
+growth.}
 
-\item{CR_b}{num.}
+\item{CR_b}{num. Crown radius log slope or Michaelis Menten asymptotic CR.}
 
-\item{CD_a}{num.}
+\item{CD_a}{num. Crown depth intercept (absolute value).}
 
-\item{CD_b}{num.}
+\item{CD_b}{num. Crown depth slope (as fraction of tree height).}
 
-\item{CD0}{num.}
+\item{CD0}{num. Initial crown depth (in m).}
 
-\item{shape_crown}{num.}
+\item{shape_crown}{num. Crown shape parameter.}
 
-\item{dens}{num.}
+\item{dens}{num. Initial leaf density (m^2/m^2).}
 
-\item{fallocwood}{num.}
+\item{fallocwood}{num. Fraction of biomass allocated to above ground wood
+(branch turnover+stem).}
 
-\item{falloccanopy}{num.}
+\item{falloccanopy}{num. Fraction of biomass allocated to canopy (leaves +
+reproductive organs + twigs).}
 
-\item{Cseedrain}{num.}
+\item{Cseedrain}{num. Constant used to scale total seed rain per hectare
+across species.}
 
-\item{nbs0}{num.}
+\item{nbs0}{num. Number of seeds produced and dispersed by each mature tree
+when SEEDTRADEOFF is not defined.}
 
-\item{sigma_height}{num.}
+\item{sigma_height}{num. Intraspecific variation in tree height (lognormal).}
 
-\item{sigma_CR}{num.}
+\item{sigma_CR}{num. Intraspecific variation in crown radius (lognormal).}
 
-\item{sigma_CD}{num.}
+\item{sigma_CD}{num. Intraspecific variation in crown depth (lognormal).}
 
-\item{sigma_P}{num.}
+\item{sigma_P}{num. Intraspecific variation in leaf phosphorus (lognormal).}
 
-\item{sigma_N}{num.}
+\item{sigma_N}{num. Intraspecific variation in leaf nitrogen (lognormal).}
 
-\item{sigma_LMA}{num.}
+\item{sigma_LMA}{num. Intraspecific variation in leaf mass per area
+(lognormal).}
 
-\item{sigma_wsg}{num.}
+\item{sigma_wsg}{num. Intraspecific variation in wood specific gravity.}
 
-\item{sigma_dbhmax}{num.}
+\item{sigma_dbhmax}{num. Intraspecific variation in maximum diameter.}
 
-\item{corr_CR_height}{num.}
+\item{corr_CR_height}{num. Correlation coefficient between crown radius and
+tree height.}
 
-\item{corr_N_P}{num.}
+\item{corr_N_P}{num. Correlation coefficient between leaf nitrogen and leaf
+phosphorus.}
 
-\item{corr_N_LMA}{num.}
+\item{corr_N_LMA}{num. Correlation coefficient between leaf nitrogen and leaf
+mass per area}
 
-\item{corr_P_LMA}{num.}
+\item{corr_P_LMA}{num. Correlation coefficient between leaf phosphorus and
+leaf mass per area}
 
-\item{leafdem_resolution}{num.}
+\item{leafdem_resolution}{num. Resolution of leaf demography model.}
 
-\item{p_tfsecondary}{num.}
+\item{p_tfsecondary}{num. Probability of secondary treefall.}
 
-\item{hurt_decay}{num.}
+\item{hurt_decay}{num. Parameter determining how tree damages are repaired.}
 
-\item{crown_gap_fraction}{num.}
+\item{crown_gap_fraction}{num. Fraction of gaps in the crown.}
 
-\item{m}{num.}
+\item{m}{num. Minimal death rate.}
 
-\item{m1}{num.}
+\item{m1}{num. Slope of death rate m1.}
 
-\item{Cair}{num.}
+\item{Cair}{num. Atmospheric CO2 concentration in micromol/mol.}
 
-\item{LL_parameterization}{num.}
+\item{LL_parameterization}{num. Leaf lifespan parameterizations: Reich
+empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2).}
 
-\item{LA_regulation}{num.}
+\item{LA_regulation}{num. Dynamic LA regulation: off, 1.0, 0.75, or 0.5
+(0,1,2,3).}
 
-\item{sapwood}{num.}
+\item{sapwood}{num. Sapwood parameterizations: constant thickness (0.04),
+Fyllas percentage, Fyllas lower limit (0,1,2).}
 
-\item{seedsadditional}{num.}
+\item{seedsadditional}{num. Excess biomass into seeds after maturation (0,1).}
 
-\item{OUTPUT_reduced}{num.}
+\item{OUTPUT_reduced}{num. Reduced set of output files.}
 
-\item{FromData}{num.}
+\item{FromData}{num. If defined, an additional input file can be provided to
+start simulations from an existing data set or a simulated data set (5
+parameters are needed: x and y coordinates, dbh, species_label, species)}
 
-\item{NONRANDOM}{num.}
+\item{NONRANDOM}{num. If _NONRANDOM == 1, the seeds for the random number
+generators will be kept fixed at 1, for bug fixing.}
 }
 \value{
 a data frame of global parameters
 }
 \description{
-Generate parameters
+Function to generate the global parameters used in the TROLL simulation. All
+parameters have a default values used in French Guiana simulations.
 }
 \examples{
-NA
+
+generate_parameters()
 
 }

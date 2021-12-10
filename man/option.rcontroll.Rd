@@ -4,8 +4,8 @@
 \alias{option.rcontroll}
 \title{Options}
 \arguments{
-\item{rcontroll.tmp}{char. path to temporary files folder}
+\item{rcontroll.tmp}{char. Path to temporary files folder.}
 }
 \description{
-rcontroll package global options
+rcontroll package global options.
 }

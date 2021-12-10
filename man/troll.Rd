@@ -2,7 +2,7 @@
 % Please edit documentation in R/troll.R
 \name{troll}
 \alias{troll}
-\title{TROLL}
+\title{troll}
 \usage{
 troll(
   name = NULL,
@@ -18,37 +18,43 @@ troll(
 )
 }
 \arguments{
-\item{name}{char. model name (if NULL timestamp)}
+\item{name}{char. Model name (if NULL timestamp).}
 
-\item{path}{char. path to the simulation (tmp if NULL)}
+\item{path}{char. Path to save the simulations outputs, the default is null
+corresponding to a simulation in memory without saved intermediary files.}
 
-\item{global}{df. global parameters}
+\item{global}{df. Global parameters.}
 
-\item{species}{df. species parameters}
+\item{species}{df. Species parameters.}
 
-\item{climate}{df. climate parameters}
+\item{climate}{df. Climate parameters.}
 
-\item{daily}{df. daily variation parameters}
+\item{daily}{df. Daily variation parameters.}
 
 \item{forest}{df. TROLL with forest input, if null start from an empty grid
-(default NULL)}
+(default NULL).}
 
-\item{verbose}{bool. show TROLL outputs in the console}
+\item{verbose}{bool. Show TROLL outputs in the console.}
 
-\item{overwrite}{bool. overwrite previous outputs}
+\item{overwrite}{bool. Overwrite previous outputs.}
 
-\item{thin}{int. vector of integers corresponding to iterations to be kept
-(default NULL)}
+\item{thin}{int. Vector of integers corresponding to the iterations to be
+kept to reduce outputs size, default is NULL and corresponds to no
+thinning.}
 }
 \value{
 trollsim
 }
 \description{
-Run a TROLL simulation
+Run a TROLL simulation.
 }
 \examples{
 \dontrun{
-example
+sim <- troll(name = "test",
+global = generate_parameters(iterperyear = 12, nbiter = 12*1),
+species = TROLLv3_species,
+climate = TROLLv3_climatedaytime12,
+daily = TROLLv3_daytimevar)
 }
 
 }

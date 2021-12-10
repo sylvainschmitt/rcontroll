@@ -2924,21 +2924,21 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
 //###########################################
 //###########################################
 
-//' @title TROLL C++
+//' @title TROLL simulator
 //' 
 //' @description
-//' TROLL C++.
+//' Wrapper of the TROLL C++ simulator with Rcpp.
 //' 
 //' @name trollCpp
 //' 
-//' @param global_file std::string. global parameters file.
-//' @param climate_file std::string. climate file.
-//' @param species_file std::string. species file.
-//' @param day_file std::string. daytime file.
-//' @param forest_file std::string. forest file.
-//' @param output_file std::string. output folder.
+//' @param global_file char. Path to the global parameters file.
+//' @param climate_file char. Path to the climate file.
+//' @param species_file char. Path to the species file.
+//' @param day_file char. Path to the daytime file.
+//' @param forest_file char. Path to the forest file.
+//' @param output_file char. Path to the output folder.
 //' 
-//' @return int.
+//' @return Void with outputs files written in the defined folder.
 //' 
 //' @examples
 //' \dontrun{

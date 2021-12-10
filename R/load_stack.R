@@ -1,12 +1,13 @@
 #' @include load_output.R
 NULL
 
-#' Function to load TROLL stack
+#' Function to load TROLL stack outputs
 #'
-#' @param name char. name given to the stack output
-#' @param path char. path where the stack is saved
-#' @param thin int. vector of integers corresponding to iterations to be kept
-#'   (default NULL)
+#' @param name char. Name given to the model output.
+#' @param path char. Path where the model is saved.
+#' @param thin int. Vector of integers corresponding to the iterations to be
+#'   kept to reduce outputs size, default is NULL and corresponds to no
+#'   thinning.
 #'   
 #' @return an S4 \linkS4class{trollsim} class object
 #'
@@ -14,7 +15,10 @@ NULL
 #'
 #' @examples
 #'
-#' NA
+#' \dontrun{
+#'  load_stack("test", "./")
+#' }
+#' 
 load_stack <- function(name,
                         path,
                        thin = NULL) {

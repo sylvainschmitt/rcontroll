@@ -6,9 +6,10 @@
 \title{TROLL daytime variation parameters}
 \format{
 A data frame with 24 rows and 5 variables: \describe{
-  \item{starttime}{?} \item{endtime}{?} \item{vardaytime_light}{daytime
-  variation in light} \item{vardaytime_vpd}{daytime variation in vapor
-  pressure deficit} \item{vardaytime_T}{daytime variation in temperature}}
+  \item{starttime}{starting time} \item{endtime}{ ending time}
+  \item{vardaytime_light}{daytime variation in light}
+  \item{vardaytime_vpd}{daytime variation in vapor pressure deficit}
+  \item{vardaytime_T}{daytime variation in temperature}}
 }
 \usage{
 TROLLv3_daytimevar

@@ -4,22 +4,24 @@
 #' @importFrom utils timestamp capture.output
 NULL
 
-#' TROLL
+#' troll
 #'
-#' Run a TROLL simulation
+#' Run a TROLL simulation.
 #'
-#' @param name char. model name (if NULL timestamp)
-#' @param path char. path to the simulation (tmp if NULL)
-#' @param global df. global parameters
-#' @param species df. species parameters
-#' @param climate df. climate parameters
-#' @param daily df. daily variation parameters
+#' @param name char. Model name (if NULL timestamp).
+#' @param path char. Path to save the simulations outputs, the default is null
+#'   corresponding to a simulation in memory without saved intermediary files.
+#' @param global df. Global parameters.
+#' @param species df. Species parameters.
+#' @param climate df. Climate parameters.
+#' @param daily df. Daily variation parameters.
 #' @param forest df. TROLL with forest input, if null start from an empty grid
-#'   (default NULL)
-#' @param verbose bool. show TROLL outputs in the console
-#' @param overwrite bool. overwrite previous outputs
-#' @param thin int. vector of integers corresponding to iterations to be kept
-#'   (default NULL)
+#'   (default NULL).
+#' @param verbose bool. Show TROLL outputs in the console.
+#' @param overwrite bool. Overwrite previous outputs.
+#' @param thin int. Vector of integers corresponding to the iterations to be
+#'   kept to reduce outputs size, default is NULL and corresponds to no
+#'   thinning.
 #'
 #' @return trollsim
 #'
@@ -27,7 +29,11 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' example
+#' sim <- troll(name = "test",
+#' global = generate_parameters(iterperyear = 12, nbiter = 12*1),
+#' species = TROLLv3_species,
+#' climate = TROLLv3_climatedaytime12,
+#' daily = TROLLv3_daytimevar)
 #' }
 #' 
 troll <- function(name = NULL,

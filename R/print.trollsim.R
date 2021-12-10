@@ -1,16 +1,20 @@
 #' @import methods
 NULL
 
-#' Function to print or show TROLL outputs.
+#' Function to print or show TROLL outputs
 #'
-#' @param x trollsim or trollstack
-#' @param object trollsim  or trollstack
-#' @param ... unused argument
+#' @param x trollsim or trollstack.
+#' @param object trollsim  or trollstack.
+#' @param ... unused argument.
 #'
-#' @return Print or show in console
+#' @return Print or show in console.
 #'
 #' @examples
-#' NA
+#' 
+#' \dontrun{
+#' print(sim)
+#' }
+#' 
 #' @name print.trollsim
 NULL
 

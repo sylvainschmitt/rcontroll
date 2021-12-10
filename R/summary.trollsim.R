@@ -3,10 +3,10 @@ NULL
 
 #' Function to provide summary of TROLL outputs
 #'
-#' @param object trollsim
-#' @param ... unused argument
+#' @param object trollsim  or trollstack.
+#' @param ... unused argument.
 #'
-#' @return Print in console
+#' @return Print in console.
 #'
 #' @examples
 #' NA

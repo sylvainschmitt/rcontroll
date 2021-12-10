@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{trollCpp}
 \alias{trollCpp}
-\title{TROLL C++}
+\title{TROLL simulator}
 \usage{
 trollCpp(
   global_file,
@@ -14,23 +14,23 @@ trollCpp(
 )
 }
 \arguments{
-\item{global_file}{std::string. global parameters file.}
+\item{global_file}{char. Path to the global parameters file.}
 
-\item{climate_file}{std::string. climate file.}
+\item{climate_file}{char. Path to the climate file.}
 
-\item{species_file}{std::string. species file.}
+\item{species_file}{char. Path to the species file.}
 
-\item{day_file}{std::string. daytime file.}
+\item{day_file}{char. Path to the daytime file.}
 
-\item{forest_file}{std::string. forest file.}
+\item{forest_file}{char. Path to the forest file.}
 
-\item{output_file}{std::string. output folder.}
+\item{output_file}{char. Path to the output folder.}
 }
 \value{
-int.
+Void with outputs files written in the defined folder.
 }
 \description{
-TROLL C++.
+Wrapper of the TROLL C++ simulator with Rcpp.
 }
 \examples{
 \dontrun{

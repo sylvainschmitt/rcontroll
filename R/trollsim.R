@@ -5,13 +5,13 @@ NULL
 #'
 #' This is an S4 class to represent TROLL simulations.
 #'
-#' @slot name char. simulation name
-#' @slot path char. path to the simulation
-#' @slot parameters numeric. parameters of the simulation (general inputs, random, forest)
-#' @slot inputs list. simulation inputs (species, climate, daily, forest)
-#' @slot log chr. simulation log
-#' @slot final_pattern df. simulation final forest
-#' @slot outputs df. species and ecosystem metrics (reduced or full)
+#' @slot name char. Simulation name.
+#' @slot path char. Path to the simulation.
+#' @slot parameters numeric. Parameters of the simulation (general inputs).
+#' @slot inputs list. Simulation inputs (species, climate, daily, forest).
+#' @slot log chr. Simulation log.
+#' @slot final_pattern df. Simulation final forest.
+#' @slot outputs df. Species and ecosystem metrics (reduced or full).
 #'
 #' @export
 setClass(
@@ -40,13 +40,13 @@ setClass(
 #'
 #' This is an S4 class to represent TROLL simulations.
 #'
-#' @param name char. simulation name
-#' @param path char. path to the simulation
-#' @param parameters char. parameters of the simulation (general inputs, random, forest)
-#' @param inputs numeric. simulation inputs (species, climate, daily, forest)
-#' @param log chr. simulation log
-#' @param final_pattern df. simulation final forest
-#' @slot outputs df. species and ecosystem metrics (reduced or full)
+#' @param name char. Simulation name.
+#' @param path char. Path to the simulation.
+#' @param parameters numeric. Parameters of the simulation (general inputs).
+#' @param inputs list. Simulation inputs (species, climate, daily, forest).
+#' @param log chr. Simulation log.
+#' @param final_pattern df. Simulation final forest.
+#' @param outputs df. Species and ecosystem metrics (reduced or full).
 #'
 #' @export
 #' @rdname trollsim

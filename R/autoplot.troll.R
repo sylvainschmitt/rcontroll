@@ -7,20 +7,32 @@
 #' @importFrom viridis scale_color_viridis
 NULL
 
-#' Function to plot TROLL outputs
+#' Plot TROLL outputs
 #'
-#' @param object troll simulation or stack
-#' @param what char. "final pattern" or "ecosystem"
-#' @param variables char. full outputs: "species", "abu10", "abu30", "abund",
-#'   "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or
-#'   "rstem"; reduced outputs: "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"
-#' @param selected_species char. species name or total
+#' This is a method to plot TROLL simulations or stacks, including either
+#' temporal trajectories of whole ecosystem or species metrics, or the final
+#' pattern observed in the forest community. Metrics includes abundances of
+#' individuals above 1cm (abund & N), above 10cm (abu10 & N10), and above 30cm
+#' (abu30 & N30), aboveground biomass (agb & AGB), basal area of individuals
+#' above 1cm (ba, BA), and above 10cm (ba10, BA10), gross primary production
+#' (gpp, GPP), net primary production (npp, NPP), and respiration of day (rday),
+#' night (rnight) and stem (rstem).
+#'
+#' @param object TROLL simulation or stack.
+#' @param what char. What to plot: "final pattern" or "ecosystem".
+#' @param variables char. Wich variable(s) to plot: full simulation: "species",
+#'   "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "npp", "rday",
+#'   "rnight", or "rstem"; reduced simulation: "N", "N10", "N30", "BA10", "NPP",
+#'   "GPP", "AGB"
+#' @param selected_species char. Which species to plot: "species name" or "total".
 #'
 #' @return ggplot2 object
 #'
 #' @examples
-#' NA
-#'
+#' \dontrun{
+#' autoplot(sim)
+#' }
+#' 
 #' @name autoplot.troll
 #'   
 NULL
@@ -41,8 +53,8 @@ setMethod("autoplot", "trollsim", function(
     stop("what should be final pattern or ecosystem")
   if(object@parameters["_OUTPUT_reduced"] == 0 & !is.null(variables) &
      !all(variables %in% c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
-                           "litterfall", "npp", "rday", "rnight", "rstem")))
-    stop('variables should be "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or "rstem"')
+                           "npp", "rday", "rnight", "rstem")))
+    stop('variables should be "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "npp", "rday", "rnight", or "rstem"')
   if(object@parameters["_OUTPUT_reduced"] == 1 & !is.null(variables) &
      !all(variables %in% c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB")))
     stop('variables should be "N", "N10", "N30", "BA10", "NPP", "GPP", or "AGB"')
@@ -98,8 +110,8 @@ setMethod("autoplot", "trollstack", function(
     stop("what should be final pattern or ecosystem")
   if(object@parameters["_OUTPUT_reduced"] == 0 & !is.null(variables) &
      !all(variables %in% c("abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp",
-                           "litterfall", "npp", "rday", "rnight", "rstem")))
-    stop('variables should be "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or "rstem"')
+                           "npp", "rday", "rnight", "rstem")))
+    stop('variables should be "abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "npp", "rday", "rnight", or "rstem"')
   if(object@parameters["_OUTPUT_reduced"] == 1 & !is.null(variables) &
      !all(variables %in% c("N", "N10", "N30", "BA10", "NPP", "GPP", "AGB")))
     stop('variables should be "N", "N10", "N30", "BA10", "NPP", "GPP", or "AGB"')

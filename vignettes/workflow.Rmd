@@ -16,12 +16,24 @@ knitr::opts_chunk$set(
 )
 ```
 
+This vignette gives a quick example of a simple workflow to produce a single simulation or a stack of simulations.
+
 # Setup
+
+We will use packages `rcontroll` and `dplyr` and `tidyr` for data wrangling.
 
 ```{r libs}
 library(dplyr)
 library(tidyr)
 library(rcontroll)
+```
+
+# Data
+
+We load the species data available for French Guiana (`TROLLv3_species`), with associated climate data (`TROLLv3_climatedaytime12`) and day variation (`TROLLv3_daytimevar`). We generate parameters using `generate_parameters` for a simulation per month (`iterperyear` = 12) lasting one year (`nbiter` = 12). We further duplicated parameters with a simulation index using `mutate` and `unnest` for a stack of simulations using a `seedrain` of 5000 (default) and 500 (default/10). 
+
+
+```{r data}
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
@@ -31,8 +43,9 @@ TROLLv3_input_stack <- generate_parameters(iterperyear = 12, nbiter = 12*1) %>%
 TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 ```
 
-
 # Generate parameters
+
+We can generate parameters and view them directly as a table with a description of its effect using `generate_parameters` and `kable`.
 
 ```{r genPar}
 generate_parameters(cols = 250, rows = 250) %>% 
@@ -42,7 +55,9 @@ generate_parameters(cols = 250, rows = 250) %>%
 
 # Simple simulation
 
-```{r fullsim}
+We run a simple simulation using the `troll` function with loaded and generated data. If `verbose` is not inactivated, we have the TROLL log directly in the console.
+
+```{r troll}
 sim <- troll(name = "test",
              # path = "../",
              global = generate_parameters(iterperyear = 12, nbiter = 12*1),
@@ -51,9 +66,13 @@ sim <- troll(name = "test",
              daily = TROLLv3_daytimevar)
 ```
 
+We can print a quick simple summary of the simulation.
+
 ```{r}
 sim
 ```
+
+We can quickly plot temporal trajectories using `autoplot` and `what` defined on ecosystem, for instance here with number of stems (abund) and basal area (ba) for 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*.
 
 ```{r fullsimG1}
 autoplot(sim, 
@@ -62,11 +81,18 @@ autoplot(sim,
          selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```
 
+Similarly, we can quickly plot the final patterns using `autoplot` and `what` defined on final pattern.
+
 ```{r fullsimG2}
 autoplot(sim, what = "final pattern")
 ```
 
 # Stack of simulations
+
+We run a stack of simulations using the `stack` function with loaded and generated data.
+We can inactivate `verbose` to see only the loading bar.
+We can define the number of cores used for parrallelization.
+And we can define a thinning of outputs by giving the number of iterations to be kept to reduce the output size.
 
 ```{r fullstack}
 sim_stack <- stack(name = "test3", 
@@ -81,9 +107,13 @@ sim_stack <- stack(name = "test3",
              thin = c(1,5,10))
 ```
 
+We can print a quick simple summary of the simulations.
+
 ```{r}
 sim_stack
 ```
+
+We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on ecosystem, for instance here with number of stems (abund) and basal area (ba) for 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*.
 
 ```{r fullstackG1}
 autoplot(sim_stack, 
@@ -91,6 +121,8 @@ autoplot(sim_stack,
          variables = c("abund", "agb"), 
          selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```
+
+Similarly, we can quickly plot the final patterns for all simulations using `autoplot` and `what` defined on final pattern.
 
 ```{r fullstackG2}
 autoplot(sim_stack, what = "final pattern")
