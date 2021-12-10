@@ -8,12 +8,12 @@
 \S4method{summary}{trollsim}(object, ...)
 }
 \arguments{
-\item{object}{trollsim}
+\item{object}{trollsim  or trollstack.}
 
-\item{...}{unused argument}
+\item{...}{unused argument.}
 }
 \value{
-Print in console
+Print in console.
 }
 \description{
 Function to provide summary of TROLL outputs

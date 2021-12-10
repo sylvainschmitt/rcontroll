@@ -15,24 +15,20 @@ trollsim(
 )
 }
 \arguments{
-\item{name}{char. simulation name}
+\item{name}{char. Simulation name.}
 
-\item{path}{char. path to the simulation}
+\item{path}{char. Path to the simulation.}
 
-\item{parameters}{char. parameters of the simulation (general inputs, random, forest)}
+\item{parameters}{numeric. Parameters of the simulation (general inputs).}
 
-\item{inputs}{numeric. simulation inputs (species, climate, daily, forest)}
+\item{inputs}{list. Simulation inputs (species, climate, daily, forest).}
 
-\item{log}{chr. simulation log}
+\item{log}{chr. Simulation log.}
 
-\item{final_pattern}{df. simulation final forest}
+\item{final_pattern}{df. Simulation final forest.}
+
+\item{outputs}{df. Species and ecosystem metrics (reduced or full).}
 }
 \description{
 This is an S4 class to represent TROLL simulations.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{outputs}}{df. species and ecosystem metrics (reduced or full)}
-}}
-

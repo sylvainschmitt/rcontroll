@@ -10,27 +10,25 @@ NULL
 
 #' Stack
 #'
-#' Run a TROLL stack
-#'
-#' @param name char. stack name (if NULL timestamp)
-#' @param simulations char. simulations names
-#' @param path char. path to the stack (tmp if NULL)
-#' @param global df. global parameters, add a simulation column for repeated
-#'   simulations
-#' @param species df. species parameters, add a simulation column for repeated
-#'   simulations
-#' @param climate df. climate parameters, add a simulation column for repeated
-#'   simulations
-#' @param daily df. daily variation parameters, add a simulation column for
-#'   repeated simulations
-#' @param forest df. TROLL with forest input, if null start from an empty grid,
-#'   add a simulation column for repeated simulations (default NULL)
-#' @param verbose bool. show TROLL outputs in the console
-#' @param cores int. number of cores for parallelization, if NULL available
-#'   cores - 1 (default NULL)
-#' @param overwrite bool. overwrite previous outputs
-#' @param thin int. vector of integers corresponding to iterations to be kept
-#'   (default NULL)
+#' Run a TROLL stack.
+#' 
+#' @param name char. Stack name (if NULL timestamp).
+#' @param simulations char. Simulations names.
+#' @param path char. Path to save the simulations outputs, the default is null
+#'   corresponding to a simulation in memory without saved intermediary files.
+#' @param global df. Global parameters.
+#' @param species df. Species parameters.
+#' @param climate df. Climate parameters.
+#' @param daily df. Daily variation parameters.
+#' @param forest df. TROLL with forest input, if null start from an empty grid
+#'   (default NULL).
+#' @param verbose bool. Show TROLL outputs in the console.
+#' @param cores int. Number of cores for parallelization, if NULL available
+#'   cores - 1 (default NULL).
+#' @param overwrite bool. Overwrite previous outputs.
+#' @param thin int. Vector of integers corresponding to the iterations to be
+#'   kept to reduce outputs size, default is NULL and corresponds to no
+#'   thinning.
 #'
 #' @return trollstack
 #'
@@ -38,7 +36,15 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' example
+#' stack(name = "test3", 
+#' simulations = c("seed50000", "seed500"),
+#' global = TROLLv3_input_stack,
+#' species = TROLLv3_species,
+#' climate = TROLLv3_climatedaytime12,
+#' daily = TROLLv3_daytimevar,
+#' verbose = F,
+#' cores = 2,
+#' thin = c(1,5,10))
 #' }
 #' 
 stack <- function(name = NULL,

@@ -4,12 +4,13 @@
 #' @importFrom reshape2 melt dcast
 NULL
 
-#' Function to load TROLL output
+#' Function to load TROLL outputs
 #'
-#' @param name char. name given to the model output
-#' @param path char. path where the model is saved
-#' @param thin int. vector of integers corresponding to iterations to be kept
-#'   (default NULL)
+#' @param name char. Name given to the model output.
+#' @param path char. Path where the model is saved.
+#' @param thin int. Vector of integers corresponding to the iterations to be
+#'   kept to reduce outputs size, default is NULL and corresponds to no
+#'   thinning.
 #'
 #' @return an S4 \linkS4class{trollsim} class object
 #'
@@ -17,7 +18,10 @@ NULL
 #'
 #' @examples
 #'
-#' NA
+#' \dontrun{
+#'  load_output("test", "./")
+#' }
+#' 
 load_output <- function(name,
                         path,
                         thin = NULL) {

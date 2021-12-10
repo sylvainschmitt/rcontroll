@@ -13,8 +13,7 @@ The *rcontroll* package relies on a few functions in R to generate and provide i
 and analyze the simulations through tables, figures, and maps that are easily connected to the rest of the R package ecosystem.
 The whole workflow can even be run for one or several simulations using a unique function (`troll` and `stack`). 
 Pre-simulations functions include global parameters definition (`generate_parameters`) and species and weather data input, with default values for French Guiana included in the package. 
-Simulations are run alone (`troll`) or as a stack (`stack`) and stocked in three defined classes depending on the level of outputs wanted:  
-`trollsimfull` for a full set of outputs, `trollsimreduced` for a reduced set of outputs, and `trollsimabc` for outputs later used in approximate bayesian computing or other calibration methods.
+Simulations are run alone (`troll`) or as a stack (`stack`) and stocked in corresponding classes.
 The post-simulation outputs are stored in the corresponding objects and can be accessed using object attributes (with `@` in R) in the form of simple R objects, mainly data frames, 
 or summarized and plotted with the `print`, `summary` and `autoplot` methods. 
 Simulations can be saved using a user-defined path when run and later loaded as a simple simulation (`load_output`) or a stack of simulations (`load_stack`).

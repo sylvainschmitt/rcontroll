@@ -1,8 +1,8 @@
 #' Options
 #'
-#' rcontroll package global options
+#' rcontroll package global options.
 #'
-#' @param rcontroll.tmp char. path to temporary files folder
+#' @param rcontroll.tmp char. Path to temporary files folder.
 #'
 #' @name option.rcontroll
 NULL

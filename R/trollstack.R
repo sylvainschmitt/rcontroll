@@ -16,13 +16,13 @@ setClass(
 #'
 #' This is an S4 class to represent TROLL stack
 #'
-#' @param name char. simulation name
-#' @param path char. path to the simulation
-#' @param parameters numeric. parameters of the simulation (general inputs, random, forest)
-#' @param inputs list. simulation inputs (species, climate, daily, forest)
-#' @param log chr. simulation log
-#' @param final_pattern df. simulation final forest
-#' @param outputs df. species and ecosystem metrics (reduced or full)
+#' @param name char. Simulation name.
+#' @param path char. Path to the simulation.
+#' @param parameters numeric. Parameters of the simulation (general inputs).
+#' @param inputs list. Simulation inputs (species, climate, daily, forest).
+#' @param log chr. Simulation log.
+#' @param final_pattern df. Simulation final forest.
+#' @param outputs df. Species and ecosystem metrics (reduced or full).
 #'
 #' @export
 #' @rdname trollstack

@@ -3,7 +3,7 @@
 \name{autoplot.troll}
 \alias{autoplot.troll}
 \alias{autoplot,trollsim-method}
-\title{Function to plot TROLL outputs}
+\title{Plot TROLL outputs}
 \usage{
 \S4method{autoplot}{trollsim}(
   object,
@@ -20,23 +20,33 @@
 )
 }
 \arguments{
-\item{object}{troll simulation or stack}
+\item{object}{TROLL simulation or stack.}
 
-\item{what}{char. "final pattern" or "ecosystem"}
+\item{what}{char. What to plot: "final pattern" or "ecosystem".}
 
-\item{variables}{char. full outputs: "species", "abu10", "abu30", "abund",
-"agb", "ba", "ba10", "gpp", "litterfall", "npp", "rday", "rnight", or
-"rstem"; reduced outputs: "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"}
+\item{variables}{char. Wich variable(s) to plot: full simulation: "species",
+"abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "npp", "rday",
+"rnight", or "rstem"; reduced simulation: "N", "N10", "N30", "BA10", "NPP",
+"GPP", "AGB"}
 
-\item{selected_species}{char. species name or total}
+\item{selected_species}{char. Which species to plot: "species name" or "total".}
 }
 \value{
 ggplot2 object
 }
 \description{
-Function to plot TROLL outputs
+This is a method to plot TROLL simulations or stacks, including either
+temporal trajectories of whole ecosystem or species metrics, or the final
+pattern observed in the forest community. Metrics includes abundances of
+individuals above 1cm (abund & N), above 10cm (abu10 & N10), and above 30cm
+(abu30 & N30), aboveground biomass (agb & AGB), basal area of individuals
+above 1cm (ba, BA), and above 10cm (ba10, BA10), gross primary production
+(gpp, GPP), net primary production (npp, NPP), and respiration of day (rday),
+night (rnight) and stem (rstem).
 }
 \examples{
-NA
+\dontrun{
+autoplot(sim)
+}
 
 }
