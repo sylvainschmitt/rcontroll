@@ -197,9 +197,11 @@ stack <- function(name = NULL,
         bind_rows(.id = "simulation")
     ),
     log = paste(lapply(stack_res, slot, "log")),
-    final_pattern = lapply(stack_res, slot, "final_pattern") %>% 
+    forest = lapply(stack_res, slot, "forest") %>% 
       bind_rows(.id = "simulation"),
-    outputs = lapply(stack_res, slot, "outputs") %>% 
+    ecosystem = lapply(stack_res, slot, "ecosystem") %>% 
+      bind_rows(.id = "simulation"),
+    species = lapply(stack_res, slot, "species") %>% 
       bind_rows(.id = "simulation")
   )
   

@@ -34,11 +34,11 @@ Wrapper of the TROLL C++ simulator with Rcpp.
 }
 \examples{
 \dontrun{
-trollCpp(global_file = "test/test_input_global.txt", 
+trollCpp(global_file = "test/test_input_global.txt",
          climate_file = "test/test_input_climate.txt",
-         species_file = "test/test_input_species.txt", 
-         day_file = "test/test_input_daily.txt", 
-         forest_file = "NULL", 
+         species_file = "test/test_input_species.txt",
+         day_file = "test/test_input_daily.txt",
+         forest_file = "NULL",
          output_file = "test")
 }
 

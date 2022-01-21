@@ -50,10 +50,13 @@ crown_gap_fraction	0.15	/* fraction of gaps in the crown */
 m	0.013	/* minimal death rate */
 m1	0.013	/* m1 (slope of death rate) */
 Cair	400	/* atmospheric CO2 concentration in micromol/mol */
-_LL_parameterization	1	/* LL parameterizations: Reich empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */
+_LL_parameterization	1	/* LL parameterizations: empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */
 _LA_regulation	2	/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */
 _sapwood	1	/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */
 _seedsadditional	0	/* excess biomass into seeds after maturation (0,1) */
-_OUTPUT_reduced	0	/* reduced set of output files */
-_FromData	0	/* if defined, an additional input file can be provided to start simulations from an existing data set or a simulated data set (5 parameters are needed: x and y coordinates, dbh, species_label, species */
-_NONRANDOM	0	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, for bug fixing */
+_NONRANDOM	1	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */
+_GPPcrown	0	/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */
+_BASICTREEFALL	1	/* if defined: treefall is a source of tree death */
+_SEEDTRADEOFF	0	/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */
+_CROWN_MM	0	/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */
+_OUTPUT_extended	1	/* extended set of ouput files */

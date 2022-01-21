@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9026
+* integration of TROLL main_v3.1_rcpp.cpp with corresponding new parameters
+* from data to be explored and values to be tested
+
 # rcontroll 0.1.0.9025
 * doc & vignette
 

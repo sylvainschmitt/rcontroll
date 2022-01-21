@@ -9,7 +9,8 @@
   object,
   what = "ecosystem",
   variables = NULL,
-  selected_species = "total"
+  iter = NULL,
+  species = NULL
 )
 
 \S4method{autoplot}{trollstack}(
@@ -22,14 +23,13 @@
 \arguments{
 \item{object}{TROLL simulation or stack.}
 
-\item{what}{char. What to plot: "final pattern" or "ecosystem".}
+\item{what}{char. What to plot: "forest", "ecosystem", or "species".}
 
-\item{variables}{char. Wich variable(s) to plot: full simulation: "species",
-"abu10", "abu30", "abund", "agb", "ba", "ba10", "gpp", "npp", "rday",
-"rnight", or "rstem"; reduced simulation: "N", "N10", "N30", "BA10", "NPP",
-"GPP", "AGB"}
+\item{variables}{char. Wich variable(s) to plot (ecosystem or species).}
 
-\item{selected_species}{char. Which species to plot: "species name" or "total".}
+\item{iter}{char. Which iteration(s) to plot.}
+
+\item{species}{char. Which species to plot when using the species table.}
 }
 \value{
 ggplot2 object

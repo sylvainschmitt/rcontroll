@@ -37,7 +37,8 @@ We load the species data available for French Guiana (`TROLLv3_species`), with a
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
-TROLLv3_input_stack <- generate_parameters(iterperyear = 12, nbiter = 12*1) %>% 
+TROLLv3_input_stack <- generate_parameters(cols = 100, rows = 100,
+                                           iterperyear = 12, nbiter = 12*1) %>% 
   mutate(simulation = list(c("seed50000", "seed500"))) %>% 
   unnest(simulation)
 TROLLv3_input_stack[62,2] <- 500 # Cseedrain
@@ -60,7 +61,8 @@ We run a simple simulation using the `troll` function with loaded and generated 
 ```{r troll}
 sim <- troll(name = "test",
              # path = "../",
-             global = generate_parameters(iterperyear = 12, nbiter = 12*1),
+             global = generate_parameters(cols = 100, rows = 100,
+                                          iterperyear = 12, nbiter = 12*1),
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
@@ -77,14 +79,18 @@ We can quickly plot temporal trajectories using `autoplot` and `what` defined on
 ```{r fullsimG1}
 autoplot(sim, 
          what = "ecosystem", 
-         variables = c("abund", "ba"), 
-         selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
+         variables = c("ba", "agb"))
 ```
 
 Similarly, we can quickly plot the final patterns using `autoplot` and `what` defined on final pattern.
 
 ```{r fullsimG2}
-autoplot(sim, what = "final pattern")
+autoplot(sim, what = "forest", iter = 12)
+```
+
+```{r fullsimG3}
+autoplot(sim, what = "species", variables = "agb",
+         species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```
 
 # Stack of simulations
@@ -95,7 +101,7 @@ We can define the number of cores used for parrallelization.
 And we can define a thinning of outputs by giving the number of iterations to be kept to reduce the output size.
 
 ```{r fullstack}
-sim_stack <- stack(name = "test3", 
+sim_stack <- stack(name = "teststack", 
              simulations = c("seed50000", "seed500"),
              # path = "../",
              global = TROLLv3_input_stack,
@@ -118,12 +124,16 @@ We can quickly plot temporal trajectories for all simulations using `autoplot` a
 ```{r fullstackG1}
 autoplot(sim_stack, 
          what = "ecosystem", 
-         variables = c("abund", "agb"), 
-         selected_species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
+         variables = c("ba", "agb"))
 ```
 
 Similarly, we can quickly plot the final patterns for all simulations using `autoplot` and `what` defined on final pattern.
 
 ```{r fullstackG2}
-autoplot(sim_stack, what = "final pattern")
+autoplot(sim_stack, what = "forest", iter = 12)
+```
+
+```{r fullstackG3}
+autoplot(sim_stack, what = "species", variables = "agb",
+         species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
 ```

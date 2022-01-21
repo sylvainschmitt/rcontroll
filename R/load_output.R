@@ -29,7 +29,7 @@ load_output <- function(name,
   if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
     stop("name and path should be character.")
 
-  # troll sim
+  # @inputs
   inputs <- lapply(
     list(
       global = "global",
@@ -43,112 +43,57 @@ load_output <- function(name,
       )
     }
   )
+  forest_file <- file.path(path, paste0(name, paste0("_input_forest.txt")))
+  inputs$forest <- data.frame()
+  if(file.exists(forest_file))
+    inputs$forest <- read_tsv(forest_file, col_types = cols())
   
+  # @parameters
   parameters <- inputs$global$value
   names(parameters) <- inputs$global$param
+  
+  # @log
   log <- read_file(file.path(path, paste0(name, "_log.txt")))
   
-  inputs$forest <- data.frame()
-  if(parameters["_FromData"] == 1)
-    inputs$forest <- read_tsv(file.path(path, paste0(name, paste0("_input_forest.txt"))),
+  # @forest
+  initial_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_initial_pattern.txt"))),
                               col_types = cols())
-  
-  final_pattern <- data.frame()
-  if(parameters["_OUTPUT_reduced"] == 0)
-    final_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_final_pattern.txt"))),
-                              col_types = cols())
-  
-  if(parameters["_OUTPUT_reduced"] == 0)
-    return(
-      trollsim(
-        name = name,
-        path = path,
-        parameters = parameters,
-        inputs = inputs,
-        log = log,
-        final_pattern = final_pattern,
-        outputs = .load_species_outputs(name, path, inputs = inputs, thin = thin)
-      )
-    )
+  final_pattern <- read_tsv(file.path(path, paste0(name, paste0("_0_final_pattern.txt"))),
+                            col_types = cols())
+  if(nrow(initial_pattern) > 0)
+    forest <- bind_rows(initial_pattern, final_pattern)
   else
-    return(
-      trollsim(
-        name = name,
-        path = path,
-        parameters = parameters,
-        inputs = inputs,
-        log = log,
-        final_pattern = final_pattern,
-        outputs = .load_reduced_outputs(name, path, thin = thin)
-      )
-    )
-}
-
-# Internals
-
-.load_species_outputs <- function(name = NULL,
-                                  path = NULL,
-                                  inputs = NULL,
-                                  thin = NULL){
-  iter <- NULL
+    forest <- final_pattern
   
-  species_outputs1 <- lapply(list(
-    ba = "ba",
-    ba10 = "ba10",
-    abund = "abund",
-    abu10 = "abu10",
-    abu30 = "abu30",
-    gpp = "gpp",
-    npp = "npp",
-    rday = "Rday",
-    rnight = "Rnight",
-    rstem = "Rstem"
-  ), function(x) {
-    read_tsv(file.path(path, paste0(name, "_0_", x, ".txt")),
-             col_names = c("iter", inputs$species$s_name, "total"),
-             col_types = cols()
-    ) %>%
-      melt("iter", variable.name = "species")
-  }) %>%
-    bind_rows(.id = "variable")
-  
-  species_outputs2 <- lapply(list(
-    agb = "agb"
-  ), function(x) {
-    read_tsv(file.path(path, paste0(name, "_0_", x, ".txt")),
-             col_names = c(inputs$species$s_name, "total"),
-             col_types = cols()
-    ) %>%
-      mutate(iter = 0:(n() - 1)) %>%
-      melt("iter", variable.name = "species")
-  }) %>%
-    bind_rows(.id = "variable")
-  
-  species_outputs <- bind_rows(
-    species_outputs1,
-    species_outputs2
-  ) %>%
-    dcast(iter + species ~ variable)
-  
+  # @ecosystem
+  ecosystem <- read_tsv(file.path(path, paste0(name, "_0_", "sumstats", ".txt")),
+                        col_types = cols())
   if(!is.null(thin))
-    species_outputs <- species_outputs %>% 
+    ecosystem <- ecosystem %>% 
     filter(iter %in% thin)
   
-  return(species_outputs)
-}
-
-.load_reduced_outputs <- function(name = NULL,
-                                  path = NULL,
-                                  thin = NULL){
-  iter <- NULL
+  # @species
+  species_file <- file.path(path, paste0(name, "_0_", "sumstats_species", ".txt"))
+  if(file.exists(file.path(path, paste0(name, "_0_", "sumstats_species", ".txt")))){
+    species <- read_tsv(file.path(path, paste0(name, "_0_", "sumstats_species", ".txt")),
+                        col_types = cols())
+    if(!is.null(thin))
+      species <- species %>% 
+        filter(iter %in% thin)
+  } else {
+    species <- data.frame()
+  }
   
-  reduced_outputs <- read_tsv(file.path(path, paste0(name, "_0_", "outputs", ".txt")),
-                              col_names = c("iter", "N", "N10", "N30", "BA10", "NPP", "GPP", "AGB"),
-                              col_types = cols())
-  
-  if(!is.null(thin))
-    reduced_outputs <- reduced_outputs %>% 
-      filter(iter %in% thin)
-  
-  return(reduced_outputs)
+  return(
+    trollsim(
+      name = name,
+      path = path,
+      parameters = parameters,
+      inputs = inputs,
+      log = log,
+      forest = forest,
+      ecosystem = ecosystem,
+      species = species
+    )
+  )
 }
