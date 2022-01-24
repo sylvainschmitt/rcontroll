@@ -17,7 +17,8 @@
   object,
   what = "ecosystem",
   variables = NULL,
-  selected_species = "total"
+  iter = NULL,
+  species = NULL
 )
 }
 \arguments{

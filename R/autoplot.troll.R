@@ -4,7 +4,6 @@
 #' @import ggplot2
 #' @importFrom dplyr filter mutate select
 #' @importFrom reshape2 melt
-#' @importFrom viridis scale_color_viridis
 NULL
 
 #' Plot TROLL outputs
@@ -59,17 +58,21 @@ setMethod("autoplot", "trollsim", function(
       warning("species parameter is unused when plotting forest.")
     if(length(unique(object@forest$iter)) == 0)
       stop("The forest table is empty, please use extended outputs with global parameter _OUTPUT_extended.")
+    if(is.null(iter))
+      iter <- max(object@forest$iter)
     if(all(!(iter %in% unique(object@forest$iter))))
       stop("iteration not available in the forest table, please check.")
     Niter <- iter
     g <- ggplot(filter(object@forest, iter %in% Niter),
-           aes(col, row, size = dbh, col = s_name)) +
+           aes(col/object@parameters["NH"],
+               row/object@parameters["NV"],
+               size = dbh, col = s_name)) +
       geom_point() +
       theme_bw() +
-      scale_size_continuous("DBH (m)", range = c(0.1, 3)) +
-      scale_color_viridis(guide = "none", discrete = T) +
+      scale_size_continuous("DBH (m)", range = c(0.01, 1)) +
+      scale_color_discrete(guide = "none") +
       coord_equal() +
-      xlab("X") + ylab("Y")
+      xlab("X (m)") + ylab("Y (m)")
   }
   
   # ecosystem
@@ -92,9 +95,10 @@ setMethod("autoplot", "trollsim", function(
       mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>% 
       melt("iter") %>%
       filter(variable %in% variables) %>% 
+      mutate(variable = .get_units(as.character(variable))) %>% 
       ggplot(aes(x =iter, y = value)) +
       geom_line() +
-      facet_wrap(~variable, scales = "free_y") +
+      facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
       theme_bw() +
       xlab("Time (year)")
   }
@@ -125,12 +129,15 @@ setMethod("autoplot", "trollsim", function(
       mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>% 
       melt(c("iter", "species")) %>%
       filter(variable %in% variables) %>% 
+      mutate(variable = .get_units(as.character(variable))) %>% 
       filter(species %in% spnames) %>% 
+      mutate(species = gsub("_", " ", species)) %>% 
       ggplot(aes(x =iter, y = value,color = species)) +
       geom_line() +
-      facet_wrap(~variable, scales = "free_y") +
+      facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
       theme_bw() +
-      xlab("Time (year)")
+      xlab("Time (year)") +
+      theme(legend.text = element_text(face = "italic"))
   }
   
   return(g)
@@ -160,17 +167,22 @@ setMethod("autoplot", "trollstack", function(
       warning("species parameter is unused when plotting forest.")
     if(length(unique(object@forest$iter)) == 0)
       stop("The forest table is empty, please use extended outputs with global parameter _OUTPUT_extended.")
+    if(is.null(iter))
+      iter <- max(object@forest$iter)
     if(all(!(iter %in% unique(object@forest$iter))))
       stop("iteration not available in the forest table, please check.")
     Niter <- iter
     g <- ggplot(filter(object@forest, iter %in% Niter),
-                aes(col, row, size = dbh, col = s_name)) +
+                aes(col/object@parameters["NH"],
+                    row/object@parameters["NV"],
+                    size = dbh, 
+                    col = s_name)) +
       geom_point() +
       theme_bw() +
-      scale_size_continuous("DBH (m)", range = c(0.1, 3)) +
-      scale_color_viridis(guide = "none", discrete = T) +
+      scale_size_continuous("DBH (m)", range = c(0.01, 1)) +
+      scale_color_discrete(guide = "none") +
       coord_equal() +
-      xlab("X") + ylab("Y") +
+      xlab("X (m)") + ylab("Y (m)") +
       facet_wrap(~ simulation)
   }
   
@@ -193,10 +205,11 @@ setMethod("autoplot", "trollstack", function(
     g <- ecosystem %>%
       mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>% 
       melt(c("iter", "simulation")) %>%
-      filter(variable %in% variables) %>% 
+      filter(variable %in% variables) %>%
+      mutate(variable = .get_units(as.character(variable))) %>% 
       ggplot(aes(x =iter, y = value, col = simulation)) +
       geom_line() +
-      facet_wrap(~variable, scales = "free_y") +
+      facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
       theme_bw() +
       xlab("Time (year)")
   }
@@ -230,15 +243,39 @@ setMethod("autoplot", "trollstack", function(
     g <- sptab %>%
       mutate(iter = as.numeric(iter / object@parameters["iterperyear"])) %>% 
       melt(melt_vars) %>%
-      filter(variable %in% variables) %>% 
+      filter(variable %in% variables) %>%
+      mutate(variable = .get_units(as.character(variable))) %>% 
       filter(species %in% spnames) %>% 
+      mutate(species = gsub("_", " ", species)) %>% 
       ggplot(aes(x =iter, y = value, color = species, linetype = simulation)) +
       geom_line() +
-      facet_wrap(~variable, scales = "free_y") +
+      facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
       theme_bw() +
-      xlab("Time (year)")
+      xlab("Time (year)") +
+      theme(legend.text = element_text(face = "italic"))
   }
   
   return(g)
 })
+
+.get_units <- function(vars){
+  lapply(vars, function(var)
+    switch (var,
+            "sum1" = "N~(stems)",
+            "sum10" = "N[10]~(stems)",
+            "sum30" = "N[30]~(stems)",
+            "ba" = "BA~(m^{2}~ha^{-1})",
+            "ba10" = "BA[10]~(m^{2}~ha^{-1})",
+            "agb" = "AGB~(MgC~ha^{-1})",
+            "gpp" = "GPP~(MgC~ha^{-1})",
+            "npp" = "NPP~(MgC~ha^{-1})",
+            "rday" = "R[day]~(MgC~ha^{-1})",
+            "rnight" = "R[night]~(MgC~ha^{-1})",
+            "rstem" = "R[stem]~(MgC~ha^{-1})",
+            "litterfall" = "Litterfall~(MgC~ha^{-1})",
+            var
+    )
+  ) %>% 
+    unlist()
+}
 

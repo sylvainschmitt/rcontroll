@@ -37,6 +37,7 @@ Collate:
     'TROLLv3_climatedaytime12.R'
     'TROLLv3_daytimevar.R'
     'TROLLv3_input.R'
+    'TROLLv3_output.R'
     'TROLLv3_species.R'
     'trollsim.R'
     'trollstack.R'

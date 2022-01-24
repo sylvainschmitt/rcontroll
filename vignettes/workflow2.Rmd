@@ -1,0 +1,86 @@
+---
+title: "A simple workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A simple workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.height = 6,
+  fig.width = 6
+)
+```
+
+This vignette gives a quick example of a simple workflow to produce a single simulation, a stack of simulations, or start from an existing inventory or a previous simulation.
+
+# Setup
+
+We will use packages `rcontroll` and `dplyr` and `tidyr` for data wrangling.
+
+```{r libs}
+library(dplyr)
+library(tidyr)
+library(rcontroll)
+```
+
+# Data
+
+We load the species data available for French Guiana (`TROLLv3_species`), with associated climate data (`TROLLv3_climatedaytime12`) and day variation (`TROLLv3_daytimevar`). We generate parameters using `generate_parameters` for a simulation per month (`iterperyear` = 12) lasting one year (`nbiter` = 12). We further duplicated parameters with a simulation index using `mutate` and `unnest` for a stack of simulations using a `seedrain` of 5000 (default) and 500 (default/10). 
+
+# From a forest
+
+```{r}
+data("TROLLv3_output")
+data("TROLLv3_species")
+data("TROLLv3_climatedaytime12")
+data("TROLLv3_daytimevar")
+```
+
+```{r}
+autoplot(TROLLv3_output, what = "ecosystem")
+```
+
+```{r}
+autoplot(TROLLv3_output, what = "forest")
+```
+
+```{r }
+forest_init <- filter(TROLLv3_output@forest, 
+       iter == max(TROLLv3_output@forest$iter)) %>% 
+  dplyr::select(col, row, dbh,s_name) %>% 
+  as.data.frame()
+global_pars <- TROLLv3_output@inputs$global
+global_pars[which(global_pars$param == "nbiter"),2] <- 12*1
+sim <- troll(name = "test",
+             # path = "/home/sylvain/Documents/ECOFOG/rcontroll/",
+             global = global_pars,
+             species = TROLLv3_output@inputs$species,
+             climate = TROLLv3_output@inputs$climate,
+             daily = TROLLv3_output@inputs$daily,
+             forest = forest_init)
+sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv3_output@ecosystem$iter)
+```
+
+```{r}
+list("TROLLv3_output" = TROLLv3_output@ecosystem,
+     "sim" = sim@ecosystem) %>% 
+  bind_rows(.id = "sim") %>% 
+  ggplot2::ggplot(ggplot2::aes(iter, agb, col = sim)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw()
+```
+
+```{r}
+cowplot::plot_grid(
+  autoplot(TROLLv3_output, what = "forest") +
+    ggplot2::ggtitle("final pattern previous simulation"),
+  autoplot(sim, what = "forest", iter = -1) +
+    ggplot2::ggtitle("initial pattern new simulation")
+)
+```
+

@@ -134,15 +134,25 @@ troll <- function(name = NULL,
   # cleaning outputs
   lapply(list(
     "info",
+    "abc_biomass",
     "abc_chm",
     "abc_chmALS",
     "abc_ground",
+    "abc_species",
+    "abc_species10",
+    "abc_traitconservation",
+    "abc_traits",
+    "abc_traits10",
     "abc_transmittance",
     "abc_transmittanceALS",
     # "CHM",
+    "death",
+    "deathrate",
     "death_snapshots",
     # "LAI",
-    "sdd"
+    "ppfd0",
+    "sdd",
+    "vertd"
   ), function(x) {
     unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
   })
