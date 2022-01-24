@@ -120,16 +120,34 @@ troll <- function(name = NULL,
     forest_path <- "NULL"
   
   # run
+  # log <- capture.output(
+  #   trollCpp(global_file = global_path, 
+  #            climate_file = climate_path, 
+  #            species_file = species_path, 
+  #            day_file = daily_path, 
+  #            forest_file = forest_path, 
+  #            output_file = file.path(path, name, name)
+  #   ), 
+  #   split = verbose)
+  # write(log, file.path(path, name, paste0(name, "_log.txt")))
+  
+  # run par
+  i <- NULL
+  cl <- makeCluster(1, outfile = "")
+  registerDoSNOW(cl)
   log <- capture.output(
-    trollCpp(global_file = global_path, 
-             climate_file = climate_path, 
-             species_file = species_path, 
-             day_file = daily_path, 
-             forest_file = forest_path, 
-             output_file = file.path(path, name, name)
-    ), 
+    foreach(i=1,
+            .packages = c("rcontroll")) %dopar% 
+      trollCpp(global_file = global_path, 
+               climate_file = climate_path, 
+               species_file = species_path, 
+               day_file = daily_path, 
+               forest_file = forest_path, 
+               output_file = file.path(path, name, name)),
     split = verbose)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
+  stopCluster(cl)
+  
   
   # cleaning outputs
   lapply(list(

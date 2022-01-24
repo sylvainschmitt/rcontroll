@@ -59,7 +59,6 @@ We run a simple simulation using the `troll` function with loaded and generated 
 
 ```{r troll}
 sim <- troll(name = "test",
-             # path = "../",
              global = generate_parameters(cols = 100, rows = 100,
                                           iterperyear = 12, nbiter = 12*1),
              species = TROLLv3_species,

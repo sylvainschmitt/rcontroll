@@ -1,3 +1,8 @@
+# rcontroll 0.1.0.9028
+* TROLLV3_output for exs and tests
+* autoplot upgraded
+* troll with fake parralelisation for R child runs of TROLL
+
 # rcontroll 0.1.0.9027
 * test reprex, news to be filled
 
