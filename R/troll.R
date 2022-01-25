@@ -49,20 +49,7 @@ troll <- function(name = NULL,
                   verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
-  # for tests
-  # data("TROLLv3_input")
-  # data("TROLLv3_species")
-  # data("TROLLv3_climatedaytime365")
-  # data("TROLLv3_daytimevar")
-  # TROLLv3_input$value[5] <- 10 # iterations
-  # global <- TROLLv3_input
-  # species <- TROLLv3_species 
-  # climate <- TROLLv3_climatedaytime12
-  # daily <- TROLLv3_daytimevar
-  # full = F
-  # abc = T
-  # path <- getwd()
-  
+
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
     stop("overwrite should be logical.")
@@ -123,35 +110,34 @@ troll <- function(name = NULL,
     forest_path <- "NULL"
   
   # run
-  # log <- capture.output(
-  #   trollCpp(global_file = global_path, 
-  #            climate_file = climate_path, 
-  #            species_file = species_path, 
-  #            day_file = daily_path, 
-  #            forest_file = forest_path, 
-  #            output_file = file.path(path, name, name)
-  #   ), 
-  #   split = verbose)
-  # write(log, file.path(path, name, paste0(name, "_log.txt")))
+  log <- capture.output(
+    trollCpp(global_file = global_path,
+             climate_file = climate_path,
+             species_file = species_path,
+             day_file = daily_path,
+             forest_file = forest_path,
+             output_file = file.path(path, name, name)
+    ),
+    split = verbose)
+  write(log, file.path(path, name, paste0(name, "_log.txt")))
   
-  # run par
-  i <- NULL
-  cl <- makeCluster(1, outfile = "")
-  registerDoSNOW(cl)
-  foreach(i=1,
-          .packages = c("rcontroll")) %dopar% {
-            log <- capture.output(
-              trollCpp(global_file = global_path, 
-                       climate_file = climate_path, 
-                       species_file = species_path, 
-                       day_file = daily_path, 
-                       forest_file = forest_path, 
-                       output_file = file.path(path, name, name)),
-              split = verbose)
-            write(log, file.path(path, name, paste0(name, "_log.txt")))
-          }
-  stopCluster(cl)
-  
+  # run fake par in case of mem leak
+  # i <- NULL
+  # cl <- makeCluster(1, outfile = "")
+  # registerDoSNOW(cl)
+  # foreach(i=1,
+  #         .packages = c("rcontroll")) %dopar% {
+  #           log <- capture.output(
+  #             trollCpp(global_file = global_path, 
+  #                      climate_file = climate_path, 
+  #                      species_file = species_path, 
+  #                      day_file = daily_path, 
+  #                      forest_file = forest_path, 
+  #                      output_file = file.path(path, name, name)),
+  #             split = verbose)
+  #           write(log, file.path(path, name, paste0(name, "_log.txt")))
+  #         }
+  # stopCluster(cl)
   
   # cleaning outputs
   lapply(list(
