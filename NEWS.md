@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9031
+* reviewed doc, vignettes, & README
+
 # rcontroll 0.1.0.9030
 * fixed tests
 

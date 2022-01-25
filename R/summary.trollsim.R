@@ -1,7 +1,7 @@
 #' @import methods
 NULL
 
-#' Function to provide summary of TROLL outputs
+#' Function to a summary of TROLL outputs.
 #'
 #' @param object trollsim  or trollstack.
 #' @param ... unused argument.
@@ -9,7 +9,10 @@ NULL
 #' @return Print in console.
 #'
 #' @examples
-#' NA
+#' 
+#' data("TROLLv3_output")
+#' summary(TROLLv3_output)
+#' 
 #' @name summary.trollsim
 #'
 NULL

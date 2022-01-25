@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_output.R
 \name{load_output}
 \alias{load_output}
-\title{Function to load TROLL outputs}
+\title{Function to load outputs from a TROLL simulation.}
 \usage{
 load_output(name, path, thin = NULL)
 }
@@ -16,10 +16,10 @@ kept to reduce outputs size, default is NULL and corresponds to no
 thinning.}
 }
 \value{
-an S4 \linkS4class{trollsim} class object
+An S4 \linkS4class{trollsim} class object.
 }
 \description{
-Function to load TROLL outputs
+Function to load outputs from a TROLL simulation.
 }
 \examples{
 

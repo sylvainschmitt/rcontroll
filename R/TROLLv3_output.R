@@ -1,8 +1,9 @@
 #' TROLL output
 #'
-#' TROLL outputs from a 500 years simulations with default parameters using
-#' TROLLv3_species,  TROLLv3_climatedaytime12, and TROLLv3_daytimevar to be used
-#' in tests and examples.
+#' TROLL outputs from a 100-year simulation on a 100x100 grid with the other
+#' default parameters and using TROLLv3_species, TROLLv3_climatedaytime12, and
+#' TROLLv3_daytimevar for use in tests and examples. Ecosystem level output has
+#' been thinned and species output has been removed to save disk space.
 #'
 #' @format A trollsim object.
 #'   

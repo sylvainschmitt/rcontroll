@@ -24,7 +24,7 @@
 \item{species}{char. Which species to plot when using the species table.}
 }
 \value{
-ggplot2 object
+A ggplot2 object.
 }
 \description{
 This is a method to plot TROLL simulations, including either temporal
@@ -37,8 +37,8 @@ above 10cm (BA10), gross primary production (GPP), net primary production
 litterfall.
 }
 \examples{
-\dontrun{
-autoplot(sim)
-}
+
+data("TROLLv3_output")
+autoplot(TROLLv3_output)
 
 }
