@@ -120,55 +120,57 @@ troll <- function(name = NULL,
     forest_path <- "NULL"
   
   # run
+  # log <- capture.output(
+  #   trollCpp(global_file = global_path, 
+  #            climate_file = climate_path, 
+  #            species_file = species_path, 
+  #            day_file = daily_path, 
+  #            forest_file = forest_path, 
+  #            output_file = file.path(path, name, name)
+  #   ), 
+  #   split = verbose)
+  # write(log, file.path(path, name, paste0(name, "_log.txt")))
+  
+  # run par
+  i <- NULL
+  cl <- makeCluster(1, outfile = "")
+  registerDoSNOW(cl)
   log <- capture.output(
-    trollCpp(global_file = global_path, 
-             climate_file = climate_path, 
-             species_file = species_path, 
-             day_file = daily_path, 
-             forest_file = forest_path, 
-             output_file = file.path(path, name, name)
-    ), 
+    foreach(i=1,
+            .packages = c("rcontroll")) %dopar% 
+      trollCpp(global_file = global_path, 
+               climate_file = climate_path, 
+               species_file = species_path, 
+               day_file = daily_path, 
+               forest_file = forest_path, 
+               output_file = file.path(path, name, name)),
     split = verbose)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
+  stopCluster(cl)
+  
   
   # cleaning outputs
   lapply(list(
-    "100yearsofsolitude",
+    "info",
     "abc_biomass",
-    "chm_potential",
-    "abc_LAI",
-    "abc_PAIfield",
-    "abc_PAIfieldALS",
+    "abc_chm",
+    "abc_chmALS",
+    "abc_ground",
     "abc_species",
     "abc_species10",
     "abc_traitconservation",
     "abc_traits",
     "abc_traits10",
-    "chm",
-    "cica",
-    "dbh",
-    "death", # not using it for the moment
-    "death1",
-    "death2",
-    "death3",
-    "deathrate", # not using it for the moment
-    "info",
-    "leafdens1",
-    "leafdens2",
-    "leafdens3",
-    "NDDfield",
-    "litterfall",
-    "par",
-    "site1",
-    "ppfd0", # not using it for the moment
-    "site2",
-    "site3",
-    "site4",
-    "site5",
-    "site6",
-    "sp_par",
-    "state",
-    "vertd" # not using it for the moment
+    "abc_transmittance",
+    "abc_transmittanceALS",
+    # "CHM",
+    "death",
+    "deathrate",
+    "death_snapshots",
+    # "LAI",
+    "ppfd0",
+    "sdd",
+    "vertd"
   ), function(x) {
     unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
   })

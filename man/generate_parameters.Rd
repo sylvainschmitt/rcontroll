@@ -60,9 +60,12 @@ generate_parameters(
   LA_regulation = 2,
   sapwood = 1,
   seedsadditional = 0,
-  OUTPUT_reduced = 0,
-  FromData = 0,
-  NONRANDOM = 0
+  NONRANDOM = 1,
+  GPPcrown = 0,
+  BASICTREEFALL = 1,
+  SEEDTRADEOFF = 0,
+  CROWN_MM = 0,
+  OUTPUT_extended = 1
 )
 }
 \arguments{
@@ -191,14 +194,23 @@ Fyllas percentage, Fyllas lower limit (0,1,2).}
 
 \item{seedsadditional}{num. Excess biomass into seeds after maturation (0,1).}
 
-\item{OUTPUT_reduced}{num. Reduced set of output files.}
-
-\item{FromData}{num. If defined, an additional input file can be provided to
-start simulations from an existing data set or a simulated data set (5
-parameters are needed: x and y coordinates, dbh, species_label, species)}
-
 \item{NONRANDOM}{num. If _NONRANDOM == 1, the seeds for the random number
-generators will be kept fixed at 1, for bug fixing.}
+generators will be kept fixed at 1, default for bug fixing (0,1).}
+
+\item{GPPcrown}{num. This defines an option to compute only GPP from the
+topmost value of PPFD and GPP, instead of looping within the crown (0,1).}
+
+\item{BASICTREEFALL}{num. If defined: treefall is a source of tree death
+(0,1).}
+
+\item{SEEDTRADEOFF}{num. if defined: the number of seeds produced is
+determined by NPP allocated to reproduction and seed mass, otherwise the
+number of seeds is fixed (0,1).}
+
+\item{CROWN_MM}{num. Michaelis Menten allometry for crowns instead of power
+law, parameters have to be changed in other input sheets accordingly (0,1).}
+
+\item{OUTPUT_extended}{num. extended set of ouput files (0,1).}
 }
 \value{
 a data frame of global parameters

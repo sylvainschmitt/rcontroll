@@ -73,19 +73,25 @@
 #' @param sapwood num. Sapwood parameterizations: constant thickness (0.04),
 #'   Fyllas percentage, Fyllas lower limit (0,1,2).
 #' @param seedsadditional num. Excess biomass into seeds after maturation (0,1).
-#' @param OUTPUT_reduced num. Reduced set of output files.
-#' @param FromData num. If defined, an additional input file can be provided to
-#'   start simulations from an existing data set or a simulated data set (5
-#'   parameters are needed: x and y coordinates, dbh, species_label, species)
 #' @param NONRANDOM num. If _NONRANDOM == 1, the seeds for the random number
-#'   generators will be kept fixed at 1, for bug fixing.
+#'   generators will be kept fixed at 1, default for bug fixing (0,1).
+#' @param GPPcrown num. This defines an option to compute only GPP from the
+#'   topmost value of PPFD and GPP, instead of looping within the crown (0,1).
+#' @param BASICTREEFALL num. If defined: treefall is a source of tree death
+#'   (0,1).
+#' @param SEEDTRADEOFF num. if defined: the number of seeds produced is
+#'   determined by NPP allocated to reproduction and seed mass, otherwise the
+#'   number of seeds is fixed (0,1).
+#' @param CROWN_MM num. Michaelis Menten allometry for crowns instead of power
+#'   law, parameters have to be changed in other input sheets accordingly (0,1).
+#' @param OUTPUT_extended num. extended set of ouput files (0,1).
 #'
 #' @return a data frame of global parameters
 #'
 #' @export
 #'
 #' @examples
-#' 
+#'
 #' generate_parameters()
 #' 
 generate_parameters <- function(
@@ -144,9 +150,12 @@ generate_parameters <- function(
   LA_regulation = 2,
   sapwood = 1,
   seedsadditional = 0,
-  OUTPUT_reduced = 0,
-  FromData = 0,
-  NONRANDOM = 0
+  NONRANDOM = 1,
+  GPPcrown = 0,
+  BASICTREEFALL = 1,
+  SEEDTRADEOFF = 0,
+  CROWN_MM = 0,
+  OUTPUT_extended = 1
 ){
   # check args
   if(!all(unlist(lapply(
@@ -159,7 +168,9 @@ generate_parameters <- function(
          corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
          leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
          m, m1, Cair, LL_parameterization, LA_regulation, 
-         sapwood, seedsadditional, OUTPUT_reduced, FromData, NONRANDOM), 
+         sapwood, seedsadditional, 
+         NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+         CROWN_MM, OUTPUT_extended), 
     class)) == "numeric"))
     stop("parameters should be numeric.")
   
@@ -177,7 +188,8 @@ generate_parameters <- function(
               "p_tfsecondary", "hurt_decay", "crown_gap_fraction", 
               "m", "m1", "Cair", "_LL_parameterization", 
               "_LA_regulation", "_sapwood", "_seedsadditional",
-              "_OUTPUT_reduced", "_FromData", "_NONRANDOM"),
+              "_NONRANDOM", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
+              "_CROWN_MM", "_OUTPUT_extended"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
              NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
              absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
@@ -187,7 +199,9 @@ generate_parameters <- function(
              corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
              leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
              m, m1, Cair, LL_parameterization, LA_regulation, 
-             sapwood, seedsadditional, OUTPUT_reduced, FromData, NONRANDOM),
+             sapwood, seedsadditional,
+             NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+             CROWN_MM, OUTPUT_extended),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",
@@ -244,9 +258,12 @@ generate_parameters <- function(
       "/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */",
       "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */",
       "/* excess biomass into seeds after maturation (0,1) */",
-      "/* reduced set of output files */",
-      "/* if defined, an additional input file can be provided to start simulations from an existing data set or a simulated data set (5 parameters are needed: x and y coordinates, dbh, species_label, species */",
-      "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, for bug fixing */"
+      "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */",
+      "/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */",
+      "/* if defined: treefall is a source of tree death */",
+      "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */",
+      "/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */",
+      "/* extended set of ouput files */"
     )
   )
 }

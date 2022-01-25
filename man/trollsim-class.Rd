@@ -20,8 +20,10 @@ This is an S4 class to represent TROLL simulations.
 
 \item{\code{log}}{chr. Simulation log.}
 
-\item{\code{final_pattern}}{df. Simulation final forest.}
+\item{\code{forest}}{df. Simulation initial and final forest.}
 
-\item{\code{outputs}}{df. Species and ecosystem metrics (reduced or full).}
+\item{\code{ecosystem}}{df. Ecosystem metrics.}
+
+\item{\code{species}}{df. Species metrics (with OUTPUT_extended option).}
 }}
 

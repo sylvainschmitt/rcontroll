@@ -1,3 +1,20 @@
+# rcontroll 0.1.0.9029
+* reduced TROLLV3_output
+* fixed CRAN check
+* added CRAN comments
+
+# rcontroll 0.1.0.9028
+* TROLLV3_output for exs and tests
+* autoplot upgraded
+* troll with fake parralelisation for R child runs of TROLL
+
+# rcontroll 0.1.0.9027
+* test reprex, news to be filled
+
+# rcontroll 0.1.0.9026
+* integration of TROLL main_v3.1_rcpp.cpp with corresponding new parameters
+* from data to be explored and values to be tested
+
 # rcontroll 0.1.0.9025
 * doc & vignette
 

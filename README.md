@@ -1,5 +1,7 @@
 # *rcontroll*: individual-based forest growth simulator TROLL <img src='man/figures/logo.png' align="right" height="200" />
 
+<!-- sticker("~/Téléchargements/TROLL.png", package="rcontroll", p_size=20, s_x=1, s_y = 0.85, s_width=.6, p_y = 1.6, filename="inst/figures/logo.png", h_color = "darkblue", h_fill = "white", p_color = "black") -->
+
 [![R build status](https://github.com/sylvainschmitt/rcontroll/workflows/R-CMD-check/badge.svg)](https://github.com/sylvainschmitt/rcontroll/actions)
 [![Codecov test coverage](https://codecov.io/gh/sylvainschmitt/rcontroll/branch/master/graph/badge.svg)](https://codecov.io/gh/sylvainschmitt/rcontroll?branch=master)
 
