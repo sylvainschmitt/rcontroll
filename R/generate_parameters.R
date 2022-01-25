@@ -86,7 +86,7 @@
 #'   law, parameters have to be changed in other input sheets accordingly (0,1).
 #' @param OUTPUT_extended num. extended set of ouput files (0,1).
 #'
-#' @return a data frame of global parameters
+#' @return A data frame of global parameters.
 #'
 #' @export
 #'

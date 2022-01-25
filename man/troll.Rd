@@ -43,18 +43,21 @@ kept to reduce outputs size, default is NULL and corresponds to no
 thinning.}
 }
 \value{
-trollsim
+A trollsim object.
 }
 \description{
 Run a TROLL simulation.
 }
 \examples{
-\dontrun{
-sim <- troll(name = "test",
-global = generate_parameters(iterperyear = 12, nbiter = 12*1),
-species = TROLLv3_species,
-climate = TROLLv3_climatedaytime12,
-daily = TROLLv3_daytimevar)
-}
+
+data("TROLLv3_species")
+data("TROLLv3_climatedaytime12")
+data("TROLLv3_daytimevar")
+troll(name = "test",
+      global = generate_parameters(cols = 100, rows = 100,
+                                   iterperyear = 12, nbiter = 12*1),
+      species = TROLLv3_species,
+      climate = TROLLv3_climatedaytime12,
+      daily = TROLLv3_daytimevar)
 
 }

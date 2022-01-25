@@ -11,7 +11,7 @@
 ## Description
 
 The *rcontroll* package relies on a few functions in R to generate and provide inputs, prepare and run the simulations, 
-and analyze the simulations through tables, figures, and maps that are easily connected to the rest of the R package ecosystem.
+and analyze the simulations through tables, figures, and maps that are easily connected to the rest of the R ecosystem.
 The whole workflow can even be run for one or several simulations using a unique function (`troll` and `stack`). 
 Pre-simulations functions include global parameters definition (`generate_parameters`) and species and weather data input, with default values for French Guiana included in the package. 
 Simulations are run alone (`troll`) or as a stack (`stack`) and stocked in corresponding classes.
@@ -42,11 +42,10 @@ sim <- troll(name = "test",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-autoplot(sim, 
-         what = "ecosystem", 
-         variables = c("abund", "ba"), 
-         selected_species = c("Cecropia_obtusa","Dicorynia_guianensis",
-                              "Eperua_grandiflora","Vouacapoua_americana"))
+autoplot(sim, what = "species", 
+         species = c("Cecropia_obtusa","Dicorynia_guianensis",
+                     "Eperua_grandiflora","Vouacapoua_americana")) +
+  theme(legend.position = "bottom")
 ```
 
 ## Contributing

@@ -23,12 +23,12 @@ NULL
 #' @param iter char. Which iteration(s) to plot.
 #' @param species char. Which species to plot when using the species table.
 #'
-#' @return ggplot2 object
+#' @return A ggplot2 object.
 #'
 #' @examples
-#' \dontrun{
-#' autoplot(sim)
-#' }
+#' 
+#' data("TROLLv3_output")
+#' autoplot(TROLLv3_output)
 #'
 #' @export
 setMethod("autoplot", "trollsim", function(
@@ -155,7 +155,7 @@ setMethod("autoplot", "trollsim", function(
 #' @param iter char. Which iteration(s) to plot.
 #' @param species char. Which species to plot when using the species table.
 #'
-#' @return ggplot2 object
+#' @return A ggplot2 object.
 #'
 #' @examples
 #' \dontrun{

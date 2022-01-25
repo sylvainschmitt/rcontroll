@@ -3,7 +3,7 @@
 \name{summary.trollsim}
 \alias{summary.trollsim}
 \alias{summary,trollsim-method}
-\title{Function to provide summary of TROLL outputs}
+\title{Function to a summary of TROLL outputs.}
 \usage{
 \S4method{summary}{trollsim}(object, ...)
 }
@@ -16,8 +16,11 @@
 Print in console.
 }
 \description{
-Function to provide summary of TROLL outputs
+Function to a summary of TROLL outputs.
 }
 \examples{
-NA
+
+data("TROLLv3_output")
+summary(TROLLv3_output)
+
 }

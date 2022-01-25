@@ -14,7 +14,7 @@ setClass(
 
 #' An S4 class to represent TROLL stack
 #'
-#' This is an S4 class to represent TROLL stack
+#' This is an S4 class to represent TROLL stack.
 #'
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.

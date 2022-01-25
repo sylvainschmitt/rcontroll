@@ -23,18 +23,21 @@ NULL
 #'   kept to reduce outputs size, default is NULL and corresponds to no
 #'   thinning.
 #'
-#' @return trollsim
+#' @return A trollsim object.
 #'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' sim <- troll(name = "test",
-#' global = generate_parameters(iterperyear = 12, nbiter = 12*1),
-#' species = TROLLv3_species,
-#' climate = TROLLv3_climatedaytime12,
-#' daily = TROLLv3_daytimevar)
-#' }
+#'
+#' data("TROLLv3_species")
+#' data("TROLLv3_climatedaytime12")
+#' data("TROLLv3_daytimevar")
+#' troll(name = "test",
+#'       global = generate_parameters(cols = 100, rows = 100,
+#'                                    iterperyear = 12, nbiter = 12*1),
+#'       species = TROLLv3_species,
+#'       climate = TROLLv3_climatedaytime12,
+#'       daily = TROLLv3_daytimevar)
 #' 
 troll <- function(name = NULL,
                   path = NULL,
@@ -135,17 +138,18 @@ troll <- function(name = NULL,
   i <- NULL
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
-  log <- capture.output(
-    foreach(i=1,
-            .packages = c("rcontroll")) %dopar% 
-      trollCpp(global_file = global_path, 
-               climate_file = climate_path, 
-               species_file = species_path, 
-               day_file = daily_path, 
-               forest_file = forest_path, 
-               output_file = file.path(path, name, name)),
-    split = verbose)
-  write(log, file.path(path, name, paste0(name, "_log.txt")))
+  foreach(i=1,
+          .packages = c("rcontroll")) %dopar% {
+            log <- capture.output(
+              trollCpp(global_file = global_path, 
+                       climate_file = climate_path, 
+                       species_file = species_path, 
+                       day_file = daily_path, 
+                       forest_file = forest_path, 
+                       output_file = file.path(path, name, name)),
+              split = verbose)
+            write(log, file.path(path, name, paste0(name, "_log.txt")))
+          }
   stopCluster(cl)
   
   

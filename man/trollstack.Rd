@@ -33,5 +33,5 @@ trollstack(
 \item{species}{df. Species metrics (with OUTPUT_extended option).}
 }
 \description{
-This is an S4 class to represent TROLL stack
+This is an S4 class to represent TROLL stack.
 }

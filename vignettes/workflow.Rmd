@@ -20,18 +20,21 @@ This vignette gives a quick example of a simple workflow to produce a single sim
 
 # Setup
 
-We will use packages `rcontroll` and `dplyr` and `tidyr` for data wrangling.
+We will use `rcontroll` with packages `dplyr` and `tidyr` for data wrangling and `ggplot2` to do figures.
 
 ```{r libs}
-library(dplyr)
+suppressMessages(library(dplyr))
 library(tidyr)
 library(ggplot2)
-library(rcontroll)
+suppressMessages(library(rcontroll))
 ```
 
 # Data
 
-We load the species data available for French Guiana (`TROLLv3_species`), with associated climate data (`TROLLv3_climatedaytime12`) and day variation (`TROLLv3_daytimevar`). We generate parameters using `generate_parameters` for a simulation per month (`iterperyear` = 12) lasting one year (`nbiter` = 12). We further duplicated parameters with a simulation index using `mutate` and `unnest` for a stack of simulations using a `seedrain` of 5000 (default) and 500 (default/10). 
+We load the species data available for French Guiana (`TROLLv3_species`), with associated climate data (`TROLLv3_climatedaytime12`) and day variation (`TROLLv3_daytimevar`).
+We also load a previous simulation (`TROLLv3_output`).
+We generate parameters using `generate_parameters` for a simulation per month (`iterperyear` = 12) lasting one year (`nbiter` = 12) on a 100x100 grid (`cols` = 100 and `rows` = 100).
+We further duplicated parameters with a simulation index using `mutate` and `unnest` for a stack of simulations using a `seedrain` of 5000 (default) and 500 (default/10). 
 
 ```{r data}
 data("TROLLv3_species")
@@ -57,7 +60,8 @@ generate_parameters(cols = 250, rows = 250) %>%
 
 # Simple simulation
 
-We run a simple simulation using the `troll` function with loaded and generated data. If `verbose` is not inactivated, we have the TROLL log directly in the console.
+We run a simple simulation using the `troll` function with loaded and generated data. 
+Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 
 ```{r troll}
 sim <- troll(name = "test",
@@ -65,35 +69,40 @@ sim <- troll(name = "test",
                                           iterperyear = 12, nbiter = 12*1),
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar)
+             daily = TROLLv3_daytimevar,
+             verbose = FALSE)
 ```
 
-We can print a quick simple summary of the simulation.
+We can print a simple summary of the simulation.
 
 ```{r}
 sim
 ```
 
-We can quickly plot temporal trajectories using `autoplot` and `what` defined on ecosystem, for instance here with number of stems (abund) and basal area (ba) for 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*.
+We can quickly plot simulation outputs using the `autoplot` method for three types of outputs defined with the `what` parameter:
 
-```{r fullsimG1}
-autoplot(sim, 
-         what = "ecosystem", 
-         variables = c("ba", "agb"))
+* the `forest` at start or at the end of simulation,
+* the `ecosystem` temporal trajectories
+* the `species` temporal trajectories
+
+For instance here we show species temporal trajectories for all available variables using 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*:
+
+```{r fullsimG1, fig.width=8}
+autoplot(sim, what = "species", 
+         species = c("Cecropia_obtusa","Dicorynia_guianensis",
+                     "Eperua_grandiflora","Vouacapoua_americana")) +
+  theme(legend.position = "bottom")
 ```
 
-Similarly, we can quickly plot the final patterns using `autoplot` and `what` defined on final pattern.
+>Note that `autoplot` result in a `ggplot2` object that you can modify with the `+` operator and other `ggplot2` command such as `theme` used here to change the legend position.
+
+Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `forest`:
 
 ```{r fullsimG2}
 autoplot(sim, what = "forest")
 ```
 
-```{r fullsimG3}
-autoplot(sim, what = "species", 
-         variables = c("agb", "ba"),
-          # variables = names(sim@ecosystem)[-1],
-         species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana")) 
-```
+
 
 # Stack of simulations
 
@@ -115,13 +124,13 @@ sim_stack <- stack(name = "teststack",
              thin = c(1,5,10))
 ```
 
-We can print a quick simple summary of the simulations.
+We can print a simple summary of the simulations.
 
 ```{r}
 sim_stack
 ```
 
-We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on ecosystem, for instance here with number of stems (abund) and basal area (ba) for 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*.
+We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on ecosystem, for instance here with basal area (ba) and aboveground biomass (agb):
 
 ```{r fullstackG1}
 autoplot(sim_stack, 
@@ -129,28 +138,35 @@ autoplot(sim_stack,
          variables = c("ba", "agb"))
 ```
 
-Similarly, we can quickly plot the final patterns for all simulations using `autoplot` and `what` defined on final pattern.
+Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `forest`:
 
-```{r fullstackG2}
+```{r fullstackG2, fig.height=4}
 autoplot(sim_stack, what = "forest")
 ```
 
-```{r fullstackG3}
-autoplot(sim_stack, what = "species", variables = "agb",
-         species = c("Cecropia_obtusa","Dicorynia_guianensis","Eperua_grandiflora","Vouacapoua_americana"))
-```
-
 # From a forest
+
+We can also run a simple simulation or a stack of simulations starting from an existing inventory or a previous simulation
+using the `troll` function with the `forest` parameter.
+
+We can first have a look to the ecosystem temporal trajectories of the `TROLLv3_output` simulation:
 
 ```{r}
 autoplot(TROLLv3_output, what = "ecosystem")
 ```
 
+Similarly we can have a look to the the forest final pattern from `TROLLv3_output` that we will use to initiate the next simulation:
+
 ```{r}
 autoplot(TROLLv3_output, what = "forest")
 ```
 
-```{r }
+To run the simulation we first extracted the forest from `TROLLv3_output`, in which we removed unused columns (not mandatory).
+Then we extracted the previous simulation parameters to run the new one in similar conditions, we only change the time length to 12 iterations.
+And we finally used the same `troll` function adding the previous forest to initiate the simulation with the `forest` parameter.
+A forest inventory can also be used with at least coordinates and DBH.
+
+```{r}
 forest_init <- filter(TROLLv3_output@forest, 
        iter == max(TROLLv3_output@forest$iter)) %>% 
   dplyr::select(-iter, -from_Data, -sp_lab, -site, -dbh_previous, -AGB) %>% 
@@ -158,20 +174,28 @@ forest_init <- filter(TROLLv3_output@forest,
 global_pars <- TROLLv3_output@inputs$global
 global_pars[which(global_pars$param == "nbiter"),2] <- 12*1
 sim <- troll(name = "test",
-             # path = "/home/sylvain/Documents/ECOFOG/rcontroll/",
              global = global_pars,
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
              daily = TROLLv3_output@inputs$daily,
-             forest = forest_init)
-sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv3_output@ecosystem$iter)
+             forest = forest_init,
+             verbose = FALSE)
 ```
 
+We can quickly plot temporal trajectories of both simulations to check that the initialization from `TROLLv3_output` worked. 
+For that we updated the simulation iteration index by adding the number realized in the previous simulation.
+Then we simply joined ecosystem outputs with `bind_rows` before using `ggplot` to show aboveground biomass (agb) temporal trajectory: 
+
 ```{r}
+sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv3_output@ecosystem$iter)
 list("TROLLv3_output" = TROLLv3_output@ecosystem,
      "sim" = sim@ecosystem) %>% 
-  bind_rows(.id = "sim") %>% 
-  ggplot(aes(iter, agb, col = sim)) +
+  bind_rows(.id = "simulation") %>% 
+  ggplot(aes(iter/12, agb, col = simulation)) +
   geom_point() +
-  theme_bw()
+  theme_bw() +
+  xlab("Time (years)") +
+  ylab(expression(Abovergound~biomass~(AGB~MgC~ha^{-1})))
 ```
+
+>Note how the simulation AGB start at the end of `TROLLv3_output`'s temporal trajectory.  

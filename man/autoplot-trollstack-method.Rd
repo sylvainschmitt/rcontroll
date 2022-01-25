@@ -24,7 +24,7 @@
 \item{species}{char. Which species to plot when using the species table.}
 }
 \value{
-ggplot2 object
+A ggplot2 object.
 }
 \description{
 This is a method to plot TROLL stacks, including either temporal trajectories

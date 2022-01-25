@@ -2,24 +2,24 @@
 % Please edit documentation in R/load_stack.R
 \name{load_stack}
 \alias{load_stack}
-\title{Function to load TROLL stack outputs}
+\title{Function to load a stack of outputs from TROLL simulations.}
 \usage{
 load_stack(name, path, thin = NULL)
 }
 \arguments{
-\item{name}{char. Name given to the model output.}
+\item{name}{char. Name given to the stack output.}
 
-\item{path}{char. Path where the model is saved.}
+\item{path}{char. Path where the stack is saved.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
 kept to reduce outputs size, default is NULL and corresponds to no
 thinning.}
 }
 \value{
-an S4 \linkS4class{trollsim} class object
+An S4 \linkS4class{trollsim} class object.
 }
 \description{
-Function to load TROLL stack outputs
+Function to load a stack of outputs from TROLL simulations.
 }
 \examples{
 

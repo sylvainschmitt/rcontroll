@@ -213,7 +213,7 @@ law, parameters have to be changed in other input sheets accordingly (0,1).}
 \item{OUTPUT_extended}{num. extended set of ouput files (0,1).}
 }
 \value{
-a data frame of global parameters
+A data frame of global parameters.
 }
 \description{
 Function to generate the global parameters used in the TROLL simulation. All

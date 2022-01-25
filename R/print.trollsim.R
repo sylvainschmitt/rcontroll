@@ -1,7 +1,7 @@
 #' @import methods
 NULL
 
-#' Function to print or show TROLL outputs
+#' Function to print or show TROLL outputs.
 #'
 #' @param x trollsim or trollstack.
 #' @param object trollsim  or trollstack.
@@ -11,9 +11,8 @@ NULL
 #'
 #' @examples
 #' 
-#' \dontrun{
-#' print(sim)
-#' }
+#' data("TROLLv3_output")
+#' print(TROLLv3_output)
 #' 
 #' @name print.trollsim
 NULL

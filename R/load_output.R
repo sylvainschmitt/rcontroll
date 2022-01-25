@@ -4,7 +4,7 @@
 #' @importFrom reshape2 melt dcast
 NULL
 
-#' Function to load TROLL outputs
+#' Function to load outputs from a TROLL simulation.
 #'
 #' @param name char. Name given to the model output.
 #' @param path char. Path where the model is saved.
@@ -12,7 +12,7 @@ NULL
 #'   kept to reduce outputs size, default is NULL and corresponds to no
 #'   thinning.
 #'
-#' @return an S4 \linkS4class{trollsim} class object
+#' @return An S4 \linkS4class{trollsim} class object.
 #'
 #' @export
 #'
