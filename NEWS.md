@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9033
+* pkgdown on gh-pages branch
+
 # rcontroll 0.1.0.9032
 * pkgdown init
 

@@ -4,7 +4,8 @@ Title: Package for individual-based forest growth simulator TROLL
 Version: 0.1.0
 Author: Sylvain SCHMITT, Guillaume SALZET, Fabian FISCHER
 Maintainer: Sylvain SCHMITT <sylvain.m.schmitt@gmail.com>
-URL: https://github.com/sylvainschmitt/rcontroll
+URL: https://github.com/sylvainschmitt/rcontroll,
+    https://sylvainschmitt.github.io/rcontroll/
 BugReports: https://github.com/sylvainschmitt/rcontroll/issues
 Description: Function and code to manage and use indivdual-based and spatially-explicit forest growth model TROLL.
 License: GPL-3
