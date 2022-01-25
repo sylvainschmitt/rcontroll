@@ -1,5 +1,5 @@
 ---
-title: "The *TROLL* model"
+title: "The TROLL model"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{The TROLL model}

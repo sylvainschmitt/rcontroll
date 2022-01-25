@@ -4613,11 +4613,11 @@ void AllocMem() {
         if(RMAX>rows){
             // Consistency tests
             Rcerr << "Error : RMAX > rows \n";
-            exit(-1);
+            // exit(-1);
         }
         if(HEIGHT > rows){
             Rcerr << "Error : HEIGHT > rows \n";
-            exit(-1);
+            // exit(-1);
         }
     }
     
@@ -5089,7 +5089,7 @@ void RecruitTree(){
             }
             if(spp_withseeds > 0) {  // ... and then randomly select one of these species
                 
-                // new in v.2.4.1: for consistency use genrand2() instead of rand(), since v.2.5: use gsl RNG
+                // new in v.2.4.1: for consistency use genrand2() instead of since v.2.5: use gsl RNG
                 int spp_index = int(gsl_rng_uniform_int(gslrand,spp_withseeds));
                 int spp = SPECIES_GERM[spp_index];
                 // otherwise all species with seeds present are equiprobable

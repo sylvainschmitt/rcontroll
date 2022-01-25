@@ -21,6 +21,8 @@ NULL
 #' @export
 #' @rdname print.trollsim
 setMethod("print", "trollsim", function(x, ...) {
+  # tidyverse
+  iter <- NULL
   cat("Object of class :", class(x)[1], "\n")
   cat("Name :", x@name, "\n")
   cat("Path :", x@path, "\n")

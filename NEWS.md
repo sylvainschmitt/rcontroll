@@ -1,3 +1,8 @@
+# rcontroll 0.1.0.9029
+* reduced TROLLV3_output
+* fixed CRAN check
+* added CRAN comments
+
 # rcontroll 0.1.0.9028
 * TROLLV3_output for exs and tests
 * autoplot upgraded

@@ -25,6 +25,7 @@ We will use packages `rcontroll` and `dplyr` and `tidyr` for data wrangling.
 ```{r libs}
 library(dplyr)
 library(tidyr)
+library(ggplot2)
 library(rcontroll)
 ```
 
@@ -36,6 +37,7 @@ We load the species data available for French Guiana (`TROLLv3_species`), with a
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
+data("TROLLv3_output")
 TROLLv3_input_stack <- generate_parameters(cols = 100, rows = 100,
                                            iterperyear = 12, nbiter = 12*1) %>% 
   mutate(simulation = list(c("seed50000", "seed500"))) %>% 
@@ -141,10 +143,6 @@ autoplot(sim_stack, what = "species", variables = "agb",
 # From a forest
 
 ```{r}
-data("TROLLv3_output")
-```
-
-```{r}
 autoplot(TROLLv3_output, what = "ecosystem")
 ```
 
@@ -173,17 +171,7 @@ sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv3_output@ecosystem$iter)
 list("TROLLv3_output" = TROLLv3_output@ecosystem,
      "sim" = sim@ecosystem) %>% 
   bind_rows(.id = "sim") %>% 
-  ggplot2::ggplot(ggplot2::aes(iter, agb, col = sim)) +
-  ggplot2::geom_point() +
-  ggplot2::theme_bw()
+  ggplot(aes(iter, agb, col = sim)) +
+  geom_point() +
+  theme_bw()
 ```
-
-```{r}
-cowplot::plot_grid(
-  autoplot(TROLLv3_output, what = "forest") +
-    ggplot2::ggtitle("final pattern previous simulation"),
-  autoplot(sim, what = "forest", iter = -1) +
-    ggplot2::ggtitle("initial pattern new simulation")
-)
-```
-

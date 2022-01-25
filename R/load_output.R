@@ -25,6 +25,9 @@ NULL
 load_output <- function(name,
                         path,
                         thin = NULL) {
+  # tidyverse
+  iter <- NULL
+  
   # Check inputs
   if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
     stop("name and path should be character.")

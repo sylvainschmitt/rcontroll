@@ -6,18 +6,18 @@
 #' @importFrom reshape2 melt
 NULL
 
-#' Plot TROLL outputs
+#' Plot TROLL simulation
 #'
-#' This is a method to plot TROLL simulations or stacks, including either
-#' temporal trajectories of whole ecosystem or species metrics, or the final
+#' This is a method to plot TROLL simulations, including either temporal
+#' trajectories of whole ecosystem or species metrics, or the initial or final
 #' pattern observed in the forest community. Metrics includes abundances of
-#' individuals above 1cm (abund & N), above 10cm (abu10 & N10), and above 30cm
-#' (abu30 & N30), aboveground biomass (agb & AGB), basal area of individuals
-#' above 1cm (ba, BA), and above 10cm (ba10, BA10), gross primary production
-#' (gpp, GPP), net primary production (npp, NPP), and respiration of day (rday),
-#' night (rnight) and stem (rstem).
+#' individuals above 1cm (N), above 10cm (N10), and above 30cm (N30),
+#' aboveground biomass (AGB), basal area of individuals above 1cm (BA), and
+#' above 10cm (BA10), gross primary production (GPP), net primary production
+#' (NPP), respiration of day (Rday), night (Rnight) and stem (Rstem), and
+#' litterfall.
 #'
-#' @param object TROLL simulation or stack.
+#' @param object TROLL simulation.
 #' @param what char. What to plot: "forest", "ecosystem", or "species".
 #' @param variables char. Wich variable(s) to plot (ecosystem or species).
 #' @param iter char. Which iteration(s) to plot.
@@ -29,13 +29,8 @@ NULL
 #' \dontrun{
 #' autoplot(sim)
 #' }
-#' 
-#' @name autoplot.troll
-#'   
-NULL
-
+#'
 #' @export
-#' @rdname autoplot.troll
 setMethod("autoplot", "trollsim", function(
   object, 
   what = "ecosystem",
@@ -143,8 +138,31 @@ setMethod("autoplot", "trollsim", function(
   return(g)
 })
 
+
+#' Plot TROLL stack
+#'
+#' This is a method to plot TROLL stacks, including either temporal trajectories
+#' of whole ecosystem or species metrics, or the initial or final pattern
+#' observed in the forest community. Metrics includes abundances of individuals
+#' above 1cm (N), above 10cm (N10), and above 30cm (N30), aboveground biomass
+#' (AGB), basal area of individuals above 1cm (BA), and above 10cm (BA10), gross
+#' primary production (GPP), net primary production (NPP), respiration of day
+#' (Rday), night (Rnight) and stem (Rstem), and litterfall.
+#'
+#' @param object TROLL stack.
+#' @param what char. What to plot: "forest", "ecosystem", or "species".
+#' @param variables char. Wich variable(s) to plot (ecosystem or species).
+#' @param iter char. Which iteration(s) to plot.
+#' @param species char. Which species to plot when using the species table.
+#'
+#' @return ggplot2 object
+#'
+#' @examples
+#' \dontrun{
+#' autoplot(stack)
+#' }
+#'
 #' @export
-#' @name autoplot.troll
 setMethod("autoplot", "trollstack", function(
   object, 
   what = "ecosystem",
@@ -153,7 +171,7 @@ setMethod("autoplot", "trollstack", function(
   species = NULL
 ) {
   # dplyr
-  spnames <- Niter <- value <- variable <- dbh <- s_name <- NULL
+  spnames <- Niter <- value <- variable <- dbh <- s_name <- simulation <- NULL
   
   # check parameters
   if(!(what %in% c("forest", "ecosystem", "species")))
