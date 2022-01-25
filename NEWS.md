@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9032
+* pkgdown init
+
 # rcontroll 0.1.0.9031
 * reviewed doc, vignettes, & README
 

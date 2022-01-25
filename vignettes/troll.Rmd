@@ -44,15 +44,11 @@ knitr::kable(table, caption = 'Species-specific parameters used in TROLL from Ma
 
 A voxel space, with a resolution of 1 $m^3$, is used to explicilty model the abiotic environment. For each tree crown, leaf area density is calculated on tree geometry assuming a uniform distriution across voxels occupied by the crown. Leaf area density is computed within each voxel summing all tree crowns inside the voxel $v$, and is denoted $LAD(v)$ (leaf area per voxel in $m².m^{-3}$). The vertical sum of $LAD$ from voxel $v$ to the ground level defines $LAI(v)$ (leaf area per fround area in $m^2.m^{-2}$ commonly called leaf area index):
 
-\begin{equation}
-  LAI(v) = \sum _{v'=v} ^\infty LAD(v') 
-\end{equation}
+$LAI(v) = \sum _{v'=v} ^\infty LAD(v')$
 
 Daily variations in light intensity (photosynthetic photon flux density PPFD in $\mu mol_{photons}.m^{-2}.s^{-1}$), temperature (T in degrees Celsius), and vapor pressure deficit (VPD in $kPA$) are computed to assess carbon assimilation within each voxel of the canopy and for a representative day per month (see Appendix 1 from @Li for further details). Variation of PPFD Within the canopy is calculated as a loacal Beer-Lambert extinction law:
 
-\begin{equation}
-  PPFD_{max,month}(v) = PPFD_{top,max,month}*e^{-k*LAI(v)}
-\end{equation}
+$PPFD_{max,month}(v) = PPFD_{top,max,month}*e^{-k*LAI(v)}$
 
 The daily maximum incident PPFD at the top of canopy $PPFD_{top,max,month}$ is given as input. The extinction rate $k$ is assumed as constant, besides is variation with zenith angle and species leaf inclination angle [@Meir2000]. Moreover only vertical light diffusion is considered ignoring lateral light diffusion, which can have an important role especially in logging gaps. Finally, intra-day variation at half hour time steps $t$ for a representative day every month are used to compute $PPFD_{month}(v,t)$, $T_{month}(v,t)$ and $VPD_{month}(v,t)$. Water and nutrient process both in soil and inside trees are not simulated.
 
@@ -60,15 +56,11 @@ The daily maximum incident PPFD at the top of canopy $PPFD_{top,max,month}$ is g
 
 A voxel space, with a resolution of 1 $m^3$, is used to explicitly model the abiotic environment. For each tree crown, leaf area density is calculated on tree geometry assuming a uniform distribution across voxels occupied by the crown. Leaf area density is computed within each voxel summing all tree crowns inside the voxel $v$, and is denoted $LAD(v)$ (leaf area per voxel in $m².m^{-3}$). The vertical sum of $LAD$ from voxel $v$ to the ground level defines $LAI(v)$ (leaf area per found area in $m^2.m^{-2}$ commonly called leaf area index):
 
-\begin{equation}
-  LAI(v) = \sum _{v'=v} ^\infty LAD(v') 
-\end{equation}
+$LAI(v) = \sum _{v'=v} ^\infty LAD(v')$
 
 Daily variations in light intensity (photosynthetic photon flux density PPFD in $\mu mol_{photons}.m^{-2}.s^{-1}$), temperature (T in degrees Celsius), and vapor pressure deficit (VPD in $kPA$) are computed to assess carbon assimilation within each voxel of the canopy and for a representative day per month. Variation of PPFD Within the canopy is calculated as a local Beer-Lambert extinction law:
 
-\begin{equation}
-  PPFD_{max,month}(v) = PPFD_{top,max,month}*e^{-k*LAI(v)}
-\end{equation}
+$PPFD_{max,month}(v) = PPFD_{top,max,month}*e^{-k*LAI(v)}$
 
 The daily maximum incident PPFD at the top of canopy $PPFD_{top,max,month}$ is given as input. The extinction rate $k$ is assumed as constant, besides is variation with zenith angle and species leaf inclination angle (Meir et al. 2000). Moreover only vertical light diffusion is considered ignoring lateral light diffusion, which can have an important role especially in logging gaps. Finally, intra-day variation at half hour time steps $t$ for a representative day every month are used to compute $PPFD_{month}(v,t)$, $T_{month}(v,t)$ and $VPD_{month}(v,t)$. Water and nutrient process both in soil and inside trees are not simulated.
 
@@ -78,29 +70,21 @@ The daily maximum incident PPFD at the top of canopy $PPFD_{top,max,month}$ is g
 
 Troll simulates the carbon uptake of each individual with the Farquhar, von Caemmerer and Berry model of C3 photosynthesis (Farquhar et al. 1980). Gross carbon assimilation rate ($A$ in $\mu mol~CO_2. m^{-2}.s^{-1}$) will be the minimum of either Rubisco activity ($A_v$) or RuBP generation ($A_j$):
 
-\begin{equation}
-  A=min(A_v, A_j)~|~A_v=V_{cmax}*\frac{c_i-\Gamma^*}{c_i+K_m}~;~A_j=\frac{J}{4}*\frac{c_i-\Gamma^*}{c_i+2*\Gamma^*}
-\end{equation}
+$A=min(A_v, A_j)~|~A_v=V_{cmax}*\frac{c_i-\Gamma^*}{c_i+K_m}~;~A_j=\frac{J}{4}*\frac{c_i-\Gamma^*}{c_i+2*\Gamma^*}$
 
 $V_{cmax}$ is the maximum rate of carboxylation ($\mu mol~CO_2.m^{-2}.s^{-1}$). $c_i$ is the $CO_2$ partial pressure at carboxylation sites. $\Gamma^*$ is the $CO_2$ compensation point in absence of dark respiration. $K_m$ is the apparent kinetic constant of the Rubisco. And $J$ is the electron transport rate ($\mu mol e^-.m^{-2}.s^{-1}$). $J$ depends on the light intensity with $PPFD$:
 
-\begin{equation}
-  J = \frac{1}{2*\theta}*[\alpha*PPFD+J_{max}-\sqrt{(\alpha*PPFD+J_{max})^2}-4*\theta*\alpha*PPFD*J_{max}]
-\end{equation}
+$J = \frac{1}{2*\theta}*[\alpha*PPFD+J_{max}-\sqrt{(\alpha*PPFD+J_{max})^2}-4*\theta*\alpha*PPFD*J_{max}]$
 
 $J_{max}$ is the maximal electron transport capacity ($\mu mol e^-.m^{-2}.s^{-1}$). $\theta$ is the curvature factor. And $\alpha$ is the apparent quantum yield to electron transport ($mole^-.mol~photons^{-1}$).
 
 Carbon assimilation by photosynthesis will then be limited by the $CO_2$ partial pressure at carboxylation sites. Stomata controls the gas concentration at carboxylation sites through stomatal transport:
 
-\begin{equation}
-  A = g_s*(c_a-c_i)
-\end{equation}
+$A = g_s*(c_a-c_i)$
 
 $g_s$ is the stomatal conductance to $CO_2$ ($molCO_2.m^{-2}.s^{-1}$). TROLL simulates stomatal conductance $g_s$ with the model from (Medlyn et al. 2011):
 
-\begin{equation}
-  g_s = g_0 + (1 + \frac{g_1}{\sqrt{VPD}})*\frac{A}{c_a}
-\end{equation}
+$g_s = g_0 + (1 + \frac{g_1}{\sqrt{VPD}})*\frac{A}{c_a}$
 
 $g_0$ and $g_1$ are parameters from the model. TROLL model assume $g_0 \approx 0$ (empirically tested and considered as reasonable).
 
@@ -108,31 +92,15 @@ $g_0$ and $g_1$ are parameters from the model. TROLL model assume $g_0 \approx 0
 
 Leaf traits can be used as proxy of photosynthesis, especially leaf nutrient content which directly play a role in it (Wright et al. 2004). Domingues et al. (2010)  suggested that $V_{cmac}$ and $J_{max}$ were both limited by the leaf concentration of nitrogen $N$ and phosphorus $P$ ($mg.g^{-1}$):
 
-\begin{equation}
-  log_{10} V_{cmax-M} = min( 
-  \begin{array}{c} 
-    -1.56+0.43*log_{10} N-0.37*log_{10} LMA \\
-    -0.80+0.45*log_{10} P-0.25*log_{10} LMA 
-  \end{array} 
-  )
-\end{equation}
+$log_{10} V_{cmax-M} = min(\begin{array}{c} -1.56+0.43*log_{10} N-0.37*log_{10} LMA \\ -0.80+0.45*log_{10} P-0.25*log_{10} LMA \end{array})$
 
-\begin{equation}
-  log_{10} J_{max-M} = min(
-  \begin{array}{c} 
-    -1.50+0.41*log_{10} N-0.45*log_{10} LMA \\
-    -0.74+0.44*log_{10} P-0.32*log_{10} LMA 
-  \end{array}
-  )
-\end{equation}
+$log_{10} J_{max-M} = min(\begin{array}{c} -1.50+0.41*log_{10} N-0.45*log_{10} LMA \\ -0.74+0.44*log_{10} P-0.32*log_{10} LMA \end{array}$
 
 $V_{cmax-M}$ and $J_{max-M}$ are the photosynthetic capacities at $25^\circ C$ of mature leaves per leaf dry mass (resp. $\mu mol CO_2.g^-1.s^{-1}$ and $\mu mol e^-.g^{-1}.s^{-1}$). $LMA$ is the leaf mass per are ($g.cm^{-2}$). $V_{cmax}$ and $J_{max}$ are calculated by multiplying $V_{cmax-M}$ and $J_{max-M}$ by $LMA$. $V_{cmax}$ and $J_{max}$ variation with temperature are calculated with Bernacchi et al. (2003).
 
 TROLL computes leaf carbon assimilation $A_l$ combining equations from for each tree crown voxel within in each crown layer $l$:
 
-\begin{equation}
-  A_l = \frac{1}{n_v*t_M} * \sum_v  \sum^{t_M}_{t=1} A(PPFD_{month}(v,t),VPD_{month}(v,t),T_{month}(v,t))
-\end{equation}
+$A_l = \frac{1}{n_v*t_M} * \sum_v  \sum^{t_M}_{t=1} A(PPFD_{month}(v,t),VPD_{month}(v,t),T_{month}(v,t))$
 
 $PPFD_{month}(v,t)$, $VPD_{month}(v,t)$ , and $T_{month}(v,t)$ are derived from microclimatic data. $n_v$ is the number of voxels within crown layer $l$. And the sum is calculated over the $t_M$ half-hourly intervals $t$ of a typical day.
 
@@ -142,18 +110,14 @@ A large fraction of plants carbon uptake is actually used for plant maintenance 
 
 TROLL uses Atkin et al. (2015) database of mature leaf dark respiration and associated leaf traits to compute leaf maintenance respiration:
 
-\begin{equation}
-  R_{leaf-M} = 8.5431-0.1306*N-0.5670*P-0.0137*LMA+11.1*V_{cmax-M}+0.1876*N*P
-\end{equation}
+$R_{leaf-M} = 8.5431-0.1306*N-0.5670*P-0.0137*LMA+11.1*V_{cmax-M}+0.1876*N*P$
 
 $R_{leaf-M}$ si the dark respiration rate per leaf dry mass at a temperature of $25^\circ C$ ($nmolCO_2.g^{-1}.s^{-1}$).
 TROLL assume leaf respiration during day light to be 40% of leaf dark respiration, and computes total leaf respiration by accounting for the length of daylight.
 
 TROLL model stem respiration ($R_{stem}$ in $\mu molC.s^{-1}$) with a constant respiration rate per volume of sapwood:
 
-\begin{equation}
-  R_{stem} = 39.6*\pi*ST*(dbh-ST)*(h-CD)
-\end{equation}
+$R_{stem} = 39.6*\pi*ST*(dbh-ST)*(h-CD)$
 
 dbh, h, CD and ST are tree diameter at breast height, height, crown depth and sapwood thickness, respectively ($m$). TROLL assumes $ST=0.04~m$ when $dbh>30~cm$ and an increasing $ST$ for lower $dbh$.
 
@@ -163,40 +127,25 @@ Finally, TROLL computes both fine root maintenance respiration, as half of the l
 
 Net primary production of carbon for one individual $NPP_{ind}$ ($gC$) is computed by the balance between gross primary production $GPP_{ind}$ and respiration $R$:
 
-\begin{equation}
-  NPP_{ind} = GPP_{ind} - R_{maintenance} - R_{growth}
-\end{equation}
+$NPP_{ind} = GPP_{ind} - R_{maintenance} - R_{growth}$
 
 TROLL partitions individuals total leaf area $LA$ into three pools for different leaf age classes corresponding to different photosynthesis efficiency (young, mature and old leaves with $LA_{young}$, $LA_{mature}$, and $LA_{old}$ respectively). Consequently we can compute growth primary production for one individual as:
 
-\begin{equation}
-  GPP_{ind} = 189.3 * \Delta t * \sum _{l= \lfloor h-CD \rfloor +1} ^{\lfloor h \rfloor} [A_l] * (\frac{LA_{young}}{2} + LA_{mature} + \frac{LA_{old}}{2})
-  (\#eq:GPP)
-\end{equation}
+$GPP_{ind} = 189.3 * \Delta t * \sum _{l= \lfloor h-CD \rfloor +1} ^{\lfloor h \rfloor} [A_l] * (\frac{LA_{young}}{2} + LA_{mature} + \frac{LA_{old}}{2})$
 
 h and CD are tree height and crown depth, repectivelly ($m$). $\lfloor x \rfloor$ is the rounding function. $\Delta t$ is the duration of a timestep ($year$).
 
 Thus, TROLL can compute carbon allocation to wood into an increment of stem volume $\Delta V$ ($m^3$):
 
-\begin{equation}
-  \Delta V = 10^{-6} * \frac{f_{wood}*NPP_{ind}}{0.5*wsg}*Senesc(dbh)
-\end{equation}
+$\Delta V = 10^{-6} * \frac{f_{wood}*NPP_{ind}}{0.5*wsg}*Senesc(dbh)$
 
 $f_{wood}$ is the fixed fraction of NPP allocated to stem and branches. $wsg$ is the wood specific gravity ($g.cm^{-3}$, see \@ref(tab:traits)). TROLL assume large trees less efficient to convert NPP as growth by using a size-related growth decline with function $Senesc$ after a specific diameter at brest height threshold $dbh_{thresh}$:
 
-\begin{equation}
-  Senesc(dbh) = max(0;3-2*\frac{dbh}{dbh_{thresh}})
-\end{equation}
+$Senesc(dbh) = max(0;3-2*\frac{dbh}{dbh_{thresh}})$
 
 Finally, TROLL can compute carbon allocation to canopy with canopy NPP fraction denoted $f_{canopy}$ and decomposed into leaf, twig and fruit production. Carbon allocation to leaf results in a new young leaf pool, whereas other leaf pools are updated as follow:
 
-\begin{equation}
-  \begin{array}{c} \\
-   \Delta LA_{young} = \frac{2*f_{leaves}*NPP_{ind}}{LMA}-\frac{LA_{young}}{\tau_{young}} \\
-  \Delta LA_{mature} = \frac{LA_{young}}{\tau_{young}} - \frac{LA_{mature}}{\tau_{mature}}\\
-  \Delta LA_{old} = \frac{LA_{mature}}{\tau_{mature}} - \frac{LA_{old}}{\tau_{old}}
-  \end{array}
-\end{equation}
+$\begin{array}{c} \\ \Delta LA_{young} = \frac{2*f_{leaves}*NPP_{ind}}{LMA}-\frac{LA_{young}}{\tau_{young}} \\ \Delta LA_{mature} = \frac{LA_{young}}{\tau_{young}} - \frac{LA_{mature}}{\tau_{mature}}\\ \Delta LA_{old} = \frac{LA_{mature}}{\tau_{mature}} - \frac{LA_{old}}{\tau_{old}} \end{array}$
 
 $\tau_{young}$, $\tau_{mature}$, and $\tau_{old}$ are species residence times in each leaf pools ($years$). The sum of residency time thus defined the leaf lifespan $LL = \tau_{young} + \tau_{mature} + \tau_{old}$ ($years$). $\tau_{young}$ is set to one month and $\tau_{mature}$ is set to a third of leaf lifespan $LL$. Belowground carbon allocation is not simulated inside TROLL.
 
@@ -204,34 +153,19 @@ $\tau_{young}$, $\tau_{mature}$, and $\tau_{old}$ are species residence times in
 
 Once the increment of stem volume $\Delta V$ is calculated, TROLL convert it into an increment of tree diameter at breast height denoted $\Delta dbh$. TROLL infer tree height from $dbh$ using a Michaelis-Menten equation:
 
-\begin{equation}
-  h = h_{lim}*\frac{dbh}{dbh + a_h}
-  (\#eq:h)
-\end{equation}
+$h = h_{lim}*\frac{dbh}{dbh + a_h}$
 
 On the other hand, we have the trunk volume $V = C * \pi * (\frac{dbh}{2})^2*h$, thus:
 
-\begin{equation}
-  \begin{array}{c} \\
-    \Delta V = C*\frac{1}{2}*\pi*h*dbh*\Delta dbh + C * \pi * (\frac{dbh}{2})^2*h \\
-    \Delta V = V*\frac{\Delta dbh}{dbh}*(3-\frac{dbh}{dbh + ah})
-  \end{array}
-\end{equation}
+$\begin{array}{c} \\ \Delta V = C*\frac{1}{2}*\pi*h*dbh*\Delta dbh + C * \pi * (\frac{dbh}{2})^2*h \\ \Delta V = V*\frac{\Delta dbh}{dbh}*(3-\frac{dbh}{dbh + ah})\end{array}$
 
 Next, TROLL used the new trunk dimension ($dbh$ and $h$) to update tree crown geometry using allometric equations (Chave et al. 2005):
 
-\begin{equation}
-  \begin{array}{c} \\
-    CR = 0.80 + 10.47*dbh - 3.33*dbh^2\\
-    CD = -0.48 + 0.26*h~;~CD = 0.13 + 0.17*h~(h<5~m)
-  \end{array}
-\end{equation}
+$\begin{array}{c} \\ CR = 0.80 + 10.47*dbh - 3.33*dbh^2\\ CD = -0.48 + 0.26*h~;~CD = 0.13 + 0.17*h~(h<5~m)\end{array}$
 
 Finally, TROLL computes the mean leaf density within the crown ($LD$ in $m^2.m^{-3}$) assuming a uniform distribution:
 
-\begin{equation}
-  LD = \frac{LA_{young}+LA_{mature}+LA_{old}}{\pi*CR^2*CD}
-\end{equation}
+$LD = \frac{LA_{young}+LA_{mature}+LA_{old}}{\pi*CR^2*CD}$
 
 ## Mortality
 
@@ -239,17 +173,13 @@ Mortality is partitioned in two factors inside TROLL: background death $d_b$ and
 
 Chave et al. (2009) advocated for a wood economics spectrum opposing fast growing light wood species species with high risk of mortality to slow growing dense wood species with reduced risk of mortality. Hence, background mortality is derived from wood specific gravity $wsg$ inside TROLL:
 
-\begin{equation}
-  d_b = m*(1-\frac{wsg}{wsg_{lim}})+d_n
-\end{equation}
+$d_b = m*(1-\frac{wsg}{wsg_{lim}})+d_n$
 
 $m$ ($events.year^{-1}$) is the reference background death rate for lighter wood species (pioneers). $d_n$ represents death by carbohydrates shortage. If the number of consecutive day with $NPP_{ind} < 0$ is superior to tree leaf lifespan $d_n$ is set to 1 and remains null in other cases.
 
 Mortality by treefall inside TROLL depends on a specific stochastic threshold $\theta$:
 
-\begin{equation}
-  \theta = h_{max}*(1-v_T*|\zeta|)
-\end{equation}
+$\theta = h_{max}*(1-v_T*|\zeta|)$
 
 $h_{max}$ is the maximal tree height. $v_T$ is the variance term set to 0.3. $|\zeta|$ is the absolute value of a random centered and scaled Gaussian. If the tree hieght $h$ is superior to $\theta$ then the tree may fall with a probability $1-\theta/h$ (Chave 1999). The treefall direction is random (drawn from a uniform law ($\mathcal{U}[0,2\pi]$). All tree in the trajectory of the falling tree will be hurted through a variable denoted $hurt$, incremented by fallen tree height $h$. If a tree height is inferior than its $hurt$ values then it may die with a probability $1-\frac{1}{2}\frac{h}{hurt}$. $hurt$ variable is reset to null at each timestep ($month$).
 
@@ -257,39 +187,23 @@ $h_{max}$ is the maximal tree height. $v_T$ is the variance term set to 0.3. $|\
 
 Once the tree became fertile they will start to disperse seeds. TROLL consider tree as fertile after a specific height threshold $h_{mature}$ (Wright et al. 2005):
 
-\begin{equation}
-  h_{mature} = -11.47+0.90*h_{max}
-\end{equation}
+$h_{mature} = -11.47+0.90*h_{max}$
 
 But TROLL is not considering seed directly through a seedbank, instead seed might be interpreted as a seedling recruitment opportunity. The number of reproduction opportunities per mature tree is denoted $n_s$ and set to 10 for all species. This assumption originates from a trade-off between seed number and seed size resulting in equivalent survival and recruitment probability. All $n_s$ events are dispersed with a distance randomly drawn from a Gaussian distribution. Additionally, TROLL model consider external seedrain through $n_{ext}$ events of seed immigration:
 
-\begin{equation}
-  n_{ext} = N_{tot}*f_{reg}*n_{ha}
-\end{equation}
+$n_{ext} = N_{tot}*f_{reg}*n_{ha}$
 
 $N_{tot}$ is the external seedrain per hectare (number of reproduction opportunities). $f_{reg}$ is the species regional frequency. $n_{ha}$ is the simulated plot size in $ha$.
 
 Finally, a bank of seedlings to be recruited is defined for each pixel. If the ground-level light reaches a species light compensation point $LCP$ the species will be recruited:
 
-\begin{equation}
-  LCP = \frac{R_{leaf}}{\phi}
-\end{equation}
+$LCP = \frac{R_{leaf}}{\phi}$
 
 $R_{leaf}$ is the leaf respiration for maintenance. $\phi$ is the quantum yield ($\mu mol C.\mu mol~photon$) set to 0.06. If several species reach their $LCP$, one is picked at random. Seedlings are recruited with following initial geometry:
 
-\begin{equation}
-  \begin{array}{c} \\
-    dbh = \frac{a_h}{h_{max} - 1}\\
-    h = 1~m\\
-    CR = 0.5~m\\
-    CD = 0.3~m\\
-    LD = 0.8~m^2.^{-3}
-  \end{array}
-\end{equation}
+$\begin{array}{c} \\ dbh = \frac{a_h}{h_{max} - 1}\\ h = 1~m\\ CR = 0.5~m\\ CD = 0.3~m\\ LD = 0.8~m^2.^{-3} \end{array}$
 
 # References
-
-
 
 Pacala, S.W., Canham, C.D., Saponara, J., Silander, J.A., Kobe, R.K. & Ribbens, E. (1996). Forest models defined by field measurements: estimation, error analysis and dynamics. Ecological Monographs, 66, 1–43.
 
