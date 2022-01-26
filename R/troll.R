@@ -49,7 +49,36 @@ troll <- function(name = NULL,
                   verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
+  i <- NULL
+  cl <- makeCluster(1, outfile = "")
+  registerDoSNOW(cl)
+  sim <- foreach(i=1, .export = ".troll_child") %dopar%
+    .troll_child(
+      name = name,
+      path = path,
+      global = global,
+      species = species,
+      climate = climate,
+      daily = daily,
+      forest = forest,
+      verbose = verbose,
+      overwrite = overwrite,
+      thin = thin)
+  stopCluster(cl)
+  return(sim[[1]])
+}
 
+.troll_child <- function(name = NULL,
+                         path = NULL,
+                         global,
+                         species,
+                         climate,
+                         daily,
+                         forest = NULL,
+                         verbose = TRUE,
+                         overwrite = TRUE,
+                         thin = NULL) {
+  
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
     stop("overwrite should be logical.")
@@ -65,14 +94,14 @@ troll <- function(name = NULL,
     name <- paste0(
       "sim_",
       gsub(":", "-",
-      gsub(
-        " ", "_",
-        timestamp(
-          prefix = "",
-          suffix = "",
-          quiet = T
-        )
-      ))
+           gsub(
+             " ", "_",
+             timestamp(
+               prefix = "",
+               suffix = "",
+               quiet = T
+             )
+           ))
     )
   }
   
@@ -120,24 +149,6 @@ troll <- function(name = NULL,
     ),
     split = verbose)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
-  
-  # run fake par in case of mem leak
-  # i <- NULL
-  # cl <- makeCluster(1, outfile = "")
-  # registerDoSNOW(cl)
-  # foreach(i=1,
-  #         .packages = c("rcontroll")) %dopar% {
-  #           log <- capture.output(
-  #             trollCpp(global_file = global_path, 
-  #                      climate_file = climate_path, 
-  #                      species_file = species_path, 
-  #                      day_file = daily_path, 
-  #                      forest_file = forest_path, 
-  #                      output_file = file.path(path, name, name)),
-  #             split = verbose)
-  #           write(log, file.path(path, name, paste0(name, "_log.txt")))
-  #         }
-  # stopCluster(cl)
   
   # cleaning outputs
   lapply(list(
