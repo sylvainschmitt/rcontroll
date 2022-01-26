@@ -4,6 +4,7 @@
 
 # rcontroll 0.1.0.9033
 * fabain's neww cpp
+* pkgdown on gh-pages branch
 
 # rcontroll 0.1.0.9032
 * pkgdown init
