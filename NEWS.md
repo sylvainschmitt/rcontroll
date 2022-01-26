@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9035
+* Fabain's cleaned CPP
+
 # rcontroll 0.1.0.9034
 * using TROLL child for fake parralelisation
 * waiting for Fabian's cleaned CPP

@@ -195,7 +195,7 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
   geom_point() +
   theme_bw() +
   xlab("Time (years)") +
-  ylab(expression(Abovergound~biomass~(AGB~MgC~ha^{-1})))
+  ylab(expression(Abovergound~biomass~(AGB~Kg~ha^{-1})))
 ```
 
 >Note how the simulation AGB start at the end of `TROLLv3_output`'s temporal trajectory.  

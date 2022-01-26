@@ -284,7 +284,7 @@ setMethod("autoplot", "trollstack", function(
             "sum30" = "N[30]~(stems)",
             "ba" = "BA~(m^{2}~ha^{-1})",
             "ba10" = "BA[10]~(m^{2}~ha^{-1})",
-            "agb" = "AGB~(MgC~ha^{-1})",
+            "agb" = "AGB~(Kg~ha^{-1})",
             "gpp" = "GPP~(MgC~ha^{-1})",
             "npp" = "NPP~(MgC~ha^{-1})",
             "rday" = "R[day]~(MgC~ha^{-1})",
