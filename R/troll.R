@@ -49,19 +49,35 @@ troll <- function(name = NULL,
                   verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
-  # for tests
-  # data("TROLLv3_input")
-  # data("TROLLv3_species")
-  # data("TROLLv3_climatedaytime365")
-  # data("TROLLv3_daytimevar")
-  # TROLLv3_input$value[5] <- 10 # iterations
-  # global <- TROLLv3_input
-  # species <- TROLLv3_species 
-  # climate <- TROLLv3_climatedaytime12
-  # daily <- TROLLv3_daytimevar
-  # full = F
-  # abc = T
-  # path <- getwd()
+  i <- NULL
+  cl <- makeCluster(1, outfile = "")
+  registerDoSNOW(cl)
+  sim <- foreach(i=1, .export = ".troll_child") %dopar%
+    .troll_child(
+      name = name,
+      path = path,
+      global = global,
+      species = species,
+      climate = climate,
+      daily = daily,
+      forest = forest,
+      verbose = verbose,
+      overwrite = overwrite,
+      thin = thin)
+  stopCluster(cl)
+  return(sim[[1]])
+}
+
+.troll_child <- function(name = NULL,
+                         path = NULL,
+                         global,
+                         species,
+                         climate,
+                         daily,
+                         forest = NULL,
+                         verbose = TRUE,
+                         overwrite = TRUE,
+                         thin = NULL) {
   
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
@@ -78,14 +94,14 @@ troll <- function(name = NULL,
     name <- paste0(
       "sim_",
       gsub(":", "-",
-      gsub(
-        " ", "_",
-        timestamp(
-          prefix = "",
-          suffix = "",
-          quiet = T
-        )
-      ))
+           gsub(
+             " ", "_",
+             timestamp(
+               prefix = "",
+               suffix = "",
+               quiet = T
+             )
+           ))
     )
   }
   
@@ -123,35 +139,16 @@ troll <- function(name = NULL,
     forest_path <- "NULL"
   
   # run
-  # log <- capture.output(
-  #   trollCpp(global_file = global_path, 
-  #            climate_file = climate_path, 
-  #            species_file = species_path, 
-  #            day_file = daily_path, 
-  #            forest_file = forest_path, 
-  #            output_file = file.path(path, name, name)
-  #   ), 
-  #   split = verbose)
-  # write(log, file.path(path, name, paste0(name, "_log.txt")))
-  
-  # run par
-  i <- NULL
-  cl <- makeCluster(1, outfile = "")
-  registerDoSNOW(cl)
-  foreach(i=1,
-          .packages = c("rcontroll")) %dopar% {
-            log <- capture.output(
-              trollCpp(global_file = global_path, 
-                       climate_file = climate_path, 
-                       species_file = species_path, 
-                       day_file = daily_path, 
-                       forest_file = forest_path, 
-                       output_file = file.path(path, name, name)),
-              split = verbose)
-            write(log, file.path(path, name, paste0(name, "_log.txt")))
-          }
-  stopCluster(cl)
-  
+  log <- capture.output(
+    trollCpp(global_file = global_path,
+             climate_file = climate_path,
+             species_file = species_path,
+             day_file = daily_path,
+             forest_file = forest_path,
+             output_file = file.path(path, name, name)
+    ),
+    split = verbose)
+  write(log, file.path(path, name, paste0(name, "_log.txt")))
   
   # cleaning outputs
   lapply(list(

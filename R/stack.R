@@ -69,31 +69,6 @@ stack <- function(name = NULL,
                   cores = NULL,
                   overwrite = TRUE,
                   thin = NULL) {
-  # for tests
-  # data("TROLLv3_input")
-  # data("TROLLv3_species")
-  # data("TROLLv3_climatedaytime365")
-  # data("TROLLv3_daytimevar")
-  # TROLLv3_input$value[5] <- 10 # iterations
-  # global <- TROLLv3_input %>% 
-  #   mutate(simulation = list(1:2)) %>% 
-  #   unnest(simulation)
-  # global[62,2] <- 500 # Cseedrain
-  # species <- TROLLv3_species
-  # climate <- TROLLv3_climatedaytime12
-  # daily <- TROLLv3_daytimevar
-  # name <- NULL
-  # simulations <- as.character(1:2)
-  # full = T
-  # abc = F
-  # random = T
-  # forest = NULL
-  # cores = NULL
-  # overwrite = T
-  # path <- getwd()
-
-  # check all inputs
-  
   # cores
   if(is.null(cores)){
     cores <- detectCores() - 1
@@ -166,10 +141,10 @@ stack <- function(name = NULL,
   pb <- txtProgressBar(max = length(simulations), style = 3)
   progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
-  stack_res <- foreach(i=1:length(simulations),
-                   .packages = c("rcontroll"),.options.snow = opts) %dopar% {
+  stack_res <- foreach(i=1:length(simulations), .export = ".troll_child",
+                       .options.snow = opts) %dopar% {
                      sim <- simulations[i]
-                     troll(
+                     .troll_child(
                        name = sim,
                        path = sim_path[[sim]],
                        global = global[[sim]],

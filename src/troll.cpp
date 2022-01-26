@@ -42,6 +42,7 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
 */
 //////////////////////////////////////////////////////////////////////////////////
 
+#undef OUTPUT_local    //!<new in v.3.1: move output streams within main function for proper initialization and deletion
 #undef MPI               //!< MPI = Message Passing Interface. Software for sharing information across processors in parallel computers. If global variable MPI is not defined, TROLL functions on one processor only. if flag MPI defined, parallel routines (MPI software) are switched on. WARNING!!!: MPI has not been maintained since v.2.2, several functions need updating
 #undef WATER             //!< new in v.3.0: If defined, an explicit water cycle is added, with an explicit belowground space. The horizontal resolution of the soil field is currently set by DCELL
 #define CROWN_UMBRELLA   //!< new in v.2.4.1, modified in v.2.5: If activated, crowns are assumed to grow cylindrical until they reach 3m in depth, then the center of the crown will experience quicker height growth than the outer parts of the crown, thus leading to an umbrella like crown shape (with slope depending on crown depth and width). Depending on the slope parameter, trees will look more like cylinders or more like cones. Contrary to previous versions, however, the crown will not fill its shape underneath the first three layers. The crown will simply become umbrella-like, with a dense layer that spans out from its stem, and empty space underneath. This allows for a very simple computation of just three crown layers, while retaining their spread across the crown depth, enough realism for LiDAR derived CHMs and for eventual non vertical light penetration. New in v.2.5: Entirely modelled through one template that simulates loops across a crown layer/shell and can be applied to any calculation that requires to calculate crown properties (CalcLAI, Fluxh, etc.). Furthermore, enhanced flexibility for future incorporation of other crown shape functions (e.g. spherical, etc.)
@@ -89,8 +90,11 @@ char buffer[256], inputfile[256], inputfile_daytimevar[256], inputfile_climate[2
 char inputfile_species[256], *bufi_species(0); //!< Global variable: vector of input files
 
 // FILE OUTPUT STREAMS. Updated in v.3.1 to reduce number of streams and increase clarity
-fstream out_info;                   //!< Global variable:  basic simulation information
+#ifdef OUTPUT_local
+#else
+fstream output_info;                   //!< Global variable:  basic simulation information
 fstream output_basic[3];            //!< Global variable:  default output streams, always used
+#endif
 fstream output_extended[9];         //!< Global variable:  extended TROLL outputs, preserved from previous versions, might need further clean-up
 
 #ifdef Output_ABC
@@ -132,7 +136,7 @@ int nbout;      //!< Global variable: number of outputs
 int freqout;    //!< Global variable: frequency HDF outputs
 
 // Random number generator for trait covariance calculation
-gsl_rng *gslrand;   //!< Global variable: random number generator
+gsl_rng *gslrng;   //!< Global variable: random number generator, name change in v.3.1 to avoid confusion with previous function genrand() or other random number generation functions
 gsl_matrix *mcov_N_P_LMA;   //!< Global variable: covariance matrix for leaf_properties
 gsl_vector *mu_N_P_LMA, *variation_N_P_LMA; //!< Global variable: mean values of the distributions and the output vector for the multivariate draw
 int covariance_status;      //!< Global variable: covariance status: if one of N, P, or LMA has zero variation, the Cholesky decomposition fails, we then use no correlation at all
@@ -441,6 +445,7 @@ void UpdateCHM(int height, int site, float noinput, int *chm); //!< Global funct
 #endif
 void ModifyNoinput(float noinput, float &dens_layer, float CD, float height, int layer_fromtop); //!< Global function: dummy function when no modification is needed
 void LAI2dens(float LAI, float &dens_layer, float CD, float height, int layer_fromtop); //!< Global function: a modifying function that converts LAI to the density of a specific layer, using the GetDensity functions
+void LAI2dens_cumulated(float LAI, float &dens_layer, float CD, float height, int layer_fromtop);//!< Global function: a modifying function that converts LAI to percentage LAI in and above the current layer, using the GetDensity functions; can be used to directly allocate LAI without looping over LAI3D field; new in v.3.1
 void GetDensitiesGradient(float LAI, float CD, float &dens_top, float &dens_belowtop, float &dens); //!< Global function: deduces within-crown densities from LAI with a gradient from 50% in top layer to 25% in belowtop and 25% in all shells underneath (1 layer for umbrella-like shape)
 void GetDensityUniform(float LAI, float CD, float &dens); //!< Global function: deduces within-crown density from LAI, assuming uniform leaf distribution
 int GetCrownIntarea(float radius); //!< Global function: converts floating point crown area into integer value, imposing lower and upper limits
@@ -455,7 +460,13 @@ void CircleAreaUpdateCrownStatistic_template(int row_center, int col_center, int
 #endif
 
 // GLOBAL FUNCTIONS
+void ReadInputGeneral();  //!< Global function: read in global parameter sheet
 void Initialise(void); //!< Global function: initialisation with bare ground conditions
+#ifdef OUTPUT_local
+void InitialiseOutputStreams(fstream output_basic[3]); //!< Global function: initialisation of output streams
+#else
+void InitialiseOutputStreams(void); //!< Global function: initialisation of output streams
+#endif
 void ReadInputInventory(void); //!< Global function: updated in v.3.1: initialisation from inventories
 void AllocMem(void); //!< Global function: Field dynamic memory allocation
 void Evolution(void); //!< Global function: Evolution at each timestep
@@ -465,10 +476,16 @@ void TriggerTreefall(void); //!< Global function: Treefall gap formation; v.2.4
 void TriggerTreefallSecondary(void); //!< Global function: Secondary treefall gap formation
 void FillSeed(int col, int row, int spp); //!< Global function: update SPECIES_SEEDS field; v.2.5
 void RecruitTree(void); //!< Global function: tree germination module; v.2.5
+#ifdef OUTPUT_local
+void Average(fstream output_basic[3]);  //!< Global function: output of the global averages every timestep
+#else
 void Average(void);  //!< Global function: output of the global averages every timestep
+#endif
 void OutputField(void); //!< Global function: output of the field variables every timestep
 void OutputSnapshot(fstream& output, bool header, float dbh_limit); //!< Global function: output snapshots of the scene at one point in time
 void OutputLAI(fstream& output_transmLAI3D); //!< Global function: writes the whole 3D LAI voxel field to file
+
+void CloseOutputs();
 void FreeMem(void);
 
 // HELPER FUNCTIONS
@@ -760,7 +777,7 @@ public:
     };
 
     void Birth(int,int);    //!< Tree birth
-    void BirthFromInventory(int site, vector<string> &parameter_names, vector<string> &parameter_values, int &nb_speciesrandom);  //!< Tree initialisation from field data, completely updated in v.3.1
+    int BirthFromInventory(int site, vector<string> &parameter_names, vector<string> &parameter_values, int &nb_speciesrandom);  //!< Tree initialisation from field data, completely updated in v.3.1
     void Death();                   //!< Tree death, called by Tree::Update
     void Growth();                  //!< Tree growth
     void Fluxh(int h, float &PPFD, float &VPD, float &Tmp, float &leafarea_layer); //!< Computation of PPFD right above the tree -- called by Tree::Birth and Tree::Growth
@@ -785,6 +802,7 @@ public:
     void Update();                  //!< Tree death and growth
     void Average();                 //!< Local computation of the averages
     void CalcLAI();                 //!< Update of the LAI3D field
+    void CalcLAinitial();            //!< Initialise leaf area and related variables for trees that could not be initialized from data, new in v.3.1
     void histdbh();                 //!< Computation of dbh histograms
     
     //! empirical functions for trait calculation and tree level variables (Calc functions return the specific parameter, Update functions update a specific variable at tree level)
@@ -852,7 +870,7 @@ void Tree::Birth(int nume, int site0) {
     //# intraspecific var ##
     //######################
     
-    int dev_rand = int(gsl_rng_uniform_int(gslrand,100000));    //Updated to 100000 from 10000 in v.3.0
+    int dev_rand = int(gsl_rng_uniform_int(gslrng,100000));    //Updated to 100000 from 10000 in v.3.0
     t_mult_height = d_intraspecific_height[dev_rand];
     t_mult_CR = d_intraspecific_CR[dev_rand];
     t_mult_N = d_intraspecific_N[dev_rand];
@@ -884,7 +902,7 @@ void Tree::Birth(int nume, int site0) {
     t_dbh = DBH0;
     t_dbhmax = S[t_sp_lab].s_dbhmax;
     t_dbhmax *= t_mult_dbhmax;
-    t_dbhmax = fmaxf(t_dbhmax,DBH0 * 2.0);
+    t_dbhmax = fmaxf(t_dbhmax,DBH0 * 1.5);
     t_dbhmature = t_dbhmax*0.5; //Mean threshold of tree size to maturity - see Visser et al. 2016 Functional Ecology (suited to both understory and top-canopy species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
    
     UpdateHeight();
@@ -908,7 +926,7 @@ void Tree::Birth(int nume, int site0) {
         CalcLAImax();
         float LAIexperienced_eff;
         CalcLAmax(LAIexperienced_eff, t_LAmax);
-        t_LA = 0.25 * t_LAmax;      //Initially trees are set to have a quarter of their maximum leaf area
+        t_LA = 0.25 * t_LAmax;
         t_LAI = t_LA/crown_area_nogaps;
         t_carbon_storage = CalcCarbonStorageMax() * 0.5; //Initial value with half of the maximum storage
         t_carbon_biometry = 0.0;
@@ -993,256 +1011,344 @@ void CompareParameters(N &parameter_value, N parameter_min, N parameter_max, N p
 }
 
 
-void Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<string> &parameter_values, int &nb_speciesrandom){
-    //*####################*/
-    //*## General traits ##*/
-    //*####################*/
-    
+int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<string> &parameter_values, int &nb_speciesrandom){
+    int success = 0;
     bool quiet = 1;
-    int dev_rand = int(gsl_rng_uniform_int(gslrand,100000)); // in case traits have to be drawn at random
-    nblivetrees++;
-    // assign site, by default initialized to site of tree
-    t_site = site;
+    int dev_rand = int(gsl_rng_uniform_int(gslrng,100000)); // in case traits have to be drawn at random
     
-    // get fromData indicator, 1 by default
-    t_from_Data = 1;
+    //*############################################*/
+    //*## First diameter (minimum data condition ##*/
+    //*############################################*/
     
-    // get species label first
-    string parameter_name = "s_name";
+    string parameter_name = "dbh";
     string parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    int species_exists = 0;
-    // species run from 1 to nbspp!
-    for(int s = 1; s <= nbspp; s++){
-        if(parameter_value == S[s].s_name){
-            t_sp_lab = s;
-            species_exists = 1;
-        }
-    }
-    if(species_exists == 0){
-        t_sp_lab = int(gsl_rng_uniform_int(gslrand,nbspp)) + 1;
-        nb_speciesrandom++;
-        //Rcout << "Species: " << parameter_value << " not found. Initializing as random species: " << S[t_sp_lab].s_name << endl;
-    }
+    SetParameter(parameter_name, parameter_value, t_dbh, 0.01f, 15.0f, 0.0f, quiet);
     
-    // update species counter
-    S[t_sp_lab].s_nbind++;
-
-    // CrownDisplacement
-    parameter_name = "CrownDisplacement";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_CrownDisplacement, 0, 25, 0, quiet); // maximum displacement of 25m is unrealistic, but upper end where even largest possible crowns would still overlap with stem, defaults to 0
-    
-    //*#############################*/
-    //*## Basic functional traits ##*/
-    //*#############################*/
-    
-    // !!!: in future versions, this could be condensed by creating a template
-    parameter_name = "Pmass";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_Pmass, 0.0f, 0.01f, 0.0f, quiet); // maximum value of 0.01 based on typical values in the range of 0.0001-0.001
-    
-    if(t_Pmass == 0.0){
-        // draw random trait
-        t_mult_P = d_intraspecific_P[dev_rand];
-        t_Pmass = S[t_sp_lab].s_Pmass * t_mult_P;
-    } else {
-        // infer multiplier trait and check against supplied values if available
-        t_mult_P = t_Pmass/S[t_sp_lab].s_Pmass;
-        // example for how parameters could be checked
-//        string parameter_name_emp = "mult_P";
-//        CompareParameters(t_mult_P, 0.0f, 10.0f, 0.0f, parameter_name_emp, parameter_names, parameter_values, quiet);
-    }
-    
-    parameter_name = "Nmass";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_Nmass, 0.0f, 0.1f, 0.0f, quiet); // maximum value of 0.1 based on typical values in the range of 0.01-0.05
-    
-    if(t_Nmass == 0.0){
-        // draw random trait
-        t_mult_N = d_intraspecific_N[dev_rand];
-        t_Nmass = S[t_sp_lab].s_Nmass * t_mult_N;
-    } else {
-        // infer multiplier trait and check against supplied values if available
-        t_mult_N = t_Nmass/S[t_sp_lab].s_Nmass;
-    }
-    
-    parameter_name = "LMA";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_LMA, 0.0f, 1000.0f, 0.0f, quiet); // maximum value of 1000 is based on assumption that some trees may reach LMA as high as 500 (gymnosperms, some palm trees, etc.)
-    
-    if(t_LMA == 0.0){
-        // draw random trait
-        t_mult_LMA = d_intraspecific_LMA[dev_rand];
-        t_LMA = S[t_sp_lab].s_LMA * t_mult_LMA;
-    } else {
-        // infer multiplier trait and check against supplied values if available
-        t_mult_LMA = t_LMA/S[t_sp_lab].s_LMA;
-    }
-    
-    parameter_name = "wsg";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_wsg, 0.0f, 1.5f, 0.0f, quiet);  // hard upper limit of 1.5 based on density of woody substance
-    
-    if(t_wsg == 0.0){
-        // draw random trait
-        t_dev_wsg = d_intraspecific_wsg[dev_rand];
-        t_wsg = fmaxf(S[t_sp_lab].s_wsg + t_dev_wsg,0.05);
-    } else {
-        // infer deviation trait and check against supplied values if available
-        t_dev_wsg = t_wsg - S[t_sp_lab].s_wsg;
-    }
-    
-    parameter_name = "dbhmax";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_dbhmax, 0.0f, 15.0f, 0.0f, quiet);  // maximum value of 15m (Baobabs, Sequoias and Taxodium mucronatum can reach somewhere around 10m)
-    
-    if(t_dbhmax == 0.0){
-        // draw random trait
-        t_mult_dbhmax = d_intraspecific_dbhmax[dev_rand];
-        t_dbhmax = S[t_sp_lab].s_dbhmax;
-        t_dbhmax *= t_mult_dbhmax;
-        t_dbhmax = fmaxf(t_dbhmax,DBH0 * 2.0);
-        t_dbhmature = t_dbhmax * 0.5; // this correponds to the mean thresholds of tree size to maturity, according to Visser et al. 2016 Functional Ecology (suited to both understory short-statured species, and top canopy large-statured species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
-    } else {
-        // infer multiplier trait and check against supplied values if available
-        t_mult_dbhmax = t_dbhmax/S[t_sp_lab].s_dbhmax;
-    }
-    
-    //*##############################*/
-    //*## Calculate derived traits ##*/
-    //*##############################*/
-    // LAImax and fraction_filled, although constant throughout tree's life will be calculated further down
-    
-    t_dbhmature = t_dbhmax * 0.5; // this correponds to the mean thresholds of tree size to maturity, according to Visser et al. 2016 Functional Ecology (suited to both understory short-statured species, and top canopy large-statured species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
-    t_Vcmax =  CalcVcmaxm() * t_LMA;
-    t_Jmax = CalcJmaxm() * t_LMA;
-    t_Rdark = CalcRdark();
-    
-    // height allometry
-    t_hmax = S[t_sp_lab].s_hmax;
-    t_ah = S[t_sp_lab].s_ah;
-    
-    // leaf related traits
-    if(_LA_regulation > 0) CalcLAImax();
-
-    parameter_name = "leaflifespan";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_leaflifespan, 3.0f,1000.0f, 0.0f, quiet);
-    
-    parameter_name = "lambda_young";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_lambda_young, 0.0f,1.0f, 0.0f, quiet);
-    
-    parameter_name = "lambda_mature";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_lambda_mature, 0.0f,1.0f, 0.0f, quiet);
-    
-    parameter_name = "lambda_old";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
-    
-    if(t_leaflifespan == 0.0 | t_lambda_young == 0.0 | t_lambda_mature == 0.0 | t_lambda_old == 0.0) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
-    
-    //*#######################################*/
-    //*## Traits that vary during tree life ##*/
-    //*#######################################*/
-    // note that this rough division encodes approximations/choices in the TROLL model to not assume changes in certain functional traits during different ontogenetic stages
-     
-    parameter_name = "age";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_age, timestep, 10000.0f, 1.0f, quiet);
-
-    parameter_name = "dbh";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_dbh, 0.0f, t_dbhmax * 1.5f, 0.0f, quiet);
-    
-    parameter_name = "height";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_height, 0.0f, 150.0f, 0.0f, quiet);  // maximum value of 150m to leave a bit of room
-    
-    if(t_height == 0.0){
-        t_mult_height = d_intraspecific_height[dev_rand];
-        UpdateHeight();
-    } else {
-        t_mult_height = t_height/CalcHeightBaseline(t_ah, t_hmax, t_dbh);
-    }
-    
-    parameter_name = "CD";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_CD, 0.0f, t_height * 0.5f, 0.0f, quiet);
-    
-    if(t_CD == 0.0){
-        t_mult_CD = d_intraspecific_CD[dev_rand];
-        UpdateCD();
-    } else {
-        t_mult_CD = t_CD/CalcCDBaseline(t_height);
-    }
-    
-    parameter_name = "CR";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_CR, 0.0f, 25.0f, 0.0f, quiet);  // maximum value of 15m (Baobabs, Sequoias and Taxodium mucronatum can reach somewhere around 10m)
-    
-    if(t_CR == 0.0){
-        t_mult_CR = d_intraspecific_CR[dev_rand];
-        UpdateCR();
-    } else {
-        t_mult_CR = t_CR/CalcCRBaseline(t_dbh);
-    }
-    
-    //*##############################*/
-    //*## Calculate derived traits ##*/
-    //*##############################*/
-
-    if(_BASICTREEFALL){
-        parameter_name = "Ct";
+    if(t_dbh > 0.0){
+        success = 1;
+        
+        //*####################*/
+        //*## General traits ##*/
+        //*####################*/
+        
+        nblivetrees++;
+        // assign site, by default initialized to site of tree
+        t_site = site;
+        
+        // get fromData indicator, 1 by default
+        t_from_Data = 1;
+        
+        // get species label first
+        parameter_name = "s_name";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_Ct, 0.0f,float(HEIGHT), 0.0f, quiet); // the default is a height fall threshold of maximum height (so sth the tree never reaches)
-        if(t_Ct == 0.0) t_Ct = CalcCt();
-    }
-    
-    float fraction_filled_general = 1.0 - crown_gap_fraction;
-    t_fraction_filled = fminf(fraction_filled_general/(t_mult_CR * t_mult_CR),1.0);
-    float crown_area = PI*t_CR*t_CR;
-    float crown_area_nogaps = GetCrownAreaFilled(crown_area);
-
-    //*######################################*/
-    //*## Further photosynthetic variables ##*/
-    //*######################################*/
-    // cannot be accurately calculated while reading in trees (no filled voxel field yet)
-    parameter_name = "LAmax";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_LAmax, 0.0f, 100000.0f, -1.0f, quiet); // assuming LAI cannot exceed 10 m2/m2 and maximum crown area in TROLL is 25^2 * pi, then upper limit is around 20000, 100000 to be safe
-    
-    parameter_name = "LA";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_LA, 0.0f, 100000.0f, -1.0f, quiet); // assuming LAI cannot exceed 10 m2/m2 and maximum crown area in TROLL is 25^2 * pi, then upper limit is around 20000, 100000 to be safe - note that LA can be larger than LAmax when tree has been recently shaded and leaf turnover is slow
-    
-    parameter_name = "youngLA";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_youngLA, 0.0f, 100000.0f, -1.0f, quiet);
-    
-    parameter_name = "matureLA";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_matureLA, 0.0f, 100000.0f, -1.0f, quiet);
-    
-    parameter_name = "oldLA";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_oldLA, 0.0f, 100000.0f, -1.0f, quiet);
-    
-    parameter_name = "litter";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_litter, 0.0f, 100000.0f, -1.0f, quiet);
-    
-    if(t_LA >= 0.0 && t_youngLA >= 0.0 && t_matureLA >= 0.0 && t_oldLA >= 0.0 && t_litter >= 0.0){
-        // there could be more consistency checks here (e.g. t_youngLA + t_matureLA + t_oldLA should be approximately t_LA)
-        t_LAI = t_LA/crown_area_nogaps;
-    } else {
-        if(_LA_regulation > 0){
-            if(t_LAmax == -1.0){
-                float LAIexperienced_eff;
-                CalcLAmax(LAIexperienced_eff, t_LAmax);
+        int species_exists = 0;
+        // species run from 1 to nbspp!
+        for(int s = 1; s <= nbspp; s++){
+            if(parameter_value == S[s].s_name){
+                t_sp_lab = s;
+                species_exists = 1;
             }
-            t_LA = 0.25 * t_LAmax;      // we assume that trees have a quarter of their maximum leaf area
+        }
+        if(species_exists == 0){
+            t_sp_lab = int(gsl_rng_uniform_int(gslrng,nbspp)) + 1;
+            nb_speciesrandom++;
+            //Rcout << "Species: " << parameter_value << " not found. Initializing as random species: " << S[t_sp_lab].s_name << endl;
+        }
+        
+        // update species counter
+        S[t_sp_lab].s_nbind++;
+
+        // CrownDisplacement
+        parameter_name = "CrownDisplacement";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_CrownDisplacement, 0, 25, 0, quiet); // maximum displacement of 25m is unrealistic, but upper end where even largest possible crowns would still overlap with stem, defaults to 0
+        
+        //*#############################*/
+        //*## Basic functional traits ##*/
+        //*#############################*/
+        
+        // !!!: in future versions, this could be condensed by creating a template
+        parameter_name = "Pmass";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Pmass, 0.0f, 0.01f, 0.0f, quiet); // maximum value of 0.01 based on typical values in the range of 0.0001-0.001
+        
+        if(t_Pmass == 0.0){
+            // draw random trait
+            t_mult_P = d_intraspecific_P[dev_rand];
+            t_Pmass = S[t_sp_lab].s_Pmass * t_mult_P;
+        } else {
+            // infer multiplier trait and check against supplied values if available
+            t_mult_P = t_Pmass/S[t_sp_lab].s_Pmass;
+            // example for how parameters could be checked
+    //        string parameter_name_emp = "mult_P";
+    //        CompareParameters(t_mult_P, 0.0f, 10.0f, 0.0f, parameter_name_emp, parameter_names, parameter_values, quiet);
+        }
+        
+        parameter_name = "Nmass";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Nmass, 0.0f, 0.1f, 0.0f, quiet); // maximum value of 0.1 based on typical values in the range of 0.01-0.05
+        
+        if(t_Nmass == 0.0){
+            // draw random trait
+            t_mult_N = d_intraspecific_N[dev_rand];
+            t_Nmass = S[t_sp_lab].s_Nmass * t_mult_N;
+        } else {
+            // infer multiplier trait and check against supplied values if available
+            t_mult_N = t_Nmass/S[t_sp_lab].s_Nmass;
+        }
+        
+        parameter_name = "LMA";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_LMA, 0.0f, 1000.0f, 0.0f, quiet); // maximum value of 1000 is based on assumption that some trees may reach LMA as high as 500 (gymnosperms, some palm trees, etc.)
+        
+        if(t_LMA == 0.0){
+            // draw random trait
+            t_mult_LMA = d_intraspecific_LMA[dev_rand];
+            t_LMA = S[t_sp_lab].s_LMA * t_mult_LMA;
+        } else {
+            // infer multiplier trait and check against supplied values if available
+            t_mult_LMA = t_LMA/S[t_sp_lab].s_LMA;
+        }
+        
+        parameter_name = "wsg";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_wsg, 0.0f, 1.5f, 0.0f, quiet);  // hard upper limit of 1.5 based on density of woody substance
+        
+        if(t_wsg == 0.0){
+            // draw random trait
+            t_dev_wsg = d_intraspecific_wsg[dev_rand];
+            t_wsg = fmaxf(S[t_sp_lab].s_wsg + t_dev_wsg,0.05);
+        } else {
+            // infer deviation trait and check against supplied values if available
+            t_dev_wsg = t_wsg - S[t_sp_lab].s_wsg;
+        }
+        
+        parameter_name = "dbhmax";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_dbhmax, 0.0f, 15.0f, 0.0f, quiet);  // maximum value of 15m (Baobabs, Sequoias and Taxodium mucronatum can reach somewhere around 10m)
+
+        if(t_dbhmax == 0.0){
+            t_dbhmax = S[t_sp_lab].s_dbhmax;
+            t_mult_dbhmax = d_intraspecific_dbhmax[dev_rand];
+            t_dbhmax *= t_mult_dbhmax;
+            if(t_dbhmax < t_dbh * 1.5){
+                t_dbhmax = t_dbh * 1.5;
+                t_mult_dbhmax = t_dbhmax/S[t_sp_lab].s_dbhmax;
+            }
+        } else {
+            // infer multiplier trait and check against supplied values if available
+            t_mult_dbhmax = t_dbhmax/S[t_sp_lab].s_dbhmax;
+        }
+
+        t_dbhmature = t_dbhmax * 0.5; // this correponds to the mean thresholds of tree size to maturity, according to Visser et al. 2016 Functional Ecology (suited to both understory short-statured species, and top canopy large-statured species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
+        
+        //*##############################*/
+        //*## Calculate derived traits ##*/
+        //*##############################*/
+        // LAImax and fraction_filled, although constant throughout tree's life will be calculated further down
+        
+        t_Vcmax =  CalcVcmaxm() * t_LMA;
+        t_Jmax = CalcJmaxm() * t_LMA;
+        t_Rdark = CalcRdark();
+        
+        // height allometry
+        t_hmax = S[t_sp_lab].s_hmax;
+        t_ah = S[t_sp_lab].s_ah;
+        
+        // leaf related traits
+        if(_LA_regulation > 0) CalcLAImax();
+
+        parameter_name = "leaflifespan";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_leaflifespan, 3.0f,1000.0f, 0.0f, quiet);
+        
+        parameter_name = "lambda_young";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_lambda_young, 0.0f,1.0f, 0.0f, quiet);
+        
+        parameter_name = "lambda_mature";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_lambda_mature, 0.0f,1.0f, 0.0f, quiet);
+        
+        parameter_name = "lambda_old";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
+        
+        if(t_leaflifespan == 0.0 | t_lambda_young == 0.0 | t_lambda_mature == 0.0 | t_lambda_old == 0.0) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
+        
+        //*#######################################*/
+        //*## Traits that vary during tree life ##*/
+        //*#######################################*/
+        // note that this rough division encodes approximations/choices in the TROLL model to not assume changes in certain functional traits during different ontogenetic stages
+         
+        parameter_name = "age";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_age, timestep, 10000.0f, 1.0f, quiet);
+        
+        parameter_name = "height";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_height, 0.0f, 150.0f, 0.0f, quiet);  // maximum value of 150m to leave a bit of room
+        
+        if(t_height == 0.0){
+            t_mult_height = d_intraspecific_height[dev_rand];
+            UpdateHeight();
+        } else {
+            t_mult_height = t_height/CalcHeightBaseline(t_ah, t_hmax, t_dbh);
+        }
+        
+        parameter_name = "CD";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_CD, 0.0f, t_height * 0.5f, 0.0f, quiet);
+        
+        if(t_CD == 0.0){
+            t_mult_CD = d_intraspecific_CD[dev_rand];
+            UpdateCD();
+        } else {
+            t_mult_CD = t_CD/CalcCDBaseline(t_height);
+        }
+        
+        parameter_name = "CR";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_CR, 0.0f, 25.0f, 0.0f, quiet);  // maximum value of 15m (Baobabs, Sequoias and Taxodium mucronatum can reach somewhere around 10m)
+        
+        if(t_CR == 0.0){
+            t_mult_CR = d_intraspecific_CR[dev_rand];
+            UpdateCR();
+        } else {
+            t_mult_CR = t_CR/CalcCRBaseline(t_dbh);
+        }
+        
+        //*##############################*/
+        //*## Calculate derived traits ##*/
+        //*##############################*/
+
+        if(_BASICTREEFALL){
+            parameter_name = "Ct";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_Ct, 0.0f,float(HEIGHT), 0.0f, quiet); // the default is a height fall threshold of maximum height (so sth the tree never reaches)
+            if(t_Ct == 0.0) t_Ct = CalcCt();
+        }
+        
+        float fraction_filled_general = 1.0 - crown_gap_fraction;
+        t_fraction_filled = fminf(fraction_filled_general/(t_mult_CR * t_mult_CR),1.0);
+
+        //*######################################*/
+        //*## Further photosynthetic variables ##*/
+        //*######################################*/
+        parameter_name = "LAmax";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_LAmax, 0.0f, 100000.0f, -1.0f, quiet); // assuming LAI cannot exceed 10 m2/m2 and maximum crown area in TROLL is 25^2 * pi, then upper limit is around 20000, 100000 to be safe
+        
+        parameter_name = "LA";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_LA, 0.0f, 100000.0f, -1.0f, quiet); // assuming LAI cannot exceed 10 m2/m2 and maximum crown area in TROLL is 25^2 * pi, then upper limit is around 20000, 100000 to be safe - note that LA can be larger than LAmax when tree has been recently shaded and leaf turnover is slow
+        
+        parameter_name = "youngLA";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_youngLA, 0.0f, 100000.0f, -1.0f, quiet);
+        
+        parameter_name = "matureLA";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_matureLA, 0.0f, 100000.0f, -1.0f, quiet);
+        
+        parameter_name = "oldLA";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_oldLA, 0.0f, 100000.0f, -1.0f, quiet);
+        
+        parameter_name = "litter";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_litter, 0.0f, 100000.0f, -1.0f, quiet);
+        
+        parameter_name = "sapwood_area";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        float ba = t_dbh * t_dbh * 0.25 * PI;
+        SetParameter(parameter_name, parameter_value, t_sapwood_area, 0.0f, ba, 0.0f, quiet);
+        
+        if(t_LAmax >= 0.0 && t_LA >= 0.0 && t_youngLA >= 0.0 && t_matureLA >= 0.0 && t_oldLA >= 0.0 && t_litter >= 0.0){
+            // there could be more consistency checks here (e.g. t_youngLA + t_matureLA + t_oldLA should be approximately t_LA)
+            float crown_area = PI*t_CR*t_CR;
+            float crown_area_nogaps = GetCrownAreaFilled(crown_area);
+            t_LAI = t_LA/crown_area_nogaps;
+            
+            if(t_sapwood_area == 0.0){
+                float ddbh = fminf(t_dbh, 0.04f);   // limit the approximate sapwood thickness to 5cm
+                UpdateSapwoodArea(ddbh);
+            }
+        } else {
+            t_LAmax = t_LA = t_youngLA = t_matureLA = t_oldLA = t_litter = -1.0;
+        }
+        
+        if(_LA_regulation > 0){
+            float carbon_storage_max = CalcCarbonStorageMax();
+            parameter_name = "carbon_storage";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_carbon_storage, 0.0f, carbon_storage_max, -1.0f, quiet);
+            if(t_carbon_storage == -1.0) t_carbon_storage = carbon_storage_max * 0.5; // We here initialize trees with half their maximum storage
+            
+            parameter_name = "carbon_biometry";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_carbon_biometry, 0.0f, carbon_storage_max * 10.0f, 0.0f, quiet);
+        }
+        
+        parameter_name = "hurt";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        unsigned short hurt_min = 0, hurt_max = USHRT_MAX, hurt_default = 0;
+        SetParameter(parameter_name, parameter_value, t_hurt, hurt_min, hurt_max, hurt_default, quiet);
+        
+        parameter_name = "NPPneg";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_NPPneg, 0, INT_MAX, 0, quiet);
+        
+        parameter_name = "multiplier_seed";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_multiplier_seed, 1, INT_MAX, 1, quiet);
+        
+        //*##############################*/
+        //*## "Convenience" parameters ##*/
+        //*##############################*/
+        // these parameters can be set to 0, as they are recomputed each timestep in the actual light environment
+        // will be computed for initial configuration after allocation of leaves to voxel field
+        t_GPP = t_NPP = t_Rday = t_Rnight = t_Rstem = 0.0;
+        
+#ifdef WATER
+        //*###########*/
+        //*## water ##*/
+        //*###########*/
+            
+        //Water_availability();
+        t_transpiration = 0.0;
+        t_WSF = t_WSF_A = 1.0; //  in doing so, the tree leaflifespan and LAImax are here computed under no water stress and average climatic conditions (radiation, temperature). This could/should be updated later, so that these two quantities change under water stress, and also with seasons. For now, t_WSF and t_WSF_A are then updated later in Tree::Birth to account for the real water conditions at birth.
+        Water_availability();
+        //roots are not set here in this first version, but at the beginning of Tree::Update, but see comments at Tree::Water_availability
+        //UpdateRootDistribution();
+#endif
+        //*################*/
+        //*## for output ##*/
+        //*################*/
+#ifdef Output_ABC
+        //parameter_name = "dbh_previous";
+        //parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        //SetParameter(parameter_name, parameter_value, t_dbh_previous, 0.0f, t_dbh, t_dbh, quiet);
+        t_dbh_previous = t_dbh; // check whether proper initialisation is needed
+#endif
+#ifdef TRACK_INDIVIDUALS
+        StartTracking();
+#endif
+    }
+    return(success);
+}
+
+// v.3.1: new function to initialize trees more realistically from inventories
+void Tree::CalcLAinitial(){
+    if(t_LA < 0.0){
+        // 1. determine leaf area and related variables, based on current environment
+        float crown_area = PI*t_CR*t_CR;
+        float crown_area_nogaps = GetCrownAreaFilled(crown_area);
+
+        if(_LA_regulation > 0){
+            float LAIexperienced_eff;
+            CalcLAmax(LAIexperienced_eff, t_LAmax);
+            t_LA = t_LAmax;   // assume half the maximum leaf area?
             t_LAI = t_LA/crown_area_nogaps;
         } else {
 #ifdef CROWN_UMBRELLA
@@ -1253,74 +1359,29 @@ void Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<
             t_LA = t_LAI * crown_area_nogaps;
         }
         InitialiseLeafPools();
-    }
-    
-    if(_LA_regulation > 0){
-        float carbon_storage_max = CalcCarbonStorageMax();
-        parameter_name = "carbon_storage";
-        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_carbon_storage, 0.0f, carbon_storage_max, -1.0f, quiet);
-        if(t_carbon_storage == -1.0) t_carbon_storage = carbon_storage_max * 0.5; // We here initialize trees with half their maximum storage
+                
+        if(t_sapwood_area == 0.0){
+            float ddbh = fminf(t_dbh, 0.04f);   // initial sapwood thickness of ca. 2.5cm
+            UpdateSapwoodArea(ddbh);
+        }
         
-        parameter_name = "carbon_biometry";
-        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_carbon_biometry, 0.0f, carbon_storage_max * 10.0f, 0.0f, quiet);
-    }
+        // 2. allocate the leaves to the LAI3D field
+        // nota bene: we here use the same function as CalcLAI3D, with one exception: LAI2dens_cumulated instead of LAI2dens; this means that we allocate the cumulated LAI in each layer and do not require any summation afterwards
+        int site_crowncenter = t_site + t_CrownDisplacement;
+        int row_crowncenter = site_crowncenter/cols;
+        int col_crowncenter = site_crowncenter%cols;
 
-    parameter_name = "sapwood_area";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    float ba = t_dbh * t_dbh * 0.25 * PI;
-    SetParameter(parameter_name, parameter_value, t_sapwood_area, 0.0f, ba, ba, quiet);
-    
-    if(t_sapwood_area == 0.0){
-        float ddbh = t_dbh;  //  in the beginning, all the stem can be treated as "just grown" and the only limit on sapwood is the overall stem cross section --> this may be exaggerated by far for large trees, but sapwood will also be bound by leaf area, so this should not yield unrealistic values
-        UpdateSapwoodArea(ddbh);
+        float LA_cumulated = 0.0;   //Currently, an output variable is required by LoopLayerUpdateCrownStatistic_template, we here use LA_cumulated as control variable
+
+        int crown_top = int(t_height);
+        int crown_base = int(t_height - t_CD);
+        int max_shells = min(crown_top - crown_base + 1, 4);    //since the new crown shapes
+        float fraction_filled_target = t_fraction_filled;
+
+        for(int shell_fromtop = 0; shell_fromtop < max_shells; shell_fromtop++){
+            LoopLayerUpdateCrownStatistic_template(row_crowncenter, col_crowncenter, t_height, t_CR, t_CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, t_LAI, LA_cumulated, LAI2dens_cumulated, UpdateLAI3D);
+        }
     }
-    
-    parameter_name = "hurt";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    unsigned short hurt_min = 0, hurt_max = USHRT_MAX, hurt_default = 0;
-    SetParameter(parameter_name, parameter_value, t_hurt, hurt_min, hurt_max, hurt_default, quiet);
-    
-    parameter_name = "NPPneg";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_NPPneg, 0, INT_MAX, 0, quiet);
-    
-    parameter_name = "multiplier_seed";
-    parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    SetParameter(parameter_name, parameter_value, t_multiplier_seed, 1, INT_MAX, 1, quiet);
-    
-    //*##############################*/
-    //*## "Convenience" parameters ##*/
-    //*##############################*/
-    // these parameters can be set to 0, as they are recomputed each timestep in the actual light environment
-    // will be computed for initial configuration after allocation of leaves to voxel field
-    t_GPP = t_NPP = t_Rday = t_Rnight = t_Rstem = 0.0;
-    
-#ifdef WATER
-    //*###########*/
-    //*## water ##*/
-    //*###########*/
-        
-    //Water_availability();
-    t_transpiration = 0.0;
-    t_WSF = t_WSF_A = 1.0; //  in doing so, the tree leaflifespan and LAImax are here computed under no water stress and average climatic conditions (radiation, temperature). This could/should be updated later, so that these two quantities change under water stress, and also with seasons. For now, t_WSF and t_WSF_A are then updated later in Tree::Birth to account for the real water conditions at birth.
-    Water_availability();
-    //roots are not set here in this first version, but at the beginning of Tree::Update, but see comments at Tree::Water_availability
-    //UpdateRootDistribution();
-#endif
-    //*################*/
-    //*## for output ##*/
-    //*################*/
-#ifdef Output_ABC
-    //parameter_name = "dbh_previous";
-    //parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-    //SetParameter(parameter_name, parameter_value, t_dbh_previous, 0.0f, t_dbh, t_dbh, quiet);
-    t_dbh_previous = t_dbh; // check whether proper initialisation is needed
-#endif
-#ifdef TRACK_INDIVIDUALS
-    StartTracking();
-#endif
 }
 
 
@@ -1978,7 +2039,7 @@ float Tree::CalcCt(){
     float dbhrealmax = t_dbhmax * 1.5;
     float hrealmax = t_mult_height * CalcHeightBaseline(t_ah, t_hmax, dbhrealmax);   // realized maximum height
     float vC_intraspecific = vC/1.5 - 1.0/(2.3 * t_mult_height) + 1.0/2.3;  //! since v.2.5: adjusting vC to intraspecific height variation. If vC was not modified, tall trees would start falling at much larger heights than smaller trees of the same species and with the same dbh, despite a much worse height/dbh ratio. The default assumption is now that the minimum onset of treefalls should be around the same height threshold irrespective of the height multiplier, but stronger assumptions would be justified too (i.e. tall trees falling more easily). The formula is derived as follows: assuming that the onset of treefall can be described by the 99.5 percentile of the sqrt(-log(uniform)) distribution, which is 2.3, we calculate the corresponding Ct_min and impose the condition that it stays equal irrespective of t_mult_height. In this case, we can solve for vC_intraspecific. This is a conservative assumption, likely a stronger dependence on dbh/height ratio would be found, but probably superseded by E-Ping's module anyways
-    float Ct = fminf(float(HEIGHT-1),hrealmax*fmaxf(1.0  - vC_intraspecific * sqrt(-log(gsl_rng_uniform_pos(gslrand))),0.0));
+    float Ct = fminf(float(HEIGHT-1),hrealmax*fmaxf(1.0  - vC_intraspecific * sqrt(-log(gsl_rng_uniform_pos(gslrng))),0.0));
     return(Ct);
 }
 
@@ -2234,7 +2295,7 @@ float Tree::predLeafLifespanKikuzawa(){
     float Vcmax_25_mass = t_Vcmax*LookUp_VcmaxT[convT]/t_LMA;
     
     //Core model
-    float b = exp(5.467025 - 1.138354 * log(Vcmax_25_mass) + gsl_ran_gaussian(gslrand, 0.6112195)); // parameter as in Xu et al. 2017, fit to their data
+    float b = exp(5.467025 - 1.138354 * log(Vcmax_25_mass) + gsl_ran_gaussian(gslrng, 0.6112195)); // parameter as in Xu et al. 2017, fit to their data
     float LL = 1.0 + 0.0333333 * fminf(b,sqrt(3.0 * 0.5 * t_LMA * b/GPP_effective));   // cf. Kikuzawa 1991 for formula, and Xu et al. 2017. As opposed to Xu et al. 2017 we assume decline in respiration rates. Also, LL can never be bigger than b
     LL = fmaxf(LL,3.0);
     
@@ -2376,7 +2437,7 @@ void Tree::CalcRespGPP(){
                 if(isnan(t_transpiration) || t_transpiration < 0.0) Rcout << "Problem at site: " <<  t_site << " transpiration: " << t_transpiration << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << " t_WSF_A: " << t_WSF_A << " t_WSF: " << t_WSF << endl << endl;
 #else
                 t_GPP += leafarea_layer * Tree::dailyGPPleaf(PPFD, VPD, Tmp);
-                //if(isnan(t_GPP) || t_GPP < 0.0 || PPFD == 0.0) Rcout << "Problem at site: " <<  t_site << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << endl << endl;
+                //if(isnan(t_GPP) || t_GPP < 0.0) Rcout << "Problem at site: " <<  t_site << " leafarea_layer: " << leafarea_layer << " GPP: " << t_GPP << " PPFD: " << PPFD << " VPD: " << VPD << " T: " << Tmp << endl << endl;
 #endif
                 t_Rday += leafarea_layer * Tree::dailyRdayleaf(Tmp);
                 leafarea_cumulated += leafarea_layer;
@@ -2673,8 +2734,8 @@ void Tree::DisperseSeed(){
             //update 2.5: rho does not seem to correspond to original 1999 paper anymore and in previous version predicted dispersal with a lower cutoff instead of the Rayleigh distribution
             //here we restore the previous formulation by using the Rayleigh implementation from the gsl library
             //for the moment, we do not use the crown radius as an additional dispersal kernel. This would lead to a loss of large tree species locally, because they will have much less seeds within the plot
-            float rho = gsl_ran_rayleigh(gslrand, S[t_sp_lab].s_ds);
-            float theta_angle = float(twoPi*gsl_rng_uniform(gslrand)); //Dispersal angle theta
+            float rho = gsl_ran_rayleigh(gslrng, S[t_sp_lab].s_ds);
+            float theta_angle = float(twoPi*gsl_rng_uniform(gslrng)); //Dispersal angle theta
             int col_tree = t_site%cols;
             int row_tree = t_site/cols;
             int dist_cols = int(rho*cos(theta_angle));
@@ -2711,12 +2772,12 @@ void Tree::Update() {
 #endif
         //v.2.4.0: outputs have been moved to Death() function
         if(_NDD)
-            death = int(gsl_rng_uniform(gslrand)+DeathRateNDD(t_dbh, t_NPPneg, t_NDDfield[t_sp_lab]));
+            death = int(gsl_rng_uniform(gslrng)+DeathRateNDD(t_dbh, t_NPPneg, t_NDDfield[t_sp_lab]));
         else
 #ifdef WATER  // note that I did not include a version with both drought-induced mortality and NDD effect on mortality, to be done if needed.
-            death = int(gsl_rng_uniform(gslrand)+DeathRate(t_dbh, t_NPPneg, t_phi_root));
+            death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, t_NPPneg, t_phi_root));
 #else
-            death = int(gsl_rng_uniform(gslrand)+DeathRate(t_dbh, t_NPPneg));
+            death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, t_NPPneg));
 #endif
         if(death) Death();
         else Growth();   // v.2.4: t_hurt is now updated in the TriggerTreefallSecondary() function
@@ -3056,8 +3117,31 @@ void ModifyNoinput(float noinput, float &dens_layer, float CD, float height, int
 // Global function: a modifying function that converts LAI to the density of a specific layer, using the GetDensity functions
 //! - modifier for GPP calculation where we need the leaves per layer to weight our results
 //! - LAI is the input, dens_layer the output
+void LAI2dens_cumulated(float LAI, float &dens_layer, float CD, float height, int layer_fromtop){
+    int crown_top = int(height);
+    int crown_base = int(height - CD);
+    float dens_top, dens_belowtop, dens;
+#ifdef LAI_gradient
+    GetDensitiesGradient(LAI, CD, dens_top, dens_belowtop, dens);
+#else
+    GetDensityUniform(LAI, CD, dens);
+    dens_top = dens_belowtop = dens;
+#endif
+
+    if(CD < 3.0 && crown_top == crown_base){
+        dens_layer = LAI;         /* full LAI allocation */
+    } else if(CD < 3.0 && (crown_top - layer_fromtop == crown_base)){
+        dens_layer = LAI;
+    } else {
+        float fraction_layer = height - floor(height);    /* this is the fraction that each layer apart from the topmost layer will extend into the voxel above */
+        if(layer_fromtop == 0) dens_layer = dens_top * fraction_layer;
+        else if(layer_fromtop == 1) dens_layer = dens_top + dens_belowtop * fraction_layer;
+        else if(layer_fromtop == 2) dens_layer = dens_top + dens_belowtop + dens * fraction_layer;
+        else dens_layer = LAI;
+    }
+}
+
 void LAI2dens(float LAI, float &dens_layer, float CD, float height, int layer_fromtop){
-    
     int crown_top = int(height);
     int crown_base = int(height - CD);
     float dens_top, dens_belowtop, dens;
@@ -3074,8 +3158,7 @@ void LAI2dens(float LAI, float &dens_layer, float CD, float height, int layer_fr
     else if(CD < 3.0 && (crown_top - layer_fromtop == crown_base)){
         float fraction_belowbase = float(crown_base+1) - (height - CD);
         dens_layer = dens * fraction_belowbase;
-    }
-    else{
+    } else{
         float fraction_layer = height - floor(height); // this is the fraction that each layer apart from the topmost layer will extend into the voxel above
         float fraction_layer_fromabove = 1.0 - fraction_layer; // the inverse of the fraction above
         
@@ -3276,23 +3359,6 @@ void trollCpp(
 //        }
 //    }
 
-    // Stuff for constant number generator
-    const gsl_rng_type *Trandgsl;
-    gsl_rng_env_setup();
-    Trandgsl = gsl_rng_default;
-    gslrand = gsl_rng_alloc (Trandgsl);
-    
-    Rcout << "Easy MPI rank: " << easympi_rank << endl;
-    
-    unsigned long int t = (unsigned long int) time(NULL);
-    unsigned long int seed = 3*t + 2*(easympi_rank+1)+1;
-    
-    if(_NONRANDOM == 1) seed = 1;
-    
-    gsl_rng_set(gslrand, seed);
-    
-    Rcout << "On proc #" << easympi_rank << " seed: " << seed << endl;
-    
     // input files
     sprintf(inputfile,"%s",bufi);
     sprintf(inputfile_daytimevar,"%s",bufi_daytimevar);
@@ -3304,14 +3370,38 @@ void trollCpp(
     }
     
     // v.3.1: removed par output, because no single parameter sheet provided anymore (in future all separate parameter sheets could be provided as outputs as well
-    sprintf(outputinfo,"%s_%i_par.txt",buf, easympi_rank); // Files with general output info
-    Rcout<< "On proc #" << easympi_rank << " seed: " << seed <<  endl;
+    ReadInputGeneral(); // v.3.1 has to be done before initialisation of random number generators (_NONRANDOM)
+    // Stuff for constant number generator
+    const gsl_rng_type *Trandgsl;
+    gsl_rng_env_setup();
+    Trandgsl = gsl_rng_default;
+    gslrng = gsl_rng_alloc (Trandgsl);
+
+    Rcout << "Easy MPI rank: " << easympi_rank << endl;
+
+    unsigned long int t = (unsigned long int) time(NULL);
+    unsigned long int seed = 3*t + 2*(easympi_rank+1)+1;
+
+    if(_NONRANDOM == 1) seed = 1;
+
+    gsl_rng_set(gslrng, seed);
+     
+    Rcout << "On proc #" << easympi_rank << " seed: " << seed << endl;
     sprintf(outputinfo,"%s_%i_info.txt",buf, easympi_rank);
-    out_info.open(outputinfo, ios::out);
-    if(!out_info) Rcerr<< "ERROR with info file"<< endl;
+#ifdef OUTPUT_local
+    fstream output_info;
+    fstream output_basic[3];
+#endif
+    output_info.open(outputinfo, ios::out);
+    if(!output_info) Rcerr<< "ERROR with info file"<< endl;
     
-    Initialise();           // Read global parameters
-    AllocMem();             // Memory allocation
+    Initialise();               // Read global parameters
+#ifdef OUTPUT_local
+    InitialiseOutputStreams(output_basic);  // Initialise Output streams
+#else
+    InitialiseOutputStreams();  // Initialise Output streams
+#endif
+    AllocMem();                 // Memory allocation
     
 #ifdef Output_ABC
     InitialiseABC();
@@ -3338,6 +3428,21 @@ void trollCpp(
     
     Rcout << "Simulation starts with " << nblivetrees << " trees." << endl;
     
+    //** Information in file info **
+    //******************************
+    if(!mpi_rank){
+        output_info << "\nTROLL simulator\n\n";
+        output_info << "\n   2D discrete network: horizontal step = " << LH
+        << " m, one tree per "<< LH*LH << " m^2 \n\n";
+        output_info << "\n   Tree : (t_dbh,t_height,t_CR,t_CD) \n\n";
+        output_info << "\n            + one species label \n\n";
+        output_info << " Number of sites      : "<<rows<<"x"<<cols<<"\n";
+        output_info << " Number of iterations : "<<nbiter<<"\n";
+        output_info << " Duration of timestep : "<<timestep<<" years\n";
+        output_info << " Number of Species    : "<<nbspp << "\n\n";
+        output_info.flush();
+    }
+    
     // initial pattern, should be empty, unless an inventory has been provided
     if(_OUTPUT_extended) OutputSnapshot(output_basic[1], 1, 0.01);                  // Initial Pattern, for trees > 0.01m DBH
     else OutputSnapshot(output_basic[1], 1, 0.1);                                   // Initial Pattern, for trees > 0.1m DBH
@@ -3348,6 +3453,13 @@ void trollCpp(
         start_time = stop_time;
         
         Evolution();
+#ifdef OUTPUT_local
+        Average(output_basic);                          //! Compute averages for outputs
+#else
+        Average();                          //! Compute averages for outputs
+#endif
+        if(_OUTPUT_extended) OutputField(); //! Output the statistics
+        
         stop_time = clock();
         duration +=fmaxf(stop_time-start_time,0.0);
         
@@ -3390,16 +3502,21 @@ void trollCpp(
     if(!mpi_rank) {
         Rcout << "\n";
 #ifdef MPI
-        out_info << "Number of processors : "<< mpi_size << "\n";
+        output_info << "Number of processors : "<< mpi_size << "\n";
 #endif
-        out_info << "Average computation time : "<< durf/float(mpi_size) << " seconds.\n";
-        out_info << "End of simulation.\n";
+        output_info << "Average computation time : "<< durf/float(mpi_size) << " seconds.\n";
+        output_info << "End of simulation.\n";
+        output_info.flush();
         Rcout << "\nNumber of processors : "<< mpi_size << "\n";
         Rcout << "Average computation time : "<< durf/float(mpi_size) << " seconds.\n";
         Rcout << "End of simulation.\n";
     }
-    out_info.close();
     
+    //Close outputs
+#ifdef OUTPUT_local
+#else
+    CloseOutputs();
+#endif
     //Free dynamic memory  //! added in oct2013
     FreeMem();
 #ifdef easyMPI
@@ -3427,8 +3544,10 @@ void SetParameter(string &parameter_name, string &parameter_value, N &parameter,
     // Check if the entire string was consumed and if either failbit or badbit is set
     bool isnumeric = iss.eof() && !iss.fail();
     if(isnumeric){
-        if(numeric >= parameter_min && numeric <= parameter_max){
-            parameter = numeric;
+        if(numeric >= parameter_min * 0.99 && numeric <= parameter_max * 1.01){   // built in precision check, quite tolerant (1%)
+            if(numeric < parameter_min) parameter = parameter_min;
+            else if(numeric > parameter_max) parameter = parameter_max;
+            else parameter = numeric;
             if(!quiet) Rcout << parameter_name << ": " << parameter << endl;
         } else {
             parameter = parameter_default;
@@ -4024,21 +4143,21 @@ void InitialiseIntraspecific(){
     double variation_height=0.0, variation_CR=0.0, variation_CD=0.0, variation_P=0.0, variation_N=0.0, variation_LMA=0.0,variation_wsg=0.0,variation_dbhmax=0.0;
     for(int i=0;i<100000;i++){
         if(covariance_status == 0){
-            variation_N = gsl_ran_gaussian(gslrand, sigma_N);
-            variation_P = gsl_ran_gaussian(gslrand, sigma_P);
-            variation_LMA = gsl_ran_gaussian(gslrand, sigma_LMA);
+            variation_N = gsl_ran_gaussian(gslrng, sigma_N);
+            variation_P = gsl_ran_gaussian(gslrng, sigma_P);
+            variation_LMA = gsl_ran_gaussian(gslrng, sigma_LMA);
         } else {
-            gsl_ran_multivariate_gaussian(gslrand, mu_N_P_LMA, mcov_N_P_LMA, variation_N_P_LMA);
+            gsl_ran_multivariate_gaussian(gslrng, mu_N_P_LMA, mcov_N_P_LMA, variation_N_P_LMA);
             variation_N = gsl_vector_get(variation_N_P_LMA, 0);
             variation_P = gsl_vector_get(variation_N_P_LMA, 1);
             variation_LMA = gsl_vector_get(variation_N_P_LMA, 2);
         }
-        gsl_ran_bivariate_gaussian(gslrand, sigma_height, sigma_CR, corr_CR_height, &variation_height, &variation_CR);
-        // variation_height = gsl_ran_gaussian(gslrand, sigma_height);
-        // variation_CR = gsl_ran_gaussian(gslrand, sigma_CR);
-        variation_CD = gsl_ran_gaussian(gslrand, sigma_CD);
-        variation_wsg = gsl_ran_gaussian(gslrand, sigma_wsg);
-        variation_dbhmax = gsl_ran_gaussian(gslrand, sigma_dbhmax);
+        gsl_ran_bivariate_gaussian(gslrng, sigma_height, sigma_CR, corr_CR_height, &variation_height, &variation_CR);
+        // variation_height = gsl_ran_gaussian(gslrng, sigma_height);
+        // variation_CR = gsl_ran_gaussian(gslrng, sigma_CR);
+        variation_CD = gsl_ran_gaussian(gslrng, sigma_CD);
+        variation_wsg = gsl_ran_gaussian(gslrng, sigma_wsg);
+        variation_dbhmax = gsl_ran_gaussian(gslrng, sigma_dbhmax);
 
         // limit extent of variation, some coarse biological limits for variation around allometries
         if(variation_N > 0.5) variation_N = 0.5;
@@ -4062,7 +4181,7 @@ void InitialiseIntraspecific(){
         d_intraspecific_CD[i] = float(exp(variation_CD));
         d_intraspecific_wsg[i] = float(variation_wsg);             // normal, not log-normal
         d_intraspecific_dbhmax[i] = float(exp(variation_dbhmax));
-        // d_intraspecific_height[i] = exp(float(gsl_ran_gaussian(gslrand, sigma_height)));
+        // d_intraspecific_height[i] = exp(float(gsl_ran_gaussian(gslrng, sigma_height)));
         max_intraspecific_height = fmaxf(max_intraspecific_height,d_intraspecific_height[i]);
         min_intraspecific_height = fminf(min_intraspecific_height,d_intraspecific_height[i]);
         max_intraspecific_CR = fmaxf(max_intraspecific_CR,d_intraspecific_CR[i]);
@@ -4202,7 +4321,11 @@ void InitialiseLookUpTables(){
 }
 
 //! Global function: initialise output streams
+#ifdef OUTPUT_local
+void InitialiseOutputStreams(fstream output_basic[3]){
+#else
 void InitialiseOutputStreams(){
+#endif
     char nnn[200];
     if(!mpi_rank) {
         sprintf(nnn,"%s_%i_sumstats.txt",buf, easympi_rank);
@@ -4327,7 +4450,6 @@ void Initialise() {
     iter = -1;  // changed in v.3.0.1, previously undefined; new function GetTimeofyear accepts also negative iterations
     nblivetrees = 0;
       
-    ReadInputGeneral();
     ReadInputSpecies();
     ReadInputDailyvar();
     ReadInputClimate();
@@ -4335,21 +4457,6 @@ void Initialise() {
 #ifdef WATER
     ReadInputSoil();
 #endif
-    
-    //** Information in file info **
-    //******************************
-    if(!mpi_rank){
-        out_info << "\nTROLL simulator\n\n";
-        out_info << "\n   2D discrete network: horizontal step = " << LH
-        << " m, one tree per "<< LH*LH << " m^2 \n\n";
-        out_info << "\n   Tree : (t_dbh,t_height,t_CR,t_CD) \n\n";
-        out_info << "\n            + one species label \n\n";
-        out_info << " Number of sites      : "<<rows<<"x"<<cols<<"\n";
-        out_info << " Number of iterations : "<<nbiter<<"\n";
-        out_info << " Duration of timestep : "<<timestep<<" years\n";
-        out_info << " Number of Species    : "<<nbspp << "\n\n";
-        out_info.flush();
-    }
     
     //** Initialization of trees **
     //*****************************
@@ -4368,7 +4475,6 @@ void Initialise() {
     }
     InitialiseIntraspecific();
     InitialiseLookUpTables();
-    InitialiseOutputStreams();
 }
 
 #ifdef Output_ABC
@@ -4536,14 +4642,14 @@ void ReadInputInventory(){
                 int col = -1, row = -1;
                 bool quiet = 1;
                 if(flag_col == 0 && flag_row == 0){
-                    SetParameter(parameter_names[pcol], parameter_values[pcol], col, 0, cols, -1, quiet);
-                    SetParameter(parameter_names[prow], parameter_values[prow], row, 0, rows, -1, quiet);
+                    SetParameter(parameter_names[pcol], parameter_values[pcol], col, 0, cols-1, -1, quiet);
+                    SetParameter(parameter_names[prow], parameter_values[prow], row, 0, rows-1, -1, quiet);
                 }
                 
                 if(col >= 0 && row >= 0){
                     int site = col + row * cols;
                     int i = 0;
-                    while(T[site].t_age != 0 && i < area_max){
+                    while(T[site].t_age != 0.0 && i < area_max){
                         i++;
                         int site_relative = LookUp_Crown_site[i];
                         int row_new = row + site_relative/51 - 25;
@@ -4554,21 +4660,25 @@ void ReadInputInventory(){
                         }
                     }
 
-                    if(T[site].t_age == 0){
-                        T[site].BirthFromInventory(site, parameter_names, parameter_values, nb_speciesrandom);
-                        nb_individuals++;
-                        if(i > 0) nb_moved++;
+                    if(T[site].t_age == 0.0){
+                        int success = T[site].BirthFromInventory(site, parameter_names, parameter_values, nb_speciesrandom);
+                        if(success == 1){
+                            nb_individuals++;
+                            if(i > 0) nb_moved++;
+                        }
                     }
                 } else {
                     // find a random free site
-                    while(sites_shuffled_index < sites && T[sites_shuffled[sites_shuffled_index]].t_age != 0) sites_shuffled_index++;
+                    while(sites_shuffled_index < sites && T[sites_shuffled[sites_shuffled_index]].t_age != 0.0) sites_shuffled_index++;
                     
                     if(sites_shuffled_index < sites){
                         // as long as the search has stopped and the index has not run outside the range, the tree can be initialized
                         int site = sites_shuffled[sites_shuffled_index];
-                        T[site].BirthFromInventory(site, parameter_names, parameter_values, nb_speciesrandom);
-                        nb_individuals++;
-                        nb_random++;
+                        int success = T[site].BirthFromInventory(site, parameter_names, parameter_values, nb_speciesrandom);
+                        if(success == 1){
+                            nb_individuals++;
+                            nb_random++;
+                        }
                     }
                 }
             
@@ -4590,6 +4700,48 @@ void ReadInputInventory(){
      }
      
      InInventory.close();
+     
+     //*#################################################################*/
+     //*### Update Leaf Area for more realistic initial configuration ###*/
+     //*#################################################################*/
+     // To do so, we order by height first and then allocate leaf area from top to bottom
+     vector<float> heights_trees;
+     vector<int> sites_trees;
+     
+     heights_trees.reserve(sites);
+     sites_trees.reserve(sites);
+     
+     for(int site = 0; site < sites; site++){
+        // Only consider non-initialized trees (i.e. t_LA < 0.0)
+        if(T[site].t_age > 0.0 & T[site].t_LA < 0.0){
+            float height = T[site].t_height;
+            heights_trees.push_back(height);
+            sites_trees.push_back(site);
+            
+            int index_tree_current = int(sites_trees.size()) - 1;
+            
+            while(index_tree_current > 0 && height > heights_trees[index_tree_current - 1]){
+                heights_trees[index_tree_current] = heights_trees[index_tree_current - 1];
+                sites_trees[index_tree_current] = sites_trees[index_tree_current - 1];
+                
+                heights_trees[index_tree_current - 1] = height;
+                sites_trees[index_tree_current - 1] = site;
+                index_tree_current--;
+            }
+        }
+     }
+     
+     // clear voxel field
+     for(int h=0;h<(HEIGHT+1);h++)
+         for(int sbsite=0;sbsite<sites+2*SBORD;sbsite++)
+             LAI3D[h][sbsite] = 0.0;
+     
+     // allocate and compute leaf area
+     for(int index_site = 0; index_site < sites_trees.size(); index_site++){
+        int site = sites_trees[index_site];
+        //Rcout << site << " Site of tree: " << T[site].t_site << " Height: " << T[site].t_height << " Height from index: " << heights_trees[index_site] << endl;
+        T[site].CalcLAinitial();
+     }
 }
 
 //######################################
@@ -4608,18 +4760,20 @@ void AllocMem() {
     SBORD = cols*RMAX;
     dbhmaxincm = int(100.*d);
     Rcout << "SBORD: " << SBORD << endl;
-    if(!mpi_rank){
-        //Rcout << "HEIGHT : " << HEIGHT << " RMAX : " << RMAX << " DBH : " << DBH <<"\n"; Rcout.flush();
-        if(RMAX>rows){
-            // Consistency tests
-            Rcerr << "Error : RMAX > rows \n";
-            // exit(-1);
-        }
-        if(HEIGHT > rows){
-            Rcerr << "Error : HEIGHT > rows \n";
-            // exit(-1);
-        }
-    }
+    
+    // v.3.1: commented consistency tests due to problematic exit() functions, to be checked again once MPI is re-implemented
+//    if(!mpi_rank){
+//        Rcout << "HEIGHT : " << HEIGHT << " RMAX : " << RMAX << " DBH : " << DBH <<"\n"; Rcout.flush();
+//        if(RMAX>rows){
+//            // Consistency tests
+//            Rcerr << "Error : RMAX > rows \n";
+//            exit(-1);
+//        }
+//        if(HEIGHT > rows){
+//            Rcerr << "Error : HEIGHT > rows \n";
+//            exit(-1);
+//        }
+//    }
     
     //** Initialization of dynamic Fields **
     //**************************************
@@ -4775,8 +4929,6 @@ void Evolution() {
         T[site].Update();
     }
     // Update trees
-    Average();                          //! Compute averages for outputs
-    if(_OUTPUT_extended) OutputField(); //! Output the statistics
 }
 
 
@@ -4790,14 +4942,14 @@ void UpdateSeeds() {
     if(timeofyear == 0){
         // acceleration, using the multinomial distribution
         int ha = sites/10000;
-        gsl_ran_multinomial(gslrand, sites, Cseedrain * ha, p_seed, n_seed);
+        gsl_ran_multinomial(gslrng, sites, Cseedrain * ha, p_seed, n_seed);
         Rcout << sites << " Seedrain: " << Cseedrain * ha << endl;
         int seedsadded = 0;
         for(int s = 0; s < sites; s++){
             //if(T[s].t_age == 0){
                 int nbseeds = n_seed[s];
                 //Rcout << "Site: " << s << " nbseeds: " << nbseeds << " nbspp: " << nbspp << endl;
-                gsl_ran_multinomial(gslrand, nbspp, nbseeds, p_species, n_species);
+                gsl_ran_multinomial(gslrng, nbspp, nbseeds, p_species, n_species);
                 for(int spp = 1; spp <= nbspp; spp++){
                     int nbseeds_species = n_species[spp-1];
                     //Rcout << "Site: " << s << " Species: " << spp << " nbseeds: " << nbseeds_species << endl;
@@ -5089,8 +5241,8 @@ void RecruitTree(){
             }
             if(spp_withseeds > 0) {  // ... and then randomly select one of these species
                 
-                // new in v.2.4.1: for consistency use genrand2() instead of since v.2.5: use gsl RNG
-                int spp_index = int(gsl_rng_uniform_int(gslrand,spp_withseeds));
+                // new in v.2.4.1: for consistency use genrand2() instead of rand(), since v.2.5: use gsl RNG
+                int spp_index = int(gsl_rng_uniform_int(gslrng,spp_withseeds));
                 int spp = SPECIES_GERM[spp_index];
                 // otherwise all species with seeds present are equiprobable
                 float flux = WDailyMean*exp(-fmaxf(LAI3D[0][site+SBORD],0.0)*kpar);
@@ -5118,8 +5270,8 @@ void TriggerTreefall(){
             // _BASICTREEFALL: just dependent on height threshold + random uniform distribution
             float angle = 0.0, c_forceflex = 0.0;
             if(_BASICTREEFALL){
-                c_forceflex = gsl_rng_uniform(gslrand)*T[site].t_height;     // probability of treefall = 1-t_Ct/t_height, compare to genrand2(): genrand2() < 1 - t_Ct/t_height, or: genrand2() > t_Ct/t_height
-                angle = float(twoPi*gsl_rng_uniform(gslrand));                    // random angle
+                c_forceflex = gsl_rng_uniform(gslrng)*T[site].t_height;     // probability of treefall = 1-t_Ct/t_height, compare to genrand2(): genrand2() < 1 - t_Ct/t_height, or: genrand2() > t_Ct/t_height
+                angle = float(twoPi*gsl_rng_uniform(gslrng));                    // random angle
             }
             // above a given stress threshold the tree falls
             if(c_forceflex > T[site].t_Ct){
@@ -5162,9 +5314,9 @@ void TriggerTreefallSecondary(){
     for(int site=0;site<sites;site++){
         if(T[site].t_age){
             float height_threshold = T[site].t_height/T[site].t_mult_height;  // since 2.5: a tree's stability is defined by its species' average height, i.e. we divide by the intraspecific height multiplier to account for lower stability in quickly growing trees; otherwise slender, faster growing trees would be treated preferentially and experience less secondary treefall than more heavily built trees
-            if(2.0*T[site].t_hurt*gsl_rng_uniform(gslrand) > height_threshold) {        // check whether tree dies: probability of death is 1.0-0.5*t_height/t_hurt, so gslrand <= 1.0 - 0.5 * t_height/t_hurt, or gslrand > 0.5 * t_height/t_hurt; modified in v.2.5: probability of death is 1.0 - 0.5*t_height/(t_mult_height * t_hurt), so the larger the height deviation (more slender), the higher the risk of being thrown by another tree
-                if(p_tfsecondary > gsl_rng_uniform(gslrand)){                              // check whether tree falls or dies otherwise
-                   float angle = float(twoPi*gsl_rng_uniform(gslrand));                    // random angle
+            if(2.0*T[site].t_hurt*gsl_rng_uniform(gslrng) > height_threshold) {        // check whether tree dies: probability of death is 1.0-0.5*t_height/t_hurt, so gslrng <= 1.0 - 0.5 * t_height/t_hurt, or gslrng > 0.5 * t_height/t_hurt; modified in v.2.5: probability of death is 1.0 - 0.5*t_height/(t_mult_height * t_hurt), so the larger the height deviation (more slender), the higher the risk of being thrown by another tree
+                if(p_tfsecondary > gsl_rng_uniform(gslrng)){                              // check whether tree falls or dies otherwise
+                   float angle = float(twoPi*gsl_rng_uniform(gslrng));                    // random angle
                    T[site].Treefall(angle);
                 } else {
                     T[site].Death();
@@ -5236,7 +5388,11 @@ int CalcIntabsorb(float absorb_prev){
 // Global function: calculation of the global averages every timestep
 //##############################################
 
+#ifdef OUTPUT_local
+void Average(fstream output_basic[3]){
+#else
 void Average(void){
+#endif
     
 #ifdef TRACK_INDIVIDUALS
     TrackingData_andOutput();
@@ -5489,6 +5645,7 @@ void OutputField(){
 //! - This can be used to take snapshots of the forest in more detail and track its development over time.
 //! - updated in v.3.1, now outputting all tree-based variables
 void OutputSnapshot(fstream& output, bool header, float dbh_limit){
+    Rcout << "Writing snapshot of forest to file." << endl;
     if(header == 1){
         output << "iter\tcol\trow\tfrom_Data\tsp_lab\tsite\tCrownDisplacement\tPmass\tNmass\tLMA\twsg\tRdark\tVcmax\tJmax\tleaflifespan\tlambda_young\tlambda_mature\tlambda_old\tdbhmature\tdbhmax\thmax\tah\tCt\tLAImax\tfraction_filled\tmult_height\tmult_CR\tmult_CD\tmult_P\tmult_N\tmult_LMA\tmult_dbhmax\tdev_wsg\tage\tdbh\tsapwood_area\theight\tCD\tCR\tGPP\tNPP\tRday\tRnight\tRstem\tLAmax\tLA\tyoungLA\tmatureLA\toldLA\tLAI\tlitter\tcarbon_storage\tcarbon_biometry\tmultiplier_seed\thurt\tNPPneg";
         
@@ -5778,7 +5935,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
     for(int r = row_start; r < row_end; r++){
         for(int c = col_start; c < col_end; c++){
             int site = c + r * cols;
-            int nbbeams = int(mean_beam + gsl_ran_gaussian(gslrand, sd_beam));    // always rounding up
+            int nbbeams = int(mean_beam + gsl_ran_gaussian(gslrng, sd_beam));    // always rounding up
             nbbeams = max(nbbeams,1);
             
             //loop over the field from maximum height to 0 and iteratively update voxels from top to bottom, following the beam. An alternative version, also allowing for ground returns, can be activated to extending the loop to h >= -1. In this case, when a beam is not extinguished before it reaches the ground (h >= 0), then it is counted as a ground return
@@ -5810,7 +5967,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
                             float LAD = LAI_current - LAI_above;
                             if(LAD > 0.0) prob_hit = 1.0 - exp(-klaser * LAD);
                             else prob_hit = 0.0;
-                            hits = gsl_ran_binomial(gslrand, prob_hit, nbbeams);
+                            hits = gsl_ran_binomial(gslrng, prob_hit, nbbeams);
                             //transmittance = exp(-klaser * LAD);
                             if(hits == 0){
                                 transmittance = 1.0;
@@ -5820,7 +5977,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
                                 nbbeams -= hits;
                                 //nbbeams += int(0.1*float(hits));                            // 10% of intercepted beams are not getting extinct
                                 // now simulate transmittance of beam through the leaves
-                                int hits_notextinct = gsl_ran_binomial(gslrand, transmittance_laser, hits);
+                                int hits_notextinct = gsl_ran_binomial(gslrng, transmittance_laser, hits);
                                 nbbeams += hits_notextinct;
                             }
                         }
@@ -6113,7 +6270,7 @@ void OutputABCConservationTraits(fstream& output_traitconservation){
     //Means and 2nd moment for calculation of sd later on
     for(int s=0;s<sites;s++){
         if(T[s].t_age > 0 && T[s].t_dbh >= 0.1){
-            int dev_rand = int(gsl_rng_uniform_int(gslrand,100000));
+            int dev_rand = int(gsl_rng_uniform_int(gslrng,100000));
             
             nb_trees_counted++;
             mu_random += dev_rand;
@@ -6425,10 +6582,10 @@ void OutputABC_ground(fstream& output_field){
                 float sd1 = (0.0062 * dbh_previous * 100.0 + 0.0904)*0.01;
                 float sd2 = 0.0464;
                 
-                float prob = gsl_rng_uniform(gslrand);
+                float prob = gsl_rng_uniform(gslrng);
                 float error;
-                if(prob < 0.95) error = gsl_ran_gaussian(gslrand, sd1);
-                else error = gsl_ran_gaussian(gslrand, sd2);
+                if(prob < 0.95) error = gsl_ran_gaussian(gslrng, sd1);
+                else error = gsl_ran_gaussian(gslrng, sd2);
                 
                 float dbh_previous_witherror = fmaxf(dbh_previous + error, 0.66 * dbh_previous);
                 dbh_previous_witherror = fminf(dbh_previous_witherror, 1.33 * dbh_previous);
@@ -6457,10 +6614,10 @@ void OutputABC_ground(fstream& output_field){
                     float sd1 = (0.0062 * dbh_previous * 100.0 + 0.0904)*0.01;
                     float sd2 = 0.0464;
                     
-                    float prob = gsl_rng_uniform(gslrand);
+                    float prob = gsl_rng_uniform(gslrng);
                     float error;
-                    if(prob < 0.95) error = gsl_ran_gaussian(gslrand, sd1);
-                    else error = gsl_ran_gaussian(gslrand, sd2);
+                    if(prob < 0.95) error = gsl_ran_gaussian(gslrng, sd1);
+                    else error = gsl_ran_gaussian(gslrng, sd2);
                     
                     float dbh_witherror = fmaxf(dbh + error, 0.66 * dbh);
                     dbh_witherror = fminf(dbh_witherror, 1.33 * dbh);
@@ -7290,6 +7447,43 @@ void MPI_ShareTreefall(unsigned short **c, int n) {
     if(p_rank == 0) MPI_Sendrecv(c[0]+2*n,n,MPI_UNSIGNED_SHORT,1,1,c[1],n,MPI_UNSIGNED_SHORT,size-1,1,MPI_COMM_WORLD,&status);
     if(p_rank == size-1) MPI_Sendrecv(c[0]+2*n,n,MPI_UNSIGNED_SHORT,0,1,c[1],n,MPI_UNSIGNED_SHORT,size-2,1,MPI_COMM_WORLD,&status);
     if((p_rank) && (p_rank < size-1)) MPI_Sendrecv(c[0]+2*n,n,MPI_UNSIGNED_SHORT,p_rank+1,1,c[1],n,MPI_UNSIGNED_SHORT,p_rank-1,1,MPI_COMM_WORLD,&status);
+}
+#endif
+
+//! Close outputs
+#ifdef OUTPUT_local
+#else
+void CloseOutputs(){
+    output_info.close();
+    output_info.clear();
+    
+    for(int i = 0; i < 3; i++){
+        output_basic[i].close();
+        output_basic[i].clear();
+    }
+    for(int i = 0; i < 9; i++){
+        output_extended[i].close();
+        output_extended[i].clear();
+    }
+
+#ifdef Output_ABC
+    for(int i = 0; i < 11; i++){
+        output_abc[i].close();
+        output_abc[i].clear();
+    }
+#endif
+#ifdef WATER
+    for(int i = 0; i < 10; i++){
+        output_water[i].close();
+        output_water[i].clear();
+    }
+#endif
+#ifdef TRACK_INDIVIDUALS
+    for(int i = 0; i < 3; i++){
+        output_track[i].close();
+        output_track[i].clear();
+    }
+#endif
 }
 #endif
 
