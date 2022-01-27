@@ -22,9 +22,9 @@ stack(
 \arguments{
 \item{name}{char. Stack name (if NULL timestamp).}
 
-\item{simulations}{char. Simulations names.}
+\item{simulations}{char. Simulation names.}
 
-\item{path}{char. Path to save the simulations outputs, the default is null
+\item{path}{char. Path to save the simulation outputs, the default is null
 corresponding to a simulation in memory without saved intermediary files.}
 
 \item{global}{df. Global parameters.}
@@ -35,7 +35,7 @@ corresponding to a simulation in memory without saved intermediary files.}
 
 \item{daily}{df. Daily variation parameters.}
 
-\item{forest}{df. TROLL with forest input, if null start from an empty grid
+\item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
 
 \item{verbose}{bool. Show TROLL outputs in the console.}
@@ -46,7 +46,7 @@ cores - 1 (default NULL).}
 \item{overwrite}{bool. Overwrite previous outputs.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce outputs size, default is NULL and corresponds to no
+kept to reduce output size, default is NULL and corresponds to no
 thinning.}
 }
 \value{

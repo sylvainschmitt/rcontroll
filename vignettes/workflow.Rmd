@@ -96,7 +96,7 @@ autoplot(sim, what = "temporal",
   theme(legend.position = "bottom")
 ```
 
->Note that `autoplot` result in a `ggplot2` object that you can modify with the `+` operator and other `ggplot2` command such as `theme` used here to change the legend position.
+>Note that `autoplot` results in a `ggplot2` object that you can modify with the `+` operator and other `ggplot2` commands such as `theme` used here to change the legend position.
 
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
@@ -114,7 +114,7 @@ autoplot(sim, what = "distribution", variables = c("dbh", "height", "LA", "LMA")
 
 We run a stack of simulations using the `stack` function with loaded and generated data.
 We can inactivate `verbose` to see only the loading bar.
-We can define the number of cores used for parrallelization.
+We can define the number of cores used for parallelization.
 And we can define a thinning of outputs by giving the number of iterations to be kept to reduce the output size.
 
 ```{r fullstack}
@@ -167,7 +167,7 @@ autoplot(TROLLv3_output, what = "spatial", variables = "age")
 ```
 
 To run the simulation we first extracted the forest from `TROLLv3_output`, in which we removed unused columns (not mandatory).
-Then we extracted the previous simulation parameters to run the new one in similar conditions, we only change the time length to 12 iterations.
+Then we extracted the previous simulation parameters to run the new one in similar conditions, we only changed the time length to 12 iterations.
 And we finally used the same `troll` function adding the previous forest to initiate the simulation with the `forest` parameter.
 A forest inventory can also be used with at least coordinates and DBH.
 
@@ -188,7 +188,7 @@ sim <- troll(name = "test",
 ```
 
 We can quickly plot temporal trajectories of both simulations to check that the initialization from `TROLLv3_output` worked. 
-For that we updated the simulation iteration index by adding the number realized in the previous simulation.
+For that we updated the simulation iteration index by adding the number realised in the previous simulation.
 Then we simply joined ecosystem outputs with `bind_rows` before using `ggplot` to show aboveground biomass (agb) temporal trajectory: 
 
 ```{r}
@@ -203,4 +203,4 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
   ylab(expression(Abovergound~biomass~(AGB~Kg~ha^{-1})))
 ```
 
->Note how the simulation AGB start at the end of `TROLLv3_output`'s temporal trajectory.  
+>Note how the simulation AGB starts at the end of `TROLLv3_output`'s temporal trajectory.  

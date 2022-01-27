@@ -20,10 +20,10 @@
 species. "spatial" is for spatial patterns in the initial or final forest.
 "distribution" is for metrics distribution in the initial or final forest.}
 
-\item{variables}{char. Wich variable(s) to plot. Only one variable is
+\item{variables}{char. Which variable(s) to plot. Only one variable is
 accepted when plotting "spatial".}
 
-\item{species}{char. Which species to plot. NULL indicate the whole ecosystem
+\item{species}{char. Which species to plot. NULL indicates the whole ecosystem
 level. "all" can be used to use all species.}
 
 \item{iter}{char. Which iteration(s) to plot, for temporal thinning or to

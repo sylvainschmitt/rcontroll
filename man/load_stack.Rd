@@ -12,7 +12,7 @@ load_stack(name, path, thin = NULL)
 \item{path}{char. Path where the stack is saved.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce outputs size, default is NULL and corresponds to no
+kept to reduce output size, default is NULL and corresponds to no
 thinning.}
 }
 \value{

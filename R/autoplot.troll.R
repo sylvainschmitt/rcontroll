@@ -22,9 +22,9 @@ NULL
 #'   "temporal" is for temporal trajectories of the whole ecosystem or defined
 #'   species. "spatial" is for spatial patterns in the initial or final forest.
 #'   "distribution" is for metrics distribution in the initial or final forest.
-#' @param variables char. Wich variable(s) to plot. Only one variable is
+#' @param variables char. Which variable(s) to plot. Only one variable is
 #'   accepted when plotting "spatial".
-#' @param species char. Which species to plot. NULL indicate the whole ecosystem
+#' @param species char. Which species to plot. NULL indicates the whole ecosystem
 #'   level. "all" can be used to use all species.
 #' @param iter char. Which iteration(s) to plot, for temporal thinning or to
 #'   specify which forest to plot. "initial" or "final" can be used. NULL is

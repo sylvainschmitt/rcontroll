@@ -1,19 +1,19 @@
 #' Generate parameters
 #'
 #' Function to generate the global parameters used in the TROLL simulation. All
-#' parameters have a default values used in French Guiana simulations.
+#' parameters have a default value used in French Guiana simulations.
 #'
 #' @param cols num. Number of columns.
 #' @param rows num. Number of rows.
 #' @param HEIGHT num. Vertical extent of simulation.
 #' @param length_dcell num. Linear size of a dcell.
 #' @param nbiter num. Total number of timesteps.
-#' @param iterperyear num. Number of iteration per year.
+#' @param iterperyear num. Number of iterations per year.
 #' @param NV num. Vertical number of cells (per m).
 #' @param NH num. Horizontal number of cells (per m).
 #' @param nbout num. Number of outputs.
 #' @param nbspp num. Number of species
-#' @param SWtoPPFD num. Convert short wave irradiance to PAR photons.
+#' @param SWtoPPFD num. Convert shortwave irradiance to PAR photons.
 #' @param p_nonvert num. Light incidence parameter (difference through turbid
 #'   medium).
 #' @param klight num. Light attenuation in the canopy following a Beer-Lambert
