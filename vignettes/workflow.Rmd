@@ -79,16 +79,18 @@ We can print a simple summary of the simulation.
 sim
 ```
 
+# Plot outputs
+
 We can quickly plot simulation outputs using the `autoplot` method for three types of outputs defined with the `what` parameter:
 
-* the `forest` at start or at the end of simulation,
-* the `ecosystem` temporal trajectories
-* the `species` temporal trajectories
+* the `temporal` trajectories of variables for the whole ecosystem or user-defined species,
+* the `spatial` patterns of variables, including species labels, at forest initial or final pattern,
+* the `distribution` of variables at forest initial or final pattern for the whole ecosystem or user-defined species.
 
 For instance here we show species temporal trajectories for all available variables using 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*:
 
 ```{r fullsimG1, fig.width=8}
-autoplot(sim, what = "species", 
+autoplot(sim, what = "temporal", 
          species = c("Cecropia_obtusa","Dicorynia_guianensis",
                      "Eperua_grandiflora","Vouacapoua_americana")) +
   theme(legend.position = "bottom")
@@ -96,13 +98,17 @@ autoplot(sim, what = "species",
 
 >Note that `autoplot` result in a `ggplot2` object that you can modify with the `+` operator and other `ggplot2` command such as `theme` used here to change the legend position.
 
-Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `forest`:
+Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
 ```{r fullsimG2}
-autoplot(sim, what = "forest")
+autoplot(sim, what = "spatial")
 ```
 
+Finally, we can quickly plot variables distribution at forest final patterns using `autoplot` and `what` defined on `distribution`:
 
+```{r fullsimG3}
+autoplot(sim, what = "distribution", variables = c("dbh", "height", "LA", "LMA"))
+```
 
 # Stack of simulations
 
@@ -114,7 +120,6 @@ And we can define a thinning of outputs by giving the number of iterations to be
 ```{r fullstack}
 sim_stack <- stack(name = "teststack", 
              simulations = c("seed50000", "seed500"),
-             # path = "../",
              global = TROLLv3_input_stack,
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
@@ -130,18 +135,18 @@ We can print a simple summary of the simulations.
 sim_stack
 ```
 
-We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on ecosystem, for instance here with basal area (ba) and aboveground biomass (agb):
+We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on `temporal`, for instance here with basal area (ba) and aboveground biomass (agb):
 
 ```{r fullstackG1}
 autoplot(sim_stack, 
-         what = "ecosystem", 
+         what = "temporal", 
          variables = c("ba", "agb"))
 ```
 
-Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `forest`:
+Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
 ```{r fullstackG2, fig.height=4}
-autoplot(sim_stack, what = "forest")
+autoplot(sim_stack, what = "spatial")
 ```
 
 # From a forest
@@ -152,13 +157,13 @@ using the `troll` function with the `forest` parameter.
 We can first have a look to the ecosystem temporal trajectories of the `TROLLv3_output` simulation:
 
 ```{r}
-autoplot(TROLLv3_output, what = "ecosystem")
+autoplot(TROLLv3_output, what = "temporal")
 ```
 
 Similarly we can have a look to the the forest final pattern from `TROLLv3_output` that we will use to initiate the next simulation:
 
 ```{r}
-autoplot(TROLLv3_output, what = "forest")
+autoplot(TROLLv3_output, what = "spatial", variables = "age")
 ```
 
 To run the simulation we first extracted the forest from `TROLLv3_output`, in which we removed unused columns (not mandatory).
