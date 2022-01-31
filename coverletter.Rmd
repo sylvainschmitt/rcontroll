@@ -1,0 +1,40 @@
+---
+title: "Cover letter"
+output: 
+  bookdown::html_document2:
+    number_sections: false  
+    toc: no
+    toc_float: yes
+  bookdown::word_document2:
+    reference_docx: ./template/template.docx
+  bookdown::pdf_document2:
+    includes:
+      before_body: ./template/doc_prefix.tex
+      in_header: ./template/preamble.tex
+    number_sections: false
+    toc: false
+    keep_tex: no
+linestretch: 1.5
+csl: bibliography/mee.csl
+bibliography: bibliography/library.bib
+link-citations: yes
+---
+
+Dear Editor,
+
+We would like to submit an original research article entitled “rcontroll: an R interface to the individual-based forest growth simulator TROLL” for consideration to publish as an Application in Methods in Ecology and Evolution. 
+
+**About?**
+
+**What?**
+
+**Why us?**
+
+We have no conflicts of interest to disclose. 
+Thank you for your consideration.
+
+Sincerely,
+
+Sylvain Schmitt,
+on behalf of the coauthors
+

@@ -1,0 +1,31 @@
+---
+title: "Supporting Information"
+output: 
+  bookdown::html_document2:
+    number_sections: false  
+    toc: true
+    toc_float: yes
+  bookdown::word_document2:
+    reference_docx: ./template/template.docx
+  bookdown::pdf_document2:
+    includes:
+      before_body: ./template/doc_prefix.tex
+      in_header: ./template/preamble.tex
+    number_sections: false
+    toc: false
+    keep_tex: no
+linestretch: 1.5
+csl: bibliography/mee.csl
+bibliography: bibliography/library.bib
+link-citations: yes
+---
+
+# Article title: **rcontroll: an R interface to the individual-based forest growth simulator TROLL**
+
+Authors: Sylvain Schmitt, Guillaume Salzet, Fabian Jörg Fischer, Isabelle Maréchaux, Jerome Chave
+
+The following Supporting Information is available for this article:
+
+\newpage
+
+

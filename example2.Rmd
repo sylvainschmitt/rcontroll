@@ -1,0 +1,35 @@
+---
+title: "Replication of the virtual experiment by @Schmitt2019"
+output: 
+  bookdown::html_document2:
+    number_sections: false  
+    toc: true
+    toc_float: yes
+  bookdown::word_document2:
+    reference_docx: ./template/template.docx
+  bookdown::pdf_document2:
+    includes:
+      before_body: ./template/doc_prefix.tex
+      in_header: ./template/preamble.tex
+    number_sections: false
+    toc: false
+    keep_tex: no
+linestretch: 1.5
+csl: bibliography/mee.csl
+bibliography: bibliography/library.bib
+link-citations: yes
+---
+
+Sylvain Schmitt$^1$
+
+*$^1$ CNRS, UMR EcoFoG (Agroparistech, Cirad, INRAE, Université des Antilles, Université de la Guyane), Campus Agronomique, 97310 Kourou, French Guiana*
+
+# Introduction
+
+# Materials and methods
+
+# Results
+
+# Discussion
+
+# References
