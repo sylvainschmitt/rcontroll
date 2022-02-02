@@ -24,12 +24,82 @@ Sylvain Schmitt$^1$
 
 *$^1$ CNRS, UMR EcoFoG (Agroparistech, Cirad, INRAE, Université des Antilles, Université de la Guyane), Campus Agronomique, 97310 Kourou, French Guiana*
 
-# Introduction
+```{r}
+suppressMessages(library(dplyr))
+library(ggplot2)
+suppressMessages(library(FD))
+suppressMessages(library(rcontroll))
+```
 
-# Materials and methods
+```{r}
+N <- 2
+SR <- c(5, 10, 20)
+data("TROLLv3_species")
+communities <- lapply(rep(SR, each = N),
+                      function(n) sample_n(TROLLv3_species, n)) 
+names(communities) <- paste0("com", 1:length(communities))
+```
 
-# Results
+```{r, include=FALSE}
+communities_stats <- lapply(communities, select, s_LMA, s_Nmass, s_Pmass, s_wsg, s_dbhmax, s_hmax, s_ah) %>% 
+  lapply(dbFD, m = "max", calc.CWM = F) %>% 
+  lapply(as.data.frame) %>% 
+  bind_rows(.id = "community")
+```
 
-# Discussion
+```{r}
+ggplot(communities_stats, 
+       aes(FRic, FEve, shape = as.factor(nbsp))) +
+  geom_point() +
+  theme_bw() +
+  scale_shape_discrete("Species\nrichness\n(SR)") +
+  xlab("Functional richness (FRic)") +
+  ylab("Functional evenness (FEve)")
+```
+
+```{r, eval=F}
+simulations_pre <- stack(name = "pre", 
+      simulations = communities_stats$community,
+      path = "simulations",
+      global = generate_parameters(nbiter = 10), 
+      species = bind_rows(communities, .id = "simulation"), 
+      climate = TROLLv3_climatedaytime12, 
+      daily = TROLLv3_daytimevar, 
+      verbose = FALSE,
+      cores = 4)
+save(simulations_pre, file = "simulations/simulations_pre.Rdata")
+```
+
+```{r}
+load("simulations/simulations_pre.Rdata")
+rcontroll::autoplot(simulations_pre, what = "spatial", variable = "height") +
+  viridis::scale_color_viridis()
+simulations_pre@forest <- simulations_pre@forest %>% 
+  group_by(simulation) %>% 
+  sample_frac(3/4)
+```
+
+```{r, eval=F}
+simulations_post <- stack(name = "post", 
+      simulations = communities_stats$community,
+      path = "simulations",
+      global = simulations_pre@inputs$global, 
+      species = bind_rows(communities, .id = "simulation"), 
+      climate = TROLLv3_climatedaytime12, 
+      daily = TROLLv3_daytimevar, 
+      forest = as.data.frame(simulations_pre@forest),
+      verbose = FALSE,
+      cores = 4)
+save(simulations_post, file = "simulations/simulations_post.Rdata")
+load("simulations/simulations_post.Rdata")
+test <- troll(name = "test", 
+              path = "simulations",
+              global = simulations_pre@inputs$global, 
+              species = communities$com1, 
+              climate = TROLLv3_climatedaytime12, 
+              daily = TROLLv3_daytimevar, 
+              forest = as.data.frame(simulations_pre@forest %>% filter(simulation == "com1")),
+              verbose = TRUE)
+```
 
 # References
