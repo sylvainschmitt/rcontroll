@@ -1,4 +1,10 @@
 
+# rcontroll 0.1.0.9040
+*  Add configure.win, cleanup.win and Makevars.win files
+
+# rcontroll 0.1.0.9039
+*  Change permission access of configure file
+
 # rcontroll 0.1.0.9038
 *  Update GH actions
 
