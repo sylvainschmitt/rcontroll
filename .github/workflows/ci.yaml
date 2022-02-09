@@ -22,7 +22,8 @@ jobs:
     strategy:
       matrix:
         include:
-          #- {os: macOS-latest}
+          - {os: windows-latest}
+          - {os: macOS-latest}
           - {os: ubuntu-latest}
 
     runs-on: ${{ matrix.os }}
@@ -30,13 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - uses: r-lib/actions/setup-r@v1
-      - name: Install system dependencies
+      - name: Chmod configure and cleanup
         run: |
           export TMPDIR=~/tmp && \
           chmod +x configure && \
           chmod +x cleanup 
-          sudo apt-get install libcurl4-openssl-dev libgsl-dev pandoc
 
       - name: Bootstrap
         run: |
