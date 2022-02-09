@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - dev
+      - gsl_win
   pull_request:
     branches:
       - main
       - dev
+      - gsl_win
 
 name: R-CMD-check
 
