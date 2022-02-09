@@ -5,12 +5,10 @@ on:
     branches:
       - main
       - dev
-      - gsl_win
   pull_request:
     branches:
       - main
       - dev
-      - gsl_win
 
 name: R-CMD-check
 
@@ -24,8 +22,7 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
       - name: Install system dependencies
         run: |
-          sudo apt-get install libcurl4-openssl-dev pandoc libgsl-dev
-          export TMPDIR=~/tmp
+          sudo apt-get install libcurl4-openssl-dev pandoc
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))

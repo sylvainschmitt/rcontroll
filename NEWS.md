@@ -1,4 +1,7 @@
 
+# rcontroll 0.1.0.9041
+*  Add CI on GH Actions 
+
 # rcontroll 0.1.0.9040
 *  Add configure.win, cleanup.win and Makevars.win files
 

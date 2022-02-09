@@ -1,5 +1,28 @@
 AC_INIT([rcontroll],[0.1.0])
 
+
+## Set R_HOME, respecting an environment variable if one is set
+: ${R_HOME=$(R RHOME)}
+if test -z "${R_HOME}"; then
+    AC_MSG_ERROR([Could not determine R_HOME.])
+fi
+
+## Use R to set CXX and CXXFLAGS
+CXX=$(${R_HOME}/bin/R CMD config CXX)
+CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXXFLAGS)
+
+## We are using C++
+AC_LANG(C++)
+AC_REQUIRE_CPP
+AC_PROG_CXX
+
+## Ensure TMPDIR is set.
+AC_MSG_CHECKING([whether we have a suitable tempdir])
+TMPDIR=$("${R_HOME}/bin/R" --vanilla --slave -e "cat(dirname(tempdir()))")
+AC_MSG_RESULT([${TMPDIR}])
+
+
+
 ## Use gsl-config to find arguments for compiler and linker flags
 ##
 ## Check for non-standard programs: gsl-config(1)
