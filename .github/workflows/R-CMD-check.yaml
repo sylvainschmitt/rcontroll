@@ -33,7 +33,8 @@ jobs:
         run: |
           export TMPDIR=~/tmp && \
           chmod +x configure && \
-          chmod +x cleanup 
+          chmod +x cleanup && \
+          chmod +x src\Makevars.in
       - name: Check
         run: |
           options(crayon.enabled = TRUE)
