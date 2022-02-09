@@ -1,3 +1,7 @@
+
+# rcontroll 0.1.0.9037
+*  add configure file to detect GSL install
+
 # rcontroll 0.1.0.9036
 * `autoplot` v2
 

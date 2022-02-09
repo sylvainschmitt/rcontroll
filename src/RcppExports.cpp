@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // trollCpp
 void trollCpp(std::string global_file, std::string climate_file, std::string species_file, std::string day_file, std::string forest_file, std::string output_file);
 RcppExport SEXP _rcontroll_trollCpp(SEXP global_fileSEXP, SEXP climate_fileSEXP, SEXP species_fileSEXP, SEXP day_fileSEXP, SEXP forest_fileSEXP, SEXP output_fileSEXP) {

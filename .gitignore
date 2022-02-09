@@ -11,3 +11,7 @@ inst/doc
 *.docx
 doc
 docs
+src/Makevars
+autom4te.cache
+config.log
+config.status

@@ -1,0 +1,2 @@
+PKG_CPPFLAGS=-I$(LIB_GSL)/include -I../inst/include
+PKG_LIBS="-L$(LIB_GSL)/lib/$(R_ARCH)" -lgsl -lgslcblas
