@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - gsl_win
   pull_request:
     branches:
       - main
@@ -22,12 +23,17 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
       - name: Install system dependencies
         run: |
-          sudo apt-get install libcurl4-openssl-dev pandoc
+          sudo apt-get install libcurl4-openssl-dev pandoc libgsl-dev
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
+      - name: Chmod configure and cleanup
+        run: |
+          export TMPDIR=~/tmp && \
+          chmod +x configure && \
+          chmod +x cleanup 
       - name: Check
         run: |
           options(crayon.enabled = TRUE)

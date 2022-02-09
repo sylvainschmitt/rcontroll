@@ -1,6 +1,9 @@
 
+# rcontroll 0.1.0.9042
+*  Add CI on GH Actions multi-arch
+
 # rcontroll 0.1.0.9041
-*  Add CI on GH Actions 
+*  Add CI on GH Actions ubuntu alone
 
 # rcontroll 0.1.0.9040
 *  Add configure.win, cleanup.win and Makevars.win files
