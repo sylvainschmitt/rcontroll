@@ -13,4 +13,3 @@ dev
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-src/Makevars.in

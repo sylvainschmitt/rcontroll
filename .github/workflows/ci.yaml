@@ -52,32 +52,3 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: ./run.sh coverage
         
-        
-jobs:
-  R-CMD-check:
-    runs-on: windows-latest
-
-    steps:
-     - uses: actions/checkout@v2
-      
-      - name: Chmod configure and cleanup
-        run: |
-          export TMPDIR=~/tmp && \
-          chmod +x configure && \
-          chmod +x cleanup && \
-          chmod +x src\Makevars.in
-
-      - name: Bootstrap
-        run: |
-          curl -OLs https://eddelbuettel.github.io/r-ci/run.sh
-          chmod 0755 run.sh
-          ./run.sh bootstrap
-      - name: Dependencies
-        run: ./run.sh install_deps
-
-      - name: Test
-        run: ./run.sh run_tests
-
-      - name: Coverage
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: ./run.sh coverage

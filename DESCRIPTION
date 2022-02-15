@@ -25,7 +25,8 @@ Imports:
     doSNOW (>= 1.0.19),
     foreach (>= 1.5.1),
     iterators (>= 1.0.13),
-    Rcpp (>= 1.0.6)
+    Rcpp (>= 1.0.6),
+    RcppGSL (>= 0.3.10)
 Suggests:
     markdown,
     knitr,
