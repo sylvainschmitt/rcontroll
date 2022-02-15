@@ -21,7 +21,7 @@
 * `autoplot` v2
 
 # rcontroll 0.1.0.9035
-* Fabain's cleaned CPP
+* Fabian's cleaned CPP
 
 # rcontroll 0.1.0.9034
 * using TROLL child for fake parralelisation
