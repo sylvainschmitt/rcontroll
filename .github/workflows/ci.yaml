@@ -49,5 +49,7 @@ jobs:
 
       - name: Coverage
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: ./run.sh coverage
+        run: |
+          Rscript -e "install.packages("tidyr", dependencies = c('Depends', 'Imports', 'LinkingTo'))"
+          ./run.sh coverage
         
