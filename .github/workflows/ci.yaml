@@ -25,8 +25,10 @@ jobs:
       matrix:
         include:
           - {os: windows-latest}
+            script_name: .\build.cmd
           #- {os: macOS-latest}
           - {os: ubuntu-latest}
+            script_name: ./build.sh
 
     runs-on: ${{ matrix.os }}
 
