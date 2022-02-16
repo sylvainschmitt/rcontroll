@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9038
+* RcppGSL test
+
 # rcontroll 0.1.0.9037
 * reviewed english
 

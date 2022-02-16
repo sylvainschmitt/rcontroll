@@ -1,3 +1,5 @@
+// [[Rcpp::depends(RcppGSL)]]
+#include <RcppGSL.h>
 #include <Rcpp.h>
 using namespace Rcpp;   // is there not a potential problem with "using namespace std;" below, cf. example of namespace collision at: https://coliru.stacked-crooked.com/a/578f9934725ffd90, maybe they don't overlap here, but still, would be good to discuss!
 
