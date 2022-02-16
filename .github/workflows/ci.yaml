@@ -22,20 +22,14 @@ jobs:
     strategy:
       matrix:
         include:
-          #- {os: windows-latest}
-          - {os: macOS-latest}
+          - {os: windows-latest}
+          #- {os: macOS-latest}
           - {os: ubuntu-latest}
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Chmod configure and cleanup
-        run: |
-          export TMPDIR=~/tmp && \
-          chmod +x configure && \
-          chmod +x cleanup 
 
       - name: Bootstrap
         run: |
