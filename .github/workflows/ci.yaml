@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - gsl_win
+      - RcppGSL
   pull_request:
     branches:
     - gsl_win
+    - RcppGSL
       
 
 # Run CI for R using https://eddelbuettel.github.io/r-ci/

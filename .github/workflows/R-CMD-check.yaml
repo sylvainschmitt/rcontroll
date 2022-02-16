@@ -6,6 +6,7 @@ on:
       - main
       - dev
       - gsl_win
+      - RcppGSL
   pull_request:
     branches:
       - main
