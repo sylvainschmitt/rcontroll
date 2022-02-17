@@ -105,8 +105,6 @@ troll <- function(name = NULL,
     )
   }
   
-  print(path)
-  
   # model path
   tmp <- FALSE
   if (is.null(path)) {
@@ -122,6 +120,7 @@ troll <- function(name = NULL,
   } else {
     path_o <- file.path(path, name)
   }
+  dir.create(path_o)
 
   # save input as files
   global_path <- file.path(path, name, paste0(name, "_input_global.txt"))

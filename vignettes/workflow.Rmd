@@ -207,13 +207,19 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 
 # Dynamic visualisation
 
-```{r}
-# sim <- troll(name = "test",
-#              path = "/home/sylvain/Documents/ECOFOG/rcontroll/vignettes/autogif",
-#              global = bind_rows(global_pars, tail(generate_parameters(extent_visual = 12), 1)),
-#              species = TROLLv3_output@inputs$species,
-#              climate = TROLLv3_output@inputs$climate,
-#              daily = TROLLv3_output@inputs$daily,
-#              forest = forest_init,
-#              verbose = FALSE)
+```{r }
+global_pars[which(global_pars$param == "nbiter"),2] <- 12*100
+gifs <- autogif(name = "dynamic",
+                variables = "height_ct",
+                global = dplyr::bind_rows(global_pars, tail(generate_parameters(extent_visual = 100), 1)),
+                species = TROLLv3_output@inputs$species,
+                climate = TROLLv3_output@inputs$climate,
+                daily = TROLLv3_output@inputs$daily,
+                forest = forest_init,
+                verbose = FALSE)
 ```
+
+```{r }
+gifs$height_ct
+```
+

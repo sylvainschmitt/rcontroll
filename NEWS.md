@@ -1,4 +1,7 @@
-# rcontroll 0.1.0.9045
+# rcontroll 0.1.0.9047
+* autogif v1
+
+# rcontroll 0.1.0.9046
 * TROLL 1.3.3, TROLL.version() & autogif begins
 
 # rcontroll 0.1.0.9044

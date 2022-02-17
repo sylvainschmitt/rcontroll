@@ -4,16 +4,52 @@
 \alias{autogif}
 \title{Make a gif from a TROLL simulation}
 \usage{
-autogif(args)
+autogif(
+  name = NULL,
+  path = NULL,
+  variables = c("species", "height_ct", "npp_gpp", "height", "lai"),
+  global,
+  species,
+  climate,
+  daily,
+  forest = NULL,
+  verbose = TRUE,
+  overwrite = TRUE,
+  thin = NULL
+)
 }
 \arguments{
-\item{args}{}
+\item{name}{char. Model name (if NULL timestamp).}
+
+\item{path}{char. Path to save the simulation outputs, the default is null
+corresponding to a simulation in memory without saved intermediary files.}
+
+\item{variables}{char. Variables to build as a gif among 'species', 'height_ct', 'npp_gpp', 'height', or 'lai' (see details).}
+
+\item{global}{df. Global parameters.}
+
+\item{species}{df. Species parameters.}
+
+\item{climate}{df. Climate parameters.}
+
+\item{daily}{df. Daily variation parameters.}
+
+\item{forest}{df. TROLL with forest input, if null starts from an empty grid
+(default NULL).}
+
+\item{verbose}{bool. Show TROLL outputs in the console.}
+
+\item{overwrite}{bool. Overwrite previous outputs.}
+
+\item{thin}{int. Vector of integers corresponding to the iterations to be
+kept to reduce output size, default is NULL and corresponds to no
+thinning.}
 }
 \value{
-A gif in defined folder.
+A list of gganimate objects corresponding to chosen outputs.
 }
 \description{
-Description
+Make a gif from a TROLL simulation
 }
 \examples{
 
