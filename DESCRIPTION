@@ -28,7 +28,8 @@ Imports:
     Rcpp (>= 1.0.6),
     RcppGSL (>= 0.3.10),
     gganimate (>= 1.0.7),
-    vroom (>= 1.3.2)
+    vroom (>= 1.3.2),
+    tidyr (>= 1.1.3)
 Suggests:
     markdown,
     knitr,
