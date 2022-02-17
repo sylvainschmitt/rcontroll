@@ -65,7 +65,8 @@ generate_parameters(
   BASICTREEFALL = 1,
   SEEDTRADEOFF = 0,
   CROWN_MM = 0,
-  OUTPUT_extended = 1
+  OUTPUT_extended = 1,
+  extent_visual = 0
 )
 }
 \arguments{
@@ -211,6 +212,9 @@ number of seeds is fixed (0,1).}
 law, parameters have to be changed in other input sheets accordingly (0,1).}
 
 \item{OUTPUT_extended}{num. extended set of ouput files (0,1).}
+
+\item{extent_visual}{num. extent for visualization output. Unactivated when
+equal 0.}
 }
 \value{
 A data frame of global parameters.

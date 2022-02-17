@@ -10,7 +10,8 @@ NULL
 .onLoad <- function(libname, pkgname) {
   tmp_dir <- file.path(tempdir(), "rcontroll")
   dir.create(tmp_dir)
-  options(list(rcontroll.tmp = tmp_dir))
+  options(list(rcontroll.tmp = tmp_dir,
+               rcontroll.troll="TROLL version 3.1.3"))
   invisible()
 }
 

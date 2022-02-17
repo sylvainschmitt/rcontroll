@@ -47,6 +47,9 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
 #undef MPI               //!< MPI = Message Passing Interface. Software for sharing information across processors in parallel computers. If global variable MPI is not defined, TROLL functions on one processor only. if flag MPI defined, parallel routines (MPI software) are switched on. WARNING!!!: MPI has not been maintained since v.2.2, several functions need updating
 #undef WATER             //!< new in v.3.0: If defined, an explicit water cycle is added, with an explicit belowground space. The horizontal resolution of the soil field is currently set by DCELL
 #define CROWN_UMBRELLA   //!< new in v.2.4.1, modified in v.2.5: If activated, crowns are assumed to grow cylindrical until they reach 3m in depth, then the center of the crown will experience quicker height growth than the outer parts of the crown, thus leading to an umbrella like crown shape (with slope depending on crown depth and width). Depending on the slope parameter, trees will look more like cylinders or more like cones. Contrary to previous versions, however, the crown will not fill its shape underneath the first three layers. The crown will simply become umbrella-like, with a dense layer that spans out from its stem, and empty space underneath. This allows for a very simple computation of just three crown layers, while retaining their spread across the crown depth, enough realism for LiDAR derived CHMs and for eventual non vertical light penetration. New in v.2.5: Entirely modelled through one template that simulates loops across a crown layer/shell and can be applied to any calculation that requires to calculate crown properties (CalcLAI, Fluxh, etc.). Furthermore, enhanced flexibility for future incorporation of other crown shape functions (e.g. spherical, etc.)
+#ifdef CROWN_UMBRELLA
+#define CROWN_EMPIRICAL  //!< new in v.3.1.2: supersedes/modifies CROWN_UMBRELLA as new function to compute crown shape. The basic idea of cylindric crowns up to 3m crown depth and a 3 layer leafy canopy is retained for simplicity (also a resolution of m3 does not permit for much fine detail below that). Beyond 3m, instead of assuming a theoretical form such as cylinder, cone, or "umbrella", crowns are defined by a distribution of heights (i.e. a histogram of height pixels as would be obtained from airborne lidar-based (ALS) tree segmentation). As before, we circle through the crown from inside out and, in going from inside to outside, allocate first the top heights, then the following layers. As distribution of heights, we used empirical data from a tropical forest, i.e. ALS-segmented and field-verified crowns (Paracou field station, delineated by Mélaine Aubry-Kientz and Grég Vincent). Although distributions varied considerably, most trees had a unimodal distribution that could be well-approximated by a beta function with parameters a = 3.5 and b = 2.0. The advantage over CROWN_UMBRELLA is a more realistic height distribution, directly mirroring empirical shapes, a conceptually simpler computation, and much greater flexibility for future updates: instead of a fitted beta function, empirical distributions could be supplied directly, and different allocation patterns could be executed without changing the underlying functions, e.g. "multimodal" crowns.
+#endif
 #undef LAI_gradient      //!< new in v.2.4.1, modified in v.2.5: a tree's leaf density changes from top to bottom. Broadly based on Kitajima 2004 (Ann Bot), we assume that trees allocate 50% of their leaves to the first meter of their crown, 25% to the second meter layer, and the rest evenly spread across the crown. In case of the umbrella-like crowns, layers correspond to depth from canopy top. In case of a gap in the top layers, there is no shift of leaf density to a lower layer. This ensures that the gaps are real gaps. New in v.2.5: activated within a single function (LAI2dens) as part of the crown template scheme. Small effect in this case, however, since all leaves are concentrated in three shells anyways, with a shift from (0.33,0.33,0.33) to (0.5, 0.25,0.25) likely no strong effect. If implemented for cylindric crowns with full depth, this might, however, have a strong effect, as upper leaves are less impacted by crown overlap than lower leaves.
 #define Output_ABC       //!< new in v.2.4.1, refined in v.2.5: PARAMETERIZATION/OUTPUT TOOL, inclusion of ABC routines for comprehensive parameter inference with TROLL
 #define CHM_SPIKEFREE    //!< new in v.2.5: PARAMETERIZATION/OUTPUT TOOL. Since our empirical CHMs are typically derived with a spike-free/pit-free algorithm (e.g. from LAStools), we should also remove spikes/pits from the TROLL-generated CHM. Here, this is simply implemented as considering all crown gaps as filled. A more sophisticated version could use a simulated lidar point cloud and then apply the spike-free/pit-free algorithms or compare the raw CHMs of simulated lidar and actual lidar. Since we are, however, unlikely to capture the microstructure of crowns well (i.e. crown gaps are likely to be smaller, but more frequent than the simulated gaps), the current approach is probably a good compromise.
@@ -73,6 +76,9 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_randist.h>
+#ifdef CROWN_EMPIRICAL
+#include <gsl/gsl_cdf.h>
+#endif
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
@@ -94,6 +100,7 @@ char inputfile_species[256], *bufi_species(0); //!< Global variable: vector of i
 fstream output_info;                   //!< Global variable:  basic simulation information
 fstream output_basic[3];            //!< Global variable:  default output streams, always used
 fstream output_extended[9];         //!< Global variable:  extended TROLL outputs, preserved from previous versions, might need further clean-up
+fstream output_visual[2];           //!< Global variable: outputs for visualization/gif creation, new in v.3.1.2
 
 #ifdef Output_ABC
 fstream output_abc[11];             //!< Global variable: output streams for Approximate Bayesian Computation
@@ -134,7 +141,7 @@ int nbout;      //!< Global variable: number of outputs
 int freqout;    //!< Global variable: frequency HDF outputs
 
 // Random number generator for trait covariance calculation
-gsl_rng *gslrng;   //!< Global variable: random number generator, name change in v.3.1 to avoid confusion with previous function genrand() or other random number generation functions
+gsl_rng *gslrng;   //!< Global variable: random number generator, name change in v.3.1 to avoid confusion with previous functions or other random number generation functions
 gsl_matrix *mcov_N_P_LMA;   //!< Global variable: covariance matrix for leaf_properties
 gsl_vector *mu_N_P_LMA, *variation_N_P_LMA; //!< Global variable: mean values of the distributions and the output vector for the multivariate draw
 int covariance_status;      //!< Global variable: covariance status: if one of N, P, or LMA has zero variation, the Cholesky decomposition fails, we then use no correlation at all
@@ -176,6 +183,9 @@ float deltaR; //!< Global variable: negative density dependence (NDD) strength p
 float deltaD; //!< Global variable: negative density dependence (NDD) strength parameter in death rate
 float BAtot; //!< Global variable: !!!UPDATE
 
+// VISUALIZATION parameter
+int extent_visual; //!< Global variable: extent of visualization outputs, bounded by extent of simulation
+int mincol_visual, maxcol_visual, minrow_visual, maxrow_visual, minrow_visual_slice, maxrow_visual_slice; //<! Global variables: computed from extent, defining the two visualization outputs
 
 //! ENVIRONMENTAL VARIABLES
 
@@ -441,7 +451,9 @@ void UpdateLAI3D(int height, int site, float dens, float &LA_cumulated); //!< Gl
 void UpdateCHMvector(int height, int site, float noinput, vector<int> &chm); //!< Global function: remove outliers in canopy height model (CHM); vector option
 void UpdateCHM(int height, int site, float noinput, int *chm); //!< Global function: remove outliers in canopy height model (CHM)
 #endif
-void ModifyNoinput(float noinput, float &dens_layer, float CD, float height, int layer_fromtop); //!< Global function: dummy function when no modification is needed
+void OutputCrownSliced(int height, int site, int row_slice, vector<float> &output_statistics); //!< Global function: write a slice of a crown to file
+void KeepFloatAsIs(float input, float &output, float CD, float height, int layer_fromtop); //!< Global function: dummy function when no modification is needed
+void KeepIntAsIs(int input, int &output, float CD, float height, int layer_fromtop); //!< Global function: dummy function when no modification is needed
 void LAI2dens(float LAI, float &dens_layer, float CD, float height, int layer_fromtop); //!< Global function: a modifying function that converts LAI to the density of a specific layer, using the GetDensity functions
 void LAI2dens_cumulated(float LAI, float &dens_layer, float CD, float height, int layer_fromtop);//!< Global function: a modifying function that converts LAI to percentage LAI in and above the current layer, using the GetDensity functions; can be used to directly allocate LAI without looping over LAI3D field; new in v.3.1
 void GetDensitiesGradient(float LAI, float CD, float &dens_top, float &dens_belowtop, float &dens); //!< Global function: deduces within-crown densities from LAI with a gradient from 50% in top layer to 25% in belowtop and 25% in all shells underneath (1 layer for umbrella-like shape)
@@ -474,6 +486,8 @@ void Average(void);  //!< Global function: output of the global averages every t
 void OutputField(void); //!< Global function: output of the field variables every timestep
 void OutputSnapshot(fstream& output, bool header, float dbh_limit); //!< Global function: output snapshots of the scene at one point in time
 void OutputLAI(fstream& output_transmLAI3D); //!< Global function: writes the whole 3D LAI voxel field to file
+void OutputCHM(fstream& output_CHM); //!< Global function: Outputs CHM
+void OutputVisual();    //!< Global function: Output function for visualization purposes
 
 void CloseOutputs();
 void FreeMem(void);
@@ -513,7 +527,6 @@ void OutputABC_species(fstream& output_species, fstream& output_species10,fstrea
 void OutputABC_CHM(fstream& output_CHM, fstream& output_CHM_ALS); //!< Global function: returns ABC outputs for canopy height model (CHM)
 void OutputABC_transmittance(fstream& output_transmittance, fstream& output_transmittance_ALS); //!< Global ABC function: ABC outputs
 void OutputABC(); //!< Global ABC function: output general ABC statistics
-void OutputCHM(fstream& output_CHM); //!< Global ABC function: creates a Canopy Height Model and LAD profile
 #endif
 
 #ifdef TRACK_INDIVIDUALS
@@ -1166,7 +1179,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
         
-        if((t_leaflifespan == 0.0) | (t_lambda_young == 0.0) | (t_lambda_mature == 0.0) | (t_lambda_old == 0.0)) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
+        if(t_leaflifespan == 0.0 | t_lambda_young == 0.0 | t_lambda_mature == 0.0 | t_lambda_old == 0.0) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
         
         //*#######################################*/
         //*## Traits that vary during tree life ##*/
@@ -2199,7 +2212,7 @@ void Tree::CalcLAmax(float &LAIexperienced_eff, float &LAmax){
         int shell_fromtop = 0;
         float fraction_filled_target = t_fraction_filled;
 
-        LoopLayerUpdateCrownStatistic_template(row_crowncenter, col_crowncenter, t_height, t_CR, t_CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, noinput, ppfd_CA, ModifyNoinput, GetPPFDabove);
+        LoopLayerUpdateCrownStatistic_template(row_crowncenter, col_crowncenter, t_height, t_CR, t_CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, noinput, ppfd_CA, KeepFloatAsIs, GetPPFDabove);
 
         float ppfd_experienced = ppfd_CA[0];
         float crown_area_looped = ppfd_CA[1];
@@ -2739,7 +2752,7 @@ void Tree::DisperseSeed(){
         //else nbs=int(t_NPP*2*falloccanopy*0.08*0.5); // test 17/01/2017: use a factor to translate NPP into seeds produced, but not species specific, not linked to mass of grains
         for(int i=0;i<nbs;i++){
         // Loop over number of produced seeds
-            //float rho = 2.0*((t_s->s_ds)+t_CR)*float(sqrt(fabs(log(genrand2()*iPi))));    //! s_ds is mean seed dispersal distance. Dispersal distance rho: P(rho) = rho*exp(-rho^2)
+            //float rho = 2.0*((t_s->s_ds)+t_CR)*float(sqrt(fabs(log(gsl_rng_uniform(gslrng)*iPi))));    //! s_ds is mean seed dispersal distance. Dispersal distance rho: P(rho) = rho*exp(-rho^2)
             //update 2.5: rho does not seem to correspond to original 1999 paper anymore and in previous version predicted dispersal with a lower cutoff instead of the Rayleigh distribution
             //here we restore the previous formulation by using the Rayleigh implementation from the gsl library
             //for the moment, we do not use the crown radius as an additional dispersal kernel. This would lead to a loss of large tree species locally, because they will have much less seeds within the plot
@@ -2966,6 +2979,15 @@ float Tree::StartTracking(){
 
 
 #ifdef CROWN_UMBRELLA
+#ifdef CROWN_EMPIRICAL
+int GetAreaLayer(float &CA_total, float &crownshell_extent, float &crownshell_extent_layer){
+    double crownshell_extentrel = double(fmaxf(fminf(crownshell_extent_layer/crownshell_extent,1.0),0.0)); // do we need max/min?
+    float arearel = float(gsl_cdf_beta_Q(crownshell_extentrel, 3.0, 2.0));
+    int CA_layer = max(int(lround(arearel * CA_total)),1); // minimum one
+    //if(crownshell_extent > 0.0) Rcout << "CA_total: " << CA_total << " crownshell_extent: " << crownshell_extent << " crownshell_extent_layer: " << crownshell_extent_layer << " crownshell_extentrel: " << crownshell_extentrel << " arearel: " << arearel << " CA_layer: " << CA_layer << " arearel_P: " << float(gsl_cdf_beta_P(crownshell_extentrel, 3.0, 2.0)) << " CA_layer_P: " << int(lround(float(gsl_cdf_beta_P(crownshell_extentrel, 3.0, 2.0)) * CA_total)) << endl;
+    return(CA_layer);
+}
+#endif
 //! - Global function: the following function is not a member function of the Tree class object, but operates at the tree level and could be converted to member functions. They're therefore defined next to the other tree level functions. Whether conversion to Tree members adds any benefit in terms of performance should be tested.
 //! - the main function is a template to loop through one crown shell (i.e. a 1m layer of the tree) and do something within the tree's canopy, such as allocating leaves or computing the flux. It is supported by a second template that simulates the actual loop. The crown shell can be bent via a function to simulate the umbrella like crown shapes
 //! - variables to be provided to the template:
@@ -3005,6 +3027,11 @@ void LoopLayerUpdateCrownStatistic_template(int row_center, int col_center, floa
         int height_toplayer = int(crownshell_base + crownshell_extent_toplayer) - shell_fromtop;
         int height_baselayer = int(crownshell_base + 1.0) - shell_fromtop;
         
+#ifdef CROWN_EMPIRICAL
+        // !!!: check whether this function is correct for the new calculations
+        //if(crownshell_extent > 0.0) Rcout << endl << endl << "Looplayer for tree at site: " << col_center + row_center * cols << " (" << col_center << " | " << row_center << ") height: " << height << " CD: " << CD << " crownshell_base: " << crownshell_base << " shell_fromtop: " << shell_fromtop << " height_toplayer: " << height_toplayer << " height_baselayer: " << height_baselayer << endl;
+#endif
+        
         // now calculate the two modifications of the input statistic
         I CrownStatistic_input_innermost;
         I CrownStatistic_input_outer;
@@ -3015,9 +3042,14 @@ void LoopLayerUpdateCrownStatistic_template(int row_center, int col_center, floa
         // now do calculations
         // first the inner crown shell section that grows dynamically
         int crown_intarea_previous = 0;
-        
+#ifdef CROWN_EMPIRICAL
+        float crown_area_total = float(GetCrownIntarea(CR));
+        int crown_intarea_innermost = GetAreaLayer(crown_area_total, crownshell_extent, crownshell_extent_toplayer);
+#else
         float radius_innermost = GetRadiusLayer(CR, crownshell_extent, crownshell_extent_toplayer);
         int crown_intarea_innermost = GetCrownIntarea(radius_innermost);
+#endif
+
         CircleAreaUpdateCrownStatistic_template(row_center, col_center, crown_intarea_previous, crown_intarea_innermost, fraction_filled_target, fraction_filled_actual, height_innermost, CrownStatistic_input_innermost,CrownStatistic_output, UpdateCrownStatistic_output);
         crown_intarea_previous = crown_intarea_innermost;
         
@@ -3025,9 +3057,13 @@ void LoopLayerUpdateCrownStatistic_template(int row_center, int col_center, floa
         for(int h_outer = height_toplayer; h_outer >= height_baselayer; h_outer--){
             // calculating the radius of the current layer depending on the respective slopes, to be replaced by function
             //float radius_height = CR - crown_slope * (h_outer - height_baselayer);    // for the lowest layer, i.e. h == height_baselayer, radius = t_CR
-            int extent_layerouter = h_outer - height_baselayer;
+            float extent_layerouter = float(h_outer - height_baselayer);
+#ifdef CROWN_EMPIRICAL
+            int crown_intarea = GetAreaLayer(crown_area_total, crownshell_extent, extent_layerouter);
+#else
             float radius_height = GetRadiusLayer(CR, crownshell_extent, extent_layerouter);
             int crown_intarea = GetCrownIntarea(radius_height);
+#endif
             CircleAreaUpdateCrownStatistic_template(row_center, col_center, crown_intarea_previous, crown_intarea, fraction_filled_target, fraction_filled_actual, h_outer, CrownStatistic_input_outer, CrownStatistic_output,UpdateCrownStatistic_output);
             crown_intarea_previous = crown_intarea;
         }
@@ -3120,7 +3156,12 @@ void GetDensityUniform(float LAI, float CD, float &dens){
 }
 
 // Global function: dummy function when no modification is needed
-void ModifyNoinput(float noinput, float &dens_layer, float CD, float height, int layer_fromtop){
+void KeepFloatAsIs(float input, float &output, float CD, float height, int layer_fromtop){
+    output = input;
+}
+
+void KeepIntAsIs(int input, int &output, float CD, float height, int layer_fromtop){
+    output = input;
 }
 
 // Global function: a modifying function that converts LAI to the density of a specific layer, using the GetDensity functions
@@ -3138,11 +3179,11 @@ void LAI2dens_cumulated(float LAI, float &dens_layer, float CD, float height, in
 #endif
 
     if(CD < 3.0 && crown_top == crown_base){
-        dens_layer = LAI;         // full LAI allocation
+        dens_layer = LAI;         /* full LAI allocation */
     } else if(CD < 3.0 && (crown_top - layer_fromtop == crown_base)){
         dens_layer = LAI;
     } else {
-        float fraction_layer = height - floor(height);    // this is the fraction that each layer apart from the topmost layer will extend into the voxel above
+        float fraction_layer = height - floor(height);    /* this is the fraction that each layer apart from the topmost layer will extend into the voxel above */
         if(layer_fromtop == 0) dens_layer = dens_top * fraction_layer;
         else if(layer_fromtop == 1) dens_layer = dens_top + dens_belowtop * fraction_layer;
         else if(layer_fromtop == 2) dens_layer = dens_top + dens_belowtop + dens * fraction_layer;
@@ -3195,6 +3236,18 @@ void UpdateCHM(int height, int site, float noinput, int *chm){
 }
 #endif
 
+void OutputCrownSliced(int height, int site, int row_slice, vector<float> &output_statistics){
+    int row_current = site/cols;
+    int col_current = site%cols;
+    if(row_current == row_slice && col_current >= mincol_visual && col_current < maxcol_visual){
+        output_visual[1] << iter << "\t" << row_current << "\t" << col_current << "\t" << height;
+        for(int i = 0; i < output_statistics.size();i++){
+             output_visual[1] << "\t" << output_statistics[i];
+        } // we only output tree parts that fall in the current slice extent
+        output_visual[1] << endl;
+    }
+};
+
 // Global function: PPFD retrieval for function CalcLAmax()
 void GetPPFDabove(int height, int site, float noinput, float (&ppfd_CA)[2]){
     // First get voxel field densities
@@ -3237,8 +3290,7 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
         // for the smallest crowns it is simply cylinder rings being filled up
         int crown_intarea = GetCrownIntarea(CR);
         for(int h = crown_top; h >= crown_base; h--) crownvolume[h] += crown_intarea;
-    }
-    else{
+    } else{
         // For the rest of the crown, we go through different crown shells. We separate out the innermost sector (a slowly increasing cylinder), and the surrounding parts of the crown
         // first the metrics with respect to the internal crown structure (i.e. z coordinate with respect to crown base)
         float crownshell_base = height - CD + 2.0;              // lower reference point for the crown slope function is two layers up from the crown base
@@ -3250,10 +3302,20 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
         int height_toplayer = int(crownshell_base + crownshell_extent_toplayer) - shell_fromtop;
         int height_baselayer = int(crownshell_base + 1.0) - shell_fromtop;
         
+#ifdef CROWN_EMPIRICAL
+        // !!!: check whether this function is correct for the new calculations
+        //if(crownshell_extent > 0.0) Rcout << endl << endl << "Looplayer (Volume) for tree at site: " << col_center + row_center * cols << " (" << col_center << " | " << row_center << ") height: " << height << " CD: " << CD << " crownshell_base: " << crownshell_base << " shell_fromtop: " << shell_fromtop << " height_toplayer: " << height_toplayer << " height_baselayer: " << height_baselayer << endl;
+#endif
+        
         // now do calculations
         // first the inner crown shell section that grows dynamically
+#ifdef CROWN_EMPIRICAL
+        float crown_area_total = float(GetCrownIntarea(CR));
+        int crown_intarea_innermost = GetAreaLayer(crown_area_total, crownshell_extent, crownshell_extent_toplayer);
+#else
         float radius_innermost = GetRadiusSlope(CR, crownshell_extent, crownshell_extent_toplayer);
         int crown_intarea_innermost = GetCrownIntarea(radius_innermost);
+#endif
         for(int h = height_innermost; h >= crown_base; h--){
             crownvolume[h] += crown_intarea_innermost;
         }
@@ -3261,9 +3323,13 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
         for(int h_outer = height_toplayer; h_outer >= crown_base; h_outer--){
             // calculating the radius of the current layer depending on the respective slopes, to be replaced by function
             //float radius_height = CR - crown_slope * (h_outer - height_baselayer);    // for the lowest layer, i.e. h == height_baselayer, radius = t_CR
-            int extent_layerouter = max(h_outer - height_baselayer,0);                  // we also fill up underneath the baselayer
+            float extent_layerouter = float(max(h_outer - height_baselayer,0));                  // we also fill up underneath the baselayer
+#ifdef CROWN_EMPIRICAL
+            int crown_intarea = GetAreaLayer(crown_area_total, crownshell_extent, extent_layerouter);
+#else
             float radius_height = GetRadiusSlope(CR, crownshell_extent, extent_layerouter);
             int crown_intarea = GetCrownIntarea(radius_height);
+#endif
             
             crownvolume[h_outer] += (crown_intarea - crown_intarea_innermost);
         }
@@ -3323,7 +3389,8 @@ void trollCpp(
     buf = &output_file[0] ;
     
     if(strlen(bufi_data) != 0) _FromInventory = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
-    
+
+//int main(int argc,char *argv[]) { // now left as comment to recuperate original TROLL version
     //!*********************
     //!** Initializations **
     //!*********************
@@ -3422,6 +3489,7 @@ void trollCpp(
     if(_SEEDTRADEOFF == 1) Rcout << "Activated Module: SEEDTRADEOFF" << endl;
     if(_FromInventory == 1) Rcout << "Activated Module: FromInventory" << endl;
     if(_OUTPUT_extended == 1) Rcout << "Activated Module: OUTPUT_extended" << endl;
+    if(_OUTPUT_extended == 1 && extent_visual > 0) Rcout << "Activated visualization output." << endl;
     
     //!*********************
     //!** Evolution loop  **
@@ -3456,6 +3524,11 @@ void trollCpp(
         Evolution();    // probably should be renamed at some point: the loop as such describes the "Evolution" of the forest, this is more like an update of all the variables
         stop_time = clock();
         duration +=fmaxf(stop_time-start_time,0.0);
+        
+        if(_OUTPUT_extended == 1 && extent_visual > 0){
+            int timeofyear = GetTimeofyear();
+            if(timeofyear == 0) OutputVisual();
+        }
         
 #ifdef Output_ABC
         int timespan_abc = 10 * iterperyear;     // every 10 years, modified in v.3.0
@@ -3685,7 +3758,10 @@ void AssignValueGlobal(string parameter_name, string parameter_value){
         SetParameter(parameter_name, parameter_value, _CROWN_MM, bool(0), bool(1), bool(0), quiet);
     } else if(parameter_name == "_OUTPUT_extended"){
           SetParameter(parameter_name, parameter_value, _OUTPUT_extended, bool(0), bool(1), bool(0), quiet);
+    } else if(parameter_name == "extent_visual"){
+          SetParameter(parameter_name, parameter_value, extent_visual, 0, INT_MAX, 0, quiet);
     }
+    
     // !!!: TODO, implement NDD parameters
     // if (_NDD) {
     // In >> R; In.getline(buffer,128,'\n');
@@ -3734,8 +3810,8 @@ void AssignValueSpecies(Species &S, string parameter_name, string parameter_valu
 void ReadInputGeneral(){
     fstream In(inputfile, ios::in);
     if(In){
-        string parameter_names[60] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended"};
-        int nb_parameters = 60;
+        string parameter_names[61] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};
+        int nb_parameters = 61;
         vector<string> parameter_values(nb_parameters,"");
         
         Rcout << endl << "Reading in file: " << inputfile << endl;
@@ -3811,8 +3887,21 @@ void ReadInputGeneral(){
         CD0 *= NV;
         alpha = 4.0*phi;
         // apparent quantum yield to electron transport in mol e-/mol photons see Mercado et al 2009 , the conversion of the apparent quantum yield in micromolCO2/micromol quantum into micromol e-/micxromol quantum is done by multipliyng by 4, since four electrons are needed to regenerate RuBP. alpha is fixed at 0.3 mol e-/mol photons in Medlyn et al 2002, but see equ8 and Appendix 1 in Farquahr et al 1980: it seems that alpha should vary with leaf thickness: there is a fraction of incident light which is lost by absorption by other leaf parts than the chloroplast lamellae, and this fraction f may increase with leaf thickness. With the values of the paper: alpha= 0.5*(1-f)=0.5*(1-0.23)=0.385, but this is a theoretical value and observations often report lower values (see ex discussion in medlyn et al 2005 Tree phsyiology, Lore Veeryckt values, Mercado et al 2009 Table 10, Domingues et al. 2014)
-    }
-    else{
+        
+        // new in v.3.1.2: visual extent
+        int maxextent_visual = min(rows,cols);
+        if(extent_visual > maxextent_visual) extent_visual = maxextent_visual; // make sure visualization does not exceed boundaries of simulation
+        if(extent_visual > 0){
+            // define boundaries
+            int rowextent_slice = 10;
+            mincol_visual = cols/2 - extent_visual/2;
+            maxcol_visual = cols/2 + extent_visual/2;
+            minrow_visual = rows/2 - extent_visual/2;
+            maxrow_visual = rows/2 + extent_visual/2;
+            minrow_visual_slice = max(rows/2 - rowextent_slice/2, minrow_visual);
+            maxrow_visual_slice = min(rows/2 + rowextent_slice/2, maxrow_visual);
+        }
+    } else{
         Rcout << "ERROR. General input file could not be read." << endl;
     }
 }
@@ -4285,7 +4374,7 @@ void InitialiseLookUpTables(){
         for(int row = 0; row < extent_full; row++){
             xx = col - extent;                                      // distance from center (x = extent) in x direction
             yy = row - extent;                                      // distance from center (y = extent) in y direction
-            if(!(((xx == 0) & (yy == 0)))){
+            if(!(xx == 0 & yy == 0)){
                 site_rel = col + extent_full * row;
                 dist = xx*xx + yy*yy;
                 // now order the arrays according to distance from center
@@ -4320,6 +4409,10 @@ void InitialiseOutputStreams(){
         sprintf(nnn,"%s_%i_final_pattern.txt",buf, easympi_rank);
         output_basic[2].open(nnn, ios::out);
 
+        // write headers for files
+        output_basic[0] << "iter\tsum1\tsum10\tsum30\tba\tba10\tagb\tgpp\tnpp\trday\trnight\trstem\tlitterfall" << endl;
+        // headers for initial and final patterns are written automatically
+
         if(_OUTPUT_extended){
             sprintf(nnn,"%s_%i_sumstats_species.txt",buf, easympi_rank);
             output_extended[0].open(nnn, ios::out);
@@ -4339,21 +4432,30 @@ void InitialiseOutputStreams(){
             output_extended[7].open(nnn, ios::out);
             sprintf(nnn,"%s_%i_CHM.txt",buf, easympi_rank);
             output_extended[8].open(nnn, ios::out);
+            
+            // write headers
+            output_extended[0] << "iter\tspecies\tsum1\tsum10\tsum30\tba\tba10\tagb\tgpp\tnpp\trday\trnight\trstem\tlitterfall" << endl;
+            if(_BASICTREEFALL) output_extended[2] << "iter\tnbdead_n1\tnbdead_n10\tnbTreefall1\tnbTreefall10" << endl;
+            else output_extended[2] << "iter\tnbdead_n1\tnbdead_n10" << endl;
+            output_extended[3] << "iter\tspecies\tage\tdbh\theight" << endl;
+            output_extended[4] << "iter\twsg\tdbh\tbasal\tdr" <<  endl;
+            output_extended[5] << "iter\td\tfreq" << endl;
+            output_extended[6] << "iter\th\tfreq" << endl;
+            
+            if(extent_visual > 0){
+                sprintf(nnn,"%s_%i_visual_field.txt",buf, easympi_rank);
+                output_visual[0].open(nnn, ios::out);
+#ifdef CHM_SPIKEFREE
+                output_visual[0] << "iter" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "height_spikefree" << "\t" << "LAI" << endl; // header
+#else
+                output_visual[0] << "iter" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "LAI" << endl; // header
+#endif
+                
+                sprintf(nnn,"%s_%i_visual_slice.txt",buf, easympi_rank);
+                output_visual[1].open(nnn, ios::out);
+                output_visual[1] << "iter" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "sp_lab" << "\t" << "ratio_height_Ct" << "\t" << "ratio_NPP_GPP" << endl; // header
+            }
         }
-        
-        // write headers for files
-        output_basic[0] << "iter\tsum1\tsum10\tsum30\tba\tba10\tagb\tgpp\tnpp\trday\trnight\trstem\tlitterfall" << endl;
-        // headers for initial and final patterns are written automatically
-        
-        output_extended[0] << "iter\tspecies\tsum1\tsum10\tsum30\tba\tba10\tagb\tgpp\tnpp\trday\trnight\trstem\tlitterfall" << endl;
-    
-        if(_BASICTREEFALL) output_extended[2] << "iter\tnbdead_n1\tnbdead_n10\tnbTreefall1\tnbTreefall10" << endl;
-        else output_extended[2] << "iter\tnbdead_n1\tnbdead_n10" << endl;
-        output_extended[3] << "iter\tspecies\tage\tdbh\theight" << endl;
-        output_extended[4] << "iter\twsg\tdbh\tbasal\tdr" <<  endl;
-        output_extended[5] << "iter\td\tfreq" << endl;
-        output_extended[6] << "iter\th\tfreq" << endl;
-
         
 #ifdef Output_ABC
         sprintf(nnn,"%s_%i_abc_traitconservation.txt",buf, easympi_rank);
@@ -4582,7 +4684,7 @@ void ReadInputInventory(){
         if(flag_dbh == 1){
             Rcout << "WARNING! No diameter column provided, no initialization from file will be carried out." << endl;
         } else {
-            if((flag_col == 1) | (flag_row == 1)) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
+            if(flag_col == 1 | flag_row == 1) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
             if(flag_species == 1) Rcout << "WARNING! No species column provided, random species chosen" << endl;
              
             int nb_parameterlines = 0;
@@ -5228,7 +5330,7 @@ void RecruitTree(){
             }
             if(spp_withseeds > 0) {  // ... and then randomly select one of these species
                 
-                // new in v.2.4.1: for consistency use genrand2() instead of rand(), since v.2.5: use gsl RNG
+                // since v.2.5: use gsl RNG instead of hardcoded RNGs
                 int spp_index = int(gsl_rng_uniform_int(gslrng,spp_withseeds));
                 int spp = SPECIES_GERM[spp_index];
                 // otherwise all species with seeds present are equiprobable
@@ -5257,7 +5359,7 @@ void TriggerTreefall(){
             // _BASICTREEFALL: just dependent on height threshold + random uniform distribution
             float angle = 0.0, c_forceflex = 0.0;
             if(_BASICTREEFALL){
-                c_forceflex = gsl_rng_uniform(gslrng)*T[site].t_height;     // probability of treefall = 1-t_Ct/t_height, compare to genrand2(): genrand2() < 1 - t_Ct/t_height, or: genrand2() > t_Ct/t_height
+                c_forceflex = gsl_rng_uniform(gslrng)*T[site].t_height;     // probability of treefall = 1-t_Ct/t_height, compare to gsl_rng_uniform(gslrng): gsl_rng_uniform(gslrng) < 1 - t_Ct/t_height, or: gsl_rng_uniform(gslrng) > t_Ct/t_height
                 angle = float(twoPi*gsl_rng_uniform(gslrng));                    // random angle
             }
             // above a given stress threshold the tree falls
@@ -5702,16 +5804,15 @@ void OutputSnapshot(fstream& output, bool header, float dbh_limit){
     }
 }
 
-
-#ifdef Output_ABC
-//##############################################
-// Global ABC function: creates a Canopy Height Model and LAD profile
-//##############################################
-void OutputCHM(fstream& output_CHM){
-
 #ifdef CHM_SPIKEFREE
-    vector<int> chm_temporary(sites,0);
-    
+//##########################
+//## Make a spikefree CHM ##
+//##########################
+void MakeCHMspikefree(vector<int>& chm_spikefree){
+    chm_spikefree.clear();
+    chm_spikefree.reserve(sites);
+    for(int s = 0; s < sites; s++) chm_spikefree.push_back(0);
+
     for(int r=row_start;r<row_end;r++){
         for(int c=col_start;c<col_end;c++){
             int s = c + r*cols;
@@ -5724,7 +5825,7 @@ void OutputCHM(fstream& output_CHM){
                 int shell_fromtop = 0;                      // toplayer
                 float noinput = 0.0;
                 
-                LoopLayerUpdateCrownStatistic_template(r, c, height, CR, CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, noinput, chm_temporary, ModifyNoinput, UpdateCHMvector);
+                LoopLayerUpdateCrownStatistic_template(r, c, height, CR, CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, noinput, chm_spikefree, KeepFloatAsIs, UpdateCHMvector);
 #else
                 int crown_top = int(T[s].t_height);
                 int crown_intarea = GetCrownIntarea(T[s].t_CR);
@@ -5738,13 +5839,113 @@ void OutputCHM(fstream& output_CHM){
                     int col = col_crowncenter + site_relative%51 - 25;
                     if(row >= 0 && row < rows && col >= 0 && col < cols){
                         int site = col + row * cols;
-                        if(chm_temporary[site] < crown_top) chm_temporary[site] = crown_top;
+                        if(chm_spikefree[site] < crown_top) chm_spikefree[site] = crown_top;
                     }
                 }
 #endif
             }
         }
     }
+}
+#endif
+
+
+//################################
+//### Output for visualization ###
+//################################
+void OutputVisual(){
+    // first simple chm output
+#ifdef CHM_SPIKEFREE
+    vector<int> chm_spikefree;
+    MakeCHMspikefree(chm_spikefree);
+    
+    for(int col = mincol_visual; col < maxcol_visual; col++){
+        for(int row = minrow_visual; row < maxrow_visual; row++){
+            int site = col + row * cols;
+            int height_canopy=0;
+            for(int h=0;h<(HEIGHT+1);h++){
+                if(LAI3D[h][site+SBORD] > 0.0) height_canopy = max(h,height_canopy);
+            }
+            output_visual[0] << iter << "\t" << row << "\t" << col << "\t" << height_canopy+1 << "\t" << chm_spikefree[site] << "\t" << LAI3D[0][site+SBORD] << endl;
+        }
+    }
+#else
+    for(int col = mincol_visual; col < maxcol_visual; col++){
+        for(int row = minrow_visual; row < maxrow_visual; row++){
+            int site = col + row * cols;
+            int height_canopy=0;
+            for(int h=0;h<(HEIGHT+1);h++){
+                if(LAI3D[h][site+SBORD] > 0.0) height_canopy = max(h,height_canopy);
+            }
+            output_visual[0] << iter << "\t" << row << "\t" << col << "\t" << height_canopy+1 << "\t" << LAI3D[0][site+SBORD] << endl;
+        }
+    }
+#endif
+
+    // now the sliced output
+    for(int row = minrow_visual_slice; row < maxrow_visual_slice; row++){
+        for(int col = 0; col < cols; col++){
+            int s = col + row * cols;
+            if(T[s].t_age > 0){
+                int row_slice = row;
+                
+                float height = T[s].t_height;
+                float CD = T[s].t_CD;
+                int crown_top = int(height);
+                float CR = T[s].t_CR;
+                int crown_base = int(height - CD);
+                
+                vector<float> output_statistics;
+                output_statistics.reserve(4);
+                output_statistics.push_back(T[s].t_sp_lab);
+                
+                float ratio_height_Ct;
+                if(T[s].t_Ct > 0.0) ratio_height_Ct = T[s].t_height/T[s].t_Ct;
+                else ratio_height_Ct = 0.0;
+                output_statistics.push_back(ratio_height_Ct);
+                
+                float ratio_NPP_GPP;
+                if(T[s].t_GPP > 0.0) ratio_NPP_GPP = T[s].t_NPP/T[s].t_GPP;
+                else ratio_NPP_GPP = 0.0;
+                output_statistics.push_back(ratio_NPP_GPP);
+                
+#ifdef CROWN_UMBRELLA
+                float fraction_filled_target = 1.0;        // we assume a fully filled crown for all trees
+                int max_shells = min(crown_top - crown_base + 1, 4);    //since the new crown shapes
+                
+                for(int h = 0; h <= crown_top - max_shells;h++) OutputCrownSliced(h, s, row_slice, output_statistics);
+                
+                for(int shell_fromtop = 0; shell_fromtop < max_shells; shell_fromtop++){
+                    LoopLayerUpdateCrownStatistic_template(row, col, height, CR, CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, row_slice, output_statistics, KeepIntAsIs, OutputCrownSliced);
+                }
+#else
+                int crown_intarea = GetCrownIntarea(CR);
+                
+                for(int h = 0; h <= crown_base;h++) OutputCrownSliced(h, s, row_slice, output_statistics);
+                
+                for(int h = crown_base; h <= crown_top; h++){
+                    for(int i = 0; i < crown_intarea; i++){
+                        int site_relative = LookUp_Crown_site[i];
+                        int row_crown = row + site_relative/51 - 25;
+                        int col_crown = col + site_relative%51 - 25;
+                        int site_crown = col_crown + row_crown * cols;
+                        OutputCrownSliced(h, s, row_slice, output_statistics);
+                    }
+                }
+#endif
+
+            }
+        }
+    }
+}
+
+//##################
+//### Output CHM ###
+//##################
+void OutputCHM(fstream& output_CHM){
+#ifdef CHM_SPIKEFREE
+    vector<int> chm_spikefree;
+    MakeCHMspikefree(chm_spikefree);
     
     output_CHM  << "site" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "height_spikefree" << "\t" << "LAI" << endl;
     for(int s=0;s<sites;s++){
@@ -5752,11 +5953,11 @@ void OutputCHM(fstream& output_CHM){
         for(int h=0;h<(HEIGHT+1);h++){
             if(LAI3D[h][s+SBORD] > 0.0) height_canopy = max(h,height_canopy);
         }
-        output_CHM << s << "\t" << int(s/cols) << "\t" << int(s%cols) << "\t" << height_canopy+1 << "\t" << chm_temporary[s] << "\t" << LAI3D[0][s+SBORD] << endl;
+        output_CHM << s << "\t" << int(s/cols) << "\t" << int(s%cols) << "\t" << height_canopy+1 << "\t" << chm_spikefree[s] << "\t" << LAI3D[0][s+SBORD] << endl;
     }
     
 #else
-    Rcout << "site" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "LAI" << endl;
+    output_CHM << "site" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "LAI" << endl;
     for(int s=0;s<sites;s++){
         int height_canopy=0;
         for(int h=0;h<(HEIGHT+1);h++)
@@ -5765,7 +5966,6 @@ void OutputCHM(fstream& output_CHM){
     }
 #endif
 }
-#endif
 
 //##############################################
 // Global function: writes the whole 3D LAI voxel field to file
@@ -5938,7 +6138,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
                         float LAI_current = LAI3D[h][site + SBORD];
                         
                         float prob_hit;
-                        if((LAI_above == 100.0) & (LAI_current == 100.0)){
+                        if(LAI_above == 100.0 & LAI_current == 100.0){
                             //stem returns
                             hits = nbbeams;
                             nbbeams = 0;
@@ -6013,7 +6213,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
                 int shell_fromtop = 0;              //toplayer
                 float noinput = 0.0;
                 
-                LoopLayerUpdateCrownStatistic_template(r, c, height, CR, CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, noinput, chm_field_current, ModifyNoinput, UpdateCHM);
+                LoopLayerUpdateCrownStatistic_template(r, c, height, CR, CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, noinput, chm_field_current, KeepFloatAsIs, UpdateCHM);
 #else
                 int crown_top = int(T[s].t_height);
                 
@@ -7441,9 +7641,18 @@ void CloseOutputs(){
         output_basic[i].close();
         output_basic[i].clear();
     }
-    for(int i = 0; i < 9; i++){
-        output_extended[i].close();
-        output_extended[i].clear();
+    
+    if(_OUTPUT_extended == 1){
+        for(int i = 0; i < 9; i++){
+            output_extended[i].close();
+            output_extended[i].clear();
+        }
+        if(extent_visual > 0){
+            for(int i = 0; i < 2; i++){
+                output_visual[i].close();
+                output_visual[i].clear();
+            }
+        }
     }
 
 #ifdef Output_ABC

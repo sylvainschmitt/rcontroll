@@ -60,3 +60,4 @@ _BASICTREEFALL	1	/* if defined: treefall is a source of tree death */
 _SEEDTRADEOFF	0	/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */
 _CROWN_MM	0	/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */
 _OUTPUT_extended	1	/* extended set of ouput files */
+extent_visual	0	/* extent for visualization output */

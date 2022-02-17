@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9045
+* TROLL 1.3.3, TROLL.version() & autogif begins
+
 # rcontroll 0.1.0.9044
 * merge @gsalzet rcpp_gsl
 

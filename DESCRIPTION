@@ -42,7 +42,10 @@ Collate:
     'TROLLv3_input.R'
     'TROLLv3_output.R'
     'TROLLv3_species.R'
+    'zzz.R'
+    'TROLLversion.R'
     'trollsim.R'
+    'autogif.R'
     'trollstack.R'
     'autoplot.troll.R'
     'generate_parameters.R'
@@ -55,7 +58,6 @@ Collate:
     'stack.R'
     'summary.trollsim.R'
     'utils-pipe.R'
-    'zzz.R'
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
