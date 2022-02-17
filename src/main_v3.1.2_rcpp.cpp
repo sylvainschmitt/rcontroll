@@ -1,6 +1,6 @@
 // [[Rcpp::depends(RcppGSL)]]
-#include <RcppGSL.h>
 #include <Rcpp.h>
+#include <RcppGSL.h>
 using namespace Rcpp;   // is there not a potential problem with "using namespace std;" below, cf. example of namespace collision at: https://coliru.stacked-crooked.com/a/578f9934725ffd90, maybe they don't overlap here, but still, would be good to discuss!
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -1166,7 +1166,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
         
-        if(t_leaflifespan == 0.0 | t_lambda_young == 0.0 | t_lambda_mature == 0.0 | t_lambda_old == 0.0) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
+        if((t_leaflifespan == 0.0) | (t_lambda_young == 0.0) | (t_lambda_mature == 0.0) | (t_lambda_old == 0.0)) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
         
         //*#######################################*/
         //*## Traits that vary during tree life ##*/
@@ -4285,7 +4285,7 @@ void InitialiseLookUpTables(){
         for(int row = 0; row < extent_full; row++){
             xx = col - extent;                                      // distance from center (x = extent) in x direction
             yy = row - extent;                                      // distance from center (y = extent) in y direction
-            if(!(xx == 0 & yy == 0)){
+            if(!(((xx == 0) & (yy == 0)))){
                 site_rel = col + extent_full * row;
                 dist = xx*xx + yy*yy;
                 // now order the arrays according to distance from center
@@ -4582,7 +4582,7 @@ void ReadInputInventory(){
         if(flag_dbh == 1){
             Rcout << "WARNING! No diameter column provided, no initialization from file will be carried out." << endl;
         } else {
-            if(flag_col == 1 | flag_row == 1) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
+            if((flag_col == 1) | (flag_row == 1)) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
             if(flag_species == 1) Rcout << "WARNING! No species column provided, random species chosen" << endl;
              
             int nb_parameterlines = 0;
@@ -5938,7 +5938,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
                         float LAI_current = LAI3D[h][site + SBORD];
                         
                         float prob_hit;
-                        if(LAI_above == 100.0 & LAI_current == 100.0){
+                        if((LAI_above == 100.0) & (LAI_current == 100.0)){
                             //stem returns
                             hits = nbbeams;
                             nbbeams = 0;

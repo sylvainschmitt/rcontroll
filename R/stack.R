@@ -6,6 +6,7 @@
 #' @importFrom iterators icount
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom dplyr bind_rows
+#' @importFrom tidyr unnest
 NULL
 
 #' Stack

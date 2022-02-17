@@ -11,3 +11,9 @@ inst/doc
 *.docx
 doc
 docs
+autom4te.cache
+config.log
+config.status
+windows
+simulations
+supplementary.html
