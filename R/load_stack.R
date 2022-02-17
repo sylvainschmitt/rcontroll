@@ -6,7 +6,7 @@ NULL
 #' @param name char. Name given to the stack output.
 #' @param path char. Path where the stack is saved.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce outputs size, default is NULL and corresponds to no
+#'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
 #'   
 #' @return An S4 \linkS4class{trollsim} class object.

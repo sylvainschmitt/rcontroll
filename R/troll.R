@@ -9,18 +9,18 @@ NULL
 #' Run a TROLL simulation.
 #'
 #' @param name char. Model name (if NULL timestamp).
-#' @param path char. Path to save the simulations outputs, the default is null
+#' @param path char. Path to save the simulation outputs, the default is null
 #'   corresponding to a simulation in memory without saved intermediary files.
 #' @param global df. Global parameters.
 #' @param species df. Species parameters.
 #' @param climate df. Climate parameters.
 #' @param daily df. Daily variation parameters.
-#' @param forest df. TROLL with forest input, if null start from an empty grid
+#' @param forest df. TROLL with forest input, if null starts from an empty grid
 #'   (default NULL).
 #' @param verbose bool. Show TROLL outputs in the console.
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce outputs size, default is NULL and corresponds to no
+#'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
 #'
 #' @return A trollsim object.

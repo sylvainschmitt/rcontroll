@@ -2,8 +2,7 @@
 
 <!-- sticker("~/Téléchargements/TROLL.png", package="rcontroll", p_size=20, s_x=1, s_y = 0.85, s_width=.6, p_y = 1.6, filename="inst/figures/logo.png", h_color = "darkblue", h_fill = "white", p_color = "black") -->
 
-[![R build status](https://github.com/sylvainschmitt/rcontroll/workflows/R-CMD-check/badge.svg)](https://github.com/sylvainschmitt/rcontroll/actions)
-[![Codecov test coverage](https://codecov.io/gh/sylvainschmitt/rcontroll/branch/master/graph/badge.svg)](https://codecov.io/gh/sylvainschmitt/rcontroll?branch=master)
+[![R-CMD-check](https://github.com/gsalzet/rcontroll/workflows/R-CMD-check/badge.svg)](https://github.com/gsalzet/rcontroll/actions)
 
 *rcontroll* integrates the individual-based  and spatially-explicit *TROLL* model to simulate forest ecosystem and species dynamics forward in time.
 *rcontroll* provides user-friendly functions to set up and analyse simulations with varying community compositions, ecological parameters, and climate conditions.
@@ -11,12 +10,12 @@
 ## Description
 
 The *rcontroll* package relies on a few functions in R to generate and provide inputs, prepare and run the simulations, 
-and analyze the simulations through tables, figures, and maps that are easily connected to the rest of the R ecosystem.
+and analyse the simulations through tables, figures, and maps that are easily connected to the rest of the R ecosystem.
 The whole workflow can even be run for one or several simulations using a unique function (`troll` and `stack`). 
 Pre-simulations functions include global parameters definition (`generate_parameters`) and species and weather data input, with default values for French Guiana included in the package. 
 Simulations are run alone (`troll`) or as a stack (`stack`) and stocked in corresponding classes.
 The post-simulation outputs are stored in the corresponding objects and can be accessed using object attributes (with `@` in R) in the form of simple R objects, mainly data frames, 
-or summarized and plotted with the `print`, `summary` and `autoplot` methods. 
+or summarised and plotted with the `print`, `summary` and `autoplot` methods. 
 Simulations can be saved using a user-defined path when run and later loaded as a simple simulation (`load_output`) or a stack of simulations (`load_stack`).
 
 ## Installation
@@ -48,9 +47,3 @@ autoplot(sim, what = "species",
   theme(legend.position = "bottom")
 ```
 
-## Contributing
-
-This package is currently under intensive development on the [`dev` branch](https://github.com/sylvainschmitt/rcontroll/tree/dev).
-Please check the following issue for contribution guidelines: https://github.com/sylvainschmitt/rcontroll/issues/14.
-
-For a full list of changes see [NEWS](https://github.com/sylvainschmitt/rcontroll/blob/main/NEWS.md).

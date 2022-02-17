@@ -2,26 +2,33 @@
 % Please edit documentation in R/autoplot.troll.R
 \name{autoplot,trollsim-method}
 \alias{autoplot,trollsim-method}
-\title{Plot TROLL simulation}
+\title{Plot TROLL simulation or stack}
 \usage{
 \S4method{autoplot}{trollsim}(
   object,
-  what = "ecosystem",
+  what = "temporal",
   variables = NULL,
-  iter = NULL,
-  species = NULL
+  species = NULL,
+  iter = NULL
 )
 }
 \arguments{
-\item{object}{TROLL simulation.}
+\item{object}{TROLL simulation or stack.}
 
-\item{what}{char. What to plot: "forest", "ecosystem", or "species".}
+\item{what}{char. What to plot: "temporal", "spatial" or "distribution".
+"temporal" is for temporal trajectories of the whole ecosystem or defined
+species. "spatial" is for spatial patterns in the initial or final forest.
+"distribution" is for metrics distribution in the initial or final forest.}
 
-\item{variables}{char. Wich variable(s) to plot (ecosystem or species).}
+\item{variables}{char. Which variable(s) to plot. Only one variable is
+accepted when plotting "spatial".}
 
-\item{iter}{char. Which iteration(s) to plot.}
+\item{species}{char. Which species to plot. NULL indicates the whole ecosystem
+level. "all" can be used to use all species.}
 
-\item{species}{char. Which species to plot when using the species table.}
+\item{iter}{char. Which iteration(s) to plot, for temporal thinning or to
+specify which forest to plot. "initial" or "final" can be used. NULL is
+converted to "final".}
 }
 \value{
 A ggplot2 object.

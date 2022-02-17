@@ -79,7 +79,7 @@ generate_parameters(
 
 \item{nbiter}{num. Total number of timesteps.}
 
-\item{iterperyear}{num. Number of iteration per year.}
+\item{iterperyear}{num. Number of iterations per year.}
 
 \item{NV}{num. Vertical number of cells (per m).}
 
@@ -89,7 +89,7 @@ generate_parameters(
 
 \item{nbspp}{num. Number of species}
 
-\item{SWtoPPFD}{num. Convert short wave irradiance to PAR photons.}
+\item{SWtoPPFD}{num. Convert shortwave irradiance to PAR photons.}
 
 \item{p_nonvert}{num. Light incidence parameter (difference through turbid
 medium).}
@@ -217,7 +217,7 @@ A data frame of global parameters.
 }
 \description{
 Function to generate the global parameters used in the TROLL simulation. All
-parameters have a default values used in French Guiana simulations.
+parameters have a default value used in French Guiana simulations.
 }
 \examples{
 

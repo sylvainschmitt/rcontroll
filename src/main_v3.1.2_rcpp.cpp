@@ -1,4 +1,6 @@
+// [[Rcpp::depends(RcppGSL)]]
 #include <Rcpp.h>
+#include <RcppGSL.h>
 using namespace Rcpp;   // is there not a potential problem with "using namespace std;" below, cf. example of namespace collision at: https://coliru.stacked-crooked.com/a/578f9934725ffd90, maybe they don't overlap here, but still, would be good to discuss!
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +44,6 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
 */
 //////////////////////////////////////////////////////////////////////////////////
 
-#undef OUTPUT_local    //!<new in v.3.1: move output streams within main function for proper initialization and deletion
 #undef MPI               //!< MPI = Message Passing Interface. Software for sharing information across processors in parallel computers. If global variable MPI is not defined, TROLL functions on one processor only. if flag MPI defined, parallel routines (MPI software) are switched on. WARNING!!!: MPI has not been maintained since v.2.2, several functions need updating
 #undef WATER             //!< new in v.3.0: If defined, an explicit water cycle is added, with an explicit belowground space. The horizontal resolution of the soil field is currently set by DCELL
 #define CROWN_UMBRELLA   //!< new in v.2.4.1, modified in v.2.5: If activated, crowns are assumed to grow cylindrical until they reach 3m in depth, then the center of the crown will experience quicker height growth than the outer parts of the crown, thus leading to an umbrella like crown shape (with slope depending on crown depth and width). Depending on the slope parameter, trees will look more like cylinders or more like cones. Contrary to previous versions, however, the crown will not fill its shape underneath the first three layers. The crown will simply become umbrella-like, with a dense layer that spans out from its stem, and empty space underneath. This allows for a very simple computation of just three crown layers, while retaining their spread across the crown depth, enough realism for LiDAR derived CHMs and for eventual non vertical light penetration. New in v.2.5: Entirely modelled through one template that simulates loops across a crown layer/shell and can be applied to any calculation that requires to calculate crown properties (CalcLAI, Fluxh, etc.). Furthermore, enhanced flexibility for future incorporation of other crown shape functions (e.g. spherical, etc.)
@@ -90,11 +91,8 @@ char buffer[256], inputfile[256], inputfile_daytimevar[256], inputfile_climate[2
 char inputfile_species[256], *bufi_species(0); //!< Global variable: vector of input files
 
 // FILE OUTPUT STREAMS. Updated in v.3.1 to reduce number of streams and increase clarity
-#ifdef OUTPUT_local
-#else
 fstream output_info;                   //!< Global variable:  basic simulation information
 fstream output_basic[3];            //!< Global variable:  default output streams, always used
-#endif
 fstream output_extended[9];         //!< Global variable:  extended TROLL outputs, preserved from previous versions, might need further clean-up
 
 #ifdef Output_ABC
@@ -462,11 +460,7 @@ void CircleAreaUpdateCrownStatistic_template(int row_center, int col_center, int
 // GLOBAL FUNCTIONS
 void ReadInputGeneral();  //!< Global function: read in global parameter sheet
 void Initialise(void); //!< Global function: initialisation with bare ground conditions
-#ifdef OUTPUT_local
-void InitialiseOutputStreams(fstream output_basic[3]); //!< Global function: initialisation of output streams
-#else
 void InitialiseOutputStreams(void); //!< Global function: initialisation of output streams
-#endif
 void ReadInputInventory(void); //!< Global function: updated in v.3.1: initialisation from inventories
 void AllocMem(void); //!< Global function: Field dynamic memory allocation
 void Evolution(void); //!< Global function: Evolution at each timestep
@@ -476,11 +470,7 @@ void TriggerTreefall(void); //!< Global function: Treefall gap formation; v.2.4
 void TriggerTreefallSecondary(void); //!< Global function: Secondary treefall gap formation
 void FillSeed(int col, int row, int spp); //!< Global function: update SPECIES_SEEDS field; v.2.5
 void RecruitTree(void); //!< Global function: tree germination module; v.2.5
-#ifdef OUTPUT_local
-void Average(fstream output_basic[3]);  //!< Global function: output of the global averages every timestep
-#else
 void Average(void);  //!< Global function: output of the global averages every timestep
-#endif
 void OutputField(void); //!< Global function: output of the field variables every timestep
 void OutputSnapshot(fstream& output, bool header, float dbh_limit); //!< Global function: output snapshots of the scene at one point in time
 void OutputLAI(fstream& output_transmLAI3D); //!< Global function: writes the whole 3D LAI voxel field to file
@@ -558,7 +548,7 @@ public:
     float s_seedmass;       //!< Seed mass (g); See Baraloto & Forget 2007 dataset v.2.3; deprecated in v.2.2, but still necessary for SEEDTRADEOFF
     float s_iseedmass;      //!< Inverse of seed mass (1/g), v.2.3
     //float s_output_field[12];         // scalar output fields, deprecated since v.3.1, replaced by actual sumstats for readability/code accessibility
-    float s_sum1 = 0.0, s_sum10 = 0.0, s_sum30 = 0.0, s_ba = 0.0, s_ba10 = 0.0, s_agb = 0.0, s_gpp = 0.0, s_npp = 0.0, s_rday = 0.0, s_rnight = 0.0, s_rstem = 0.0, s_litterfall = 0.0; // species level summary statistics, to be provided to output streams
+    float s_sum1, s_sum10, s_sum30, s_ba, s_ba10, s_agb, s_gpp, s_npp, s_rday, s_rnight, s_rstem, s_litterfall; // species level summary statistics, to be provided to output streams
       
     float s_tlp;            //!< Leaf water potential at turgor loss point (MPa); defined for consistency when WATER is deactivated
 #ifdef WATER // Some of these parameters may include intraspecific variability, as in v.2.4.1.
@@ -610,6 +600,8 @@ void Species::Init() {
     //Computation of the light compensation point from dark respiration and the quantum yield phi
     //By definition, Rdark is in micromolC/m^2/s and it is used in the Species::NPP() routine
     s_LCP = s_Rdark/phi;
+    
+    s_sum1 = s_sum10 = s_sum30 = s_ba = s_ba10 = s_agb = s_gpp = s_npp = s_rday = s_rnight = s_rstem = s_litterfall = 0.0; // new in v.3.1
     
 #ifdef WATER
     //s_g1=-3.97*s_wsg+6.53;                      // from Lin et al. 2015 Nature Climate Change
@@ -802,7 +794,7 @@ public:
     void Update();                  //!< Tree death and growth
     void Average();                 //!< Local computation of the averages
     void CalcLAI();                 //!< Update of the LAI3D field
-    void CalcLAinitial();            //!< Initialise leaf area and related variables for trees that could not be initialized from data, new in v.3.1
+    //void CalcLAinitial();            //!< Initialise leaf area and related variables for trees that could not be initialized from data, new in v.3.1, not used yet
     void histdbh();                 //!< Computation of dbh histograms
     
     //! empirical functions for trait calculation and tree level variables (Calc functions return the specific parameter, Update functions update a specific variable at tree level)
@@ -1174,7 +1166,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
         
-        if(t_leaflifespan == 0.0 | t_lambda_young == 0.0 | t_lambda_mature == 0.0 | t_lambda_old == 0.0) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
+        if((t_leaflifespan == 0.0) | (t_lambda_young == 0.0) | (t_lambda_mature == 0.0) | (t_lambda_old == 0.0)) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
         
         //*#######################################*/
         //*## Traits that vary during tree life ##*/
@@ -1189,6 +1181,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_height, 0.0f, 150.0f, 0.0f, quiet);  // maximum value of 150m to leave a bit of room
         
+        // !!!: assumption of random deviations from allometry, irrespective of neighborhood, is a problematic assumption for generic inventories
         if(t_height == 0.0){
             t_mult_height = d_intraspecific_height[dev_rand];
             UpdateHeight();
@@ -1200,6 +1193,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_CD, 0.0f, t_height * 0.5f, 0.0f, quiet);
         
+        // !!!: assumption of random deviations from allometry, irrespective of neighborhood, is a problematic assumption for generic inventories
         if(t_CD == 0.0){
             t_mult_CD = d_intraspecific_CD[dev_rand];
             UpdateCD();
@@ -1211,6 +1205,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_CR, 0.0f, 25.0f, 0.0f, quiet);  // maximum value of 15m (Baobabs, Sequoias and Taxodium mucronatum can reach somewhere around 10m)
         
+        // !!!: assumption of random deviations from allometry, irrespective of neighborhood, is a problematic assumption for generic inventories
         if(t_CR == 0.0){
             t_mult_CR = d_intraspecific_CR[dev_rand];
             UpdateCR();
@@ -1259,23 +1254,37 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_litter, 0.0f, 100000.0f, -1.0f, quiet);
         
+        float crown_area = PI*t_CR*t_CR;
+        float crown_area_nogaps = GetCrownAreaFilled(crown_area);
+        
+        if(t_LAmax >= 0.0 && t_LA >= 0.0 && t_youngLA >= 0.0 && t_matureLA >= 0.0 && t_oldLA >= 0.0 && t_litter >= 0.0){
+            // there could be more consistency checks here (e.g. t_youngLA + t_matureLA + t_oldLA should be approximately t_LA)
+            t_LAI = t_LA/crown_area_nogaps;
+        } else {
+            if(_LA_regulation > 0){
+                float LAIexperienced_eff;
+                CalcLAmax(LAIexperienced_eff, t_LAmax);     // !!!: problematic calculation if only classic inventory data is provided (i.e. x/y/dbh/s_name): we calculate the maximum leaf area for an empty canopy, thus grossly overestimating it for trees in the understory --> first improvement would be implementing calculation of this variable from highest tree to smallest tree and successively allocating leaves. Cf. the currently not used CalcLAinitial(). Interestingly, when trying this, the effects were not very large, probably because they are overshadowed by the impact of random allometric deviations and crown overlap.
+                t_LA = t_LAmax;   // assume half the maximum leaf area?
+                t_LAI = t_LA/crown_area_nogaps;
+            } else {
+#ifdef CROWN_UMBRELLA
+                t_LAI = dens * fminf(t_CD, 3.0);
+#else
+                t_LAI = dens * t_CD;
+#endif
+                t_LA = t_LAI * crown_area_nogaps;
+            }
+            InitialiseLeafPools();
+        }
+        
         parameter_name = "sapwood_area";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         float ba = t_dbh * t_dbh * 0.25 * PI;
         SetParameter(parameter_name, parameter_value, t_sapwood_area, 0.0f, ba, 0.0f, quiet);
         
-        if(t_LAmax >= 0.0 && t_LA >= 0.0 && t_youngLA >= 0.0 && t_matureLA >= 0.0 && t_oldLA >= 0.0 && t_litter >= 0.0){
-            // there could be more consistency checks here (e.g. t_youngLA + t_matureLA + t_oldLA should be approximately t_LA)
-            float crown_area = PI*t_CR*t_CR;
-            float crown_area_nogaps = GetCrownAreaFilled(crown_area);
-            t_LAI = t_LA/crown_area_nogaps;
-            
-            if(t_sapwood_area == 0.0){
-                float ddbh = fminf(t_dbh, 0.04f);   // limit the approximate sapwood thickness to 5cm
-                UpdateSapwoodArea(ddbh);
-            }
-        } else {
-            t_LAmax = t_LA = t_youngLA = t_matureLA = t_oldLA = t_litter = -1.0;
+        if(t_sapwood_area == 0.0){
+            float ddbh = fminf(t_dbh, 0.04f);   // limit the approximate sapwood thickness to 5cm
+            UpdateSapwoodArea(ddbh);
         }
         
         if(_LA_regulation > 0){
@@ -1338,51 +1347,51 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
     return(success);
 }
 
-// v.3.1: new function to initialize trees more realistically from inventories
-void Tree::CalcLAinitial(){
-    if(t_LA < 0.0){
-        // 1. determine leaf area and related variables, based on current environment
-        float crown_area = PI*t_CR*t_CR;
-        float crown_area_nogaps = GetCrownAreaFilled(crown_area);
-
-        if(_LA_regulation > 0){
-            float LAIexperienced_eff;
-            CalcLAmax(LAIexperienced_eff, t_LAmax);
-            t_LA = t_LAmax;   // assume half the maximum leaf area?
-            t_LAI = t_LA/crown_area_nogaps;
-        } else {
-#ifdef CROWN_UMBRELLA
-            t_LAI = dens * fminf(t_CD, 3.0);
-#else
-            t_LAI = dens * t_CD;
-#endif
-            t_LA = t_LAI * crown_area_nogaps;
-        }
-        InitialiseLeafPools();
-                
-        if(t_sapwood_area == 0.0){
-            float ddbh = fminf(t_dbh, 0.04f);   // initial sapwood thickness of ca. 2.5cm
-            UpdateSapwoodArea(ddbh);
-        }
-        
-        // 2. allocate the leaves to the LAI3D field
-        // nota bene: we here use the same function as CalcLAI3D, with one exception: LAI2dens_cumulated instead of LAI2dens; this means that we allocate the cumulated LAI in each layer and do not require any summation afterwards
-        int site_crowncenter = t_site + t_CrownDisplacement;
-        int row_crowncenter = site_crowncenter/cols;
-        int col_crowncenter = site_crowncenter%cols;
-
-        float LA_cumulated = 0.0;   //Currently, an output variable is required by LoopLayerUpdateCrownStatistic_template, we here use LA_cumulated as control variable
-
-        int crown_top = int(t_height);
-        int crown_base = int(t_height - t_CD);
-        int max_shells = min(crown_top - crown_base + 1, 4);    //since the new crown shapes
-        float fraction_filled_target = t_fraction_filled;
-
-        for(int shell_fromtop = 0; shell_fromtop < max_shells; shell_fromtop++){
-            LoopLayerUpdateCrownStatistic_template(row_crowncenter, col_crowncenter, t_height, t_CR, t_CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, t_LAI, LA_cumulated, LAI2dens_cumulated, UpdateLAI3D);
-        }
-    }
-}
+// v.3.1: new function to initialize trees more realistically from inventories, not used yet
+//void Tree::CalcLAinitial(){
+//    if(t_LA < 0.0){
+//        // 1. determine leaf area and related variables, based on current environment
+//        float crown_area = PI*t_CR*t_CR;
+//        float crown_area_nogaps = GetCrownAreaFilled(crown_area);
+//
+//        if(_LA_regulation > 0){
+//            float LAIexperienced_eff;
+//            CalcLAmax(LAIexperienced_eff, t_LAmax);
+//            t_LA = t_LAmax;   // assume half the maximum leaf area?
+//            t_LAI = t_LA/crown_area_nogaps;
+//        } else {
+//#ifdef CROWN_UMBRELLA
+//            t_LAI = dens * fminf(t_CD, 3.0);
+//#else
+//            t_LAI = dens * t_CD;
+//#endif
+//            t_LA = t_LAI * crown_area_nogaps;
+//        }
+//        InitialiseLeafPools();
+//
+//        if(t_sapwood_area == 0.0){
+//            float ddbh = fminf(t_dbh, 0.04f);   // initial sapwood thickness of ca. 2.5cm
+//            UpdateSapwoodArea(ddbh);
+//        }
+//
+//        // 2. allocate the leaves to the LAI3D field
+//        // nota bene: we here use the same function as CalcLAI3D, with one exception: LAI2dens_cumulated instead of LAI2dens; this means that we allocate the cumulated LAI in each layer and do not require any summation afterwards
+//        int site_crowncenter = t_site + t_CrownDisplacement;
+//        int row_crowncenter = site_crowncenter/cols;
+//        int col_crowncenter = site_crowncenter%cols;
+//
+//        float LA_cumulated = 0.0;   //Currently, an output variable is required by LoopLayerUpdateCrownStatistic_template, we here use LA_cumulated as control variable
+//
+//        int crown_top = int(t_height);
+//        int crown_base = int(t_height - t_CD);
+//        int max_shells = min(crown_top - crown_base + 1, 4);    //since the new crown shapes
+//        float fraction_filled_target = t_fraction_filled;
+//
+//        for(int shell_fromtop = 0; shell_fromtop < max_shells; shell_fromtop++){
+//            LoopLayerUpdateCrownStatistic_template(row_crowncenter, col_crowncenter, t_height, t_CR, t_CD, fraction_filled_target, shell_fromtop, GetRadiusSlope, t_LAI, LA_cumulated, LAI2dens_cumulated, UpdateLAI3D);
+//        }
+//    }
+//}
 
 
 //###############################################
@@ -3129,11 +3138,11 @@ void LAI2dens_cumulated(float LAI, float &dens_layer, float CD, float height, in
 #endif
 
     if(CD < 3.0 && crown_top == crown_base){
-        dens_layer = LAI;         /* full LAI allocation */
+        dens_layer = LAI;         // full LAI allocation
     } else if(CD < 3.0 && (crown_top - layer_fromtop == crown_base)){
         dens_layer = LAI;
     } else {
-        float fraction_layer = height - floor(height);    /* this is the fraction that each layer apart from the topmost layer will extend into the voxel above */
+        float fraction_layer = height - floor(height);    // this is the fraction that each layer apart from the topmost layer will extend into the voxel above
         if(layer_fromtop == 0) dens_layer = dens_top * fraction_layer;
         else if(layer_fromtop == 1) dens_layer = dens_top + dens_belowtop * fraction_layer;
         else if(layer_fromtop == 2) dens_layer = dens_top + dens_belowtop + dens * fraction_layer;
@@ -3388,19 +3397,11 @@ void trollCpp(
      
     Rcout << "On proc #" << easympi_rank << " seed: " << seed << endl;
     sprintf(outputinfo,"%s_%i_info.txt",buf, easympi_rank);
-#ifdef OUTPUT_local
-    fstream output_info;
-    fstream output_basic[3];
-#endif
     output_info.open(outputinfo, ios::out);
     if(!output_info) Rcerr<< "ERROR with info file"<< endl;
     
     Initialise();               // Read global parameters
-#ifdef OUTPUT_local
-    InitialiseOutputStreams(output_basic);  // Initialise Output streams
-#else
-    InitialiseOutputStreams();  // Initialise Output streams
-#endif
+    InitialiseOutputStreams();  // Initialise Output streams, taken outside of Initialise() function in v.3.1 to mirror AllocMem()
     AllocMem();                 // Memory allocation
     
 #ifdef Output_ABC
@@ -3452,14 +3453,7 @@ void trollCpp(
     for(iter=0;iter<nbiter;iter++) {
         start_time = stop_time;
         
-        Evolution();
-#ifdef OUTPUT_local
-        Average(output_basic);                          //! Compute averages for outputs
-#else
-        Average();                          //! Compute averages for outputs
-#endif
-        if(_OUTPUT_extended) OutputField(); //! Output the statistics
-        
+        Evolution();    // probably should be renamed at some point: the loop as such describes the "Evolution" of the forest, this is more like an update of all the variables
         stop_time = clock();
         duration +=fmaxf(stop_time-start_time,0.0);
         
@@ -3512,13 +3506,8 @@ void trollCpp(
         Rcout << "End of simulation.\n";
     }
     
-    //Close outputs
-#ifdef OUTPUT_local
-#else
-    CloseOutputs();
-#endif
-    //Free dynamic memory  //! added in oct2013
-    FreeMem();
+    CloseOutputs(); // new in v.3.1: Close and clear outputs, maybe not necessary as main function terminates shortly after, but maybe it ensures a cleaner communication with file system/within Rcpp
+    FreeMem(); //Free dynamic memory  //! added in oct2013
 #ifdef easyMPI
     MPI::Finalize();
 #endif
@@ -4296,7 +4285,7 @@ void InitialiseLookUpTables(){
         for(int row = 0; row < extent_full; row++){
             xx = col - extent;                                      // distance from center (x = extent) in x direction
             yy = row - extent;                                      // distance from center (y = extent) in y direction
-            if(!(xx == 0 & yy == 0)){
+            if(!(((xx == 0) & (yy == 0)))){
                 site_rel = col + extent_full * row;
                 dist = xx*xx + yy*yy;
                 // now order the arrays according to distance from center
@@ -4321,11 +4310,7 @@ void InitialiseLookUpTables(){
 }
 
 //! Global function: initialise output streams
-#ifdef OUTPUT_local
-void InitialiseOutputStreams(fstream output_basic[3]){
-#else
 void InitialiseOutputStreams(){
-#endif
     char nnn[200];
     if(!mpi_rank) {
         sprintf(nnn,"%s_%i_sumstats.txt",buf, easympi_rank);
@@ -4597,7 +4582,7 @@ void ReadInputInventory(){
         if(flag_dbh == 1){
             Rcout << "WARNING! No diameter column provided, no initialization from file will be carried out." << endl;
         } else {
-            if(flag_col == 1 | flag_row == 1) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
+            if((flag_col == 1) | (flag_row == 1)) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
             if(flag_species == 1) Rcout << "WARNING! No species column provided, random species chosen" << endl;
              
             int nb_parameterlines = 0;
@@ -4701,47 +4686,48 @@ void ReadInputInventory(){
      
      InInventory.close();
      
+     // added in v.3.1 to reduce transient behavior of forest on reinitialization when leaf parameters and tree dimensions are not known, but not used yet: does not massively improve the initial configuration of trees, as the main problem is in overlapping crowns and not how they allocate their leaf area; could be solved by a preceding Canopy Constructor reshuffle (Fischer et al. 2020, RSE), or by
      //*#################################################################*/
      //*### Update Leaf Area for more realistic initial configuration ###*/
      //*#################################################################*/
      // To do so, we order by height first and then allocate leaf area from top to bottom
-     vector<float> heights_trees;
-     vector<int> sites_trees;
-     
-     heights_trees.reserve(sites);
-     sites_trees.reserve(sites);
-     
-     for(int site = 0; site < sites; site++){
-        // Only consider non-initialized trees (i.e. t_LA < 0.0)
-        if(T[site].t_age > 0.0 & T[site].t_LA < 0.0){
-            float height = T[site].t_height;
-            heights_trees.push_back(height);
-            sites_trees.push_back(site);
-            
-            int index_tree_current = int(sites_trees.size()) - 1;
-            
-            while(index_tree_current > 0 && height > heights_trees[index_tree_current - 1]){
-                heights_trees[index_tree_current] = heights_trees[index_tree_current - 1];
-                sites_trees[index_tree_current] = sites_trees[index_tree_current - 1];
-                
-                heights_trees[index_tree_current - 1] = height;
-                sites_trees[index_tree_current - 1] = site;
-                index_tree_current--;
-            }
-        }
-     }
-     
-     // clear voxel field
-     for(int h=0;h<(HEIGHT+1);h++)
-         for(int sbsite=0;sbsite<sites+2*SBORD;sbsite++)
-             LAI3D[h][sbsite] = 0.0;
-     
-     // allocate and compute leaf area
-     for(int index_site = 0; index_site < sites_trees.size(); index_site++){
-        int site = sites_trees[index_site];
-        //Rcout << site << " Site of tree: " << T[site].t_site << " Height: " << T[site].t_height << " Height from index: " << heights_trees[index_site] << endl;
-        T[site].CalcLAinitial();
-     }
+//     vector<float> heights_trees;
+//     vector<int> sites_trees;
+//
+//     heights_trees.reserve(sites);
+//     sites_trees.reserve(sites);
+//
+//     for(int site = 0; site < sites; site++){
+//        // Only consider non-initialized trees (i.e. t_LA < 0.0)
+//        if(T[site].t_age > 0.0 & T[site].t_LA < 0.0){
+//            float height = T[site].t_height;
+//            heights_trees.push_back(height);
+//            sites_trees.push_back(site);
+//
+//            int index_tree_current = int(sites_trees.size()) - 1;
+//
+//            while(index_tree_current > 0 && height > heights_trees[index_tree_current - 1]){
+//                heights_trees[index_tree_current] = heights_trees[index_tree_current - 1];
+//                sites_trees[index_tree_current] = sites_trees[index_tree_current - 1];
+//
+//                heights_trees[index_tree_current - 1] = height;
+//                sites_trees[index_tree_current - 1] = site;
+//                index_tree_current--;
+//            }
+//        }
+//     }
+//
+//     // clear voxel field
+//     for(int h=0;h<(HEIGHT+1);h++)
+//         for(int sbsite=0;sbsite<sites+2*SBORD;sbsite++)
+//             LAI3D[h][sbsite] = 0.0;
+//
+//     // allocate and compute leaf area
+//     for(int index_site = 0; index_site < sites_trees.size(); index_site++){
+//        int site = sites_trees[index_site];
+//        //Rcout << site << " Site of tree: " << T[site].t_site << " Height: " << T[site].t_height << " Height from index: " << heights_trees[index_site] << endl;
+//        T[site].CalcLAinitial();
+//     }
 }
 
 //######################################
@@ -4928,7 +4914,8 @@ void Evolution() {
         //**** Tree evolution: Growth or death ****
         T[site].Update();
     }
-    // Update trees
+    Average();  //! Compute averages for outputs
+    if(_OUTPUT_extended) OutputField(); //! Output the statistics
 }
 
 
@@ -5388,12 +5375,7 @@ int CalcIntabsorb(float absorb_prev){
 // Global function: calculation of the global averages every timestep
 //##############################################
 
-#ifdef OUTPUT_local
-void Average(fstream output_basic[3]){
-#else
 void Average(void){
-#endif
-    
 #ifdef TRACK_INDIVIDUALS
     TrackingData_andOutput();
 #endif
@@ -5956,7 +5938,7 @@ void UpdateTransmittanceCHM_ABC(int mean_beam, float sd_beam, float klaser, floa
                         float LAI_current = LAI3D[h][site + SBORD];
                         
                         float prob_hit;
-                        if(LAI_above == 100.0 & LAI_current == 100.0){
+                        if((LAI_above == 100.0) & (LAI_current == 100.0)){
                             //stem returns
                             hits = nbbeams;
                             nbbeams = 0;
@@ -7451,8 +7433,6 @@ void MPI_ShareTreefall(unsigned short **c, int n) {
 #endif
 
 //! Close outputs
-#ifdef OUTPUT_local
-#else
 void CloseOutputs(){
     output_info.close();
     output_info.clear();
@@ -7485,7 +7465,6 @@ void CloseOutputs(){
     }
 #endif
 }
-#endif
 
 //!  Free dynamic memory
 void FreeMem () {
