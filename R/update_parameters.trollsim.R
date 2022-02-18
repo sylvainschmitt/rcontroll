@@ -6,7 +6,7 @@ NULL
 
 #' Function to updae parameters from a TROLL outputs for a next simlation.
 #'
-#' @param x trollsim.
+#' @param sim trollsim.
 #' @param ... parameters to update and their values..
 #'
 #' @return data.frame
@@ -26,6 +26,7 @@ setGeneric('update_parameters', function(sim, ...) {return(standardGeneric('upda
 #' @rdname update_parameters
 #' @export
 setMethod("update_parameters", "trollsim", function(sim, ...) {
+  V1 <- description <- newvalue <- oldvalue <- param <- value <- NULL
   sim@inputs$global %>% 
     rename(oldvalue = value) %>% 
     left_join(list(...) %>% 
@@ -33,7 +34,7 @@ setMethod("update_parameters", "trollsim", function(sim, ...) {
                 t() %>% 
                 as.data.frame() %>% 
                 rownames_to_column("param") %>% 
-                dplyr::rename(newvalue = V1)) %>% 
+                rename(newvalue = V1), by = "param") %>% 
     mutate(value = ifelse(is.na(newvalue), oldvalue, newvalue)) %>% 
     select(param, value, description)
 })

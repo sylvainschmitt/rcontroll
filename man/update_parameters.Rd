@@ -10,9 +10,9 @@ update_parameters(sim, ...)
 \S4method{update_parameters}{trollsim}(sim, ...)
 }
 \arguments{
-\item{...}{parameters to update and their values..}
+\item{sim}{trollsim.}
 
-\item{x}{trollsim.}
+\item{...}{parameters to update and their values..}
 }
 \value{
 data.frame

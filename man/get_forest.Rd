@@ -10,9 +10,9 @@ get_forest(sim, ...)
 \S4method{get_forest}{trollsim}(sim, ...)
 }
 \arguments{
-\item{...}{unused argument.}
+\item{sim}{trollsim.}
 
-\item{x}{trollsim.}
+\item{...}{unused argument.}
 }
 \value{
 data.frame

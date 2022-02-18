@@ -5,7 +5,7 @@ NULL
 
 #' Function to get a forest inventory from TROLL outputs.
 #'
-#' @param x trollsim.
+#' @param sim trollsim.
 #' @param ... unused argument.
 #'
 #' @return data.frame
