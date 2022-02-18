@@ -14,3 +14,4 @@ dev
 ^docs$
 ^pkgdown$
 windows
+simulations

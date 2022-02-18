@@ -53,4 +53,17 @@ Make a gif from a TROLL simulation
 }
 \examples{
 
+\dontrun{
+data("TROLLv3_species")
+data("TROLLv3_climatedaytime12")
+data("TROLLv3_daytimevar")
+ autogif(name = "test", global = generate_parameters(cols = 100, rows = 100, 
+                                                     iterperyear = 12, nbiter = 12*100,  
+                                                     extent_visual = 10),
+        species = TROLLv3_species,
+        climate = TROLLv3_climatedaytime12,
+        daily = TROLLv3_daytimevar,
+        verbose = FALSE)
+}
+
 }

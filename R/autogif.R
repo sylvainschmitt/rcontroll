@@ -26,6 +26,19 @@ NULL
 #' @return A list of gganimate objects corresponding to chosen outputs.
 #'
 #' @examples
+#' 
+#' \dontrun{
+#' data("TROLLv3_species")
+#' data("TROLLv3_climatedaytime12")
+#' data("TROLLv3_daytimevar")
+#'  autogif(name = "test", global = generate_parameters(cols = 100, rows = 100, 
+#'                                                      iterperyear = 12, nbiter = 12*100,  
+#'                                                      extent_visual = 10),
+#'         species = TROLLv3_species,
+#'         climate = TROLLv3_climatedaytime12,
+#'         daily = TROLLv3_daytimevar,
+#'         verbose = FALSE)
+#' }
 #'
 #' @export
 #' 
@@ -79,6 +92,9 @@ autogif <- function(name = NULL,
 .troll2gif <- function(name,
                        path,
                        variables){
+  
+  LAI <- height <- height_spikefree <- iter <- ratio_NPP_GPP <- ratio_height_Ct <- sp_lab <- NULL
+  
   results <- list()
     
   slice <- vroom(file.path(path, name, paste0(name, "_0_visual_slice.txt")), col_types = cols()) %>% 

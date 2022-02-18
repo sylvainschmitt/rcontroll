@@ -34,8 +34,7 @@ Suggests:
     markdown,
     knitr,
     rmarkdown,
-    testthat,
-    tidyr
+    testthat
 RoxygenNote: 7.1.2
 Collate: 
     'RcppExports.R'

@@ -207,7 +207,7 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 
 # Dynamic visualisation
 
-```{r }
+```{r, eval=F}
 global_pars[which(global_pars$param == "nbiter"),2] <- 12*100
 gifs <- autogif(name = "dynamic",
                 variables = "height_ct",
@@ -219,7 +219,7 @@ gifs <- autogif(name = "dynamic",
                 verbose = FALSE)
 ```
 
-```{r }
+```{r, eval=F}
 gifs$height_ct
 ```
 
