@@ -30,5 +30,5 @@
 #   dplyr::filter(iter %in% thin)
 # TROLLv3_output@species <- data.frame()
 # forest <- TROLLv3_output@forest
-# autoplot(TROLLv3_output, "ecosystem")
+# autoplot(TROLLv3_output, "temporal")
 # usethis::use_data(TROLLv3_output, overwrite = T)

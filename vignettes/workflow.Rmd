@@ -172,18 +172,12 @@ And we finally used the same `troll` function adding the previous forest to init
 A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
-forest_init <- filter(TROLLv3_output@forest, 
-       iter == max(TROLLv3_output@forest$iter)) %>% 
-  dplyr::select(-iter, -from_Data, -sp_lab, -site, -dbh_previous, -AGB) %>% 
-  as.data.frame()
-global_pars <- TROLLv3_output@inputs$global
-global_pars[which(global_pars$param == "nbiter"),2] <- 12*1
 sim <- troll(name = "test",
-             global = global_pars,
+             global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
              daily = TROLLv3_output@inputs$daily,
-             forest = forest_init,
+             forest = get_forest(TROLLv3_output),
              verbose = FALSE)
 ```
 
@@ -208,18 +202,13 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 # Dynamic visualisation
 
 ```{r, eval=F}
-global_pars[which(global_pars$param == "nbiter"),2] <- 12*100
 gifs <- autogif(name = "dynamic",
                 variables = "height_ct",
-                global = dplyr::bind_rows(global_pars, tail(generate_parameters(extent_visual = 100), 1)),
+                global = update_parameters(TROLLv3_output, nbiter = 12*100, extent_visual = 100),
                 species = TROLLv3_output@inputs$species,
                 climate = TROLLv3_output@inputs$climate,
                 daily = TROLLv3_output@inputs$daily,
-                forest = forest_init,
+                forest = get_forest(TROLLv3_output),
                 verbose = FALSE)
-```
-
-```{r, eval=F}
 gifs$height_ct
 ```
-

@@ -29,7 +29,8 @@ Imports:
     RcppGSL (>= 0.3.10),
     gganimate (>= 1.0.7),
     vroom (>= 1.3.2),
-    tidyr (>= 1.1.3)
+    tidyr (>= 1.1.3),
+    tibble (>= 3.1.2)
 Suggests:
     markdown,
     knitr,
@@ -52,12 +53,14 @@ Collate:
     'trollstack.R'
     'autoplot.troll.R'
     'generate_parameters.R'
+    'get_forest.trollsim.R'
     'load_stack.R'
     'print.trollsim.R'
     'rcontroll-package.R'
     'rcontroll.R'
     'stack.R'
     'summary.trollsim.R'
+    'update_parameters.trollsim.R'
     'utils-pipe.R'
 VignetteBuilder: knitr
 Depends: 

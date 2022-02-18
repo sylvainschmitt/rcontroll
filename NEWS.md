@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9048
+* methods get_forest & update_parameters
+
 # rcontroll 0.1.0.9047
 * autogif v1
 
