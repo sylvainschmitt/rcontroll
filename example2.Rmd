@@ -5,15 +5,6 @@ output:
     number_sections: false  
     toc: true
     toc_float: yes
-  bookdown::word_document2:
-    reference_docx: ./template/template.docx
-  bookdown::pdf_document2:
-    includes:
-      before_body: ./template/doc_prefix.tex
-      in_header: ./template/preamble.tex
-    number_sections: false
-    toc: false
-    keep_tex: no
 linestretch: 1.5
 csl: bibliography/mee.csl
 bibliography: bibliography/library.bib
@@ -24,15 +15,35 @@ Sylvain Schmitt$^1$
 
 *$^1$ CNRS, UMR EcoFoG (Agroparistech, Cirad, INRAE, Université des Antilles, Université de la Guyane), Campus Agronomique, 97310 Kourou, French Guiana*
 
-```{r}
+Using the `TROLL` simulator in a long-term virtual experiment, @Schmitt2019 found that functional diversity improves the resilience of tropical forests.
+We reproduce a reduced version of this experiment in this vignette to demonstrate how `rcontroll` can help to easily use `TROLL` to implement virtual experiments.
+We use the packages `dplyr` & `reshape2` for data processing, `ggplot2` for figures, `FD` for functional divergence indices, and `rcontroll` for simulations.
+
+```{r setup, include=FALSE}
+rm(list = ls()) ; invisible(gc()) ; set.seed(42)
+library(knitr)
+opts_chunk$set(
+  echo = T, message = F, warning = F, fig.height = 6, fig.width = 6,
+  cache = T, cache.lazy = F)
+```
+
+```{r libraries}
 suppressMessages(library(dplyr))
+# reshape2
 library(ggplot2)
 suppressMessages(library(FD))
 suppressMessages(library(rcontroll))
 ```
 
-```{r}
-N <- 2
+# Simulation experiment
+
+## Experimental design
+
+We simulate $N=10$ communities for each species richness level through $SR\in[5,10,20]$ over 600 years,
+resulting in 6 communities with species randomly sampled in `TROLLv3_species`.
+
+```{r design}
+N <- 10
 SR <- c(5, 10, 20)
 data("TROLLv3_species")
 communities <- lapply(rep(SR, each = N),
@@ -40,46 +51,58 @@ communities <- lapply(rep(SR, each = N),
 names(communities) <- paste0("com", 1:length(communities))
 ```
 
-```{r, include=FALSE}
-communities_stats <- lapply(communities, select, s_LMA, s_Nmass, s_Pmass, s_wsg, s_dbhmax, s_hmax, s_ah) %>% 
-  lapply(dbFD, m = "max", calc.CWM = F) %>% 
-  lapply(as.data.frame) %>% 
-  bind_rows(.id = "community")
-```
+## Pre-disturbance simulations
 
-```{r}
-ggplot(communities_stats, 
-       aes(FRic, FEve, shape = as.factor(nbsp))) +
-  geom_point() +
-  theme_bw() +
-  scale_shape_discrete("Species\nrichness\n(SR)") +
-  xlab("Functional richness (FRic)") +
-  ylab("Functional evenness (FEve)")
-```
+Once the communities were defined, we use the `stack` function of `rcontroll` to simulate 6 forests from the bare ground before disturbance.
+We use the the `autoplot` function of `rcontroll` to represent spatial pattern of the forest before disturbance in the `com1` community (Fig. \@ref(fig:predistsimfig)).
 
-```{r, eval=F}
+```{r predistsim, eval=F}
 simulations_pre <- stack(name = "pre", 
       simulations = communities_stats$community,
       path = "simulations",
-      global = generate_parameters(nbiter = 10), 
+      global = generate_parameters(nbiter = 12*600), 
       species = bind_rows(communities, .id = "simulation"), 
       climate = TROLLv3_climatedaytime12, 
       daily = TROLLv3_daytimevar, 
       verbose = FALSE,
-      cores = 4)
+      cores = 30)
 save(simulations_pre, file = "simulations/simulations_pre.Rdata")
 ```
 
-```{r}
+```{r predistsimfig, fig.cap="Spatial pattern of the forest before disturbance in the `com1` community. Trees are represented by points with size corresponding to diameter at breast height (DBH, m) and colour to height (m)."}
 load("simulations/simulations_pre.Rdata")
-rcontroll::autoplot(simulations_pre, what = "spatial", variable = "height") +
+subsims <- simulations_pre
+subsims@forest <- filter(subsims@forest, simulation == "com1")
+rcontroll::autoplot(subsims, what = "spatial", variable = "height") +
   viridis::scale_color_viridis()
+```
+
+## Disturbance simulations
+
+@Schmitt2019 used a particular type of random disturbance as a first test case to explore the response of forest biodiversity on tropical forest resilience to disturbance.
+Consequently, we can simply use the `sample_frac` function from `dplyr` to reduce the forest to a random defined fraction per simulation thanks to the `group_by` function from `dplyr`.
+This results in the spatial pattern of the forest at disturbance in the `com1` community shown in Fig. \@ref(fig:distsimfig). 
+However, future studies could build on this random disturbance to include more mechanistic details and explore the effect of different disturbance types with homemade R code or specific packages (*e.g.* [`LoggingLab`](https://github.com/VincyaneBadouard/LoggingLab)).
+
+```{r distsim}
 simulations_pre@forest <- simulations_pre@forest %>% 
   group_by(simulation) %>% 
   sample_frac(3/4)
 ```
 
-```{r, eval=F}
+```{r distsimfig, fig.cap="Spatial pattern of the forest at disturbance in the `com1` community. Trees are represented by points with size corresponding to diameter at breast height (DBH, m) and colour to height (m)."}
+subsims <- simulations_pre
+subsims@forest <- filter(subsims@forest, simulation == "com1")
+rcontroll::autoplot(subsims, what = "spatial", variable = "height") +
+  viridis::scale_color_viridis()
+```
+
+## Post-disturbance simulations
+
+Once the communities were disturbed, we use once again the `stack` function of `rcontroll` to simulate the post-diturbance trajectories of the 6 forests.
+We use again the the `autoplot` function of `rcontroll` to represent spatial pattern of the forest after disturbance in the `com1` community (Fig. \@ref(fig:postdistsimfig)).
+
+```{r postdistsim, eval=F}
 simulations_post <- stack(name = "post", 
       simulations = communities_stats$community,
       path = "simulations",
@@ -89,17 +112,193 @@ simulations_post <- stack(name = "post",
       daily = TROLLv3_daytimevar, 
       forest = as.data.frame(simulations_pre@forest),
       verbose = FALSE,
-      cores = 4)
+      cores = 30)
 save(simulations_post, file = "simulations/simulations_post.Rdata")
-load("simulations/simulations_post.Rdata")
-test <- troll(name = "test", 
-              path = "simulations",
-              global = simulations_pre@inputs$global, 
-              species = communities$com1, 
-              climate = TROLLv3_climatedaytime12, 
-              daily = TROLLv3_daytimevar, 
-              forest = as.data.frame(simulations_pre@forest %>% filter(simulation == "com1")),
-              verbose = TRUE)
 ```
+
+```{r postdistsimfig, fig.cap="Spatial pattern of the forest after disturbance in the `com1` community. Trees are represented by points with size corresponding to diameter at breast height (DBH, m) and colour to height (m)."}
+load("simulations/simulations_post.Rdata")
+subsims <- simulations_post
+subsims@forest <- filter(subsims@forest, simulation == "com1")
+rcontroll::autoplot(subsims, what = "spatial", variable = "height") +
+  viridis::scale_color_viridis()
+```
+
+## Undisturbed simulations
+
+For control, we use once again the `stack` function of `rcontroll` to simulate the undisturbed trajectories of the 6 forests.
+We use again the the `autoplot` function of `rcontroll` to represent spatial pattern of the undisturbed forest in the `com1` community (Fig. \@ref(fig:undistsimfig)).
+
+```{r undistsim, eval=F}
+load("simulations/simulations_pre.Rdata")
+simulations_undist <- stack(name = "undist", 
+      simulations = communities_stats$community,
+      path = "simulations",
+      global = simulations_pre@inputs$global, 
+      species = simulations_pre@inputs$species, 
+      climate = TROLLv3_climatedaytime12, 
+      daily = TROLLv3_daytimevar, 
+      forest = as.data.frame(simulations_pre@forest),
+      verbose = FALSE,
+      cores = 30)
+save(simulations_undist, file = "simulations/simulations_undist.Rdata")
+```
+
+```{r undistsimfig, fig.cap="Spatial pattern of the undisturbed forest in the `com1` community. Trees are represented by points with size corresponding to diameter at breast height (DBH, m) and colour to height (m)."}
+load("simulations/simulations_undist.Rdata")
+subsims <- simulations_undist
+subsims@forest <- filter(subsims@forest, simulation == "com1")
+rcontroll::autoplot(subsims, what = "spatial", variable = "height") +
+  viridis::scale_color_viridis()
+```
+
+# Analyses
+
+## Quantifying simulated community diversity
+
+Specific and functional diversity are assessed for each simulation just before disturbance,
+i.e. at the end of the pre-disturbance simulation stage,
+with indices of specific richness ($SR$) and functional diversity 
+($FDiv$, the volume of the functional space occupied by the community; $FEve$, the regularity of the distribution of abundance in this volume) 
+using the `dbFD` function from `FD`.
+This results in the values shown in Fig. \@ref(fig:prediststatsfig).
+
+```{r prediststats, include=FALSE}
+communities_stats <- left_join(simulations_pre@inputs$species, 
+          filter(simulations_pre@species, iter == max(iter)),
+          by = c("simulation" = "simulation", "s_name" = "species")) %>% 
+  group_by(simulation, s_name) %>% 
+  sample_n(1) %>% 
+  group_by(simulation) %>% 
+  mutate(sum1 = ifelse(is.na(sum1), 0, sum1)) %>% 
+  mutate(abundance = sum1/sum(sum1)) %>% 
+  select(simulation, s_name, s_LMA, s_Nmass, s_Pmass, s_wsg, s_dbhmax, s_hmax, s_ah, abundance) %>% 
+  filter(abundance > 0) %>% 
+  split(.$simulation) %>% 
+  lapply(function(tab) {
+    tab <- as.data.frame(arrange(tab, s_name))
+        print(tab$s_name)
+    row.names(tab) <- tab$s_name
+    dbFD(x = tab[c("s_LMA", "s_Nmass", "s_Pmass", "s_wsg", "s_dbhmax", "s_hmax", "s_ah")], 
+         a = reshape2::dcast(tab, 1 ~ s_name, value.var = "abundance")[-1], m = "max", calc.CWM = F)
+  }) %>% 
+    lapply(as.data.frame) %>% 
+  bind_rows(.id = "community")
+unlink("vert.txt") 
+```
+
+```{r prediststats2, eval=F}
+communities_stats <- left_join(simulations_pre@inputs$species, 
+                               filter(simulations_pre@species, iter == max(iter)),
+                               by = c("simulation" = "simulation", "s_name" = "species")) %>% 
+  group_by(simulation) %>% 
+  mutate(sum1 = ifelse(is.na(sum1), 0, sum1)) %>% 
+  mutate(abundance = sum1/sum(sum1)) %>% 
+  select(simulation, s_name, s_LMA, s_Nmass, s_Pmass, s_wsg, s_dbhmax, s_hmax, s_ah, abundance) %>% 
+  filter(abundance > 0) %>% 
+  split(.$simulation) %>% 
+  lapply(function(tab) {
+    tab <- as.data.frame(arrange(tab, s_name))
+    print(tab$s_name)
+    row.names(tab) <- tab$s_name
+    dbFD(x = tab[c("s_LMA", "s_Nmass", "s_Pmass", "s_wsg", "s_dbhmax", "s_hmax", "s_ah")], 
+         a = reshape2::dcast(tab, 1 ~ s_name, value.var = "abundance")[-1], m = "max", calc.CWM = F)
+  }) %>% 
+  lapply(as.data.frame) %>% 
+  bind_rows(.id = "community")
+```
+
+```{r prediststatsfig, fig.cap="Functional richness (FRic) and evenness (FEve) across simulated communities pre-disturbance with varying species richness (SR, shown by boint shape)."}
+ggplot(communities_stats, 
+       aes(FRic, FEve, shape = as.factor(nbsp))) +
+  geom_point() +
+  theme_bw() +
+  scale_shape_discrete("Species\nrichness\n(SR)") +
+  xlab("Functional richness (FRic)") +
+  ylab("Functional evenness (FEve)") 
+```
+
+## Ecosystem recovery from disturbance
+
+We characterise changes in ecosystem properties of simulated tropical forests with respect to forest structure 
+(above-ground biomass, AGB in $MgC.ha^{-1}$ ; basal area, BA in $m^2.ha^{-1}$ ; total number of stems, $N$ ; 
+number of stems over 10 cm dbh, $N10$ ; and number of stems over 30 cm dbh, $N30$).
+The recovery of the simulated forest at a time $t$ regarding a given property $X$, $Rx(t)$, 
+is defined relatively to a non-disturbed baseline [@Schmitt2019]:
+
+$$R_x(t)=\frac{X_D(t)}{X_C(t)}$$
+
+where $X_D(t)$ and $X_C(t)$ are the values for the ecosystem property $X$ at time t in the disturbed simulation and in the control simulation, respectively. 
+To capture the temporal dimension of resilience,  we integrate $d_x(t) = \sqrt{(R_{eq}-R[X(t)])^2}$ through time which quantifies the cumulative difference between disturbed and control runs.
+We finally compute the inverse of this area as an index of ecosystem resilience, 
+henceforth denoted $I_R$ , so that a higher $I_R$ reflects a higher resilience:
+
+$$I_R(X)=(\int _{t=disturbiter} ^{t=disturbiter+600} d_x(t).dt)^{-1}$$
+
+Distance to equilibrium $d_{eq}$ and resilience index $I_R$ are calculated in a multi-dimensional space for forest structure (AGB, BA, N, N10, and N30).
+This results in the values shown in Fig. \@ref(fig:resfig).
+
+```{r red}
+resilience <- left_join(
+  select(simulations_post@ecosystem, simulation, iter, agb, ba, sum1, sum10, sum30) %>% 
+    reshape2::melt(c("simulation", "iter"), value.name = "X_D"),
+  select(simulations_undist@ecosystem, simulation, iter, agb, ba, sum1, sum10, sum30) %>% 
+    reshape2::melt(c("simulation", "iter"), value.name = "X_C")
+) %>% 
+  mutate(R = X_D/(X_C+10^-6)) %>% 
+  group_by(simulation, iter) %>% 
+  summarise(d_x = sqrt(sum((1-R)^2))) %>% 
+  group_by(simulation) %>% 
+  summarise(I_R = 1/sum(d_x))
+```
+
+```{r resfig, fig.cap="Variation of forest resilience across simulations. Resilience index $I_R$ was represented for each simulation."}
+ggplot(resilience, aes(simulation, I_R)) +
+  geom_col() +
+  coord_flip() +
+  theme_bw() +
+  ylab(expression(I[R])) +
+  theme(axis.title.y = element_blank())
+```
+
+## Biodiversity effect
+
+We test the influence of three factors on the resilience index $I_R$:
+pre-disturbance species richness ($SR$), functional evenness ($FEve$) and functional diversity ($FDiv$) as follows:
+
+$$log(I_R) \sim \mathcal N (\theta_{SR}+\theta_{FEve}\times FEve+\theta_{FDiv}\times FDiv;\sigma^2)$$
+
+where $\theta_{SR}$ is a vector of 3 parameters corresponding to the three species richness levels, 
+$\theta_{FEve}$ and $\theta_{FDiv}$ respectively model the effect of $FEve$ and $FDiv$ on $I_R$  under a normal law of variance $\sigma^2$. 
+The ecosystem resilience index $I_R$ was log-transformed to improve residuals’ normality.
+We find a significant effect of $FEve$ and $FDiv$ on $I_R$ as shown in the regression table resulting in the relation shown in Fig. \@ref(fig:fig).
+
+```{r data}
+data <- communities_stats %>% 
+  left_join(resilience, by = c("community" = "simulation")) %>% 
+  mutate(SR = nbsp) %>% 
+  select(community, I_R, SR, FDiv, FEve)
+```
+
+```{r lm}
+lm(log(I_R) ~ SR + FEve + FDiv, data) %>% 
+  sjPlot::tab_model()
+```
+
+```{r fig, fig.cap="Variation of forest resilience with taxonomic and functional diversity. Resilience index $I_R$ was represented against functional diversity ($FDiv$); dot size varies with species richness ($SR$) whereas dot color indicates functional evenness ($FEve$). Solid line and grey area show fitted relationships with their mean and variance of the form $I_R \\sim \\mathcal N (\\theta_{FDiv}\\times FDiv;\\sigma^2)$."}
+ggplot(data, aes(FDiv, I_R)) +
+  geom_smooth(method = "lm", col = "grey", fill = "lightgrey") +
+  geom_point(aes(col = FEve, size = SR)) +
+  theme_bw() +
+  viridis::scale_color_viridis("Functional\nevenness\n(FEve)") +
+  xlab("Functional diversity (FDiv)") +
+  ylab("Resilience indice Ir") +
+  scale_size_continuous("Species\nrichness\n(SR)")
+```
+
+# Conclusion
+
+Using a reduced virtual experiment, we find back the results from @Schmitt2019: functional diversity improves the resilience of tropical forests.
+However, we used far less code and time than in the original study using homemade code with an older version of `TROLL` (S; Schmitt pers. com.).
 
 # References
