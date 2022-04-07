@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9049
+* fixed and & or operands in cpp for windows-latest (release)
+
 # rcontroll 0.1.0.9048
 * methods get_forest & update_parameters
 
