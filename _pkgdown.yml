@@ -1,7 +1,10 @@
 url: https://sylvainschmitt.github.io/rcontroll/
 reference:
 - title: Prepare simulations
-  contents: generate_parameters
+  contents: 
+  - generate_parameters
+  - update_parameters
+  - get_forest
 - title: Run simulations
   contents:
   - troll
@@ -14,6 +17,7 @@ reference:
   - starts_with("print")
   - starts_with("summary")
   - starts_with("autoplot")
+  - autogif
 - title: Data
   contents:
   - TROLLv3_climatedaytime12
@@ -24,6 +28,7 @@ reference:
 - title: Miscellaneous
   contents:
   - rcontroll
+  - TROLL.version
   - trollsim
   - trollstack
   - trollsim-class
