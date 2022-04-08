@@ -72,11 +72,11 @@ stack <- function(name = NULL,
                   thin = NULL) {
   # cores
   if(is.null(cores)){
-    cores <- detectCores() - 1
+    cores <- detectCores()
     message("Detect cores was not defined, ", cores, " cores will be used.")
   }
-  if ((detectCores() - 1) < cores) {
-    cores <- detectCores()-1
+  if ((detectCores()) < cores) {
+    cores <- detectCores()
     warning(paste("It seems you attributed more cores than your CPU has! Automatic reduction to",
                   cores, "cores."))
   }
@@ -122,7 +122,7 @@ stack <- function(name = NULL,
   climate <- .prep_input(climate, simulations)
   daily <- .prep_input(daily, simulations)
   if(!is.null(forest)) {
-    global <- .prep_input(global, simulations)
+    forest <- .prep_input(forest, simulations)
   } else {
     forest <- lapply(simulations, function(x) forest)
     names(forest) <- simulations
