@@ -129,7 +129,7 @@
 </h2>
 <p>We can generate parameters and view them directly as a table with a description of its effect using <code>generate_parameters</code> and <code>kable</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/generate_parameters.html">generate_parameters</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fl">250</span>, rows <span class="op">=</span> <span class="fl">250</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+<code class="sourceCode R"><span class="fu"><a href="../reference/generate_parameters.html">generate_parameters</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fl">250</span>, rows <span class="op">=</span> <span class="fl">250</span>, nbiter <span class="op">=</span> <span class="fl">12</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <table class="table">
@@ -161,12 +161,12 @@
 </tr>
 <tr class="odd">
 <td align="left">nbiter</td>
-<td align="right">10</td>
+<td align="right">12</td>
 <td align="left">/* total nb of timesteps */</td>
 </tr>
 <tr class="even">
 <td align="left">iterperyear</td>
-<td align="right">365</td>
+<td align="right">12</td>
 <td align="left">/* number of iteration per year */</td>
 </tr>
 </tbody>
@@ -254,7 +254,7 @@
 <code class="sourceCode R"><span class="va">sim_stack</span>
 <span class="co">#&gt; Object of class : trollstack </span>
 <span class="co">#&gt; Name : seed50000 </span>
-<span class="co">#&gt; Path : /tmp/RtmpDU6aUR/rcontroll/teststack </span>
+<span class="co">#&gt; Path : /tmp/RtmpMcAnbD/rcontroll/teststack </span>
 <span class="co">#&gt; Number of simulations : 2 </span>
 <span class="co">#&gt; Extended : TRUE </span>
 <span class="co">#&gt; From data : FALSE </span>
