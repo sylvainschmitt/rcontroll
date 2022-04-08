@@ -3,7 +3,7 @@
 \name{update_parameters}
 \alias{update_parameters}
 \alias{update_parameters,trollsim-method}
-\title{Function to updae parameters from a TROLL outputs for a next simlation.}
+\title{Function to update parameters from a TROLL outputs for a next simulation.}
 \usage{
 update_parameters(sim, ...)
 
@@ -18,11 +18,11 @@ update_parameters(sim, ...)
 data.frame
 }
 \description{
-Function to updae parameters from a TROLL outputs for a next simlation.
+Function to update parameters from a TROLL outputs for a next simulation.
 }
 \examples{
 
 data("TROLLv3_output")
-head(get_forest(TROLLv3_output))
+head(update_parameters(TROLLv3_output, iters = 10))
 
 }
