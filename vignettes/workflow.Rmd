@@ -53,7 +53,7 @@ TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 We can generate parameters and view them directly as a table with a description of its effect using `generate_parameters` and `kable`.
 
 ```{r genPar}
-generate_parameters(cols = 250, rows = 250) %>% 
+generate_parameters(cols = 250, rows = 250, nbiter = 12*1) %>% 
   head() %>% 
   knitr::kable()
 ```
