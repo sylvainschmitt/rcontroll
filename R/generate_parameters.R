@@ -94,15 +94,15 @@
 #'
 #' @examples
 #'
-#' generate_parameters()
+#' generate_parameters(nbiter = 12)
 #' 
 generate_parameters <- function(
   cols = 200,
   rows = 200,
   HEIGHT = 70,
   length_dcell = 25,
-  nbiter = 10,
-  iterperyear = 365,
+  nbiter,
+  iterperyear = 12,
   NV = 1,
   NH = 1,
   nbout = 4,
@@ -129,18 +129,18 @@ generate_parameters <- function(
   falloccanopy = 0.25,
   Cseedrain = 50000,
   nbs0 = 10,
-  sigma_height = 0.19,
-  sigma_CR = 0.29,
+  sigma_height = 0,
+  sigma_CR = 0,
   sigma_CD = 0,
-  sigma_P = 0.24,
-  sigma_N = 0.12,
-  sigma_LMA = 0.24,
-  sigma_wsg = 0.06,
-  sigma_dbhmax = 0.05,
+  sigma_P = 0,
+  sigma_N = 0,
+  sigma_LMA = 0,
+  sigma_wsg = 0,
+  sigma_dbhmax = 0,
   corr_CR_height = 0,
-  corr_N_P = 0.65,
-  corr_N_LMA = -0.43,
-  corr_P_LMA = -0.39,
+  corr_N_P = 0,
+  corr_N_LMA = 0,
+  corr_P_LMA = 0,
   leafdem_resolution = 30,
   p_tfsecondary =  1,
   hurt_decay = 0,
