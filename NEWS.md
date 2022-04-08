@@ -1,8 +1,45 @@
+# rcontroll 0.1.0.9049
+* fixed and & or operands in cpp for windows-latest (release)
+
+# rcontroll 0.1.0.9048
+* methods get_forest & update_parameters
+
+# rcontroll 0.1.0.9047
+* autogif v1
+
+# rcontroll 0.1.0.9046
+* TROLL 1.3.3, TROLL.version() & autogif begins
+
+# rcontroll 0.1.0.9044
+* merge @gsalzet rcpp_gsl
+
+# rcontroll 0.1.0.9043
+*  Add import GSL and Add CI on GH Actions multi-arch
+
+# rcontroll 0.1.0.9042
+*  Add CI on GH Actions multi-arch
+
+# rcontroll 0.1.0.9041
+*  Add CI on GH Actions ubuntu alone
+
+# rcontroll 0.1.0.9040
+*  Add configure.win, cleanup.win and Makevars.win files
+
+# rcontroll 0.1.0.9039
+*  Change permission access of configure file
+
+# rcontroll 0.1.0.9038
+*  Update GH actions
+
+# rcontroll 0.1.0.9037
+*  add configure file to detect GSL install
+* reviewed english
+
 # rcontroll 0.1.0.9036
 * `autoplot` v2
 
 # rcontroll 0.1.0.9035
-* Fabain's cleaned CPP
+* Fabian's cleaned CPP
 
 # rcontroll 0.1.0.9034
 * using TROLL child for fake parralelisation

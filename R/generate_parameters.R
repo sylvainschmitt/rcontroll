@@ -85,6 +85,8 @@
 #' @param CROWN_MM num. Michaelis Menten allometry for crowns instead of power
 #'   law, parameters have to be changed in other input sheets accordingly (0,1).
 #' @param OUTPUT_extended num. extended set of ouput files (0,1).
+#' @param extent_visual num. extent for visualization output. Unactivated when
+#'   equal 0.
 #'
 #' @return A data frame of global parameters.
 #'
@@ -155,7 +157,8 @@ generate_parameters <- function(
   BASICTREEFALL = 1,
   SEEDTRADEOFF = 0,
   CROWN_MM = 0,
-  OUTPUT_extended = 1
+  OUTPUT_extended = 1,
+  extent_visual = 0
 ){
   # check args
   if(!all(unlist(lapply(
@@ -170,7 +173,7 @@ generate_parameters <- function(
          m, m1, Cair, LL_parameterization, LA_regulation, 
          sapwood, seedsadditional, 
          NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-         CROWN_MM, OUTPUT_extended), 
+         CROWN_MM, OUTPUT_extended, extent_visual), 
     class)) == "numeric"))
     stop("parameters should be numeric.")
   
@@ -189,7 +192,7 @@ generate_parameters <- function(
               "m", "m1", "Cair", "_LL_parameterization", 
               "_LA_regulation", "_sapwood", "_seedsadditional",
               "_NONRANDOM", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
-              "_CROWN_MM", "_OUTPUT_extended"),
+              "_CROWN_MM", "_OUTPUT_extended", "extent_visual"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
              NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
              absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
@@ -201,7 +204,7 @@ generate_parameters <- function(
              m, m1, Cair, LL_parameterization, LA_regulation, 
              sapwood, seedsadditional,
              NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-             CROWN_MM, OUTPUT_extended),
+             CROWN_MM, OUTPUT_extended, extent_visual),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",
@@ -263,7 +266,8 @@ generate_parameters <- function(
       "/* if defined: treefall is a source of tree death */",
       "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */",
       "/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */",
-      "/* extended set of ouput files */"
+      "/* extended set of ouput files */",
+      "/* extent for visualization output *"
     )
   )
 }

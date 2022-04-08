@@ -11,7 +11,7 @@ provides user-friendly functions to set up and analyse simulations with
 varying community compositions, ecological parameters, and climate
 conditions.
 }
-\section{Section Description}{
+\section{Description}{
  \describe{The rcontroll package relies on a few
   functions in R to generate and provide inputs, prepare and run the
   simulations, and analyse the simulations through tables, figures, and maps
@@ -27,5 +27,9 @@ conditions.
   and plotted with the print, summary and autoplot methods. Simulations can
   be saved using a user-defined path when run and later loaded as a simple
   simulation (load_output) or a stack of simulations (load_stack).}
+}
+
+\section{TROLL}{
+ \describe{version 3.1.3}
 }
 

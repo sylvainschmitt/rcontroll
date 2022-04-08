@@ -90,7 +90,7 @@ We can quickly plot simulation outputs using the `autoplot` method for three typ
 For instance here we show species temporal trajectories for all available variables using 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*:
 
 ```{r fullsimG1, fig.width=8}
-autoplot(sim, what = "temporal", 
+rcontroll::autoplot(sim, what = "temporal", 
          species = c("Cecropia_obtusa","Dicorynia_guianensis",
                      "Eperua_grandiflora","Vouacapoua_americana")) +
   theme(legend.position = "bottom")
@@ -101,13 +101,13 @@ autoplot(sim, what = "temporal",
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
 ```{r fullsimG2}
-autoplot(sim, what = "spatial")
+rcontroll::autoplot(sim, what = "spatial")
 ```
 
 Finally, we can quickly plot variables distribution at forest final patterns using `autoplot` and `what` defined on `distribution`:
 
 ```{r fullsimG3}
-autoplot(sim, what = "distribution", variables = c("dbh", "height", "LA", "LMA"))
+rcontroll::autoplot(sim, what = "distribution", variables = c("dbh", "height", "LA", "LMA"))
 ```
 
 # Stack of simulations
@@ -138,7 +138,7 @@ sim_stack
 We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on `temporal`, for instance here with basal area (ba) and aboveground biomass (agb):
 
 ```{r fullstackG1}
-autoplot(sim_stack, 
+rcontroll::autoplot(sim_stack, 
          what = "temporal", 
          variables = c("ba", "agb"))
 ```
@@ -146,7 +146,7 @@ autoplot(sim_stack,
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
 ```{r fullstackG2, fig.height=4}
-autoplot(sim_stack, what = "spatial")
+rcontroll::autoplot(sim_stack, what = "spatial")
 ```
 
 # From a forest
@@ -157,13 +157,13 @@ using the `troll` function with the `forest` parameter.
 We can first have a look to the ecosystem temporal trajectories of the `TROLLv3_output` simulation:
 
 ```{r}
-autoplot(TROLLv3_output, what = "temporal")
+rcontroll::autoplot(TROLLv3_output, what = "temporal")
 ```
 
 Similarly we can have a look to the the forest final pattern from `TROLLv3_output` that we will use to initiate the next simulation:
 
 ```{r}
-autoplot(TROLLv3_output, what = "spatial", variables = "age")
+rcontroll::autoplot(TROLLv3_output, what = "spatial", variables = "age")
 ```
 
 To run the simulation we first extracted the forest from `TROLLv3_output`, in which we removed unused columns (not mandatory).
@@ -172,18 +172,12 @@ And we finally used the same `troll` function adding the previous forest to init
 A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
-forest_init <- filter(TROLLv3_output@forest, 
-       iter == max(TROLLv3_output@forest$iter)) %>% 
-  dplyr::select(-iter, -from_Data, -sp_lab, -site, -dbh_previous, -AGB) %>% 
-  as.data.frame()
-global_pars <- TROLLv3_output@inputs$global
-global_pars[which(global_pars$param == "nbiter"),2] <- 12*1
 sim <- troll(name = "test",
-             global = global_pars,
+             global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
              daily = TROLLv3_output@inputs$daily,
-             forest = forest_init,
+             forest = get_forest(TROLLv3_output),
              verbose = FALSE)
 ```
 
@@ -204,3 +198,17 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 ```
 
 >Note how the simulation AGB starts at the end of `TROLLv3_output`'s temporal trajectory.  
+
+# Dynamic visualisation
+
+```{r, eval=F}
+gifs <- autogif(name = "dynamic",
+                variables = "height_ct",
+                global = update_parameters(TROLLv3_output, nbiter = 12*100, extent_visual = 100),
+                species = TROLLv3_output@inputs$species,
+                climate = TROLLv3_output@inputs$climate,
+                daily = TROLLv3_output@inputs$daily,
+                forest = get_forest(TROLLv3_output),
+                verbose = FALSE)
+gifs$height_ct
+```

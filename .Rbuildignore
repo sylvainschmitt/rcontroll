@@ -13,3 +13,5 @@ dev
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+windows
+simulations
