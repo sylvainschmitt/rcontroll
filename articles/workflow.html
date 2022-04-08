@@ -50,7 +50,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -211,7 +211,7 @@
 </ul>
 <p>For instance here we show species temporal trajectories for all available variables using 4 species: <em>Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,</em> and <em>Vouacapoua americana</em>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"temporal"</span>, 
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"temporal"</span>, 
          species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cecropia_obtusa"</span>,<span class="st">"Dicorynia_guianensis"</span>,
                      <span class="st">"Eperua_grandiflora"</span>,<span class="st">"Vouacapoua_americana"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></code></pre></div>
@@ -221,11 +221,11 @@
 </blockquote>
 <p>Similarly, we can quickly plot the forest final patterns using <code>autoplot</code> and <code>what</code> defined on <code>spatial</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></code></pre></div>
 <p><img src="workflow_files/figure-html/fullsimG2-1.png" width="576"></p>
 <p>Finally, we can quickly plot variables distribution at forest final patterns using <code>autoplot</code> and <code>what</code> defined on <code>distribution</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"distribution"</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dbh"</span>, <span class="st">"height"</span>, <span class="st">"LA"</span>, <span class="st">"LMA"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"distribution"</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dbh"</span>, <span class="st">"height"</span>, <span class="st">"LA"</span>, <span class="st">"LMA"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre></div>
 <p><img src="workflow_files/figure-html/fullsimG3-1.png" width="576"></p>
 </div>
@@ -242,22 +242,19 @@
 <span id="cb9-7"><a href="#cb9-7"></a>             <span class="dt">verbose =</span> F,</span>
 <span id="cb9-8"><a href="#cb9-8"></a>             <span class="dt">cores =</span> <span class="dv">2</span>,</span>
 <span id="cb9-9"><a href="#cb9-9"></a>             <span class="dt">thin =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">10</span>))</span>
-<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; Warning in stack(name = "teststack", simulations = c("seed50000", "seed500"), :</span></span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; It seems you attributed more cores than your CPU has! Automatic reduction to 1</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt; cores.</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; </span></span>
-<span id="cb9-14"><a href="#cb9-14"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb9-16"><a href="#cb9-16"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
-<span id="cb9-17"><a href="#cb9-17"></a><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</span>
-<span id="cb9-18"><a href="#cb9-18"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
-<span id="cb9-19"><a href="#cb9-19"></a><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span></code></pre></div>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; </span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
+<span id="cb9-13"><a href="#cb9-13"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</span>
+<span id="cb9-15"><a href="#cb9-15"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span></code></pre></div>
 <p>We can print a simple summary of the simulations.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sim_stack</span>
 <span class="co">#&gt; Object of class : trollstack </span>
 <span class="co">#&gt; Name : seed50000 </span>
-<span class="co">#&gt; Path : /tmp/RtmpN8z5bN/rcontroll/teststack </span>
+<span class="co">#&gt; Path : /tmp/RtmpIEssth/rcontroll/teststack </span>
 <span class="co">#&gt; Number of simulations : 2 </span>
 <span class="co">#&gt; Extended : TRUE </span>
 <span class="co">#&gt; From data : FALSE </span>
@@ -270,13 +267,13 @@
 <span class="co">#&gt; Number of Species    :  45</span></code></pre></div>
 <p>We can quickly plot temporal trajectories for all simulations using <code>autoplot</code> and <code>what</code> defined on <code>temporal</code>, for instance here with basal area (ba) and aboveground biomass (agb):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, 
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, 
          what <span class="op">=</span> <span class="st">"temporal"</span>, 
          variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ba"</span>, <span class="st">"agb"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="workflow_files/figure-html/fullstackG1-1.png" width="576"></p>
 <p>Similarly, we can quickly plot the forest final patterns using <code>autoplot</code> and <code>what</code> defined on <code>spatial</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, what <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, what <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></code></pre></div>
 <p><img src="workflow_files/figure-html/fullstackG2-1.png" width="576"></p>
 </div>
 <div class="section level2">
@@ -285,26 +282,20 @@
 <p>We can also run a simple simulation or a stack of simulations starting from an existing inventory or a previous simulation using the <code>troll</code> function with the <code>forest</code> parameter.</p>
 <p>We can first have a look to the ecosystem temporal trajectories of the <code>TROLLv3_output</code> simulation:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, what <span class="op">=</span> <span class="st">"temporal"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, what <span class="op">=</span> <span class="st">"temporal"</span><span class="op">)</span></code></pre></div>
 <p><img src="workflow_files/figure-html/unnamed-chunk-4-1.png" width="576"></p>
 <p>Similarly we can have a look to the the forest final pattern from <code>TROLLv3_output</code> that we will use to initiate the next simulation:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, what <span class="op">=</span> <span class="st">"spatial"</span>, variables <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, what <span class="op">=</span> <span class="st">"spatial"</span>, variables <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></code></pre></div>
 <p><img src="workflow_files/figure-html/unnamed-chunk-5-1.png" width="576"></p>
 <p>To run the simulation we first extracted the forest from <code>TROLLv3_output</code>, in which we removed unused columns (not mandatory). Then we extracted the previous simulation parameters to run the new one in similar conditions, we only changed the time length to 12 iterations. And we finally used the same <code>troll</code> function adding the previous forest to initiate the simulation with the <code>forest</code> parameter. A forest inventory can also be used with at least coordinates and DBH.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">forest_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">forest</span>, 
-       <span class="va">iter</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">forest</span><span class="op">$</span><span class="va">iter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">iter</span>, <span class="op">-</span><span class="va">from_Data</span>, <span class="op">-</span><span class="va">sp_lab</span>, <span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">dbh_previous</span>, <span class="op">-</span><span class="va">AGB</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">global_pars</span> <span class="op">&lt;-</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">global</span>
-<span class="va">global_pars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">global_pars</span><span class="op">$</span><span class="va">param</span> <span class="op">==</span> <span class="st">"nbiter"</span><span class="op">)</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">12</span><span class="op">*</span><span class="fl">1</span>
-<span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/troll.html">troll</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"test"</span>,
-             global <span class="op">=</span> <span class="va">global_pars</span>,
+<code class="sourceCode R"><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/troll.html">troll</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"test"</span>,
+             global <span class="op">=</span> <span class="fu"><a href="../reference/update_parameters.html">update_parameters</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, nbiter <span class="op">=</span> <span class="fl">12</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span>,
              species <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">species</span>,
              climate <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">climate</span>,
              daily <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">daily</span>,
-             forest <span class="op">=</span> <span class="va">forest_init</span>,
+             forest <span class="op">=</span> <span class="fu"><a href="../reference/get_forest.html">get_forest</a></span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span>,
              verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>We can quickly plot temporal trajectories of both simulations to check that the initialization from <code>TROLLv3_output</code> worked. For that we updated the simulation iteration index by adding the number realised in the previous simulation. Then we simply joined ecosystem outputs with <code>bind_rows</code> before using <code>ggplot</code> to show aboveground biomass (agb) temporal trajectory:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -321,6 +312,20 @@
 <blockquote>
 <p>Note how the simulation AGB starts at the end of <code>TROLLv3_output</code>’s temporal trajectory.</p>
 </blockquote>
+</div>
+<div class="section level2">
+<h2 id="dynamic-visualisation">Dynamic visualisation<a class="anchor" aria-label="anchor" href="#dynamic-visualisation"></a>
+</h2>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/autogif.html">autogif</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"dynamic"</span>,
+                variables <span class="op">=</span> <span class="st">"height_ct"</span>,
+                global <span class="op">=</span> <span class="fu"><a href="../reference/update_parameters.html">update_parameters</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, nbiter <span class="op">=</span> <span class="fl">12</span><span class="op">*</span><span class="fl">100</span>, extent_visual <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,
+                species <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">species</span>,
+                climate <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">climate</span>,
+                daily <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">daily</span>,
+                forest <span class="op">=</span> <span class="fu"><a href="../reference/get_forest.html">get_forest</a></span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span>,
+                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">gifs</span><span class="op">$</span><span class="va">height_ct</span></code></pre></div>
 </div>
   </div>
 

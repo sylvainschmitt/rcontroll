@@ -16,13 +16,13 @@
     <loc>https://sylvainschmitt.github.io/rcontroll/authors.html</loc>
   </url>
   <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/cran-comment.html</loc>
-  </url>
-  <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/index.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLL.version.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_climatedaytime12.html</loc>
@@ -40,10 +40,16 @@
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_species.html</loc>
   </url>
   <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/autogif.html</loc>
+  </url>
+  <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/autoplot-trollsim-method.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_parameters.html</loc>
+  </url>
+  <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_forest.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/index.html</loc>
@@ -89,5 +95,8 @@
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/trollstack.html</loc>
+  </url>
+  <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/update_parameters.html</loc>
   </url>
 </urlset>

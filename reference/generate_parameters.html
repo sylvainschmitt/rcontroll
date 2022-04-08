@@ -27,7 +27,7 @@ parameters have a default value used in French Guiana simulations."><meta proper
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -129,7 +129,8 @@ parameters have a default value used in French Guiana simulations.</p>
   BASICTREEFALL <span class="op">=</span> <span class="fl">1</span>,
   SEEDTRADEOFF <span class="op">=</span> <span class="fl">0</span>,
   CROWN_MM <span class="op">=</span> <span class="fl">0</span>,
-  OUTPUT_extended <span class="op">=</span> <span class="fl">1</span>
+  OUTPUT_extended <span class="op">=</span> <span class="fl">1</span>,
+  extent_visual <span class="op">=</span> <span class="fl">0</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -278,6 +279,9 @@ number of seeds is fixed (0,1).</p></dd>
 law, parameters have to be changed in other input sheets accordingly (0,1).</p></dd>
 <dt>OUTPUT_extended</dt>
 <dd><p>num. extended set of ouput files (0,1).</p></dd>
+<dt>extent_visual</dt>
+<dd><p>num. extent for visualization output. Unactivated when
+equal 0.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -350,6 +354,7 @@ law, parameters have to be changed in other input sheets accordingly (0,1).</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 59        _SEEDTRADEOFF     0.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 60            _CROWN_MM     0.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 61     _OUTPUT_extended     1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62        extent_visual     0.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                            description</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                                                                                  /* nb of columns */</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                                                                                    /* nb of rows  */</span>
@@ -412,6 +417,7 @@ law, parameters have to be changed in other input sheets accordingly (0,1).</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 59 /* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 60                   /* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 61                                                                                                                   /* extended set of ouput files */</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62                                                                                                                /* extent for visualization output *</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
