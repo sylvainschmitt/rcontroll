@@ -65,7 +65,38 @@ troll <- function(name = NULL,
       overwrite = overwrite,
       thin = thin)
   stopCluster(cl)
-  return(sim[[1]])
+  
+  sim <- sim[[1]]
+  
+  # cleaning outputs
+  lapply(list(
+    "info",
+    "abc_biomass",
+    "abc_chm",
+    "abc_chmALS",
+    "abc_ground",
+    "abc_species",
+    "abc_species10",
+    "abc_traitconservation",
+    "abc_traits",
+    "abc_traits10",
+    "abc_transmittance",
+    "abc_transmittanceALS",
+    "death",
+    "deathrate",
+    "death_snapshots",
+    "ppfd0",
+    "sdd",
+    "vertd"
+  ), function(x) {
+    unlink(file.path(sim@path, paste0(name, "_0_", x, ".txt")))
+  })
+  if (is.null(path)) {
+    unlink(sim@path, recursive = TRUE, force = TRUE)
+    sim@path <- character()
+  }
+  
+  return(sim)
 }
 
 .troll_child <- function(name = NULL,
@@ -150,38 +181,8 @@ troll <- function(name = NULL,
     split = verbose)
   write(log, file.path(path, name, paste0(name, "_log.txt")))
   
-  # cleaning outputs
-  lapply(list(
-    "info",
-    "abc_biomass",
-    "abc_chm",
-    "abc_chmALS",
-    "abc_ground",
-    "abc_species",
-    "abc_species10",
-    "abc_traitconservation",
-    "abc_traits",
-    "abc_traits10",
-    "abc_transmittance",
-    "abc_transmittanceALS",
-    # "CHM",
-    "death",
-    "deathrate",
-    "death_snapshots",
-    # "LAI",
-    "ppfd0",
-    "sdd",
-    "vertd"
-  ), function(x) {
-    unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
-  })
-  
   # loading outputs
   sim <- load_output(name, file.path(path, name), thin = thin)
-  if (tmp) {
-    unlink(file.path(path, name), recursive = TRUE, force = TRUE)
-    sim@path <- character()
-  }
-  
+
   return(sim)
 }

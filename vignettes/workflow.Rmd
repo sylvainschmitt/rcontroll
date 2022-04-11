@@ -119,14 +119,14 @@ And we can define a thinning of outputs by giving the number of iterations to be
 
 ```{r fullstack}
 sim_stack <- stack(name = "teststack", 
-             simulations = c("seed50000", "seed500"),
-             global = TROLLv3_input_stack,
-             species = TROLLv3_species,
-             climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar,
-             verbose = F,
-             cores = 2,
-             thin = c(1,5,10))
+                   simulations = c("seed50000", "seed500"),
+                   global = TROLLv3_input_stack,
+                   species = TROLLv3_species,
+                   climate = TROLLv3_climatedaytime12,
+                   daily = TROLLv3_daytimevar,
+                   verbose = F,
+                   cores = 2,
+                   thin = c(1,5,10))
 ```
 
 We can print a simple summary of the simulations.

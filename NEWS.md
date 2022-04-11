@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9050
+* removing file suppression from .troll_child to avoid memory issues
+
 # rcontroll 0.1.0.9049
 * fixed and & or operands in cpp for windows-latest (release)
 
