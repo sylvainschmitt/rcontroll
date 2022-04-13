@@ -20,8 +20,7 @@ NULL
 #' @param verbose bool. Show TROLL outputs in the console.
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
 #' @return A trollsim object.
 #'
@@ -66,37 +65,7 @@ troll <- function(name = NULL,
       thin = thin)
   stopCluster(cl)
   
-  sim <- sim[[1]]
-  
-  # cleaning outputs
-  lapply(list(
-    "info",
-    "abc_biomass",
-    "abc_chm",
-    "abc_chmALS",
-    "abc_ground",
-    "abc_species",
-    "abc_species10",
-    "abc_traitconservation",
-    "abc_traits",
-    "abc_traits10",
-    "abc_transmittance",
-    "abc_transmittanceALS",
-    "death",
-    "deathrate",
-    "death_snapshots",
-    "ppfd0",
-    "sdd",
-    "vertd"
-  ), function(x) {
-    unlink(file.path(sim@path, paste0(name, "_0_", x, ".txt")))
-  })
-  if (is.null(path)) {
-    unlink(sim@path, recursive = TRUE, force = TRUE)
-    sim@path <- character()
-  }
-  
-  return(sim)
+  return(sim[[1]])
 }
 
 .troll_child <- function(name = NULL,
@@ -108,7 +77,8 @@ troll <- function(name = NULL,
                          forest = NULL,
                          verbose = TRUE,
                          overwrite = TRUE,
-                         thin = NULL) {
+                         thin = NULL,
+                         trials = 1) {
   
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
@@ -179,10 +149,42 @@ troll <- function(name = NULL,
              output_file = file.path(path, name, name)
     ),
     split = verbose)
+    
+  # log
   write(log, file.path(path, name, paste0(name, "_log.txt")))
+  
+  # cleaning outputs
+  lapply(list(
+    "info",
+    "abc_biomass",
+    "abc_chm",
+    "abc_chmALS",
+    "abc_ground",
+    "abc_species",
+    "abc_species10",
+    "abc_traitconservation",
+    "abc_traits",
+    "abc_traits10",
+    "abc_transmittance",
+    "abc_transmittanceALS",
+    # "CHM",
+    "death",
+    "deathrate",
+    "death_snapshots",
+    # "LAI",
+    "ppfd0",
+    "sdd",
+    "vertd"
+  ), function(x) {
+    unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
+  })
   
   # loading outputs
   sim <- load_output(name, file.path(path, name), thin = thin)
-
+  if (tmp) {
+    unlink(file.path(path, name), recursive = TRUE, force = TRUE)
+    sim@path <- character()
+  }
+  
   return(sim)
 }

@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9051
+* file suppression in .troll_child
+
 # rcontroll 0.1.0.9050
 * removing file suppression from .troll_child to avoid memory issues
 

@@ -30,7 +30,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
-#'
+#'   
 #' @return A trollstack object. 
 #'
 #' @export
@@ -161,33 +161,6 @@ stack <- function(name = NULL,
   close(pb)
   stopCluster(cl)
   names(stack_res) <- simulations
-  
-  
-  # cleaning outputs
-  lapply(stack_res, function(sim) {
-    lapply(list(
-      "info",
-      "abc_biomass",
-      "abc_chm",
-      "abc_chmALS",
-      "abc_ground",
-      "abc_species",
-      "abc_species10",
-      "abc_traitconservation",
-      "abc_traits",
-      "abc_traits10",
-      "abc_transmittance",
-      "abc_transmittanceALS",
-      "death",
-      "deathrate",
-      "death_snapshots",
-      "ppfd0",
-      "sdd",
-      "vertd"
-    ), function(x) {
-      unlink(file.path(sim@path, paste0(sim@name, "_0_", x, ".txt")))
-    })
-  })
   
   # list of sims to stack
   stack_res <- trollstack(
