@@ -94,15 +94,15 @@
 #'
 #' @examples
 #'
-#' generate_parameters()
+#' generate_parameters(nbiter = 12)
 #' 
 generate_parameters <- function(
   cols = 200,
   rows = 200,
   HEIGHT = 70,
   length_dcell = 25,
-  nbiter = 10,
-  iterperyear = 365,
+  nbiter,
+  iterperyear = 12,
   NV = 1,
   NH = 1,
   nbout = 4,
@@ -129,18 +129,18 @@ generate_parameters <- function(
   falloccanopy = 0.25,
   Cseedrain = 50000,
   nbs0 = 10,
-  sigma_height = 0.19,
-  sigma_CR = 0.29,
+  sigma_height = 0,
+  sigma_CR = 0,
   sigma_CD = 0,
-  sigma_P = 0.24,
-  sigma_N = 0.12,
-  sigma_LMA = 0.24,
-  sigma_wsg = 0.06,
-  sigma_dbhmax = 0.05,
+  sigma_P = 0,
+  sigma_N = 0,
+  sigma_LMA = 0,
+  sigma_wsg = 0,
+  sigma_dbhmax = 0,
   corr_CR_height = 0,
-  corr_N_P = 0.65,
-  corr_N_LMA = -0.43,
-  corr_P_LMA = -0.39,
+  corr_N_P = 0,
+  corr_N_LMA = 0,
+  corr_P_LMA = 0,
   leafdem_resolution = 30,
   p_tfsecondary =  1,
   hurt_decay = 0,
@@ -175,7 +175,7 @@ generate_parameters <- function(
          NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
          CROWN_MM, OUTPUT_extended, extent_visual), 
     class)) == "numeric"))
-    stop("parameters should be numeric.")
+  stop("parameters should be numeric.")
   
   data.frame(
     param = c("cols", "rows", "HEIGHT", "length_dcell",
@@ -194,17 +194,17 @@ generate_parameters <- function(
               "_NONRANDOM", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
               "_CROWN_MM", "_OUTPUT_extended", "extent_visual"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
-             NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
-             absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
-             CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
-             falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
-             sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
-             corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
-             leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
-             m, m1, Cair, LL_parameterization, LA_regulation, 
-             sapwood, seedsadditional,
-             NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-             CROWN_MM, OUTPUT_extended, extent_visual),
+              NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
+              absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
+              CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
+              falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
+              sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
+              corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
+              leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
+              m, m1, Cair, LL_parameterization, LA_regulation, 
+              sapwood, seedsadditional,
+              NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+              CROWN_MM, OUTPUT_extended, extent_visual),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",
