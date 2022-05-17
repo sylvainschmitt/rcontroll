@@ -76,14 +76,18 @@ global_parameters_boundaries
 ```
 
 ```{r data_LHS}
-LHS_design <- Generate_LHS_Autocalib(nsim = 100,nparam = 2,paramLHS = global_parameters_boundaries,Nyears = 10,Nsampling = 5)
+library(rcontroll)
+library(tidyverse)
+library(raster)
+library(doSNOW)
+LHS_design <- Generate_LHS_Autocalib(nsim = 100,nparam = 2,paramLHS = global_parameters_boundaries,Nyears = 600,Nsampling = 100)
 
 Generated_parameters <- Generate_parameters_autocalib(LHS_design = LHS_design)
 ```
 
 
 ```{r}
-autocalibGP(Generated_parameters = Generated_parameters,PATH = getwd(),ncores = 2)
+calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,PATH = getwd(),ncores = 25)
 ```
 
 

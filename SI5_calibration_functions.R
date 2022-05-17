@@ -147,6 +147,7 @@ Generate_LHS_Autocalib <- function(nsim = 100,
               "XGP" = XGP, 
               "XRd" = XRd,
               "params" = params,
+              "paramLHS" = paramLHS,
               "Nyears" = Nyears, 
               "Nsampling" = Nsampling))
 }
@@ -249,6 +250,7 @@ Generate_parameters_autocalib <- function(LHS_design,
   
   
   return(list("params" = LHS_design$params, 
+              "paramLHS" = LHS_design$paramLHS,
               "X" = LHS_design$X, 
               "XGP" = LHS_design$XGP, 
               "XRd" = LHS_design$XRd, 
@@ -568,7 +570,8 @@ autocalibGP <- function(Generated_parameters,
                         PATH,
                         FILEsave = NULL,
                         initj = 1,
-                        NiterHetGP = 100,
+                        NiterHetGP = NULL,
+                        Jrefresh = 25,
                         ncores = 2){
   
   
@@ -589,6 +592,17 @@ autocalibGP <- function(Generated_parameters,
                                          dplyr::select(Sim_ID)))
     
     
+    cat(paste0("Computing TROLL initial simulation # ", blocki , " / ", max(nrep$ID_iter), " ",
+               gsub(":", "-",
+                    gsub(
+                      " ", "_",
+                      timestamp(
+                        prefix = "",
+                        suffix = "",
+                        quiet = T
+                      )
+                    )),"\n"))
+    
     sim_stack <- rcontroll::stack(path = WIP_folder_PATH,
                                   name = "sim_stack",
                                   simulations = simulations,
@@ -601,6 +615,17 @@ autocalibGP <- function(Generated_parameters,
                                   verbose = FALSE,
                                   thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
                                   cores = ncores)
+    
+    cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
+               gsub(":", "-",
+                    gsub(
+                      " ", "_",
+                      timestamp(
+                        prefix = "",
+                        suffix = "",
+                        quiet = T
+                      )
+                    )),"\n"))
     
     Yi <- extractVar(stacktmp = sim_stack,
                      WIP_folder_PATH = WIP_folder_PATH,
@@ -685,9 +710,425 @@ autocalibGP <- function(Generated_parameters,
     
     for (j in initj:NiterHetGP) {
       
+      cat(paste0("--------ITER ", j,"---------------","",
+                 gsub(":", "-",
+                      gsub(
+                        " ", "_",
+                        timestamp(
+                          prefix = "",
+                          suffix = "",
+                          quiet = T
+                        )
+                      ))))
+      
+      h.RateDBH[j] <- horizon(mod.RateDBH)
+      h.MeanAgb[j] <- horizon(mod.MeanAgb)
+      h.SdAgb[j] <- horizon(mod.SdAgb)
+      h.MeanAbu[j] <- horizon(mod.MeanAbu)
+      h.SdAbu[j] <- horizon(mod.SdAbu)
+      h.MeanHill[j] <- horizon(mod.MeanHill)
+      h.SdHill[j] <- horizon(mod.SdHill)
+      h.MeanGpp[j] <- horizon(mod.MeanGpp)
+      h.SdGpp[j] <- horizon(mod.SdGpp)
+      h.MeanRao[j] <- horizon(mod.MeanRao)
+      h.SdRao[j] <- horizon(mod.SdRao)
+      h.Hmean[j] <- horizon(mod.Hmean)
+      h.Lambda1ter[j] <- horizon(mod.Lambda1ter)
+      
+      cat(paste0("IMSPE optimisation iter ", j,"/",NiterHetGP,"_",
+                 gsub(":", "-",
+                      gsub(
+                        " ", "_",
+                        timestamp(
+                          prefix = "",
+                          suffix = "",
+                          quiet = T
+                        )
+                      ))))
+      
+      opt.RateDBH <- IMSPE_optim(mod.RateDBH, h = h.RateDBH[j],ncores = ncores)
+      opt.MeanAgb <- IMSPE_optim(mod.MeanAgb, h = h.MeanAgb[j],ncores = ncores)
+      opt.SdAgb <- IMSPE_optim(mod.SdAgb, h = h.SdAgb[j],ncores = ncores)
+      opt.MeanAbu <- IMSPE_optim(mod.MeanAbu, h = h.MeanAbu[j],ncores = ncores)
+      opt.SdAbu <- IMSPE_optim(mod.SdAbu, h = h.SdAbu[j], ncores = ncores)
+      opt.MeanHill <- IMSPE_optim(mod.MeanHill, h = h.MeanHill[j], ncores = ncores,
+                                  control = list(tol_dist = 1e-06, tol_diff = 1e-06, multi.start = 20, maxit = 100))
+      opt.SdHill<- IMSPE_optim(mod.SdHill, h = h.SdHill[j], ncores = ncores)
+      opt.MeanGpp <- IMSPE_optim(mod.MeanGpp, h = h.MeanGpp[j], ncores = ncores)
+      opt.SdGpp<- IMSPE_optim(mod.SdGpp, h = h.SdGpp[j], ncores = ncores)
+      opt.MeanRao <- IMSPE_optim(mod.MeanRao, h = h.MeanRao[j], ncores = ncores)
+      opt.SdRao<- IMSPE_optim(mod.SdRao, h = h.SdRao[j], ncores = ncores)
+      opt.Hmean <- IMSPE_optim(mod.Hmean, h = h.Hmean[j], ncores = ncores)
+      opt.Lambda1ter<- IMSPE_optim(mod.Lambda1ter, h = h.Lambda1ter[j], ncores = ncores)
+      
+      Xnew <- rbind(opt.MeanAgb$par,opt.SdAgb$par,opt.RateDBH$par,
+                    opt.MeanAbu$par,opt.SdAbu$par,opt.MeanHill$par,opt.SdHill$par,
+                    opt.MeanGpp$par,opt.SdGpp$par,opt.MeanRao$par,opt.SdRao$par,
+                    opt.Hmean$par, opt.Lambda1ter$par)
+      
+      XRd<- lhs::augmentLHS(XRd, 7)
+      XRdNew <- XRd[(dim(XRd)[1]-6):(dim(XRd)[1]),]
+      
+      
+      X <- rbind(Xnew,XRdNew)
+      XGP <- rbind(XGP, X)
+      
+      default_values <- generate_parameters(iterperyear = 12, nbiter = 1)
+      Xparam <- matrix(nrow = 20,ncol = 15)
+      i<- 1
+      
+      if ("klight" %in% Generated_parameters$params) {
+        Xparam[,1] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "klight"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "klight"]) #klight
+        i <- i+1
+      }else{
+        Xparam[,1] <- default_values$value[default_values$param == "klight"]
+      }
+      
+      if ("phi" %in% Generated_parameters$params) {
+        Xparam[,2] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "phi"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "phi"]) #phi
+        i <- i+1
+      }else{
+        Xparam[,2] <- default_values$value[default_values$param == "phi"]
+      }
+      
+      if ("g1" %in% Generated_parameters$params) {
+        Xparam[,3] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "g1"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "g1"]) #g1
+        i <- i+1
+      }else{
+        Xparam[,3] <- default_values$value[default_values$param == "g1"]
+      }
+      
+      if ("fallocwood" %in% Generated_parameters$params & "falloccanopy" %in% Generated_parameters$params) {
+        Xparam[,4] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "fallocwood"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "fallocwood"]) #fallocwood
+        Xparam[,5] <- qunif(X[,i+1],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "falloccanopy"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "falloccanopy"]) #falloccanopy
+        i <- i+2
+      }else{
+        Xparam[,4] <- default_values$value[default_values$param == "fallocwood"]
+        Xparam[,5] <- default_values$value[default_values$param == "falloccanopy"]
+      }
+      
+      if ("m" %in% Generated_parameters$params) {
+        Xparam[,6] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "m"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "m"]) #m
+        i <- i+1
+      }else{
+        Xparam[,6] <- default_values$value[default_values$param == "m"]
+      }
+      
+      if ("vC" %in% Generated_parameters$params) {
+        Xparam[,7] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "vC"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "vC"]) #vC
+        i <- i+1
+      }else{
+        Xparam[,7] <- default_values$value[default_values$param == "vC"]
+      }
+      
+      if ("Cseedrain" %in% Generated_parameters$params) {
+        Xparam[,8] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "Cseedrain"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "Cseedrain"]) #Cseedrain
+        i <- i+1
+      }else{
+        Xparam[,8] <- default_values$value[default_values$param == "Cseedrain"]
+      }
+      
+      if ("nbs0" %in% Generated_parameters$params) {
+        Xparam[,9] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "nbs0"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "nbs0"]) #nbs0
+        i <- i+1
+      }else{
+        Xparam[,9] <- default_values$value[default_values$param == "nbs0"]
+      }
+      
+      if ("Hmaxcor" %in% Generated_parameters$params) {
+        Xparam[,10] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "Hmaxcor"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "Hmaxcor"]) #Hmaxcor
+        i <- i+1
+      }else{
+        Xparam[,10] <- 1
+      }
+      
+      if ("CR_a" %in% Generated_parameters$params) {
+        Xparam[,11] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "CR_a"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "CR_a"]) #CR_a
+        i <- i+1
+      }else{
+        Xparam[,11] <- default_values$value[default_values$param == "CR_a"]
+      }
+      
+      if ("CR_b" %in% Generated_parameters$params) {
+        Xparam[,12] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "CR_b"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "CR_b"]) #CR_b
+        i <- i+1
+      }else{
+        Xparam[,12] <- default_values$value[default_values$param == "CR_b"]
+      }
+      
+      if ("m1" %in% Generated_parameters$params) {
+        Xparam[,13] <- Xparam[,6]/qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "m1"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "m1"]) #m1
+        i <- i+1
+      }else{
+        Xparam[,13] <- default_values$value[default_values$param == "m1"]
+      }
+      
+      if ("DBHmaxcor" %in% Generated_parameters$params) {
+        Xparam[,14] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "DBHmaxcor"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "DBHmaxcor"]) #DBHmaxcor
+        i <- i+1
+      }else{
+        Xparam[,14] <- 1
+      }
+      
+      if ("ahCorr" %in% Generated_parameters$params) {
+        Xparam[,15] <- qunif(X[,i],Generated_parameters$Generated_parameters$ParamLHS$lower[Generated_parameters$Generated_parameters$ParamLHS$parameter == "ahCorr"],Generated_parameters$Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "ahCorr"]) #ahCorr
+        i <- i+1
+      }else{
+        Xparam[,15] <- 1
+      }
+      
+      New_LHS <- list("X" = as_tibble(Xparam), 
+           "XGP" = XGP, 
+           "XRd" = Generated_parameters$XRd,
+           "params" = Generated_parameters$params,
+           "paramLHS" = Generated_parameters$paramLHS,
+           "Nyears" = Generated_parameters$Nyears, 
+           "Nsampling" = Generated_parameters$Nsampling)
+      
+      New_generated_parameters <- Generate_parameters_autocalib(LHS_design = New_LHS,
+                                    data_species = Generated_parameters$data_species,
+                                    dataclim12mths = Generated_parameters$dataclim12mths,
+                                    dataclimdayvar = Generated_parameters$dataclimdayvar)
+      
+      nrep <- tibble(Sim_ID = unique(New_generated_parameters$TROLL_global_params$simulation)) %>% 
+        mutate(ID_iter = ceiling(row_number()/ncores))
+      
+      
+      for (blocki in (New_generated_parameters$initk/ncores +1):max(nrep$ID_iter)) {
+        
+        simulations <- as.character(unlist(nrep %>%
+                                             filter(ID_iter == ( blocki)) %>% 
+                                             dplyr::select(Sim_ID)))
+        
+        
+        cat(paste0("Computing TROLL initial simulation # ", blocki , " / ", max(nrep$ID_iter), " ",
+                   gsub(":", "-",
+                        gsub(
+                          " ", "_",
+                          timestamp(
+                            prefix = "",
+                            suffix = "",
+                            quiet = T
+                          )
+                        )),"\n"))
+        
+        sim_stack <- rcontroll::stack(path = WIP_folder_PATH,
+                                      name = "sim_stack",
+                                      simulations = simulations,
+                                      global = New_generated_parameters$TROLL_global_params %>% 
+                                        filter(simulation %in% simulations),
+                                      species = New_generated_parameters$TROLL_species_data  %>% 
+                                        filter(simulation %in% simulations),
+                                      climate = New_generated_parameters$TROLL_clim_mth_params,
+                                      daily = New_generated_parameters$TROLL_clim_dayvar_params,
+                                      verbose = FALSE,
+                                      thin = (12*(New_generated_parameters$Nyears - New_generated_parameters$Nsampling +1 )):(12*New_generated_parameters$Nyears),
+                                      cores = ncores)
+        
+        cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
+                   gsub(":", "-",
+                        gsub(
+                          " ", "_",
+                          timestamp(
+                            prefix = "",
+                            suffix = "",
+                            quiet = T
+                          )
+                        )),"\n"))
+        
+        Ynew <- extractVar(stacktmp = sim_stack,
+                         WIP_folder_PATH = WIP_folder_PATH,
+                         Nyears = New_generated_parameters$Nyears,
+                         Nsampling = New_generated_parameters$Nsampling,
+                         Trait_phylo = Generated_parameters$Trait_phylo,
+                         ncores = ncores)
+        
+        Y <- rbind(Y,Ynew)
+        
+        if (blocki %% 10 == 0) {
+          save(New_generated_parameters,
+               Y,
+               file = paste0(PATH,
+                             "tmp_env_save_iter","_autocalibGP_", New_generated_parameters$initk , "-", dim(New_generated_parameters$X)[1], "_", 
+                             gsub(":", "-",
+                                  gsub(
+                                    " ", "_",
+                                    timestamp(
+                                      prefix = "",
+                                      suffix = "",
+                                      quiet = T
+                                    )
+                                  ))
+                             ,".Rdata"))
+        }
+        
+      }
+      
+      cat(paste0("Update GP models iter ", j,"/",NiterHetGP,"_",
+                 gsub(":", "-",
+                      gsub(
+                        " ", "_",
+                        timestamp(
+                          prefix = "",
+                          suffix = "",
+                          quiet = T
+                        )
+                      ))))
+      
+      mod.RateDBH <- update(mod.RateDBH,Xnew = Xnew,Znew  = Ynew[,1],ginit =mod.RateDBH$g*1.01 )
+      mod.MeanAgb <- update(mod.MeanAgb,Xnew = Xnew,Znew = Ynew[,1],ginit =mod.MeanAgb$g*1.01)
+      mod.SdAgb <- update(mod.SdAgb,Xnew = Xnew,Znew = Ynew[,2],ginit =mod.SdAgb$g*1.01)
+      mod.MeanAbu <- update(mod.MeanAbu,Xnew = Xnew,Znew = Ynew[,3],ginit =mod.MeanAbu$g*1.01)
+      mod.SdAbu <-update(mod.SdAbu,Xnew = Xnew,Znew = Ynew[,4],ginit =mod.SdAbu$g*1.01)
+      mod.MeanHill <- update(mod.MeanHill,Xnew = Xnew,Znew = Ynew[,5],ginit =mod.MeanHill$g*1.01)
+      mod.SdHill <- update(mod.SdHill,Xnew = Xnew,Znew = Ynew[,6],ginit =mod.SdHill$g*1.01)
+      mod.MeanGpp <- update(mod.MeanGpp,Xnew = Xnew,Znew = Ynew[,7],ginit =mod.MeanGpp$g*1.01)
+      mod.SdGpp <- update(mod.SdGpp,Xnew = Xnew,Znew = Ynew[,8],ginit =mod.SdGpp$g*1.01)
+      mod.MeanRao <- update(mod.MeanRao,Xnew = Xnew,Znew = Ynew[,9],ginit =mod.MeanRao$g*1.01)
+      mod.SdRao <- update(mod.SdRao,Xnew = Xnew,Znew = Ynew[,10],ginit =mod.SdRao$g*1.01)
+      mod.Hmean <- update(mod.Hmean,Xnew = Xnew,Znew = Ynew[,11],ginit =mod.Hmean$g*1.01)
+      mod.Lambda1ter <- update(mod.Lambda1ter,Xnew = Xnew,Znew = Ynew[,13],ginit =mod.Lambda1ter$g*1.01)
+      
+      if(j %% Jrefresh == 0) {
+        cat(paste0("Recompute GP models iter ", j,"/",NiterHetGP,"_",
+                   gsub(":", "-",
+                        gsub(
+                          " ", "_",
+                          timestamp(
+                            prefix = "",
+                            suffix = "",
+                            quiet = T
+                          )
+                        ))))
+        mod2.RateDBH <- mleHetGP(X = list(X0 = mod.RateDBH$X0, Z0 = mod.RateDBH$Z0,
+                                          mult = mod.RateDBH$mult), Z = mod.RateDBH$Z,covtype = "Gaussian")
+        mod2.MeanAgb <- mleHetGP(X = list(X0 = mod.MeanAgb$X0, Z0 = mod.MeanAgb$Z0,
+                                          mult = mod.MeanAgb$mult), Z = mod.MeanAgb$Z,covtype = "Gaussian")
+        mod2.SdAgb <- mleHetGP(X = list(X0 = mod.SdAgb$X0, Z0 = mod.SdAgb$Z0,
+                                        mult = mod.SdAgb$mult), Z = mod.SdAgb$Z,covtype = "Gaussian")
+        mod2.MeanAbu <- mleHetGP(X = list(X0 = mod.MeanAbu$X0, Z0 = mod.MeanAbu$Z0,
+                                          mult = mod.MeanAbu$mult), Z = mod.MeanAbu$Z,covtype = "Gaussian")
+        mod2.SdAbu <- mleHetGP(X = list(X0 = mod.SdAbu$X0, Z0 = mod.SdAbu$Z0,
+                                        mult = mod.SdAbu$mult), Z = mod.SdAbu$Z,covtype = "Gaussian")
+        mod2.MeanHill <- mleHetGP(X = list(X0 = mod.MeanHill$X0, Z0 = mod.MeanHill$Z0,
+                                           mult = mod.MeanHill$mult), Z = mod.MeanHill$Z,covtype = "Gaussian")
+        mod2.SdHill <- mleHetGP(X = list(X0 = mod.SdHill$X0, Z0 = mod.SdHill$Z0,
+                                         mult = mod.SdHill$mult), Z = mod.SdHill$Z,covtype = "Gaussian")
+        mod2.MeanGpp <- mleHetGP(X = list(X0 = mod.MeanGpp$X0, Z0 = mod.MeanGpp$Z0,
+                                          mult = mod.MeanGpp$mult), Z = mod.MeanGpp$Z,covtype = "Gaussian")
+        mod2.SdGpp <- mleHetGP(X = list(X0 = mod.SdGpp$X0, Z0 = mod.SdGpp$Z0,
+                                        mult = mod.SdGpp$mult), Z = mod.SdGpp$Z,covtype = "Gaussian")
+        mod2.MeanRao <- mleHetGP(X = list(X0 = mod.MeanRao$X0, Z0 = mod.MeanRao$Z0,
+                                          mult = mod.MeanRao$mult), Z = mod.MeanRao$Z,covtype = "Gaussian")
+        mod2.SdRao <- mleHetGP(X = list(X0 = mod.SdRao$X0, Z0 = mod.SdRao$Z0,
+                                        mult = mod.SdRao$mult), Z = mod.SdRao$Z,covtype = "Gaussian")
+        mod2.Hmean <- mleHetGP(X = list(X0 = mod.Hmean$X0, Z0 = mod.Hmean$Z0,
+                                        mult = mod.Hmean$mult), Z = mod.Hmean$Z,covtype = "Gaussian")
+        mod2.Lambda1ter <- mleHetGP(X = list(X0 = mod.Lambda1ter$X0, Z0 = mod.Lambda1ter$Z0,
+                                             mult = mod.Lambda1ter$mult), Z = mod.Lambda1ter$Z,covtype = "Gaussian")
+        
+        
+        
+        if(mod2.RateDBH$ll > mod.RateDBH$ll) {mod.RateDBH <- mod2.RateDBH
+        }
+        
+        if(mod2.MeanAgb$ll > mod.MeanAgb$ll) {mod.MeanAgb <- mod2.MeanAgb
+        }
+        
+        if(mod2.SdAgb$ll > mod.SdAgb$ll) {mod.SdAgb <- mod2.SdAgb
+        }
+        
+        if(mod2.MeanAbu$ll > mod.MeanAbu$ll) {mod.MeanAbu <- mod2.MeanAbu
+        }
+        
+        if(mod2.SdAbu$ll > mod.SdAbu$ll) {mod.SdAbu <- mod2.SdAbu
+        }
+        
+        if(mod2.MeanHill$ll > mod.MeanHill$ll) {mod.MeanHill <- mod2.MeanHill
+        }
+        
+        if(mod2.SdHill$ll > mod.SdHill$ll) {mod.SdHill <- mod2.SdHill
+        }
+        
+        if(mod2.MeanGpp$ll > mod.MeanGpp$ll) {mod.MeanGpp <- mod2.MeanGpp
+        }
+        
+        if(mod2.SdGpp$ll > mod.SdGpp$ll) {mod.SdGpp <- mod2.SdGpp
+        }
+        if(mod2.MeanRao$ll > mod.MeanRao$ll) {mod.MeanRao <- mod2.MeanRao
+        }
+        
+        if(mod2.SdRao$ll > mod.SdRao$ll) {mod.SdRao <- mod2.SdRao
+        }
+        if(mod2.Hmean$ll > mod.Hmean$ll) {mod.Hmean <- mod2.Hmean
+        }
+        if(mod2.Lambda1ter$ll > mod.Lambda1ter$ll) {mod.Lambda1ter <- mod2.Lambda1ter
+        }
+      
+        
+        cat(paste0("Save temp R env iter ", j,"/",NiterHetGP))
+        
+        save(Generated_parameters,
+             New_generated_parameters,
+             Jrefresh,
+             NiterHetGP,
+             XGP,
+             XRd,
+             h.RateDBH,
+             h.MeanAgb,
+             h.SdAgb,
+             h.MeanAbu,
+             h.SdAbu,
+             h.MeanGpp,
+             h.SdGpp,
+             h.MeanHill,
+             h.SdHill,
+             h.MeanRao,
+             h.SdRao,
+             h.Hmean,
+             h.Lambda1ter,
+             mod.RateDBH,
+             mod.MeanAgb,
+             mod.SdAgb,
+             mod.MeanAbu,
+             mod.SdAbu,
+             mod.MeanGpp,
+             mod.SdGpp,
+             mod.MeanHill,
+             mod.SdHill,
+             mod.MeanRao,
+             mod.SdRao,
+             mod.Hmean,
+             mod.Lambda1ter,
+             Y,
+             file = paste0(PATH,
+                           "tmp_env_save_iter",round(j/NiterHetGP,digits = 5),"_",
+                           gsub(":", "-",
+                                gsub(
+                                  " ", "_",
+                                  timestamp(
+                                    prefix = "",
+                                    suffix = "",
+                                    quiet = T
+                                  )
+                                ))
+                           ,".Rdata"))
+        
+      }
       
     }
     
+    return(list("params" = Generated_parameters$params, 
+                "X" = X,
+                "Y" = Y,
+                "Generated_parameters" = Generated_parameters,"GPmodels" = list("RateDBH" = list("h.RateDBH" = h.RateDBH,
+                                                                                                 "mod.RateDBH" = mod.RateDBH),
+                                                                                "MeanAgb" = list("h.MeanAgb" = h.MeanAgb,
+                                                                                                 "mod.MeanAgb" = mod.MeanAgb),
+                                                                                "SdAgb" = list("h.SdAgb" = h.SdAgb,
+                                                                                                 "mod.SdAgb" = mod.SdAgb),
+                                                                                "MeanSum1" = list("h.MeanSum1" = h.MeanAbu,
+                                                                                               "mod.MeanSum1" = mod.MeanAbu))))
     
     
   }else{
