@@ -54,8 +54,8 @@ ls()
 ```{r Standard_LHS}
 
 parameters <- c("klight","phi","g1","fallocwood","falloccanopy","m","vC","Cseedrain","log10nbs0","Hmaxcor","CR_a","CR_b","m1","DBHmaxcor","ahCorr")
-lower <- c(0.1,1E-2,2,0,0,0,0,0,0,1E-1,1.5,0.4,1,1E-1,0.5)
-upper = c(1,0.2-1E-2,5,1,1,0.05,0.15,1E5,2,1.9,3,0.8,1.2,1.9,1.5)
+lower <- c(0.1,1E-2,2,1E-2,1E-2,1E-2,1E-2,1E-2,0,1E-1,1.5,0.4,1,0.5,0)
+upper = c(1,0.2-1E-2,5,1,1,0.05,0.15,1E5,2,1.9,3,0.8,1.2,1.5,1)
 global_parameters_boundaries <- data.frame("parameter" = parameters,"lower" = lower,
 "upper" = upper)
 
@@ -63,14 +63,8 @@ global_parameters_boundaries
 ```
 
 ```{r example_LHS}
-global_parameters_boundaries$lower <- NA
-global_parameters_boundaries$upper <- NA
-
-global_parameters_boundaries$lower[global_parameters_boundaries$parameter=="CR_a"] <- 1.5
-global_parameters_boundaries$upper[global_parameters_boundaries$parameter=="CR_a"] <- 3
-
-global_parameters_boundaries$lower[global_parameters_boundaries$parameter=="CR_b"] <- 0.4
-global_parameters_boundaries$upper[global_parameters_boundaries$parameter=="CR_b"] <- 0.8
+global_parameters_boundaries$lower[c(1:10,13:15)] <- NA
+global_parameters_boundaries$upper[c(1:10,13:15)] <- NA
 
 global_parameters_boundaries
 ```
@@ -80,16 +74,61 @@ library(rcontroll)
 library(tidyverse)
 library(raster)
 library(doSNOW)
-LHS_design <- Generate_LHS_Autocalib(nsim = 100,nparam = 2,paramLHS = global_parameters_boundaries,Nyears = 600,Nsampling = 100)
+LHS_design <- Generate_LHS_Autocalib(nsim = 10,nreplicat = 10,nparam = 2,paramLHS = global_parameters_boundaries,Nyears = 100,Nsampling = 50)
 
 Generated_parameters <- Generate_parameters_autocalib(LHS_design = LHS_design)
 ```
 
 
-```{r}
-calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,PATH = getwd(),ncores = 25)
+```{r include=FALSE}
+calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,PATH = getwd(),ncores_sim = 100,ncores = 10,NiterHetGP = 2,initj = 1,Jrefresh = 25)
 ```
 
+
+```{r}
+library(tgp)
+
+sf <- tgp::sens(X = as_tibble(calib_dataset$XGP),calib_dataset$Y[,20], nn.lhs=1000, model=bgp, verb=1)
+
+plot(sf, layout="sens", legendloc="topleft")
+
+plot(sf, layout="sens", maineff=t(1:dim(calib_dataset$XGP)[2]))
+```
+
+```{r}
+cols <- heat.colors(128)
+xgrid <- matrix(c(rep(seq(0,
+             1, length=100), each = 100),
+             rep(seq(0,
+             1, length=100), times = 100)),nrow = 10000,byrow = FALSE)
+
+x1 <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]],
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]], length=101)
+
+x2 <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]],
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[2]], length=101)
+
+p.a <- predict(mod.VolECMP,xgrid)
+
+pvar.a <- p.a$sd2 + p.a$nugs
+
+par(mfrow=c(1,2))
+image(x = x1, y = x2, z = matrix(p.a$mean,nrow = 100,byrow = TRUE), xlab="CR_a", ylab="CR_b", 
+  col=cols, main="Mean Volume ECMP")
+image(x = x1, y = x2, z = matrix(pvar.a,nrow = 100,byrow = TRUE), xlab="CR_a", ylab="CR_b", 
+  col=cols, main="Sd  Volume ECMP")
+
+x_CR_a <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]],
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]], length=100)
+
+p.b <- predict(mod.VolECMP,matrix(c(seq(0,1, length=100) ,rep(0.6,times = 100)),nrow = 100, byrow = FALSE))
+
+par(mfrow=c(1,1))
+plot(x = as_tibble(calib_dataset$X)$CR_a,y = as_tibble(calib_dataset$Y)$Vol_ECMP ,xlab="Crown Radius parameter a", ylab="Volume ECMP",main="Calibrated hetGP for ECMP Volume | CR_a")
+lines(x = x_CR_a, y = p.b$mean)
+lines(x = x_CR_a, y = qnorm(0.05, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)), col=2, lty=2)
+lines(x = x_CR_a, y = qnorm(0.95, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)), col=2, lty=2)
+```
 
 
 # Discussion
