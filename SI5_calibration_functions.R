@@ -159,6 +159,7 @@ Generate_LHS_Autocalib <- function(nsim = 100,
               "nreplicat" = nreplicat))
 }
 
+###################################Generate_parameters_autocalib################################################
 
 Generate_parameters_autocalib <- function(LHS_design,
                                           data_species = rcontroll::TROLLv3_species,
@@ -1292,7 +1293,9 @@ autocalibGP <- function(Generated_parameters,
                 "X" = X, 
                 "Y" = Y,
                 "XGP" = XGP, 
-                "XRd" = XRd, 
+                "XRd" = XRd,
+                "XGPCor" = XnewCor,
+                "Ycor" = Ynewcor,
                 "Nyears" = Generated_parameters$Nyears,
                 "Nsampling" = Generated_parameters$Nsampling,
                 "TROLL_clim_mth_params" = Generated_parameters$dataclim12mths,
@@ -1352,30 +1355,34 @@ autocalibGP <- function(Generated_parameters,
   }else{
     
     
-    XGP <- Generated_parameters$XGP
+    NA_values_index <- Y %>%  na.exclude() %>% attr(which = "na.action") %>%  as.integer()
     
-    prdataRateDBH <- hetGP::find_reps(XGP, Y[,1], rescale = FALSE, normalize = FALSE)
-    prdataMeanAgb <- hetGP::find_reps(XGP, Y[,2], rescale = FALSE, normalize = FALSE)
-    prdatSdAgb <- hetGP::find_reps(XGP, Y[,3], rescale = FALSE, normalize = FALSE)
-    prdataMeanAbu10 <- hetGP::find_reps(XGP, Y[,4], rescale = FALSE, normalize = FALSE)
-    prdataSdAbu10 <- hetGP::find_reps(XGP, Y[,5], rescale = FALSE, normalize = FALSE)
-    prdataMeanAbu30 <- hetGP::find_reps(XGP, Y[,6], rescale = FALSE, normalize = FALSE)
-    prdataSdAbu30 <- hetGP::find_reps(XGP, Y[,7], rescale = FALSE, normalize = FALSE)
-    prdataMeanGpp <- hetGP::find_reps(XGP, Y[,8], rescale = FALSE, normalize = FALSE)
-    prdataSdGpp <- hetGP::find_reps(XGP, Y[,9], rescale = FALSE, normalize = FALSE)
-    prdataMeanNpp <- hetGP::find_reps(XGP, Y[,10], rescale = FALSE, normalize = FALSE)
-    prdataSdNpp <- hetGP::find_reps(XGP, Y[,11], rescale = FALSE, normalize = FALSE)
-    prdataMeanBa10 <- hetGP::find_reps(XGP, Y[,12], rescale = FALSE, normalize = FALSE)
-    prdataSdBa10 <- hetGP::find_reps(XGP, Y[,13], rescale = FALSE, normalize = FALSE)
-    prdataMeanHill <- hetGP::find_reps(XGP, Y[,14], rescale = FALSE, normalize = FALSE)
-    prdataSdHill <- hetGP::find_reps(XGP, Y[,15], rescale = FALSE, normalize = FALSE)
-    prdataMeanRao <- hetGP::find_reps(XGP, Y[,16], rescale = FALSE, normalize = FALSE)
-    prdataSdRao <- hetGP::find_reps(XGP, Y[,17], rescale = FALSE, normalize = FALSE)
-    prdataHmean <- hetGP::find_reps(XGP, Y[,18], rescale = FALSE, normalize = FALSE)
-    prdataLambda1ter <- hetGP::find_reps(XGP, Y[,19], rescale = FALSE, normalize = FALSE)
-    prdataVolECMP <- hetGP::find_reps(XGP, Y[,20], rescale = FALSE, normalize = FALSE)
-    prdataVolECMPS <- hetGP::find_reps(XGP, Y[,21], rescale = FALSE, normalize = FALSE)
-    prdataGmDBH <- hetGP::find_reps(XGP, Y[,22], rescale = FALSE, normalize = FALSE)
+    XGPCor <- Generated_parameters$XGP %>% as_tibble() %>% filter(!(row_number() %in% NA_values_index)) %>%  as.matrix()
+    
+    Ycor <- Y %>% as_tibble() %>% filter(!(row_number() %in% NA_values_index))  %>%  as.matrix()
+    
+    prdataRateDBH <- hetGP::find_reps(XGPCor, Ycor[,1], rescale = FALSE, normalize = FALSE)
+    prdataMeanAgb <- hetGP::find_reps(XGPCor, Ycor[,2], rescale = FALSE, normalize = FALSE)
+    prdatSdAgb <- hetGP::find_reps(XGPCor, Ycor[,3], rescale = FALSE, normalize = FALSE)
+    prdataMeanAbu10 <- hetGP::find_reps(XGPCor, Ycor[,4], rescale = FALSE, normalize = FALSE)
+    prdataSdAbu10 <- hetGP::find_reps(XGPCor, Ycor[,5], rescale = FALSE, normalize = FALSE)
+    prdataMeanAbu30 <- hetGP::find_reps(XGPCor, Ycor[,6], rescale = FALSE, normalize = FALSE)
+    prdataSdAbu30 <- hetGP::find_reps(XGPCor, Ycor[,7], rescale = FALSE, normalize = FALSE)
+    prdataMeanGpp <- hetGP::find_reps(XGPCor, Ycor[,8], rescale = FALSE, normalize = FALSE)
+    prdataSdGpp <- hetGP::find_reps(XGPCor, Ycor[,9], rescale = FALSE, normalize = FALSE)
+    prdataMeanNpp <- hetGP::find_reps(XGPCor, Ycor[,10], rescale = FALSE, normalize = FALSE)
+    prdataSdNpp <- hetGP::find_reps(XGPCor, Ycor[,11], rescale = FALSE, normalize = FALSE)
+    prdataMeanBa10 <- hetGP::find_reps(XGPCor, Ycor[,12], rescale = FALSE, normalize = FALSE)
+    prdataSdBa10 <- hetGP::find_reps(XGPCor, Ycor[,13], rescale = FALSE, normalize = FALSE)
+    prdataMeanHill <- hetGP::find_reps(XGPCor, Ycor[,14], rescale = FALSE, normalize = FALSE)
+    prdataSdHill <- hetGP::find_reps(XGPCor, Ycor[,15], rescale = FALSE, normalize = FALSE)
+    prdataMeanRao <- hetGP::find_reps(XGPCor, Ycor[,16], rescale = FALSE, normalize = FALSE)
+    prdataSdRao <- hetGP::find_reps(XGPCor, Ycor[,17], rescale = FALSE, normalize = FALSE)
+    prdataHmean <- hetGP::find_reps(XGPCor, Ycor[,18], rescale = FALSE, normalize = FALSE)
+    prdataLambda1ter <- hetGP::find_reps(XGPCor, Ycor[,19], rescale = FALSE, normalize = FALSE)
+    prdataVolECMP <- hetGP::find_reps(XGPCor, Ycor[,20], rescale = FALSE, normalize = FALSE)
+    prdataVolECMPS <- hetGP::find_reps(XGPCor, Ycor[,21], rescale = FALSE, normalize = FALSE)
+    prdataGmDBH <- hetGP::find_reps(XGPCor, Ycor[,22], rescale = FALSE, normalize = FALSE)
     
     
     mod.RateDBH <- hetGP::mleHetGP(X = list(X0 = prdataRateDBH$X0,Z0 = prdataRateDBH$Z0,mult=prdataRateDBH$mult), Z = prdataRateDBH$Z,covtype = "Gaussian")
@@ -1401,7 +1408,6 @@ autocalibGP <- function(Generated_parameters,
     mod.VolECMPS <- hetGP::mleHetGP(X = list(X0 = prdataVolECMPS$X0,Z0 = prdataVolECMPS$Z0,mult=prdataVolECMPS$mult), Z = prdataVolECMPS$Z,covtype = "Gaussian")
     mod.GmDBH <- hetGP::mleHetGP(X = list(X0 = prdataGmDBH$X0,Z0 = prdataGmDBH $Z0,mult=prdataGmDBH$mult), Z = prdataGmDBH$Z,covtype = "Gaussian")
     
-    
     return(list("params" = Generated_parameters$params, 
                 "paramLHS" = Generated_parameters$paramLHS,
                 "nreplicat" = Generated_parameters$nreplicat,
@@ -1409,6 +1415,8 @@ autocalibGP <- function(Generated_parameters,
                 "XGP" = Generated_parameters$XGP, 
                 "XRd" = Generated_parameters$XRd,  
                 "Y" = Y,
+                "XGPCor" = XGPCor,
+                "Ycor" = Ycor,
                 "Nyears" = Generated_parameters$Nyears,
                 "Nsampling" = Generated_parameters$Nsampling,
                 "TROLL_clim_mth_params" = Generated_parameters$dataclim12mths,
@@ -1418,49 +1426,49 @@ autocalibGP <- function(Generated_parameters,
                 "Trait_phylo" = Generated_parameters$Trait_phylo,
                 "initk" = Generated_parameters$initk,
                 "NiterHetGP" = NiterHetGP,
-                "GPmodels" = list("RateDBH" = list("h.RateDBH" = NULL,
+                "GPmodels" = list("RateDBH" = list("h.RateDBH" = NA,
                                                    "mod.RateDBH" = mod.RateDBH),
-                                  "MeanAgb" = list("h.MeanAgb" = NULL,
+                                  "MeanAgb" = list("h.MeanAgb" = NA,
                                                    "mod.MeanAgb" = mod.MeanAgb),
-                                  "SdAgb" = list("h.SdAgb" = NULL,
+                                  "SdAgb" = list("h.SdAgb" = NA,
                                                  "mod.SdAgb" = mod.SdAgb),
-                                  "MeanSum10" = list("h.MeanSum10" = NULL,
+                                  "MeanSum10" = list("h.MeanSum10" = NA,
                                                      "mod.MeanSum10" = mod.MeanAbu10),
-                                  "SdSum10" = list("h.SdSum10" = h.SdAbu10,
+                                  "SdSum10" = list("h.SdSum10" = NA,
                                                    "mod.SdAgb" = mod.SdAbu10),
-                                  "MeanSum30" = list("h.MeanSum30" = NULL,
+                                  "MeanSum30" = list("h.MeanSum30" = NA,
                                                      "mod.MeanSum30" = mod.MeanAbu30),
-                                  "SdSum30" = list("h.SdSum10" = NULL,
+                                  "SdSum30" = list("h.SdSum10" = NA,
                                                    "mod.SdAgb" = mod.SdAbu30),
-                                  "MeanGpp" = list("h.MeanGpp" = NULL,
+                                  "MeanGpp" = list("h.MeanGpp" = NA,
                                                    "mod.MeanGpp" = mod.MeanGpp),
-                                  "SdGpp" = list("h.SdSpp" = NULL,
+                                  "SdGpp" = list("h.SdSpp" = NA,
                                                  "mod.Spp" = mod.SdGpp),
-                                  "MeanNpp" = list("h.MeanNpp" = NULL,
+                                  "MeanNpp" = list("h.MeanNpp" = NA,
                                                    "mod.MeanNpp" = mod.MeanNpp),
-                                  "SdNpp" = list("h.SdNpp" = NULL,
+                                  "SdNpp" = list("h.SdNpp" = NA,
                                                  "mod.SdNpp" = mod.SdNpp),
-                                  "MeanBa10" = list("h.MeanBa10" = NULL,
+                                  "MeanBa10" = list("h.MeanBa10" = NA,
                                                     "mod.MeanBa10" = mod.MeanBa10),
-                                  "SdBa10" = list("h.SdBa10" = NULL,
+                                  "SdBa10" = list("h.SdBa10" = NA,
                                                   "mod.SdBa10" = mod.SdBa10),
-                                  "MeanHill" = list("h.MeanHill" = NULL,
+                                  "MeanHill" = list("h.MeanHill" = NA,
                                                     "mod.MeanHill" = mod.MeanHill),
-                                  "SdHill" = list("h.SdHill" = NULL,
+                                  "SdHill" = list("h.SdHill" = NA,
                                                   "mod.SdHill" = mod.SdHill),
-                                  "MeanRao" = list("h.MeanRao" = NULL,
+                                  "MeanRao" = list("h.MeanRao" = NA,
                                                    "mod.MeanRao" = mod.MeanRao),
-                                  "SdHill" = list("h.SdRao" = NULL,
+                                  "SdHill" = list("h.SdRao" = NA,
                                                   "mod.SdRao" = mod.SdRao),
-                                  "Hmean" = list("h.Hmean" = NULL,
+                                  "Hmean" = list("h.Hmean" = NA,
                                                  "mod.Hmean" = mod.Hmean),
-                                  "Lambda1ter" = list("h.Lambda1ter" = NULL,
+                                  "Lambda1ter" = list("h.Lambda1ter" = NA,
                                                       "mod.Lambda1ter" = mod.Lambda1ter),
-                                  "VolECMP" = list("h.VolECMP" = NULL,
+                                  "VolECMP" = list("h.VolECMP" = NA,
                                                    "mod.VolECMP" = mod.VolECMP),
-                                  "VolECMPS" = list("h.VolECMPS" = NULL,
+                                  "VolECMPS" = list("h.VolECMPS" = NA,
                                                     "mod.VolECMPS" = mod.VolECMPS),
-                                  "GmDBH" = list("h.GmDBH" = NULL,
+                                  "GmDBH" = list("h.GmDBH" = NA,
                                                  "mod.GmDBH" = mod.GmDBH)
                 )))
   }

@@ -69,21 +69,78 @@ global_parameters_boundaries$upper[c(1:10,13:15)] <- NA
 global_parameters_boundaries
 ```
 
-```{r data_LHS}
+```{r data_LHS eval=FALSE, include=TRUE}
 library(rcontroll)
 library(tidyverse)
 library(raster)
 library(doSNOW)
-LHS_design <- Generate_LHS_Autocalib(nsim = 10,nreplicat = 10,nparam = 2,paramLHS = global_parameters_boundaries,Nyears = 100,Nsampling = 50)
+LHS_design <- Generate_LHS_Autocalib(nsim = 250,nreplicat = 3,nparam = 2,paramLHS = global_parameters_boundaries,Nyears = 1000,Nsampling = 100)
 
 Generated_parameters <- Generate_parameters_autocalib(LHS_design = LHS_design)
 ```
 
 
-```{r include=FALSE}
-calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,PATH = getwd(),ncores_sim = 100,ncores = 10,NiterHetGP = 2,initj = 1,Jrefresh = 25)
+```{r eval=FALSE, include=TRUE}
+calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,PATH = getwd(),ncores_sim = 100,ncores = 10,NiterHetGP = NULL,initj = 1,Jrefresh = 25)
 ```
 
+```{r eval=FALSE, include=TRUE}
+library(sensitivity)
+
+morrisOut <- morris(
+  model = NULL,
+  factors = calib_dataset$params, 
+  r = 500, 
+  design = list(type = "oat", levels = 20, grid.jump = 3), 
+  binf = 0, 
+  bsup = 1, 
+  scale = FALSE)
+
+Y <- matrix(c(predict(calib_dataset$GPmodels$RateDBH$mod.RateDBH,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanAgb$mod.MeanAgb,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanSum10$mod.MeanSum10,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanSum30$mod.MeanSum30,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanGpp$mod.MeanGpp,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanNpp$mod.MeanNpp,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanBa10$mod.MeanBa10,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$MeanRao$mod.MeanRao,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$Hmean$mod.Hmean,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$Lambda1ter$mod.Lambda1ter,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$VolECMP$mod.VolECMP,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$VolECMPS$mod.VolECMPS,morrisOut[['X']])$mean,
+       predict(calib_dataset$GPmodels$GmDBH$mod.GmDBH,morrisOut[['X']])$mean), ncol = 14, byrow = FALSE)
+
+tell(morrisOut,Y)
+
+# summarise the moris output
+morrisOut.df <- data.frame(
+  parameter = calib_dataset$params,
+  mu.star = apply(abs(morrisOut$ee), 2, mean, na.rm = T),
+  sigma = apply(morrisOut$ee, 2, sd, na.rm = T)
+) %>%
+  arrange( mu.star )
+
+```
+
+```{r}
+load("rcontrollTROLL_calib_250x3LHS_1000y.rda")
+```
+
+```{r}
+morrisOut.df %>%
+  gather(variable, value, -parameter) %>%
+  ggplot(aes(reorder(parameter, value), value, fill = variable), color = NA)+
+  geom_bar(position = position_dodge(), stat = 'identity') +
+  scale_fill_brewer("", labels = c('mu.star' = expression(mu * "*"), 'sigma' = expression(sigma)), palette="Dark2") +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 6),
+    axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5),
+    axis.title = element_blank(),
+    legend.position = c(0.05 ,0.95),legend.justification = c(0.05,0.95)
+  )
+```
 
 ```{r}
 library(tgp)
@@ -96,38 +153,77 @@ plot(sf, layout="sens", maineff=t(1:dim(calib_dataset$XGP)[2]))
 ```
 
 ```{r}
-cols <- heat.colors(128)
+cols <- hcl.colors(n = 128, palette = "viridis")
+
+resolution <- 250
 xgrid <- matrix(c(rep(seq(0,
-             1, length=100), each = 100),
+             1, length=resolution), each = resolution),
              rep(seq(0,
-             1, length=100), times = 100)),nrow = 10000,byrow = FALSE)
+             1, length=resolution), times = resolution)),nrow = resolution^2,byrow = FALSE)
 
-x1 <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]],
-             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]], length=101)
-
-x2 <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]],
-             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[2]], length=101)
-
-p.a <- predict(mod.VolECMP,xgrid)
+p.a <- predict(calib_dataset$GPmodels$VolECMP$mod.VolECMP,xgrid)
 
 pvar.a <- p.a$sd2 + p.a$nugs
 
-par(mfrow=c(1,2))
-image(x = x1, y = x2, z = matrix(p.a$mean,nrow = 100,byrow = TRUE), xlab="CR_a", ylab="CR_b", 
-  col=cols, main="Mean Volume ECMP")
-image(x = x1, y = x2, z = matrix(pvar.a,nrow = 100,byrow = TRUE), xlab="CR_a", ylab="CR_b", 
-  col=cols, main="Sd  Volume ECMP")
-
 x_CR_a <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]],
-             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]], length=100)
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]], length=resolution)
 
-p.b <- predict(mod.VolECMP,matrix(c(seq(0,1, length=100) ,rep(0.6,times = 100)),nrow = 100, byrow = FALSE))
+x_CR_b <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]],
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[2]], length=resolution)
 
-par(mfrow=c(1,1))
-plot(x = as_tibble(calib_dataset$X)$CR_a,y = as_tibble(calib_dataset$Y)$Vol_ECMP ,xlab="Crown Radius parameter a", ylab="Volume ECMP",main="Calibrated hetGP for ECMP Volume | CR_a")
-lines(x = x_CR_a, y = p.b$mean)
-lines(x = x_CR_a, y = qnorm(0.05, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)), col=2, lty=2)
-lines(x = x_CR_a, y = qnorm(0.95, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)), col=2, lty=2)
+p.b <- predict(calib_dataset$GPmodels$VolECMP$mod.VolECMP,matrix(c(seq(0,1, length=resolution),rep(0.5,times = resolution)),nrow = resolution, byrow = FALSE))
+
+p.c <- predict(calib_dataset$GPmodels$VolECMP$mod.VolECMP,matrix(c(rep(0.07,times = resolution),seq(0,1, length=resolution)),nrow = resolution, byrow = FALSE))
+
+
+Mean_raster <- ggplot() + 
+  geom_raster(aes(x = (global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]])*xgrid[,1] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]], y = (global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[2]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]])*xgrid[,2] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]], fill = matrix(p.a$mean,nrow = resolution,byrow = FALSE))) +
+  geom_hline(aes(yintercept = 0.6), color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = 1.60), color = "blue", linetype = "dashed")+
+  scale_fill_viridis_c()+
+  xlab("Crown Radius parameter a") + ylab("Crown Radius parameter b")+
+  guides(fill = guide_legend(title = "Mean"))+
+  theme_bw()
+
+Sd_raster <- ggplot() + 
+  geom_raster(aes(x = (global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[1]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]])*xgrid[,1] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[1]], y = (global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[2]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]])*xgrid[,2] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[2]], 
+                  fill = matrix(sqrt(pvar.a),nrow = resolution,byrow = FALSE))) +
+  scale_fill_viridis_c()+
+  geom_hline(aes(yintercept = 0.6), color = "red", linetype = "dashed")+
+  geom_vline(aes(xintercept = 1.60), color = "blue", linetype = "dashed")+
+  xlab("Crown Radius parameter a") + ylab("Crown Radius parameter b")+
+  guides(fill = guide_legend(title = "Sd"))+
+  theme_bw()
+
+Extract_plot_y <- ggplot() + 
+  geom_point(aes(x = as_tibble(calib_dataset$X)$CR_a, y = as_tibble(calib_dataset$Y)$Vol_ECMP, 
+                 color = (abs(0.5 - as_tibble(calib_dataset$XGP)$CR_b)<0.05) )) + 
+  geom_ribbon(aes(x= x_CR_a, ymin = qnorm(0.05, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)),
+                                 ymax = qnorm(0.95, p.b$mean, sqrt(p.b$sd2 + p.b$nugs))), alpha = 0.1, color = "red") +
+  geom_line(aes(x = x_CR_a, y = p.b$mean)) +
+  scale_color_manual(values=c("lightgrey",'red'),labels = c("F", "T"))+
+  xlab("Crown Radius parameter a") + ylab("Volume ECMP")+
+  guides(color = guide_legend(title = "||CR b - 0.5|| < 5% LHS"))+
+  theme_bw()
+
+Extract_plot_x <- ggplot() + 
+  geom_point(aes(x = as_tibble(calib_dataset$X)$CR_b, y = as_tibble(calib_dataset$Y)$Vol_ECMP, 
+                 color = (abs(0.07 - as_tibble(calib_dataset$XGP)$CR_a)<0.05) )) + 
+  geom_ribbon(aes(x= x_CR_b, ymin = qnorm(0.05, p.c$mean, sqrt(p.c$sd2 + p.c$nugs)),
+                                 ymax = qnorm(0.95, p.c$mean, sqrt(p.c$sd2 + p.c$nugs))), alpha = 0.1, color = "red") +
+  geom_line(aes(x = x_CR_b, y = p.c$mean)) +
+  scale_color_manual(values=c("lightgrey",'blue'),labels = c("F", "T"))+
+  xlab("Crown Radius parameter b") + ylab("Volume ECMP")+
+  guides(color = guide_legend(title = "||CR a - 1.60|| < 5% LHS"))+
+  theme_bw()
+
+cowplot::plot_grid(Mean_raster,Sd_raster,
+                   Extract_plot_y,Extract_plot_x,
+                   labels = c('A', 'B','C','D'),
+                    align="hv")
+
+
+
 ```
 
 
