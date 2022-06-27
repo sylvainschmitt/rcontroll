@@ -58,7 +58,7 @@ load_stack <- function(name,
     ecosystem = lapply(stack_res, slot, "ecosystem") %>% 
       bind_rows(.id = "simulation"),
     species = lapply(stack_res, slot, "species") %>% 
-      bind_rows(.id = "species")
+      bind_rows(.id = "simulation")
   )
   
   return(stack_res)
