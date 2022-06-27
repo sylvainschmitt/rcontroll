@@ -80,48 +80,59 @@ litterfall.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for trollsim</span>
-<span class="fu">autoplot</span><span class="op">(</span>
-  <span class="va">object</span>,
-  what <span class="op">=</span> <span class="st">"temporal"</span>,
-  variables <span class="op">=</span> <span class="cn">NULL</span>,
-  species <span class="op">=</span> <span class="cn">NULL</span>,
-  iter <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for trollsim</span></span>
+<span><span class="fu">autoplot</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  what <span class="op">=</span> <span class="st">"temporal"</span>,</span>
+<span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  species <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  iter <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>TROLL simulation or stack.</p></dd>
+
+
 <dt>what</dt>
 <dd><p>char. What to plot: "temporal", "spatial" or "distribution".
 "temporal" is for temporal trajectories of the whole ecosystem or defined
 species. "spatial" is for spatial patterns in the initial or final forest.
 "distribution" is for metrics distribution in the initial or final forest.</p></dd>
+
+
 <dt>variables</dt>
 <dd><p>char. Which variable(s) to plot. Only one variable is
 accepted when plotting "spatial".</p></dd>
+
+
 <dt>species</dt>
 <dd><p>char. Which species to plot. NULL indicates the whole ecosystem
 level. "all" can be used to use all species.</p></dd>
+
+
 <dt>iter</dt>
 <dd><p>char. Which iteration(s) to plot, for temporal thinning or to
 specify which forest to plot. "initial" or "final" can be used. NULL is
 converted to "final".</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot2 object.</p>
+    
+
+<p>A ggplot2 object.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_output"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">autoplot</span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_output"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">autoplot</span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="autoplot-trollsim-method-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -136,7 +147,7 @@ converted to "final".</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

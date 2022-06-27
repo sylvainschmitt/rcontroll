@@ -68,230 +68,355 @@ parameters have a default value used in French Guiana simulations.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">generate_parameters</span><span class="op">(</span>
-  cols <span class="op">=</span> <span class="fl">200</span>,
-  rows <span class="op">=</span> <span class="fl">200</span>,
-  HEIGHT <span class="op">=</span> <span class="fl">70</span>,
-  length_dcell <span class="op">=</span> <span class="fl">25</span>,
-  <span class="va">nbiter</span>,
-  iterperyear <span class="op">=</span> <span class="fl">12</span>,
-  NV <span class="op">=</span> <span class="fl">1</span>,
-  NH <span class="op">=</span> <span class="fl">1</span>,
-  nbout <span class="op">=</span> <span class="fl">4</span>,
-  nbspp <span class="op">=</span> <span class="fl">45</span>,
-  SWtoPPFD <span class="op">=</span> <span class="fl">2.27</span>,
-  p_nonvert <span class="op">=</span> <span class="fl">0.05</span>,
-  klight <span class="op">=</span> <span class="fl">0.63</span>,
-  phi <span class="op">=</span> <span class="fl">0.093</span>,
-  absorptance_leaves <span class="op">=</span> <span class="fl">0.9</span>,
-  theta <span class="op">=</span> <span class="fl">0.7</span>,
-  g1 <span class="op">=</span> <span class="fl">3.77</span>,
-  vC <span class="op">=</span> <span class="fl">0.021</span>,
-  DBH0 <span class="op">=</span> <span class="fl">0.005</span>,
-  H0 <span class="op">=</span> <span class="fl">0.95</span>,
-  CR_min <span class="op">=</span> <span class="fl">0.3</span>,
-  CR_a <span class="op">=</span> <span class="fl">2.13</span>,
-  CR_b <span class="op">=</span> <span class="fl">0.63</span>,
-  CD_a <span class="op">=</span> <span class="fl">0</span>,
-  CD_b <span class="op">=</span> <span class="fl">0.2</span>,
-  CD0 <span class="op">=</span> <span class="fl">0.3</span>,
-  shape_crown <span class="op">=</span> <span class="fl">0.72</span>,
-  dens <span class="op">=</span> <span class="fl">1</span>,
-  fallocwood <span class="op">=</span> <span class="fl">0.35</span>,
-  falloccanopy <span class="op">=</span> <span class="fl">0.25</span>,
-  Cseedrain <span class="op">=</span> <span class="fl">50000</span>,
-  nbs0 <span class="op">=</span> <span class="fl">10</span>,
-  sigma_height <span class="op">=</span> <span class="fl">0</span>,
-  sigma_CR <span class="op">=</span> <span class="fl">0</span>,
-  sigma_CD <span class="op">=</span> <span class="fl">0</span>,
-  sigma_P <span class="op">=</span> <span class="fl">0</span>,
-  sigma_N <span class="op">=</span> <span class="fl">0</span>,
-  sigma_LMA <span class="op">=</span> <span class="fl">0</span>,
-  sigma_wsg <span class="op">=</span> <span class="fl">0</span>,
-  sigma_dbhmax <span class="op">=</span> <span class="fl">0</span>,
-  corr_CR_height <span class="op">=</span> <span class="fl">0</span>,
-  corr_N_P <span class="op">=</span> <span class="fl">0</span>,
-  corr_N_LMA <span class="op">=</span> <span class="fl">0</span>,
-  corr_P_LMA <span class="op">=</span> <span class="fl">0</span>,
-  leafdem_resolution <span class="op">=</span> <span class="fl">30</span>,
-  p_tfsecondary <span class="op">=</span> <span class="fl">1</span>,
-  hurt_decay <span class="op">=</span> <span class="fl">0</span>,
-  crown_gap_fraction <span class="op">=</span> <span class="fl">0.15</span>,
-  m <span class="op">=</span> <span class="fl">0.013</span>,
-  m1 <span class="op">=</span> <span class="fl">0.013</span>,
-  Cair <span class="op">=</span> <span class="fl">400</span>,
-  LL_parameterization <span class="op">=</span> <span class="fl">1</span>,
-  LA_regulation <span class="op">=</span> <span class="fl">2</span>,
-  sapwood <span class="op">=</span> <span class="fl">1</span>,
-  seedsadditional <span class="op">=</span> <span class="fl">0</span>,
-  NONRANDOM <span class="op">=</span> <span class="fl">1</span>,
-  GPPcrown <span class="op">=</span> <span class="fl">0</span>,
-  BASICTREEFALL <span class="op">=</span> <span class="fl">1</span>,
-  SEEDTRADEOFF <span class="op">=</span> <span class="fl">0</span>,
-  CROWN_MM <span class="op">=</span> <span class="fl">0</span>,
-  OUTPUT_extended <span class="op">=</span> <span class="fl">1</span>,
-  extent_visual <span class="op">=</span> <span class="fl">0</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generate_parameters</span><span class="op">(</span></span>
+<span>  cols <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  rows <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  HEIGHT <span class="op">=</span> <span class="fl">70</span>,</span>
+<span>  length_dcell <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  <span class="va">nbiter</span>,</span>
+<span>  iterperyear <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  NV <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  NH <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  nbout <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  nbspp <span class="op">=</span> <span class="fl">45</span>,</span>
+<span>  SWtoPPFD <span class="op">=</span> <span class="fl">2.27</span>,</span>
+<span>  p_nonvert <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  klight <span class="op">=</span> <span class="fl">0.63</span>,</span>
+<span>  phi <span class="op">=</span> <span class="fl">0.093</span>,</span>
+<span>  absorptance_leaves <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  theta <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  g1 <span class="op">=</span> <span class="fl">3.77</span>,</span>
+<span>  vC <span class="op">=</span> <span class="fl">0.021</span>,</span>
+<span>  DBH0 <span class="op">=</span> <span class="fl">0.005</span>,</span>
+<span>  H0 <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  CR_min <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  CR_a <span class="op">=</span> <span class="fl">2.13</span>,</span>
+<span>  CR_b <span class="op">=</span> <span class="fl">0.63</span>,</span>
+<span>  CD_a <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  CD_b <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  CD0 <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  shape_crown <span class="op">=</span> <span class="fl">0.72</span>,</span>
+<span>  dens <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  fallocwood <span class="op">=</span> <span class="fl">0.35</span>,</span>
+<span>  falloccanopy <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>  Cseedrain <span class="op">=</span> <span class="fl">50000</span>,</span>
+<span>  nbs0 <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  sigma_height <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_CR <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_CD <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_P <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_N <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_LMA <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_wsg <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sigma_dbhmax <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  corr_CR_height <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  corr_N_P <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  corr_N_LMA <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  corr_P_LMA <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  leafdem_resolution <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  p_tfsecondary <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  hurt_decay <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  crown_gap_fraction <span class="op">=</span> <span class="fl">0.15</span>,</span>
+<span>  m <span class="op">=</span> <span class="fl">0.013</span>,</span>
+<span>  m1 <span class="op">=</span> <span class="fl">0.013</span>,</span>
+<span>  Cair <span class="op">=</span> <span class="fl">400</span>,</span>
+<span>  LL_parameterization <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  LA_regulation <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  sapwood <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  seedsadditional <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  NONRANDOM <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  GPPcrown <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  BASICTREEFALL <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  SEEDTRADEOFF <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  CROWN_MM <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  OUTPUT_extended <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  extent_visual <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>cols</dt>
 <dd><p>num. Number of columns.</p></dd>
+
+
 <dt>rows</dt>
 <dd><p>num. Number of rows.</p></dd>
+
+
 <dt>HEIGHT</dt>
 <dd><p>num. Vertical extent of simulation.</p></dd>
+
+
 <dt>length_dcell</dt>
 <dd><p>num. Linear size of a dcell.</p></dd>
+
+
 <dt>nbiter</dt>
 <dd><p>num. Total number of timesteps.</p></dd>
+
+
 <dt>iterperyear</dt>
 <dd><p>num. Number of iterations per year.</p></dd>
+
+
 <dt>NV</dt>
 <dd><p>num. Vertical number of cells (per m).</p></dd>
+
+
 <dt>NH</dt>
 <dd><p>num. Horizontal number of cells (per m).</p></dd>
+
+
 <dt>nbout</dt>
 <dd><p>num. Number of outputs.</p></dd>
+
+
 <dt>nbspp</dt>
 <dd><p>num. Number of species</p></dd>
+
+
 <dt>SWtoPPFD</dt>
 <dd><p>num. Convert shortwave irradiance to PAR photons.</p></dd>
+
+
 <dt>p_nonvert</dt>
 <dd><p>num. Light incidence parameter (difference through turbid
 medium).</p></dd>
+
+
 <dt>klight</dt>
 <dd><p>num. Light attenuation in the canopy following a Beer-Lambert
 law.</p></dd>
+
+
 <dt>phi</dt>
 <dd><p>num. Quantum yield (in micromol C/micromol photon).</p></dd>
+
+
 <dt>absorptance_leaves</dt>
 <dd><p>num. Absorptance of individual leaves.</p></dd>
+
+
 <dt>theta</dt>
 <dd><p>num. Parameter of the Farquhar model.</p></dd>
+
+
 <dt>g1</dt>
 <dd><p>num. Parameter g1 of Medlyn et al stomatal conductance model.</p></dd>
+
+
 <dt>vC</dt>
 <dd><p>num. Variance of the flexion moment.</p></dd>
+
+
 <dt>DBH0</dt>
 <dd><p>num. Initial diameter at breast height (m).</p></dd>
+
+
 <dt>H0</dt>
 <dd><p>num. Initial height (m).</p></dd>
+
+
 <dt>CR_min</dt>
 <dd><p>num. Minimum crown radius (in m).</p></dd>
+
+
 <dt>CR_a</dt>
 <dd><p>num. Crown radius log intercept or Michaelis Menten initial
 growth.</p></dd>
+
+
 <dt>CR_b</dt>
 <dd><p>num. Crown radius log slope or Michaelis Menten asymptotic CR.</p></dd>
+
+
 <dt>CD_a</dt>
 <dd><p>num. Crown depth intercept (absolute value).</p></dd>
+
+
 <dt>CD_b</dt>
 <dd><p>num. Crown depth slope (as fraction of tree height).</p></dd>
+
+
 <dt>CD0</dt>
 <dd><p>num. Initial crown depth (in m).</p></dd>
+
+
 <dt>shape_crown</dt>
 <dd><p>num. Crown shape parameter.</p></dd>
+
+
 <dt>dens</dt>
 <dd><p>num. Initial leaf density (m^2/m^2).</p></dd>
+
+
 <dt>fallocwood</dt>
 <dd><p>num. Fraction of biomass allocated to above ground wood
 (branch turnover+stem).</p></dd>
+
+
 <dt>falloccanopy</dt>
 <dd><p>num. Fraction of biomass allocated to canopy (leaves +
 reproductive organs + twigs).</p></dd>
+
+
 <dt>Cseedrain</dt>
 <dd><p>num. Constant used to scale total seed rain per hectare
 across species.</p></dd>
+
+
 <dt>nbs0</dt>
 <dd><p>num. Number of seeds produced and dispersed by each mature tree
 when SEEDTRADEOFF is not defined.</p></dd>
+
+
 <dt>sigma_height</dt>
 <dd><p>num. Intraspecific variation in tree height (lognormal).</p></dd>
+
+
 <dt>sigma_CR</dt>
 <dd><p>num. Intraspecific variation in crown radius (lognormal).</p></dd>
+
+
 <dt>sigma_CD</dt>
 <dd><p>num. Intraspecific variation in crown depth (lognormal).</p></dd>
+
+
 <dt>sigma_P</dt>
 <dd><p>num. Intraspecific variation in leaf phosphorus (lognormal).</p></dd>
+
+
 <dt>sigma_N</dt>
 <dd><p>num. Intraspecific variation in leaf nitrogen (lognormal).</p></dd>
+
+
 <dt>sigma_LMA</dt>
 <dd><p>num. Intraspecific variation in leaf mass per area
 (lognormal).</p></dd>
+
+
 <dt>sigma_wsg</dt>
 <dd><p>num. Intraspecific variation in wood specific gravity.</p></dd>
+
+
 <dt>sigma_dbhmax</dt>
 <dd><p>num. Intraspecific variation in maximum diameter.</p></dd>
+
+
 <dt>corr_CR_height</dt>
 <dd><p>num. Correlation coefficient between crown radius and
 tree height.</p></dd>
+
+
 <dt>corr_N_P</dt>
 <dd><p>num. Correlation coefficient between leaf nitrogen and leaf
 phosphorus.</p></dd>
+
+
 <dt>corr_N_LMA</dt>
 <dd><p>num. Correlation coefficient between leaf nitrogen and leaf
 mass per area</p></dd>
+
+
 <dt>corr_P_LMA</dt>
 <dd><p>num. Correlation coefficient between leaf phosphorus and
 leaf mass per area</p></dd>
+
+
 <dt>leafdem_resolution</dt>
 <dd><p>num. Resolution of leaf demography model.</p></dd>
+
+
 <dt>p_tfsecondary</dt>
 <dd><p>num. Probability of secondary treefall.</p></dd>
+
+
 <dt>hurt_decay</dt>
 <dd><p>num. Parameter determining how tree damages are repaired.</p></dd>
+
+
 <dt>crown_gap_fraction</dt>
 <dd><p>num. Fraction of gaps in the crown.</p></dd>
+
+
 <dt>m</dt>
 <dd><p>num. Minimal death rate.</p></dd>
+
+
 <dt>m1</dt>
 <dd><p>num. Slope of death rate m1.</p></dd>
+
+
 <dt>Cair</dt>
 <dd><p>num. Atmospheric CO2 concentration in micromol/mol.</p></dd>
+
+
 <dt>LL_parameterization</dt>
 <dd><p>num. Leaf lifespan parameterizations: Reich
 empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2).</p></dd>
+
+
 <dt>LA_regulation</dt>
 <dd><p>num. Dynamic LA regulation: off, 1.0, 0.75, or 0.5
 (0,1,2,3).</p></dd>
+
+
 <dt>sapwood</dt>
 <dd><p>num. Sapwood parameterizations: constant thickness (0.04),
 Fyllas percentage, Fyllas lower limit (0,1,2).</p></dd>
+
+
 <dt>seedsadditional</dt>
 <dd><p>num. Excess biomass into seeds after maturation (0,1).</p></dd>
+
+
 <dt>NONRANDOM</dt>
 <dd><p>num. If _NONRANDOM == 1, the seeds for the random number
 generators will be kept fixed at 1, default for bug fixing (0,1).</p></dd>
+
+
 <dt>GPPcrown</dt>
 <dd><p>num. This defines an option to compute only GPP from the
 topmost value of PPFD and GPP, instead of looping within the crown (0,1).</p></dd>
+
+
 <dt>BASICTREEFALL</dt>
 <dd><p>num. If defined: treefall is a source of tree death
 (0,1).</p></dd>
+
+
 <dt>SEEDTRADEOFF</dt>
 <dd><p>num. if defined: the number of seeds produced is
 determined by NPP allocated to reproduction and seed mass, otherwise the
 number of seeds is fixed (0,1).</p></dd>
+
+
 <dt>CROWN_MM</dt>
 <dd><p>num. Michaelis Menten allometry for crowns instead of power
 law, parameters have to be changed in other input sheets accordingly (0,1).</p></dd>
+
+
 <dt>OUTPUT_extended</dt>
 <dd><p>num. extended set of ouput files (0,1).</p></dd>
+
+
 <dt>extent_visual</dt>
 <dd><p>num. extent for visualization output. Unactivated when
 equal 0.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame of global parameters.</p>
+    
+
+<p>A data frame of global parameters.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="fu">generate_parameters</span><span class="op">(</span>nbiter <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">generate_parameters</span><span class="op">(</span>nbiter <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   param    value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                  cols 2.00e+02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                  rows 2.00e+02</span>
@@ -418,7 +543,7 @@ equal 0.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 60                   /* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 61                                                                                                                   /* extended set of ouput files */</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 62                                                                                                                /* extent for visualization output *</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -433,7 +558,7 @@ equal 0.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
