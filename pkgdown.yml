@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   troll: troll.html
   workflow: workflow.html
-last_built: 2022-06-27T18:37Z
+last_built: 2022-07-04T14:07Z
 urls:
   reference: https://sylvainschmitt.github.io/rcontroll/reference
   article: https://sylvainschmitt.github.io/rcontroll/articles
