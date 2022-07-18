@@ -76,7 +76,7 @@ Generate_LHS_Autocalib <- function(nsim = 100,
   if (is.na(paramLHS$lower[paramLHS$parameter == "Cseedrain"]) | is.na(paramLHS$upper[paramLHS$parameter == "Cseedrain"])) {
     Xparam[,8] <- default_values$value[default_values$param == "Cseedrain"]
   }else{
-    Xparam[,8] <-  qunif(X[,i],paramLHS$lower[paramLHS$parameter == "Cseedrain"],paramLHS$upper[paramLHS$parameter == "Cseedrain"]) #Cseedrain
+    Xparam[,8] <-  ceiling(qunif(X[,i],paramLHS$lower[paramLHS$parameter == "Cseedrain"],paramLHS$upper[paramLHS$parameter == "Cseedrain"])) #Cseedrain
     params <- c(params,"Cseedrain")
     i <- i+1
   }
@@ -84,7 +84,7 @@ Generate_LHS_Autocalib <- function(nsim = 100,
   if (is.na(paramLHS$lower[paramLHS$parameter == "log10nbs0"]) | is.na(paramLHS$upper[paramLHS$parameter == "log10nbs0"])) {
     Xparam[,9] <- default_values$value[default_values$param == "nbs0"]
   }else{
-    Xparam[,9] <-  qunif(X[,i],paramLHS$lower[paramLHS$parameter == "log10nbs0"],paramLHS$upper[paramLHS$parameter == "log10nbs0"]) #nbs0
+    Xparam[,9] <-  ceiling(10^qunif(X[,i],paramLHS$lower[paramLHS$parameter == "log10nbs0"],paramLHS$upper[paramLHS$parameter == "log10nbs0"])) #nbs0
     params <- c(params,"log10nbs0")
     i <- i+1
   }
@@ -293,7 +293,7 @@ ptexp <- function(q, rate, low, upp)
 ###################################get_lambda################################################
 
 get_lambda <- function(CHM,sumCHM) {
-
+  
   gaps_stats <-ForestGapR::GapStats(gap_layer = ForestGapR::getForestGaps(CHM,threshold = sumCHM[4]*1/3),chm_layer = CHM)
   
   if (dim(gaps_stats)[1] != 0) {
@@ -480,9 +480,9 @@ SumVar <- function(i,
   EstParam <- c(EstParam,mean(na.exclude(CHM@data@values)))
   
   lambda <- try(get_lambda(CHM,sumCHM),silent = TRUE)
-    
+  
   EstParam <- c(EstParam,lambda)
-    
+  
   FinalPatterni <- FinalPattern %>% dplyr::filter(simulation == i)
   if (length(FinalPatterni$dbh) > 0) {
     splited_species <- do.call(rbind, strsplit(FinalPatterni$s_name, split = "_"))
@@ -537,7 +537,7 @@ extractVar <- function(stacktmp,
                        .packages = c("dplyr","coda","tidyr","entropart","fitdistrplus","sf","sp","raster","ForestGapR","LoggingLab"),
                        .combine = rbind,
                        .inorder = TRUE,.options.snow = opts) %dopar% {
-                         SumVar(i = i,
+                         results <- try(SumVar(i = i,
                                 WIP_folder_PATH = WIP_folder_PATH,
                                 MCtotal = MCtotal,
                                 MCSpecies = MCSpecies,
@@ -546,7 +546,13 @@ extractVar <- function(stacktmp,
                                 Nsampling = Nsampling,
                                 Trait_phylo = Trait_phylo,
                                 bbox = bbox,
-                                precision = 1)
+                                precision = 1))
+                         
+                         if (inherits(results,"try-error")) {
+                           return(rep(NA, times = 22))
+                         }else{
+                           return(results)
+                         }
                          
                        }
   
@@ -624,46 +630,144 @@ autocalibGP <- function(Generated_parameters,
     
     gc()
     
-    sim_stack <- rcontroll::stack(path = WIP_folder_PATH,
-                                  name = "sim_stack",
-                                  simulations = simulations,
-                                  global = Generated_parameters$TROLL_global_params %>% 
-                                    filter(simulation %in% simulations),
-                                  species = Generated_parameters$TROLL_species_data  %>% 
-                                    filter(simulation %in% simulations),
-                                  climate = Generated_parameters$TROLL_clim_mth_params,
-                                  daily = Generated_parameters$TROLL_clim_dayvar_params,
-                                  verbose = FALSE,
-                                  thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
-                                  cores = ncores_sim)
+    sim_stack <- try(rcontroll::stack(path = WIP_folder_PATH,
+                                      name = "sim_stack",
+                                      simulations = simulations,
+                                      global = Generated_parameters$TROLL_global_params %>% 
+                                        filter(simulation %in% simulations),
+                                      species = Generated_parameters$TROLL_species_data  %>% 
+                                        filter(simulation %in% simulations),
+                                      climate = Generated_parameters$TROLL_clim_mth_params,
+                                      daily = Generated_parameters$TROLL_clim_dayvar_params,
+                                      verbose = FALSE,
+                                      thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
+                                      cores = ncores_sim),silent = TRUE)
     
-    
-    cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
-               gsub(":", "-",
-                    gsub(
-                      " ", "_",
-                      timestamp(
-                        prefix = "",
-                        suffix = "",
-                        quiet = T
-                      )
-                    )),"\n"))
-    
-    
-    
-    Yi <- extractVar(stacktmp = sim_stack,
-                     WIP_folder_PATH = WIP_folder_PATH,
-                     Nyears = Generated_parameters$Nyears,
-                     Nsampling = Generated_parameters$Nsampling,
-                     Trait_phylo = Generated_parameters$Trait_phylo,
-                     ncores = ncores)
-    
-    
-    if (Generated_parameters$initk == 0) {
-      Y <- Yi
+    if (inherits(sim_stack,"try-error")) {
+      
+      nrep_tmp <- tibble(Sim_ID = simulations) %>% 
+        mutate(ID_iter = ceiling(row_number()/ncores))
+      
+      for (blocki_temp in 1:max(nrep_tmp$ID_iter)) {
+        
+        sim_i <- as.character(unlist(nrep_tmp %>%
+                                             filter(ID_iter == ( blocki_temp)) %>% 
+                                             dplyr::select(Sim_ID)))
+        
+        cat(paste0("Error TROLL simulations # ",  blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
+                   gsub(":", "-",
+                        gsub(
+                          " ", "_",
+                          timestamp(
+                            prefix = "",
+                            suffix = "",
+                            quiet = T
+                          )
+                        )),"\n"))
+        
+        sim_stack_i <- try(rcontroll::stack(path = WIP_folder_PATH,
+                                            name = "sim_stack",
+                                            simulations = sim_i,
+                                            global = Generated_parameters$TROLL_global_params %>% 
+                                              filter(simulation %in% sim_i),
+                                            species = Generated_parameters$TROLL_species_data  %>% 
+                                              filter(simulation %in% sim_i),
+                                            climate = Generated_parameters$TROLL_clim_mth_params,
+                                            daily = Generated_parameters$TROLL_clim_dayvar_params,
+                                            verbose = FALSE,
+                                            thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
+                                            cores = 1),silent = TRUE)
+        
+        cat(paste0("Extract TROLL simulations results # ", blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
+                   gsub(":", "-",
+                        gsub(
+                          " ", "_",
+                          timestamp(
+                            prefix = "",
+                            suffix = "",
+                            quiet = T
+                          )
+                        )),"\n"))
+        
+        
+        if (inherits(sim_stack_i,"try-error")) {
+          Yi <- matrix(rep(NA, times = 22*ncores),nrow = ncores)
+          colnames(Yi) <- c("lambda_dbh10",
+                            "agb_mean",
+                            "agb_sigma",
+                            "abu10_mean",
+                            "abu10_sigma",
+                            "abu30_mean",
+                            "abu30_sigma",
+                            "gpp_mean",
+                            "gpp_sigma",
+                            "npp_mean",
+                            "npp_sigma",
+                            "ba10_mean",
+                            "ba10_sigma",
+                            "hill_mean",
+                            "hill_sigma",
+                            "rao_mean",
+                            "rao_sigma",
+                            "h_mean",
+                            "lambda_1ter",
+                            "Vol_ECMP",
+                            "Vol_ECMP_ECMS",
+                            "GM_DBH")
+        }else{
+          Yi <- extractVar(stacktmp = sim_stack_i,
+                           WIP_folder_PATH = WIP_folder_PATH,
+                           Nyears = Generated_parameters$Nyears,
+                           Nsampling = Generated_parameters$Nsampling,
+                           Trait_phylo = Generated_parameters$Trait_phylo,
+                           ncores = ncores)
+        }
+        
+        if (Generated_parameters$initk == 0) {
+          Y <- Yi
+        }else{
+          Y <- rbind(Y,Yi)
+        }
+        
+        
+      }
+      
+      
+      
+      
     }else{
-      Y <- rbind(Y,Yi)
+      
+      cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
+                 gsub(":", "-",
+                      gsub(
+                        " ", "_",
+                        timestamp(
+                          prefix = "",
+                          suffix = "",
+                          quiet = T
+                        )
+                      )),"\n"))
+      
+      
+      
+      Yi <- extractVar(stacktmp = sim_stack,
+                       WIP_folder_PATH = WIP_folder_PATH,
+                       Nyears = Generated_parameters$Nyears,
+                       Nsampling = Generated_parameters$Nsampling,
+                       Trait_phylo = Generated_parameters$Trait_phylo,
+                       ncores = ncores)
+      
+      
+      if (Generated_parameters$initk == 0) {
+        Y <- Yi
+      }else{
+        Y <- rbind(Y,Yi)
+      }
+      
     }
+    
+    
+    
     
     Generated_parameters$initk <- blocki * ncores_sim
     
@@ -779,28 +883,28 @@ autocalibGP <- function(Generated_parameters,
                         )
                       )),"\n"))
       
-    h.RateDBH[j] <- hetGP::horizon(mod.RateDBH)
-    h.MeanAgb[j] <- hetGP::horizon(mod.MeanAgb)
-    h.SdAgb[j] <- hetGP::horizon(mod.SdAgb)
-    h.MeanAbu10[j] <- hetGP::horizon(mod.MeanAbu10)
-    h.SdAbu10[j] <- hetGP::horizon(mod.SdAbu10)
-    h.MeanAbu30[j] <- hetGP::horizon(mod.MeanAbu30)
-    h.SdAbu30[j] <- hetGP::horizon(mod.SdAbu30)
-    h.MeanGpp[j] <- hetGP::horizon(mod.MeanGpp)
-    h.SdGpp[j] <- hetGP::horizon(mod.SdGpp)
-    h.MeanNpp[j] <- hetGP::horizon(mod.MeanNpp)
-    h.SdNpp[j] <- hetGP::horizon(mod.SdNpp)
-    h.MeanBa10[j] <- hetGP::horizon(mod.MeanBa10)
-    h.SdBa10[j] <- hetGP::horizon(mod.SdBa10)
-    h.MeanHill[j] <- hetGP::horizon(mod.MeanHill)
-    h.SdHill[j] <- hetGP::horizon(mod.SdHill)
-    h.MeanRao[j] <- hetGP::horizon(mod.MeanRao)
-    h.SdRao[j] <- hetGP::horizon(mod.SdRao)
-    h.Hmean[j] <- hetGP::horizon(mod.Hmean)
-    h.Lambda1ter[j] <- hetGP::horizon(mod.Lambda1ter)
-    h.VolECMP[j] <- hetGP::horizon(mod.VolECMP)
-    h.VolECMPS[j] <- hetGP::horizon(mod.VolECMPS)
-    h.GmDBH[j] <- hetGP::horizon(mod.GmDBH)
+      h.RateDBH[j] <- hetGP::horizon(mod.RateDBH)
+      h.MeanAgb[j] <- hetGP::horizon(mod.MeanAgb)
+      h.SdAgb[j] <- hetGP::horizon(mod.SdAgb)
+      h.MeanAbu10[j] <- hetGP::horizon(mod.MeanAbu10)
+      h.SdAbu10[j] <- hetGP::horizon(mod.SdAbu10)
+      h.MeanAbu30[j] <- hetGP::horizon(mod.MeanAbu30)
+      h.SdAbu30[j] <- hetGP::horizon(mod.SdAbu30)
+      h.MeanGpp[j] <- hetGP::horizon(mod.MeanGpp)
+      h.SdGpp[j] <- hetGP::horizon(mod.SdGpp)
+      h.MeanNpp[j] <- hetGP::horizon(mod.MeanNpp)
+      h.SdNpp[j] <- hetGP::horizon(mod.SdNpp)
+      h.MeanBa10[j] <- hetGP::horizon(mod.MeanBa10)
+      h.SdBa10[j] <- hetGP::horizon(mod.SdBa10)
+      h.MeanHill[j] <- hetGP::horizon(mod.MeanHill)
+      h.SdHill[j] <- hetGP::horizon(mod.SdHill)
+      h.MeanRao[j] <- hetGP::horizon(mod.MeanRao)
+      h.SdRao[j] <- hetGP::horizon(mod.SdRao)
+      h.Hmean[j] <- hetGP::horizon(mod.Hmean)
+      h.Lambda1ter[j] <- hetGP::horizon(mod.Lambda1ter)
+      h.VolECMP[j] <- hetGP::horizon(mod.VolECMP)
+      h.VolECMPS[j] <- hetGP::horizon(mod.VolECMPS)
+      h.GmDBH[j] <- hetGP::horizon(mod.GmDBH)
       
       
       cat(paste0("IMSPE optimisation iter ", j,"/",NiterHetGP,"_",
@@ -828,7 +932,7 @@ autocalibGP <- function(Generated_parameters,
       opt.MeanBa10 <- hetGP::IMSPE_optim(mod.MeanBa10, h = h.MeanBa10[j], ncores = ncores)
       opt.SdBa10<- hetGP::IMSPE_optim(mod.SdBa10, h = h.NdBa10[j], ncores = ncores)
       opt.MeanHill <- hetGP::IMSPE_optim(mod.MeanHill, h = h.MeanHill[j], ncores = ncores,
-                                  control = list(tol_dist = 1e-06, tol_diff = 1e-06, multi.start = 20, maxit = 100))
+                                         control = list(tol_dist = 1e-06, tol_diff = 1e-06, multi.start = 20, maxit = 100))
       opt.SdHill<- hetGP::IMSPE_optim(mod.SdHill, h = h.SdHill[j], ncores = ncores)
       opt.MeanRao <- hetGP::IMSPE_optim(mod.MeanRao, h = h.MeanRao[j], ncores = ncores)
       opt.SdRao<- hetGP::IMSPE_optim(mod.SdRao, h = h.SdRao[j], ncores = ncores)
@@ -855,11 +959,11 @@ autocalibGP <- function(Generated_parameters,
         XGP <- rbind(XGP, X)
       }else{
         XRd<- lhs::augmentLHS(XRd, ncores - 22)
-      XRdNew <- XRd[(dim(XRd)[1]-(ncores - 23)):(dim(XRd)[1]),]
-      
-      
-      X <- rbind(Xnew,XRdNew)
-      XGP <- rbind(XGP, X)
+        XRdNew <- XRd[(dim(XRd)[1]-(ncores - 23)):(dim(XRd)[1]),]
+        
+        
+        X <- rbind(Xnew,XRdNew)
+        XGP <- rbind(XGP, X)
       }
       
       
@@ -913,14 +1017,14 @@ autocalibGP <- function(Generated_parameters,
       }
       
       if ("Cseedrain" %in% Generated_parameters$params) {
-        Xparam[,8] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "Cseedrain"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "Cseedrain"]) #Cseedrain
+        Xparam[,8] <- ceiling(qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "Cseedrain"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "Cseedrain"])) #Cseedrain
         i <- i+1
       }else{
         Xparam[,8] <- default_values$value[default_values$param == "Cseedrain"]
       }
       
       if ("nbs0" %in% Generated_parameters$params) {
-        Xparam[,9] <- qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "nbs0"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "nbs0"]) #nbs0
+        Xparam[,9] <- ceiling(10^qunif(X[,i],Generated_parameters$ParamLHS$lower[Generated_parameters$ParamLHS$parameter == "nbs0"],Generated_parameters$ParamLHS$upper[Generated_parameters$ParamLHS$parameter == "nbs0"])) #nbs0
         i <- i+1
       }else{
         Xparam[,9] <- default_values$value[default_values$param == "nbs0"]
@@ -969,17 +1073,19 @@ autocalibGP <- function(Generated_parameters,
       }
       
       New_LHS <- list("X" = as_tibble(Xparam), 
-           "XGP" = XGP, 
-           "XRd" = Generated_parameters$XRd,
-           "params" = Generated_parameters$params,
-           "paramLHS" = Generated_parameters$paramLHS,
-           "Nyears" = Generated_parameters$Nyears, 
-           "Nsampling" = Generated_parameters$Nsampling)
+                      "XGP" = XGP, 
+                      "XRd" = Generated_parameters$XRd,
+                      "params" = Generated_parameters$params,
+                      "paramLHS" = Generated_parameters$paramLHS,
+                      "Nyears" = Generated_parameters$Nyears, 
+                      "Nsampling" = Generated_parameters$Nsampling,
+                      "nreplicat" = Generated_parameters$nreplicat)
+      
       
       New_generated_parameters <- Generate_parameters_autocalib(LHS_design = New_LHS,
-                                    data_species = Generated_parameters$data_species,
-                                    dataclim12mths = Generated_parameters$dataclim12mths,
-                                    dataclimdayvar = Generated_parameters$dataclimdayvar)
+                                                                data_species = Generated_parameters$data_species,
+                                                                dataclim12mths = Generated_parameters$dataclim12mths,
+                                                                dataclimdayvar = Generated_parameters$dataclimdayvar)
       
       nrep <- tibble(Sim_ID = unique(New_generated_parameters$TROLL_global_params$simulation)) %>% 
         mutate(ID_iter = ceiling(row_number()/ncores_sim))
@@ -1003,38 +1109,139 @@ autocalibGP <- function(Generated_parameters,
                           )
                         )),"\n"))
         
-        sim_stack <- rcontroll::stack(path = WIP_folder_PATH,
-                                      name = paste0("sim_stack_",j),
-                                      simulations = simulations,
-                                      global = New_generated_parameters$TROLL_global_params %>% 
-                                        filter(simulation %in% simulations),
-                                      species = New_generated_parameters$TROLL_species_data  %>% 
-                                        filter(simulation %in% simulations),
-                                      climate = New_generated_parameters$TROLL_clim_mth_params,
-                                      daily = New_generated_parameters$TROLL_clim_dayvar_params,
-                                      verbose = FALSE,
-                                      thin = (12*(New_generated_parameters$Nyears - New_generated_parameters$Nsampling +1 )):(12*New_generated_parameters$Nyears),
-                                      cores = ncores_sim)
+        sim_stack <- try(rcontroll::stack(path = WIP_folder_PATH,
+                                          name = "sim_stack",
+                                          simulations = simulations,
+                                          global = New_generated_parameters$TROLL_global_params %>% 
+                                            filter(simulation %in% simulations),
+                                          species = New_generated_parameters$TROLL_species_data  %>% 
+                                            filter(simulation %in% simulations),
+                                          climate = New_generated_parameters$TROLL_clim_mth_params,
+                                          daily = New_generated_parameters$TROLL_clim_dayvar_params,
+                                          verbose = FALSE,
+                                          thin = (12*(New_generated_parameters$Nyears - New_generated_parameters$Nsampling +1 )):(12*New_generated_parameters$Nyears),
+                                          cores = ncores_sim),silent = TRUE)
         
-        cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
-                   gsub(":", "-",
-                        gsub(
-                          " ", "_",
-                          timestamp(
-                            prefix = "",
-                            suffix = "",
-                            quiet = T
-                          )
-                        )),"\n"))
+        if (inherits(sim_stack,"try-error")) {
+          
+          nrep_tmp <- tibble(Sim_ID = simulations) %>% 
+            mutate(ID_iter = ceiling(row_number()/ncores))
+          
+          for (blocki_temp in 1:max(nrep_tmp$ID_iter)) {
+            
+            sim_i <- as.character(unlist(nrep_tmp %>%
+                                           filter(ID_iter == ( blocki_temp)) %>% 
+                                           dplyr::select(Sim_ID)))
+            
+            cat(paste0("Error TROLL simulations # ",  blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
+                       gsub(":", "-",
+                            gsub(
+                              " ", "_",
+                              timestamp(
+                                prefix = "",
+                                suffix = "",
+                                quiet = T
+                              )
+                            )),"\n"))
+            
+            sim_stack_i <- try(rcontroll::stack(path = WIP_folder_PATH,
+                                                name = "sim_stack",
+                                                simulations = sim_i,
+                                                global = New_generated_parameters$TROLL_global_params %>% 
+                                                  filter(simulation %in% sim_i),
+                                                species = New_generated_parameters$TROLL_species_data  %>% 
+                                                  filter(simulation %in% sim_i),
+                                                climate = New_generated_parameters$TROLL_clim_mth_params,
+                                                daily = New_generated_parameters$TROLL_clim_dayvar_params,
+                                                verbose = FALSE,
+                                                thin = (12*(New_generated_parameters$Nyears - New_generated_parameters$Nsampling +1 )):(12*New_generated_parameters$Nyears),
+                                                cores = 1),silent = TRUE)
+            
+            cat(paste0("Extract TROLL simulations results # ", blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
+                       gsub(":", "-",
+                            gsub(
+                              " ", "_",
+                              timestamp(
+                                prefix = "",
+                                suffix = "",
+                                quiet = T
+                              )
+                            )),"\n"))
+            
+            
+            if (inherits(sim_stack_i,"try-error")) {
+              Ynew <- matrix(rep(NA, times = 22*ncores),nrow = ncores)
+              colnames(Ynew) <- c("lambda_dbh10",
+                                "agb_mean",
+                                "agb_sigma",
+                                "abu10_mean",
+                                "abu10_sigma",
+                                "abu30_mean",
+                                "abu30_sigma",
+                                "gpp_mean",
+                                "gpp_sigma",
+                                "npp_mean",
+                                "npp_sigma",
+                                "ba10_mean",
+                                "ba10_sigma",
+                                "hill_mean",
+                                "hill_sigma",
+                                "rao_mean",
+                                "rao_sigma",
+                                "h_mean",
+                                "lambda_1ter",
+                                "Vol_ECMP",
+                                "Vol_ECMP_ECMS",
+                                "GM_DBH")
+            }else{
+              Ynew <- extractVar(stacktmp = sim_stack_i,
+                               WIP_folder_PATH = WIP_folder_PATH,
+                               Nyears = Generated_parameters$Nyears,
+                               Nsampling = Generated_parameters$Nsampling,
+                               Trait_phylo = Generated_parameters$Trait_phylo,
+                               ncores = ncores)
+            }
+            
         
-        Ynew <- extractVar(stacktmp = sim_stack,
-                         WIP_folder_PATH = WIP_folder_PATH,
-                         Nyears = New_generated_parameters$Nyears,
-                         Nsampling = New_generated_parameters$Nsampling,
-                         Trait_phylo = Generated_parameters$Trait_phylo,
-                         ncores = ncores)
+              Y <- rbind(Y,Ynew)
+            
+            
+          }
+          
+          
+          
+          
+        }else{
+          
+          cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
+                     gsub(":", "-",
+                          gsub(
+                            " ", "_",
+                            timestamp(
+                              prefix = "",
+                              suffix = "",
+                              quiet = T
+                            )
+                          )),"\n"))
+          
+          
+          
+          Ynew <- extractVar(stacktmp = sim_stack,
+                             WIP_folder_PATH = WIP_folder_PATH,
+                             Nyears = Generated_parameters$Nyears,
+                             Nsampling = Generated_parameters$Nsampling,
+                             Trait_phylo = Generated_parameters$Trait_phylo,
+                             ncores = ncores)
+          
+          
+          if (Generated_parameters$initk == 0) {
+            Y <- Ynew
+          }else{
+            Y <- rbind(Y,Ynew)
+          }
+          
+        }
         
-        Y <- rbind(Y,Ynew)
         
         if (blocki %% 10 == 0) {
           save(New_generated_parameters,
@@ -1107,15 +1314,15 @@ autocalibGP <- function(Generated_parameters,
                           )
                         ))))
         mod2.RateDBH <- hetGP::mleHetGP(X = list(X0 = mod.RateDBH$X0, Z0 = mod.RateDBH$Z0,
-                                          mult = mod.RateDBH$mult), Z = mod.RateDBH$Z,covtype = "Gaussian")
+                                                 mult = mod.RateDBH$mult), Z = mod.RateDBH$Z,covtype = "Gaussian")
         mod2.MeanAgb <- hetGP::mleHetGP(X = list(X0 = mod.MeanAgb$X0, Z0 = mod.MeanAgb$Z0,
-                                          mult = mod.MeanAgb$mult), Z = mod.MeanAgb$Z,covtype = "Gaussian")
+                                                 mult = mod.MeanAgb$mult), Z = mod.MeanAgb$Z,covtype = "Gaussian")
         mod2.SdAgb <- hetGP::mleHetGP(X = list(X0 = mod.SdAgb$X0, Z0 = mod.SdAgb$Z0,
-                                        mult = mod.SdAgb$mult), Z = mod.SdAgb$Z,covtype = "Gaussian")
+                                               mult = mod.SdAgb$mult), Z = mod.SdAgb$Z,covtype = "Gaussian")
         mod2.MeanAbu10 <- hetGP::mleHetGP(X = list(X0 = mod.MeanAbu10$X0, Z0 = mod.MeanAbu10$Z0,
-                                          mult = mod.MeanAbu10$mult), Z = mod.MeanAbu10$Z,covtype = "Gaussian")
+                                                   mult = mod.MeanAbu10$mult), Z = mod.MeanAbu10$Z,covtype = "Gaussian")
         mod2.SdAbu10 <- hetGP::mleHetGP(X = list(X0 = mod.SdAbu10$X0, Z0 = mod.SdAbu10$Z0,
-                                        mult = mod.SdAbu10$mult), Z = mod.SdAbu10$Z,covtype = "Gaussian")
+                                                 mult = mod.SdAbu10$mult), Z = mod.SdAbu10$Z,covtype = "Gaussian")
         mod2.MeanAbu30 <- hetGP::mleHetGP(X = list(X0 = mod.MeanAbu30$X0, Z0 = mod.MeanAbu30$Z0,
                                                    mult = mod.MeanAbu30$mult), Z = mod.MeanAbu30$Z,covtype = "Gaussian")
         mod2.SdAbu30 <- hetGP::mleHetGP(X = list(X0 = mod.SdAbu30$X0, Z0 = mod.SdAbu30$Z0,
@@ -1129,27 +1336,27 @@ autocalibGP <- function(Generated_parameters,
         mod2.SdNpp <- hetGP::mleHetGP(X = list(X0 = mod.SdNpp$X0, Z0 = mod.SdNpp$Z0,
                                                mult = mod.SdNpp$mult), Z = mod.SdNpp$Z,covtype = "Gaussian")
         mod2.MeanBa10 <- hetGP::mleHetGP(X = list(X0 = mod.MeanBa10$X0, Z0 = mod.MeanBa10$Z0,
-                                                 mult = mod.MeanBa10$mult), Z = mod.MeanBa10$Z,covtype = "Gaussian")
+                                                  mult = mod.MeanBa10$mult), Z = mod.MeanBa10$Z,covtype = "Gaussian")
         mod2.SdBa10 <- hetGP::mleHetGP(X = list(X0 = mod.SdBa10$X0, Z0 = mod.SdBa10$Z0,
-                                               mult = mod.SdBa10$mult), Z = mod.SdBa10$Z,covtype = "Gaussian")
+                                                mult = mod.SdBa10$mult), Z = mod.SdBa10$Z,covtype = "Gaussian")
         mod2.MeanHill <- hetGP::mleHetGP(X = list(X0 = mod.MeanHill$X0, Z0 = mod.MeanHill$Z0,
-                                           mult = mod.MeanHill$mult), Z = mod.MeanHill$Z,covtype = "Gaussian")
+                                                  mult = mod.MeanHill$mult), Z = mod.MeanHill$Z,covtype = "Gaussian")
         mod2.SdHill <- hetGP::mleHetGP(X = list(X0 = mod.SdHill$X0, Z0 = mod.SdHill$Z0,
-                                         mult = mod.SdHill$mult), Z = mod.SdHill$Z,covtype = "Gaussian")
+                                                mult = mod.SdHill$mult), Z = mod.SdHill$Z,covtype = "Gaussian")
         mod2.MeanRao <- hetGP::mleHetGP(X = list(X0 = mod.MeanRao$X0, Z0 = mod.MeanRao$Z0,
-                                          mult = mod.MeanRao$mult), Z = mod.MeanRao$Z,covtype = "Gaussian")
+                                                 mult = mod.MeanRao$mult), Z = mod.MeanRao$Z,covtype = "Gaussian")
         mod2.SdRao <- hetGP::mleHetGP(X = list(X0 = mod.SdRao$X0, Z0 = mod.SdRao$Z0,
-                                        mult = mod.SdRao$mult), Z = mod.SdRao$Z,covtype = "Gaussian")
+                                               mult = mod.SdRao$mult), Z = mod.SdRao$Z,covtype = "Gaussian")
         mod2.Hmean <- hetGP::mleHetGP(X = list(X0 = mod.Hmean$X0, Z0 = mod.Hmean$Z0,
-                                        mult = mod.Hmean$mult), Z = mod.Hmean$Z,covtype = "Gaussian")
+                                               mult = mod.Hmean$mult), Z = mod.Hmean$Z,covtype = "Gaussian")
         mod2.Lambda1ter <- hetGP::mleHetGP(X = list(X0 = mod.Lambda1ter$X0, Z0 = mod.Lambda1ter$Z0,
-                                             mult = mod.Lambda1ter$mult), Z = mod.Lambda1ter$Z,covtype = "Gaussian")
+                                                    mult = mod.Lambda1ter$mult), Z = mod.Lambda1ter$Z,covtype = "Gaussian")
         mod2.VolECMP <- hetGP::mleHetGP(X = list(X0 = mod.VolECMP$X0, Z0 = mod.VolECMP$Z0,
-                                                    mult = mod.VolECMP$mult), Z = mod.VolECMP$Z,covtype = "Gaussian")
+                                                 mult = mod.VolECMP$mult), Z = mod.VolECMP$Z,covtype = "Gaussian")
         mod2.VolECMPS <- hetGP::mleHetGP(X = list(X0 = mod.VolECMPS$X0, Z0 = mod.VolECMPS$Z0,
-                                                    mult = mod.VolECMPS$mult), Z = mod.VolECMPS$Z,covtype = "Gaussian")
+                                                  mult = mod.VolECMPS$mult), Z = mod.VolECMPS$Z,covtype = "Gaussian")
         mod2.GmDBH <- hetGP::mleHetGP(X = list(X0 = mod.GmDBH$X0, Z0 = mod.GmDBH$Z0,
-                                                    mult = mod.GmDBH$mult), Z = mod.GmDBH$Z,covtype = "Gaussian")
+                                               mult = mod.GmDBH$mult), Z = mod.GmDBH$Z,covtype = "Gaussian")
         
         
         
@@ -1196,7 +1403,7 @@ autocalibGP <- function(Generated_parameters,
         
         if(mod2.SdHill$ll > mod.SdHill$ll) {mod.SdHill <- mod2.SdHill
         }
-
+        
         if(mod2.MeanRao$ll > mod.MeanRao$ll) {mod.MeanRao <- mod2.MeanRao
         }
         
@@ -1215,7 +1422,7 @@ autocalibGP <- function(Generated_parameters,
         
         if(mod2.GmDBH$ll > mod.GmDBH$ll) {mod.GmDBH <- mod2.GmDBH
         }
-      
+        
         
         cat(paste0("Save temp R env iter ", j,"/",NiterHetGP))
         
@@ -1306,50 +1513,50 @@ autocalibGP <- function(Generated_parameters,
                 "initk" = Generated_parameters$initk,
                 "NiterHetGP" = NiterHetGP,
                 "GPmodels" = list("RateDBH" = list("h.RateDBH" = h.RateDBH,
-                                                                                                 "mod.RateDBH" = mod.RateDBH),
-                                                                                "MeanAgb" = list("h.MeanAgb" = h.MeanAgb,
-                                                                                                 "mod.MeanAgb" = mod.MeanAgb),
-                                                                                "SdAgb" = list("h.SdAgb" = h.SdAgb,
-                                                                                                 "mod.SdAgb" = mod.SdAgb),
-                                                                                "MeanSum10" = list("h.MeanSum10" = h.MeanAbu10,
-                                                                                               "mod.MeanSum10" = mod.MeanAbu10),
-                                                                                "SdSum10" = list("h.SdSum10" = h.SdAbu10,
-                                                                                               "mod.SdAgb" = mod.SdAbu10),
-                                                                                "MeanSum30" = list("h.MeanSum30" = h.MeanAbu30,
-                                                                                                   "mod.MeanSum30" = mod.MeanAbu30),
-                                                                                "SdSum30" = list("h.SdSum10" = h.SdAbu30,
-                                                                                                 "mod.SdAgb" = mod.SdAbu30),
-                                                                                "MeanGpp" = list("h.MeanGpp" = h.MeanGpp,
-                                                                                                   "mod.MeanGpp" = mod.MeanGpp),
-                                                                                "SdGpp" = list("h.SdSpp" = h.SdGpp,
-                                                                                                 "mod.Spp" = mod.SdGpp),
-                                                                                "MeanNpp" = list("h.MeanNpp" = h.MeanNpp,
-                                                                                                 "mod.MeanNpp" = mod.MeanNpp),
-                                                                                "SdNpp" = list("h.SdNpp" = h.SdNpp,
-                                                                                               "mod.SdNpp" = mod.SdNpp),
-                                                                                "MeanBa10" = list("h.MeanBa10" = h.MeanBa10,
-                                                                                                 "mod.MeanBa10" = mod.MeanBa10),
-                                                                                "SdBa10" = list("h.SdBa10" = h.SdBa10,
-                                                                                               "mod.SdBa10" = mod.SdBa10),
-                                                                                "MeanHill" = list("h.MeanHill" = h.MeanHill,
-                                                                                                  "mod.MeanHill" = mod.MeanHill),
-                                                                                "SdHill" = list("h.SdHill" = h.SdHill,
-                                                                                                "mod.SdHill" = mod.SdHill),
-                                                                                "MeanRao" = list("h.MeanRao" = h.MeanRao,
-                                                                                                  "mod.MeanRao" = mod.MeanRao),
-                                                                                "SdHill" = list("h.SdRao" = h.SdRao,
-                                                                                                "mod.SdRao" = mod.SdRao),
-                                                                                "Hmean" = list("h.Hmean" = h.Hmean,
-                                                                                                 "mod.Hmean" = mod.Hmean),
-                                                                                "Lambda1ter" = list("h.Lambda1ter" = h.Lambda1ter,
-                                                                                               "mod.Lambda1ter" = mod.Lambda1ter),
-                                                                                "VolECMP" = list("h.VolECMP" = h.VolECMP,
-                                                                                                    "mod.VolECMP" = mod.VolECMP),
-                                                                                "VolECMPS" = list("h.VolECMPS" = h.VolECMPS,
-                                                                                                 "mod.VolECMPS" = mod.VolECMPS),
-                                                                                "GmDBH" = list("h.GmDBH" = h.GmDBH,
-                                                                                                  "mod.GmDBH" = mod.GmDBH)
-                                                                                )))
+                                                   "mod.RateDBH" = mod.RateDBH),
+                                  "MeanAgb" = list("h.MeanAgb" = h.MeanAgb,
+                                                   "mod.MeanAgb" = mod.MeanAgb),
+                                  "SdAgb" = list("h.SdAgb" = h.SdAgb,
+                                                 "mod.SdAgb" = mod.SdAgb),
+                                  "MeanSum10" = list("h.MeanSum10" = h.MeanAbu10,
+                                                     "mod.MeanSum10" = mod.MeanAbu10),
+                                  "SdSum10" = list("h.SdSum10" = h.SdAbu10,
+                                                   "mod.SdAgb" = mod.SdAbu10),
+                                  "MeanSum30" = list("h.MeanSum30" = h.MeanAbu30,
+                                                     "mod.MeanSum30" = mod.MeanAbu30),
+                                  "SdSum30" = list("h.SdSum10" = h.SdAbu30,
+                                                   "mod.SdAgb" = mod.SdAbu30),
+                                  "MeanGpp" = list("h.MeanGpp" = h.MeanGpp,
+                                                   "mod.MeanGpp" = mod.MeanGpp),
+                                  "SdGpp" = list("h.SdSpp" = h.SdGpp,
+                                                 "mod.Spp" = mod.SdGpp),
+                                  "MeanNpp" = list("h.MeanNpp" = h.MeanNpp,
+                                                   "mod.MeanNpp" = mod.MeanNpp),
+                                  "SdNpp" = list("h.SdNpp" = h.SdNpp,
+                                                 "mod.SdNpp" = mod.SdNpp),
+                                  "MeanBa10" = list("h.MeanBa10" = h.MeanBa10,
+                                                    "mod.MeanBa10" = mod.MeanBa10),
+                                  "SdBa10" = list("h.SdBa10" = h.SdBa10,
+                                                  "mod.SdBa10" = mod.SdBa10),
+                                  "MeanHill" = list("h.MeanHill" = h.MeanHill,
+                                                    "mod.MeanHill" = mod.MeanHill),
+                                  "SdHill" = list("h.SdHill" = h.SdHill,
+                                                  "mod.SdHill" = mod.SdHill),
+                                  "MeanRao" = list("h.MeanRao" = h.MeanRao,
+                                                   "mod.MeanRao" = mod.MeanRao),
+                                  "SdHill" = list("h.SdRao" = h.SdRao,
+                                                  "mod.SdRao" = mod.SdRao),
+                                  "Hmean" = list("h.Hmean" = h.Hmean,
+                                                 "mod.Hmean" = mod.Hmean),
+                                  "Lambda1ter" = list("h.Lambda1ter" = h.Lambda1ter,
+                                                      "mod.Lambda1ter" = mod.Lambda1ter),
+                                  "VolECMP" = list("h.VolECMP" = h.VolECMP,
+                                                   "mod.VolECMP" = mod.VolECMP),
+                                  "VolECMPS" = list("h.VolECMPS" = h.VolECMPS,
+                                                    "mod.VolECMPS" = mod.VolECMPS),
+                                  "GmDBH" = list("h.GmDBH" = h.GmDBH,
+                                                 "mod.GmDBH" = mod.GmDBH)
+                )))
     
     
   }else{
