@@ -8,4 +8,4 @@ gifs <- autogif(name = "dynamic",
                 daily = TROLLv3_output@inputs$daily,
                 forest = get_forest(TROLLv3_output),
                 verbose = FALSE)
-gganimate::anim_save(animation = gifs$height_ct, filename = "inst/figures/troll.gif", nframes = 200, fps = 30)
+gganimate::anim_save(animation = gifs$species, filename = "inst/figures/troll.gif", nframes = 200, fps = 30)
