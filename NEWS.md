@@ -1,4 +1,8 @@
-# rcontroll 0.1.0.9051
+# rcontroll 0.1.0.9050
+* generate_climate
+* Climate data vignette
+* Updated README
+* Adding cran-comments
 * file suppression in .troll_child
 
 # rcontroll 0.1.0.9050
