@@ -2,9 +2,10 @@ pandoc: 2.7.3
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
+  climate: climate.html
   troll: troll.html
   workflow: workflow.html
-last_built: 2022-09-07T13:17Z
+last_built: 2022-09-21T14:36Z
 urls:
   reference: https://sylvainschmitt.github.io/rcontroll/reference
   article: https://sylvainschmitt.github.io/rcontroll/articles
