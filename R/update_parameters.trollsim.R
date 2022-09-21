@@ -4,7 +4,7 @@
 #' @importFrom tibble rownames_to_column
 NULL
 
-#' Function to updae parameters from a TROLL outputs for a next simlation.
+#' Function to update parameters from a TROLL outputs for a next simulation.
 #'
 #' @param sim trollsim.
 #' @param ... parameters to update and their values..
@@ -14,7 +14,7 @@ NULL
 #' @examples
 #' 
 #' data("TROLLv3_output")
-#' head(get_forest(TROLLv3_output))
+#' head(update_parameters(TROLLv3_output, iters = 10))
 #' 
 #' @name update_parameters
 NULL
