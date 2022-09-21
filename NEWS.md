@@ -1,3 +1,9 @@
+# rcontroll 0.1.0.9050
+* generate_climate
+* Climate data vignette
+* Updated README
+* Adding cran-comments
+
 # rcontroll 0.1.0.9049
 * fixed and & or operands in cpp for windows-latest (release)
 
