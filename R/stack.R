@@ -30,7 +30,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
-#'
+#'   
 #' @return A trollstack object. 
 #'
 #' @export
@@ -161,6 +161,8 @@ stack <- function(name = NULL,
   close(pb)
   stopCluster(cl)
   names(stack_res) <- simulations
+  
+  # list of sims to stack
   stack_res <- trollstack(
     name = stack_res[[1]]@name,
     path = path_o,
@@ -190,7 +192,7 @@ stack <- function(name = NULL,
     species = lapply(stack_res, slot, "species") %>% 
       bind_rows(.id = "simulation")
   )
-  
+
   # unlink stack path with tmp
   if(tmp)
     unlink(path_o)
