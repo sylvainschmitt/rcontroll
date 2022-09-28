@@ -112,6 +112,8 @@ troll <- function(name = NULL,
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
   }
+  if (!is.null(path))
+    path <- normalizePath(path)
   if (name %in% list.dirs(path, full.names = FALSE)[-1]) {
     if (!overwrite) {
       stop("Outputs already exist, use overwrite = TRUE.")
