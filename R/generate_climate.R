@@ -58,7 +58,7 @@ generate_climate <- function(x, y, tz,
   ddeg <- endtime <- monthlyvalue <- psat <- random <- seasonal <- sp <- sp_trans <- NULL
   ssrd <- ssrd_trans <- starttime <- t2m <- tdeg <- timestep <- tp <- tp_trans <- NULL
   trend <- u10 <- v10 <- value <- vardaytime_T <- vardaytime_light <- vardaytime_vpd <- NULL
-  variable <- vp <- vpd <- windspeed <- NULL
+  variable <- vp <- vpd <- windspeed <- M <- NULL
   
   # hourly
   era5_hr_r <- rast(era5land_hour)
