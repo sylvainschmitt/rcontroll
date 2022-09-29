@@ -1,0 +1,345 @@
+---
+title: "Sensitivity analysis of the TROLL model in French Guiana"
+output: 
+  bookdown::html_document2:
+    number_sections: false  
+    toc: true
+    toc_float: yes
+  bookdown::word_document2:
+    reference_docx: ./template/template.docx
+  bookdown::pdf_document2:
+    includes:
+      before_body: ./template/doc_prefix.tex
+      in_header: ./template/preamble.tex
+    number_sections: false
+    toc: false
+    keep_tex: no
+linestretch: 1.5
+csl: bibliography/mee.csl
+bibliography: bibliography/library.bib
+link-citations: yes
+---
+Guillaume Salzet$^{1,2}$
+
+*$^1$ INRAE, UMR BETA, 54042 Nancy, France;*
+*$^2$ INRAE, UMR EcoFoG (Agroparistech, Cirad, CNRS, Université des Antilles, Université de la Guyane), Campus Agronomique, 97310 Kourou, French Guiana;*
+
+# Introduction
+
+Forest modelling aims to reproduce at a given scale of space and time emergent properties from sub-entities. Classically these entities in gap-models are cohorts of trees or for D(G)VM these are representative plant functional types. The underlying hypothesis is small scale interaction between entities can reproduce global patterns. In case of TROLL this hypothesis is furthermore implied with the use of individual ecophysiological processes. 
+
+However, all this models rely on complex implementation and use high level of resources (time of computation) to provide results at their designed scale. Working with such complex models create challenges :
+ * Simulations are time consuming and require the use of High Performance Computers when replicates are needed;
+ * Model calibration are very complicated due to unpredictability of behaviour's model. This task need two steps to achieve calibration : a sensitivity analysis to select adapted parameters and a model inversion to selection which parameters of the model are more likely to produce observed outputs;
+ * Model prediction need to assess uncertainties produced by the model. This goal imply to select calibration methods that allow to use calibrated-model in a reverse and forward uncertainty propagation.
+ 
+We decide to interface TROLL through rcontroll and realize a first step for local calibration of the model : the sensitivity analysis.
+Using Morris analysis we retrieve an overview of the most influential parameters. Though the computation of Sobol indexes for each summarized outputs we 
+ 
+# Materials and methods
+
+* calibration function:
+
+```{r calibration functions}
+source("SI5_calibration_functions.R")
+
+ls()
+```
+
+
+
+# Results
+
+```{r Standard_LHS, echo=FALSE}
+library(tidyverse)
+library(kableExtra)
+parameters <- c("klight","phi","g1","fallocwood","falloccanopy","m","vC","Cseedrain","log10nbs0","Hmaxcor","CR_a","CR_b","m1","DBHmaxcor","ahCorr")
+lower <- c(0.5,4E-2,2,1E-2,1E-2,1E-2,1E-2,1E2,0,0.8,1.5,0.4,1,0.8,0.8)
+upper = c(0.95,9E-2,5,1,1,0.05,0.15,1E5,3,1.2,3,0.8,1.2,1.2,1.2) 
+global_parameters_boundaries <- data.frame("parameter" = parameters,"lower" = lower,
+"upper" = upper)
+
+global_parameters_boundaries %>%
+  kbl(caption = "a priori ranges of parameters and correction factor") %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "float_right")
+```
+
+```{r data_LHS, echo=FALSE, , echo=FALSE}
+library(rcontroll)
+library(tidyverse)
+library(raster)
+library(doSNOW)
+
+LHS_design <- Generate_LHS_Autocalib(nsim = 500,nreplicat = 10,paramLHS = global_parameters_boundaries,Nyears = 600,Nsampling = 100)
+
+Generated_parameters <- Generate_parameters_autocalib(LHS_design = LHS_design)
+
+corrplot::corrplot(corr = cor(LHS_design$X))
+```
+
+
+```{r eval=FALSE, include=TRUE}
+calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,
+                             PATH = getwd(),
+                             ncores_sim = 100,
+                             ncores = 50,
+                             NiterHetGP = NULL,
+                             initj = 1,Jrefresh = 25,
+                             GPComputation = TRUE)
+```
+
+```{r eval=FALSE, include=TRUE}
+library(sensitivity)
+
+morrisOut <- morris(
+  model = NULL,
+  factors = calib_dataset$params,
+  r = 500,
+  design = list(type = "oat", levels = 20, grid.jump = 3),
+  binf = 0,
+  bsup = 1,
+  scale = FALSE)
+
+Y <- matrix(c(predict(calib_dataset$GPmodels$RateDBH$mod.RateDBH,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanAgb$mod.MeanAgb,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanSum1$mod.MeanSum1,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanSum10$mod.MeanSum10,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanSum30$mod.MeanSum30,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanGpp$mod.MeanGpp,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanNpp$mod.MeanNpp,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanBa10$mod.MeanBa10,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$MeanRao$mod.MeanRao,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$Hmean$mod.Hmean,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$Lambda1ter$mod.Lambda1ter,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$VolECMP$mod.VolECMP,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$VolECMPS$mod.VolECMPS,morrisOut[['X']])$mean,
+              predict(calib_dataset$GPmodels$GmDBH$mod.GmDBH,morrisOut[['X']])$mean), ncol = 15, byrow = FALSE)
+
+tell(morrisOut,Y)
+
+# summarise the moris output
+morrisOut.df <- data.frame(
+  parameter = calib_dataset$params,
+  mu.star = apply(abs(morrisOut$ee), 2, mean, na.rm = T),
+  sigma = apply(morrisOut$ee, 2, sd, na.rm = T)
+) %>%
+  arrange( mu.star )
+
+
+```
+
+```{r}
+load("~/Nextcloud/Model/TROLL/datasets/rcontrollTROLL_calib_1000x10LHS_600y.rda")
+```
+
+```{r, fig.width=}
+morrisOut.df %>%
+  gather(variable, value, -parameter) %>%
+  mutate(parameter = recode(parameter, 
+                            "m" = "m[0]",
+                            "CR_a" = "CR[a]",
+                            "phi" = "Phi",
+                            "fallocwood" = "f[wood]",
+                            "falloccanopy" = "f[canopy]",
+                            "klight" = "k",
+                            "vC" = "v[C]",
+                            "Cseedrain" = "seedrain",
+                            "CR_b" = "CR[b]",
+                            "ahCorr" = "a[h]",
+                            "log10nbs0" = "log[10](n[s])",
+                            "g1" = "g[1]",
+                            "Hmaxcor" = "H[max]",
+                            "m1" = "wsg[lim]",
+                            "DBHmaxcor" = "DBH[max]"
+                            )) %>% 
+  ggplot(aes(reorder(parameter, value), value, fill = variable), color = NA)+
+  geom_bar(position = position_dodge(), stat = 'identity') +
+  scale_fill_brewer("", labels = c('mu.star' = expression(mu * "*"), 'sigma' = expression(sigma)), palette="Dark2") +
+  coord_flip() +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(), 
+    axis.text.y = element_text(size = 12),
+    axis.title = element_blank(),
+    legend.position = c(0.80, 0.50), legend.justification = c(0.05,0.95)
+  ) + 
+  scale_x_discrete(labels = scales::parse_format()) +
+  scale_y_continuous(expand = c(0, 0)) + xlab("") + ylab("") +
+  theme_classic()
+```
+
+```{r eval=FALSE, include=TRUE}
+library(tgp)
+library(tidyverse)
+library(doSNOW)
+library(foreach)
+
+load("~/Nextcloud/Model/TROLL/datasets/rcontrollTROLL_calib_1000x10LHS_600y.rda")
+colnames(calib_dataset$XGP) <- paste0(colnames(calib_dataset$X),"_XG")
+
+values <- cbind(calib_dataset$X,calib_dataset$XGP) %>% distinct()
+index <- c(1,2,4,6,8,10,12,14,16,18,20,21,22,23,24)
+cores <- length(index)
+i <- NULL
+sensitivity_all <- list()
+for(i in index) {
+  Ymean <- predict(calib_dataset$GPmodels[[i]][[2]],as.matrix(values[,16:30]))$mean
+  sens <- tryCatchLog::tryCatchLog(tgp::sens(X = values[,1:15],Ymean, nn.lhs=1, model=bgp, verb=0))
+  sensitivity_all <- c(sensitivity_all,list(sens))
+    }
+
+save(sensitivity_all,
+     file = "~/Nextcloud/Model/TROLL/datasets/rcontroll_sens_1000x10LHS_600y.rda")
+```
+
+```{r}
+load("~/Nextcloud/Model/TROLL/datasets/rcontroll_sens_1000x10LHS_600y.rda")
+
+
+```
+
+
+```{r, fig.height= 7, fig.width=14}
+cols <- hcl.colors(n = 128, palette = "viridis")
+
+resolution <- 250
+xgrid <- tibble(klight = 0.5,
+                phi = 0.5, 
+                g1 = 0.5, 
+                fallocwood = 0.5, 
+                falloccanopy = 0.5 , 
+                m = 0.5, 
+                vC = 0.5, 
+                Cseedrain = rep(seq(0,1, length=resolution), each = resolution), 
+                log10nbs0 = rep(seq(0,1, length=resolution), times = resolution),
+                Hmaxcor = 0.5,
+                CR_a = 0.5,
+                CR_b = 0.5,
+                m1 = 0.5,
+                DBHmaxcor = 0.5, 
+                ahCorr = 0.5) %>% as.matrix()
+
+p.a <- predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,xgrid)
+
+pvar.a <- p.a$sd2 + p.a$nugs
+
+x_CR_a <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]],
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[8]], length=resolution)
+
+x_CR_b <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]],
+             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[9]], length=resolution)
+
+xgrid2 <- tibble(klight = 0.5,
+                phi = 0.5, 
+                g1 = 0.5, 
+                fallocwood = 0.5, 
+                falloccanopy = 0.5 , 
+                m = 0.5, 
+                vC = 0.5, 
+                Cseedrain = seq(0,1, length=resolution), 
+                log10nbs0 = 0.5,
+                Hmaxcor = 0.5,
+                CR_a = 0.5,
+                CR_b = 0.5,
+                m1 = 0.5,
+                DBHmaxcor = 0.5, 
+                ahCorr = 0.5) %>% as.matrix()
+
+xgrid3 <- tibble(klight = 0.5,
+                phi = 0.5, 
+                g1 = 0.5, 
+                fallocwood = 0.5, 
+                falloccanopy = 0.5 , 
+                m = 0.5, 
+                vC = 0.5, 
+                Cseedrain = 0.5, 
+                log10nbs0 = seq(0,1, length=resolution),
+                Hmaxcor = 0.5,
+                CR_a = 0.5,
+                CR_b = 0.5,
+                m1 = 0.5,
+                DBHmaxcor = 0.5, 
+                ahCorr = 0.5) %>% as.matrix()
+
+p.b <- predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,xgrid2)
+
+p.c <- predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,xgrid3)
+
+
+Mean_raster <- ggplot() +
+  geom_raster(aes(x = ((global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[8]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]])*xgrid[,8] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]]), y = ((global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[9]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]])*xgrid[,9]) + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]], fill = matrix(p.a$mean,nrow = resolution,byrow = FALSE))) +
+  geom_hline(aes(yintercept = 1), color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = 50000), color = "blue", linetype = "dashed")+
+  scale_fill_viridis_c()+
+  xlab("Cseedrain") + ylab("nbs0")+
+  guides(fill = guide_legend(title = "Mean"))+
+  theme_bw()
+
+Sd_raster <- ggplot() + 
+  geom_raster(aes(x = (global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[8]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]])*xgrid[,8] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]], y = ((global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[9]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]])*xgrid[,9]) + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]], 
+                  fill = matrix(sqrt(pvar.a),nrow = resolution,byrow = FALSE))) +
+  scale_fill_viridis_c()+
+  geom_hline(aes(yintercept = 1), color = "red", linetype = "dashed")+
+  geom_vline(aes(xintercept = 50000), color = "blue", linetype = "dashed")+
+  xlab("Cseedrain") + ylab("nbs0")+
+  guides(fill = guide_legend(title = "Sd"))+
+  theme_bw()
+
+
+xnew <- tibble(klight = 0.5,
+               phi = 0.5, 
+               g1 = 0.5, 
+               fallocwood = 0.5, 
+               falloccanopy = 0.5 , 
+               m = 0.5, 
+               vC = 0.5, 
+               Cseedrain = 0.5, 
+               log10nbs0 = 0.5,
+               Hmaxcor = 0.5,
+               CR_a = 0.5,
+               CR_b = 0.5,
+               m1 = 0.5,
+               DBHmaxcor = 0.5, 
+               ahCorr = 0.5) %>% as.matrix()
+x <- calib_dataset$XGP %>% as.matrix()
+
+a <- Rfast::dista(xnew, x)
+
+Extract_plot_y <- ggplot() + 
+  geom_point(aes(x = as_tibble(calib_dataset$X)$nbs0, y = as_tibble(calib_dataset$Y)$hill_mean, 
+                 color = as.logical(a <= quantile(a,0.01)) )) + 
+  geom_ribbon(aes(x= 10^(x_CR_b), ymin = qnorm(0.05, p.c$mean, sqrt(p.c$sd2 + p.c$nugs)),
+                                 ymax = qnorm(0.95, p.c$mean, sqrt(p.c$sd2 + p.c$nugs))), alpha = 0.1, color = "red") +
+  geom_line(aes(x = 10^(x_CR_b), y = p.c$mean)) + 
+  scale_color_manual(values=c("lightgrey",'red'),labels = c("F", "T"))+
+  xlab("nbs0") + ylab("Mean Hill number")+
+  guides(color = guide_legend(title = "||nbs0 - 10|| < 5% LHS"))+
+  scale_x_log10() +
+  theme_bw()
+
+Extract_plot_x <- ggplot() + 
+  geom_point(aes(x = as_tibble(calib_dataset$X)$Cseedrain, y = as_tibble(calib_dataset$Y)$hill_mean, 
+                 color = as.logical(a <= quantile(a,0.01)) )) + 
+  geom_ribbon(aes(x= x_CR_a, ymin = qnorm(0.05, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)),
+                                 ymax = qnorm(0.95, p.b$mean, sqrt(p.b$sd2 + p.b$nugs))), alpha = 0.1, color = "red") +
+  geom_line(aes(x = x_CR_a, y = p.b$mean)) + 
+  scale_color_manual(values=c("lightgrey",'blue'),labels = c("F", "T"))+
+  xlab("CseedRain") + ylab("Mean Hill number")+
+  guides(color = guide_legend(title = "||CseedRain - 5E5|| < 5% LHS"))+ 
+  scale_x_log10() +
+  theme_bw()
+
+cowplot::plot_grid(Mean_raster,Sd_raster,
+                   Extract_plot_y,Extract_plot_x,
+                   labels = c('A', 'B','C','D'),
+                    align="hv")
+
+
+
+```
+
+
+# Discussion
+
+# References
