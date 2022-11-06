@@ -8,7 +8,7 @@ NULL
 #' @slot name char. Simulation name.
 #' @slot path char. Path to the simulation.
 #' @slot parameters numeric. Parameters of the simulation (general inputs).
-#' @slot inputs list. Simulation inputs (species, climate, daily, forest).
+#' @slot inputs list. Simulation inputs (species, climate, daily, forest,lidar).
 #' @slot log chr. Simulation log.
 #' @slot forest df. Simulation initial and final forest.
 #' @slot ecosystem df. Ecosystem metrics.
@@ -46,7 +46,7 @@ setClass(
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.
 #' @param parameters numeric. Parameters of the simulation (general inputs).
-#' @param inputs list. Simulation inputs (species, climate, daily, forest).
+#' @param inputs list. Simulation inputs (species, climate, daily, forest,lidar).
 #' @param log chr. Simulation log.
 #' @param forest df. Simulation initial and final forest.
 #' @param ecosystem df. Ecosystem metrics.

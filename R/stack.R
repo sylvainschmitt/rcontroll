@@ -21,6 +21,8 @@ NULL
 #' @param species df. Species parameters.
 #' @param climate df. Climate parameters.
 #' @param daily df. Daily variation parameters.
+#' @param lidar df. Lidar simulation parameters, if null no computed
+#'   (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
 #'   (default NULL).
 #' @param verbose bool. Show TROLL outputs in the console.
@@ -65,6 +67,7 @@ stack <- function(name = NULL,
                   species,
                   climate,
                   daily,
+                  lidar = NULL,
                   forest = NULL,
                   verbose = TRUE,
                   cores = NULL,
@@ -127,6 +130,13 @@ stack <- function(name = NULL,
     forest <- lapply(simulations, function(x) forest)
     names(forest) <- simulations
   }
+  
+  if(!is.null(lidar)) {
+    lidar <- .prep_input(lidar, simulations)
+  } else {
+    lidar <- lapply(simulations, function(x) lidar)
+    names(lidar) <- simulations
+  }
   if(tmp) {
     sim_path <- lapply(simulations, function(x) NULL)
     names(sim_path) <- simulations
@@ -152,6 +162,7 @@ stack <- function(name = NULL,
                        species = species[[sim]],
                        climate = climate[[sim]],
                        daily = daily[[sim]],
+                       lidar = lidar[[sim]],
                        forest = forest[[sim]],
                        verbose = verbose,
                        overwrite = overwrite,

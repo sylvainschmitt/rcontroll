@@ -30,13 +30,15 @@ Imports:
     gganimate (>= 1.0.0),
     vroom (>= 1.0.0),
     tidyr (>= 1.0.0),
-    tibble (>= 3.0.0)
+    tibble (>= 3.0.0),
+    lubridate (>= 1.6.0),
+    terra (>= 1.5-16)
 Suggests:
     markdown,
     knitr,
     rmarkdown,
     testthat
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Collate: 
     'RcppExports.R'
     'TROLLv3_climatedaytime12.R'
@@ -52,6 +54,9 @@ Collate:
     'autogif.R'
     'trollstack.R'
     'autoplot.troll.R'
+    'utils-pipe.R'
+    'generate_climate.R'
+    'generate_lidar.R'
     'generate_parameters.R'
     'get_forest.trollsim.R'
     'load_stack.R'
@@ -61,10 +66,10 @@ Collate:
     'stack.R'
     'summary.trollsim.R'
     'update_parameters.trollsim.R'
-    'utils-pipe.R'
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
 LinkingTo: 
     Rcpp,
     RcppGSL
+Encoding: UTF-8

@@ -19,7 +19,7 @@ setClass(
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.
 #' @param parameters numeric. Parameters of the simulation (general inputs).
-#' @param inputs list. Simulation inputs (species, climate, daily, forest).
+#' @param inputs list. Simulation inputs (species, climate, daily, forest,lidar).
 #' @param log chr. Simulation log.
 #' @param forest df. Simulation initial and final forest.
 #' @param ecosystem df. Ecosystem metrics.

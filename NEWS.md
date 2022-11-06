@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9050
+* Update TROLL to 3.1.6 & add lidar generation parameters 
+
 # rcontroll 0.1.0.9049
 * fixed and & or operands in cpp for windows-latest (release)
 

@@ -1,23 +1,20 @@
 #' Generate lidar simulation parameters
 #'
-#' Function to generate the lidar simulation parameters used in TROLL lidar simulation. All
-#' parameters have a default value from literature.
+#'@description Function to generate the lidar simulation parameters used in TROLL lidar simulation. 
+#'All parameters have a default value from literature.
 #'
 #' @param mean_beam_pc num. Mean pulse density (pulses per m2).
 #' @param sd_beam_pc num. Standard deviation of pulse density (per m2).
 #' @param klaser_pc num. laser attenuation factor.
 #' @param transmittance_laser num. Percentage of pulses that continue through the canopy after a hit.
-#' @param iter_pointcloud_generation num. Number of iteration for point cloud generation.
+#' @param iter_pointcloud_generation num. Number of iteration for point cloud generation. 
 #'
 #' @return A data frame of lidar simulation parameters.
-#'
 #' @export
 #'
 #' @examples
-#'
 #' generate_lidar(iter_pointcloud_generation = 3600)
 #' 
-
 generate_lidar <- function(
     mean_beam_pc = 10,
     sd_beam_pc = 5,

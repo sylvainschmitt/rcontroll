@@ -12,6 +12,7 @@
 #' @param climate_file char. Path to the climate file.
 #' @param species_file char. Path to the species file.
 #' @param day_file char. Path to the daytime file.
+#' @param lidar_file char. Path to the lidar file.
 #' @param forest_file char. Path to the forest file.
 #' @param output_file char. Path to the output folder.
 #'
@@ -23,12 +24,13 @@
 #'          climate_file = "test/test_input_climate.txt",
 #'          species_file = "test/test_input_species.txt",
 #'          day_file = "test/test_input_daily.txt",
+#'          lidar_file = "NULL",
 #'          forest_file = "NULL",
 #'          output_file = "test")
 #' }
 #'
 #' @export
-trollCpp <- function(global_file, climate_file, species_file, day_file, forest_file, output_file) {
-    invisible(.Call(`_rcontroll_trollCpp`, global_file, climate_file, species_file, day_file, forest_file, output_file))
+trollCpp <- function(global_file, climate_file, species_file, day_file, lidar_file, forest_file, output_file) {
+    invisible(.Call(`_rcontroll_trollCpp`, global_file, climate_file, species_file, day_file, lidar_file, forest_file, output_file))
 }
 

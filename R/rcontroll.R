@@ -41,7 +41,7 @@
 #'   figure (autogif function, Fig. 1) for research, demonstration or
 #'   educational purposes. }
 #'
-#' @section TROLL: \describe{version 3.1.3}
+#' @section TROLL: \describe{version 3.1.6}
 #'
 #' @docType package
 #' @name rcontroll
