@@ -53,7 +53,7 @@ TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 We can generate parameters and view them directly as a table with a description of its effect using `generate_parameters` and `kable`.
 
 ```{r genPar}
-generate_parameters(cols = 250, rows = 250, nbiter = 12*1) %>% 
+generate_parameters(cols = 250, rows = 250) %>% 
   head() %>% 
   knitr::kable()
 ```
@@ -119,14 +119,14 @@ And we can define a thinning of outputs by giving the number of iterations to be
 
 ```{r fullstack}
 sim_stack <- stack(name = "teststack", 
-                   simulations = c("seed50000", "seed500"),
-                   global = TROLLv3_input_stack,
-                   species = TROLLv3_species,
-                   climate = TROLLv3_climatedaytime12,
-                   daily = TROLLv3_daytimevar,
-                   verbose = F,
-                   cores = 2,
-                   thin = c(1,5,10))
+             simulations = c("seed50000", "seed500"),
+             global = TROLLv3_input_stack,
+             species = TROLLv3_species,
+             climate = TROLLv3_climatedaytime12,
+             daily = TROLLv3_daytimevar,
+             verbose = F,
+             cores = 2,
+             thin = c(1,5,10))
 ```
 
 We can print a simple summary of the simulations.

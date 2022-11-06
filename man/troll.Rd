@@ -39,7 +39,8 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{overwrite}{bool. Overwrite previous outputs.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no thinning.}
+kept to reduce output size, default is NULL and corresponds to no
+thinning.}
 }
 \value{
 A trollsim object.

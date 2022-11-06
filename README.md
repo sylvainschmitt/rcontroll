@@ -65,7 +65,7 @@ sim <- troll(name = "test",
              species = TROLLv3_species,
              climate = TROLLv3_climatedaytime12,
              daily = TROLLv3_daytimevar)
-autoplot(sim, what = "temporal", 
+autoplot(sim, what = "species", 
          species = c("Cecropia_obtusa","Dicorynia_guianensis",
                      "Eperua_grandiflora","Vouacapoua_americana")) +
   theme(legend.position = "bottom")

@@ -20,7 +20,8 @@ NULL
 #' @param verbose bool. Show TROLL outputs in the console.
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no
+#'   thinning.
 #'
 #' @return A trollsim object.
 #'
@@ -64,7 +65,6 @@ troll <- function(name = NULL,
       overwrite = overwrite,
       thin = thin)
   stopCluster(cl)
-  
   return(sim[[1]])
 }
 
@@ -77,8 +77,7 @@ troll <- function(name = NULL,
                          forest = NULL,
                          verbose = TRUE,
                          overwrite = TRUE,
-                         thin = NULL,
-                         trials = 1) {
+                         thin = NULL) {
   
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
@@ -151,8 +150,6 @@ troll <- function(name = NULL,
              output_file = file.path(path, name, name)
     ),
     split = verbose)
-    
-  # log
   write(log, file.path(path, name, paste0(name, "_log.txt")))
   
   # cleaning outputs

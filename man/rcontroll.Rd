@@ -11,6 +11,7 @@ TROLL that includes functions in R that generate inputs and prepare the run,
 run simulations, and analyse the outputs through tables, figures, and maps
 taking advantage of the R package ecosystem.
 }
+
 \section{Pre-simulations}{
  \describe{ Pre-simulation functions include global
   parameters definition (generate_parameters function) and climate data

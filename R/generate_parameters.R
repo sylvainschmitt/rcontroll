@@ -175,7 +175,7 @@ generate_parameters <- function(
          NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
          CROWN_MM, OUTPUT_extended, extent_visual), 
     class)) == "numeric"))
-    stop("parameters should be numeric.")
+  stop("parameters should be numeric.")
   
   data.frame(
     param = c("cols", "rows", "HEIGHT", "length_dcell",
@@ -194,17 +194,17 @@ generate_parameters <- function(
               "_NONRANDOM", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
               "_CROWN_MM", "_OUTPUT_extended", "extent_visual"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
-             NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
-             absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
-             CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
-             falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
-             sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
-             corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
-             leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
-             m, m1, Cair, LL_parameterization, LA_regulation, 
-             sapwood, seedsadditional,
-             NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-             CROWN_MM, OUTPUT_extended, extent_visual),
+              NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
+              absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
+              CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
+              falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
+              sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
+              corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
+              leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
+              m, m1, Cair, LL_parameterization, LA_regulation, 
+              sapwood, seedsadditional,
+              NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+              CROWN_MM, OUTPUT_extended, extent_visual),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",

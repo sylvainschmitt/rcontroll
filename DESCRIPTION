@@ -11,28 +11,26 @@ Description: Function and code to manage and use indivdual-based and spatially-e
 License: GPL-3
 LazyData: TRUE
 Imports:
-    methods (>= 3.6.3),
-    utils (>= 3.6.3),
-    readr (>= 1.4.0),
-    sys (>= 3.4),
-    dplyr (>= 1.0.2),
-    magrittr (>= 2.0.1),
-    reshape2 (>= 1.4.4),
-    ggplot2 (>= 3.3.2),
-    viridis (>= 0.6.0),
-    parallel (>= 3.6.3),
-    doParallel (>= 1.0.16),
-    doSNOW (>= 1.0.19),
-    foreach (>= 1.5.1),
-    iterators (>= 1.0.13),
-    Rcpp (>= 1.0.6),
-    RcppGSL (>= 0.3.10),
-    gganimate (>= 1.0.7),
-    vroom (>= 1.3.2),
-    tidyr (>= 1.1.3),
-    tibble (>= 3.1.2),
-    terra (>= 1.5-17),
-    lubridate (>= 1.7.10)
+    methods (>= 3.5.0),
+    utils (>= 3.5.0),
+    readr (>= 1.3.0),
+    sys (>= 3.2),
+    dplyr (>= 1.0.0),
+    magrittr (>= 2.0.0),
+    reshape2 (>= 1.3.0),
+    ggplot2 (>= 3.2.0),
+    viridis (>= 0.4.0),
+    parallel (>= 3.5.0),
+    doParallel (>= 1.0.7),
+    doSNOW (>= 1.0.10),
+    foreach (>= 1.4.1),
+    iterators (>= 1.0.5),
+    Rcpp (>= 1.0.5),
+    RcppGSL (>= 0.3.5),
+    gganimate (>= 1.0.0),
+    vroom (>= 1.0.0),
+    tidyr (>= 1.0.0),
+    tibble (>= 3.0.0)
 Suggests:
     markdown,
     knitr,
@@ -54,8 +52,6 @@ Collate:
     'autogif.R'
     'trollstack.R'
     'autoplot.troll.R'
-    'utils-pipe.R'
-    'generate_climate.R'
     'generate_parameters.R'
     'get_forest.trollsim.R'
     'load_stack.R'
@@ -65,6 +61,7 @@ Collate:
     'stack.R'
     'summary.trollsim.R'
     'update_parameters.trollsim.R'
+    'utils-pipe.R'
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
