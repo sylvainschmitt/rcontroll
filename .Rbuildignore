@@ -2,7 +2,7 @@
 ^\.Rproj\.user$
 .travis.yml
 README.Rmd
-cran-comment.md
+cran-comments.md
 dev
 ^appveyor\.yml$
 ^data-raw$

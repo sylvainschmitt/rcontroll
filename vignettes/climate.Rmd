@@ -238,6 +238,28 @@ climate$daytimevar %>% head()
 climate$climatedaytime12 %>% head()
 ```
 
+```{r, eval=F}
+data("TROLLv3_daytimevar")
+list(Nouraflux = TROLLv3_daytimevar,
+     ERA5 = climate$daytimevar) %>% 
+  bind_rows(.id = "origin") %>% 
+  gather(variable, value, -starttime, -endtime, -origin) %>% 
+  group_by(origin, variable) %>% 
+  ggplot(aes(x = starttime, y = value, col = origin)) + geom_line() + facet_wrap(~variable, scales = "free_y") + theme_bw()
+```
+
+```{r, eval=F}
+data("TROLLv3_climatedaytime12")
+list(Nouraflux = TROLLv3_climatedaytime12,
+     ERA5 = climate$climatedaytime12) %>% 
+  bind_rows(.id = "origin") %>% 
+  group_by(origin) %>% 
+  mutate(month = 1:12) %>% 
+  gather(variable, value, -origin, -month) %>% 
+  ggplot(aes(x = month, y = value, col = origin)) + geom_line() + facet_wrap(~variable, scales = "free_y") + theme_bw()
+```
+
+
 This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:
 
 ```{r, eval=F}
