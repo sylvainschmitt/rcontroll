@@ -34,9 +34,11 @@ However, all this models rely on complex implementation and use high level of re
  * Model prediction need to assess uncertainties produced by the model. This goal imply to select calibration methods that allow to use calibrated-model in a reverse and forward uncertainty propagation.
  
 We decide to interface TROLL through rcontroll and realize a first step for local calibration of the model : the sensitivity analysis.
-Using Morris analysis we retrieve an overview of the most influential parameters. Though the computation of Sobol indexes for each summarized outputs we 
+Using Morris analysis we retrieved an overview of the most influential parameters. Though the computation of Sobol indexes for each summarized outputs we could separate marginal and interactions contribution for each parameters on model's outputs.
  
 # Materials and methods
+
+To illustrate 
 
 * calibration function:
 
@@ -45,6 +47,7 @@ source("SI5_calibration_functions.R")
 
 ls()
 ```
+
 
 
 
@@ -133,7 +136,7 @@ morrisOut.df <- data.frame(
 load("~/Nextcloud/Model/TROLL/datasets/rcontrollTROLL_calib_1000x10LHS_600y.rda")
 ```
 
-```{r, fig.width=}
+```{r, fig.width=10,fig.height=10}
 morrisOut.df %>%
   gather(variable, value, -parameter) %>%
   mutate(parameter = recode(parameter, 
@@ -165,7 +168,7 @@ morrisOut.df %>%
     legend.position = c(0.80, 0.50), legend.justification = c(0.05,0.95)
   ) + 
   scale_x_discrete(labels = scales::parse_format()) +
-  scale_y_continuous(expand = c(0, 0)) + xlab("") + ylab("") +
+  scale_y_continuous(expand = c(0, 0)) + xlab("") + ylab("") +ggtitle("Morris analysis of TROLL model's parameters and species traits community correction factor") +
   theme_classic()
 ```
 
@@ -194,148 +197,746 @@ save(sensitivity_all,
 ```
 
 ```{r}
+library(tgp)
+library(tidyverse)
+library(patchwork)
 load("~/Nextcloud/Model/TROLL/datasets/rcontroll_sens_1000x10LHS_600y.rda")
+```
 
+
+```{r Mean lambda_dbh10 SA, echo=FALSE}
+
+Sens <- sensitivity_all$lambda_dbh10$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
+  theme_bw()
+
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
+  theme_bw()
+
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
+  theme_bw()
+
+
+
+
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "Diameter distribution - Exponential parameter",subtitle = "Sobol indices analysis")
+
+```
+
+```{r Mean AGB SA, echo=FALSE}
+
+Sens <- sensitivity_all$agb_mean$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
+  theme_bw()
+
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
+  theme_bw()
+
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
+  theme_bw()
+
+
+
+
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "Mean AGB",subtitle = "Sobol indices analysis")
 
 ```
 
 
-```{r, fig.height= 7, fig.width=14}
-cols <- hcl.colors(n = 128, palette = "viridis")
+```{r Mean N10 SA, echo=FALSE}
 
-resolution <- 250
-xgrid <- tibble(klight = 0.5,
-                phi = 0.5, 
-                g1 = 0.5, 
-                fallocwood = 0.5, 
-                falloccanopy = 0.5 , 
-                m = 0.5, 
-                vC = 0.5, 
-                Cseedrain = rep(seq(0,1, length=resolution), each = resolution), 
-                log10nbs0 = rep(seq(0,1, length=resolution), times = resolution),
-                Hmaxcor = 0.5,
-                CR_a = 0.5,
-                CR_b = 0.5,
-                m1 = 0.5,
-                DBHmaxcor = 0.5, 
-                ahCorr = 0.5) %>% as.matrix()
-
-p.a <- predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,xgrid)
-
-pvar.a <- p.a$sd2 + p.a$nugs
-
-x_CR_a <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]],
-             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[8]], length=resolution)
-
-x_CR_b <- seq(global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]],
-             global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[9]], length=resolution)
-
-xgrid2 <- tibble(klight = 0.5,
-                phi = 0.5, 
-                g1 = 0.5, 
-                fallocwood = 0.5, 
-                falloccanopy = 0.5 , 
-                m = 0.5, 
-                vC = 0.5, 
-                Cseedrain = seq(0,1, length=resolution), 
-                log10nbs0 = 0.5,
-                Hmaxcor = 0.5,
-                CR_a = 0.5,
-                CR_b = 0.5,
-                m1 = 0.5,
-                DBHmaxcor = 0.5, 
-                ahCorr = 0.5) %>% as.matrix()
-
-xgrid3 <- tibble(klight = 0.5,
-                phi = 0.5, 
-                g1 = 0.5, 
-                fallocwood = 0.5, 
-                falloccanopy = 0.5 , 
-                m = 0.5, 
-                vC = 0.5, 
-                Cseedrain = 0.5, 
-                log10nbs0 = seq(0,1, length=resolution),
-                Hmaxcor = 0.5,
-                CR_a = 0.5,
-                CR_b = 0.5,
-                m1 = 0.5,
-                DBHmaxcor = 0.5, 
-                ahCorr = 0.5) %>% as.matrix()
-
-p.b <- predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,xgrid2)
-
-p.c <- predict(calib_dataset$GPmodels$MeanHill$mod.MeanHill,xgrid3)
-
-
-Mean_raster <- ggplot() +
-  geom_raster(aes(x = ((global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[8]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]])*xgrid[,8] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]]), y = ((global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[9]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]])*xgrid[,9]) + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]], fill = matrix(p.a$mean,nrow = resolution,byrow = FALSE))) +
-  geom_hline(aes(yintercept = 1), color = "red", linetype = "dashed") +
-  geom_vline(aes(xintercept = 50000), color = "blue", linetype = "dashed")+
-  scale_fill_viridis_c()+
-  xlab("Cseedrain") + ylab("nbs0")+
-  guides(fill = guide_legend(title = "Mean"))+
+Sens <- sensitivity_all$abu10_mean$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
   theme_bw()
 
-Sd_raster <- ggplot() + 
-  geom_raster(aes(x = (global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[8]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]])*xgrid[,8] + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[8]], y = ((global_parameters_boundaries$upper[global_parameters_boundaries$parameter == calib_dataset$params[9]] - global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]])*xgrid[,9]) + global_parameters_boundaries$lower[global_parameters_boundaries$parameter == calib_dataset$params[9]], 
-                  fill = matrix(sqrt(pvar.a),nrow = resolution,byrow = FALSE))) +
-  scale_fill_viridis_c()+
-  geom_hline(aes(yintercept = 1), color = "red", linetype = "dashed")+
-  geom_vline(aes(xintercept = 50000), color = "blue", linetype = "dashed")+
-  xlab("Cseedrain") + ylab("nbs0")+
-  guides(fill = guide_legend(title = "Sd"))+
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
+  theme_bw()
+
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
   theme_bw()
 
 
-xnew <- tibble(klight = 0.5,
-               phi = 0.5, 
-               g1 = 0.5, 
-               fallocwood = 0.5, 
-               falloccanopy = 0.5 , 
-               m = 0.5, 
-               vC = 0.5, 
-               Cseedrain = 0.5, 
-               log10nbs0 = 0.5,
-               Hmaxcor = 0.5,
-               CR_a = 0.5,
-               CR_b = 0.5,
-               m1 = 0.5,
-               DBHmaxcor = 0.5, 
-               ahCorr = 0.5) %>% as.matrix()
-x <- calib_dataset$XGP %>% as.matrix()
 
-a <- Rfast::dista(xnew, x)
 
-Extract_plot_y <- ggplot() + 
-  geom_point(aes(x = as_tibble(calib_dataset$X)$nbs0, y = as_tibble(calib_dataset$Y)$hill_mean, 
-                 color = as.logical(a <= quantile(a,0.01)) )) + 
-  geom_ribbon(aes(x= 10^(x_CR_b), ymin = qnorm(0.05, p.c$mean, sqrt(p.c$sd2 + p.c$nugs)),
-                                 ymax = qnorm(0.95, p.c$mean, sqrt(p.c$sd2 + p.c$nugs))), alpha = 0.1, color = "red") +
-  geom_line(aes(x = 10^(x_CR_b), y = p.c$mean)) + 
-  scale_color_manual(values=c("lightgrey",'red'),labels = c("F", "T"))+
-  xlab("nbs0") + ylab("Mean Hill number")+
-  guides(color = guide_legend(title = "||nbs0 - 10|| < 5% LHS"))+
-  scale_x_log10() +
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "Tree abundance with DBH > 10cm",subtitle = "Sobol indices analysis")
+
+```
+
+```{r Mean N30 SA, echo=FALSE}
+
+Sens <- sensitivity_all$abu30_mean$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
   theme_bw()
 
-Extract_plot_x <- ggplot() + 
-  geom_point(aes(x = as_tibble(calib_dataset$X)$Cseedrain, y = as_tibble(calib_dataset$Y)$hill_mean, 
-                 color = as.logical(a <= quantile(a,0.01)) )) + 
-  geom_ribbon(aes(x= x_CR_a, ymin = qnorm(0.05, p.b$mean, sqrt(p.b$sd2 + p.b$nugs)),
-                                 ymax = qnorm(0.95, p.b$mean, sqrt(p.b$sd2 + p.b$nugs))), alpha = 0.1, color = "red") +
-  geom_line(aes(x = x_CR_a, y = p.b$mean)) + 
-  scale_color_manual(values=c("lightgrey",'blue'),labels = c("F", "T"))+
-  xlab("CseedRain") + ylab("Mean Hill number")+
-  guides(color = guide_legend(title = "||CseedRain - 5E5|| < 5% LHS"))+ 
-  scale_x_log10() +
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
   theme_bw()
 
-cowplot::plot_grid(Mean_raster,Sd_raster,
-                   Extract_plot_y,Extract_plot_x,
-                   labels = c('A', 'B','C','D'),
-                    align="hv")
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
+  theme_bw()
 
 
+
+
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "Tree abundance with DBH > 30cm",subtitle = "Sobol indices analysis")
+
+```
+
+```{r Mean GPP SA, echo=FALSE}
+
+Sens <- sensitivity_all$gpp_mean$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
+  theme_bw()
+
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
+  theme_bw()
+
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
+  theme_bw()
+
+
+
+
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "Mean annual GPP",subtitle = "Sobol indices analysis")
+
+```
+
+```{r Mean Hill SA, echo=FALSE}
+
+Sens <- sensitivity_all$hill_mean$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
+  theme_bw()
+
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
+  theme_bw()
+
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
+  theme_bw()
+
+
+
+
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "Hill order 1",subtitle = "Sobol indices analysis")
+
+```
+
+```{r Mean Vol ECMP SA, echo=FALSE}
+
+Sens <- sensitivity_all$Vol_ECMP$sens
+Total_sobol  <- Sens$T |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "Total_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = Total_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format(),)+
+  guides(fill = "none")+
+  ggtitle("B.2.",subtitle = "Total order Sobol sensitivity indices")+
+  theme_bw()
+
+st_sobol  <- Sens$S |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "st_sobol") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  ggplot(aes(x = Variable, y = st_sobol,fill = Variable)) +geom_boxplot() + 
+  xlab("") + ylab("")+ 
+  scale_fill_discrete(labels = scales::parse_format())+
+  scale_x_discrete(labels = scales::parse_format())+
+  guides(fill = "none")+
+  ggtitle("B.1.",subtitle = "1st order Sobol sensitivity indices")+
+  theme_bw()
+
+main_effects  <- Sens$ZZ.mean |> 
+  as_tibble() |> 
+  gather(key = "Variable", value = "main_effect") |> 
+  mutate(parameter = factor(recode(Variable,"V6" = "m[0]",
+                            "V11" = "CR[a]",
+                            "V2" = "Phi",
+                            "V4" = "f[wood]",
+                            "V5" = "f[canopy]",
+                            "V1" = "k",
+                            "V7" = "v[C]",
+                            "V8" = "seedrain",
+                            "V12" = "CR[b]",
+                            "V15" = "a[h]",
+                            "V9" = "log[10](n[s])",
+                            "V3" = "g[1]",
+                            "V10" = "H[max]",
+                            "V13" = "wsg[lim]",
+                            "V14" = "DBH[max]"
+                            )))  |> 
+  mutate(Variable = factor(parameter, levels = c("k","Phi","g[1]","f[wood]","f[canopy]",
+                                                  "m[0]","v[C]","seedrain","log[10](n[s])",
+                                                  "H[max]","CR[a]","CR[b]","wsg[lim]",
+                                                  "DBH[max]","a[h]"))) |> 
+  mutate(scaled_x = c(mean0.range1(Sens$Xgrid)$X)) |> 
+  ggplot(aes(x = scaled_x, y = main_effect, color = Variable)) +
+  geom_hline(yintercept = 0, color = "black", linetype ="dashed") +
+  geom_line() +
+  xlab("Scaled effect") + ylab("Response")+
+  scale_color_discrete(labels = scales::parse_format())+
+  ggtitle("A.",subtitle = "Main Effects")+
+  theme_bw()
+
+
+
+
+(main_effects+ plot_layout(guides = 'auto') | (st_sobol+ plot_layout(guides = 'auto')) / (Total_sobol+ plot_layout(guides = 'auto')))  +
+  plot_layout(guides = 'collect') + plot_annotation(title = "ECMP Volume",subtitle = "Sobol indices analysis")
 
 ```
 

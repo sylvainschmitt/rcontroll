@@ -1785,3 +1785,26 @@ autocalibGP <- function(Generated_parameters,
     }
   
 }
+
+############# lpost.invert ###############
+
+lpost.invert <- function(theta, XF, yF, GP)
+{
+  ## input processing and checking
+  if(length(theta) != ncol(GP$X0) - ncol(XF) + 1) 
+    stop("length(theta), ncol(XF), ncol(GP$X0) mismatch")
+  u <- theta[-length(theta)]
+  s2 <- theta[length(theta)]
+  
+  ## prior checking  
+  if(any(u < 0 | u > 1)) return (-Inf)
+  if(s2 < 0) return(-Inf)
+  
+  ## derive predictive distribution for XF paired with u
+  XFU <- cbind(XF, matrix(rep(u, nrow(XF)), ncol=length(u), byrow=TRUE)) 
+  p <- predict(GP, XFU, xprime=XFU)
+  C <- s2*diag(nrow(p$cov)) + (p$cov + t(p$cov))/2
+  
+  ## gaussian log density evaluation for yF under that predictive
+  return(dmvnorm(yF, p$mean, C, log=TRUE) - log(s2))
+}
