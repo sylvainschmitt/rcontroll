@@ -9,7 +9,7 @@ vignette: >
 
 TROLL forest simulator relies on climate tables with half-hourly variations of a typical day and monthly variations of a typical year which are recycled through simulation days and years. Initially, TROLL climate tables were computed from the Nouraflux dataset. Variations in quantities of interests (temperatures, ...) were averaged to the target resolution (half-hour for daily variation or month for monthly variation). The purpose of climate generation functions is to compute equivalent climate tables from the ERA5 land reanalysis dataset. With these functions, rcontroll users only need inventories and associated functional traits to run TROLL simulations.
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval = FALSE}
 knitr::opts_chunk$set(
   eval = FALSE,
   collapse = TRUE,
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 This vignette requires numerous packages (12) to work. Some are not integrated to `rcontroll`. Consequently, the chunks are not compiled. But we strongly encourage users that want to generate their climate data for TROLL to install all the packages and run manually this vignette. All the packages role is detailed below. Some may be avoided, only `ecmwfr` is mandatory to download the ERA5 land data from Copernicus and obviously `rcontroll` to convert the data to TROLL inputs.
 
-```{r setup, message=F}
+```{r setup, include = TRUE, eval = FALSE}
 library(ecmwfr) # to request data from Copernicus
 library(osmdata) # to get bounding box from the study area
 library(leaflet) # to make interactive maps
@@ -52,7 +52,7 @@ You need to manually set your account information in R using `wf_set_key` from t
 Beware, you will need the **ECMWF password** to connect to Copernicus services with `wf_set_key`.
 Replace the user ID and API key in the following chunk and run it.
 
-```{r }
+```{r,include = TRUE, eval = FALSE}
 wf_set_key(user = "******",
            key = "********-****-****-****-************",
            service = "cds")
@@ -64,7 +64,7 @@ for example here the French Guiana for which the default species data have been 
 We recommend using a large entity as the request preparation time is often longer than the resulting object to download 
 (see estimates below for French Guiana).
 
-```{r}
+```{r,include = TRUE, eval = FALSE}
 getbb("French Guiana", format_out = "sf_polygon", limit = 1)$multipolygon %>% 
   leaflet() %>% 
   addTiles() %>% 
@@ -73,7 +73,7 @@ getbb("French Guiana", format_out = "sf_polygon", limit = 1)$multipolygon %>%
 
 you can then convert the coordinates into the desired request format with `gsub`:
 
-```{r}
+```{r,include = TRUE, eval = FALSE}
 (coords <- gsub(",", "/", getbb("French Guiana", format_out = "string", limit = 1)))
 ```
 
@@ -81,7 +81,7 @@ You need two types of product: (1) monthly averages by hour of day and (2) month
 
 Now you can use the coordinates to build the request corresponding to the first set of data (monthly averages by hour of day) needed:
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 request <- list(
   "dataset_short_name" = 'reanalysis-era5-land-monthly-means',
   'format'= 'netcdf',
@@ -104,7 +104,7 @@ Finally you can use `wf_request` to download locally the request with the regist
 
 **Download size: 199.4 Mb**
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 ncfile <- wf_request(
   user = "152268",
   request = request,   
@@ -120,7 +120,7 @@ You can follow your request here : https://cds.climate.copernicus.eu/cdsapp#!/yo
 
 You can do the same for the second set of data (monthly averages) needed:
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 request <- list(
   "dataset_short_name" = 'reanalysis-era5-land-monthly-means',
   'format'= 'netcdf',
@@ -141,7 +141,7 @@ Finally you can use `wf_request` to download locally the request with the regist
 
 **Download size: 9.1 Mb**
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 ncfile <- wf_request(
   user = "152268",
   request = request,   
@@ -155,7 +155,7 @@ ncfile <- wf_request(
 
 You can have a look to the resulting ERA5 land data. First extract the chosen value in your file, for instance here total precipitation `tp` and consolidate the data as a table using `dplyr`:
 
-```{r}
+```{r,include = TRUE, eval = FALSE}
 test_r <- rast("ERA5land_mth_FG.nc", "tp")
 test <- as.data.frame(test_r, xy = T) %>% 
   gather("variable", "value", -x , -y) %>% 
@@ -166,7 +166,7 @@ test <- as.data.frame(test_r, xy = T) %>%
 
 You can then plot the result as a static figure for a chosen year and month using `ggplot`:
 
-```{r}
+```{r,include = TRUE, eval = FALSE}
 ggplot(filter(test, t == 1)) +
   geom_raster(aes(x, y, fill = tp)) +
   geom_sf(data = spData::world, fill = NA) +
@@ -179,7 +179,7 @@ ggplot(filter(test, t == 1)) +
 
 Or as a dynamic gif using `gganimate`:
 
-```{r }
+```{r, include = TRUE, eval = FALSE }
 test %>% 
   group_by(x, y, month = lubridate::floor_date(date, 'month')) %>%
   summarize(tp = sum(tp)) %>% 
@@ -200,7 +200,7 @@ Next you need coordinates of the location where you want to run your TROLL simul
 We will use here the coordinates from the Reserve naturelle des Nouragues where the functional data have been partly collected from.
 For that `nominatimlite` provide a useful function called `geo_lite_sf` to easily geocode locations:
 
-```{r}
+```{r, include = TRUE, eval = FALSE}
 geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>% 
   leaflet() %>% 
   addTiles() %>% 
@@ -210,35 +210,35 @@ geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
 
 You can extract corresponding coordinates using `st_coordinates` from `sf`:
 
-```{r}
+```{r, include = TRUE, eval = FALSE}
 (coords <- geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>% st_coordinates())
 ```
 
 You will also need the corresponding time zone for time correction as ERA5-land is giving us time in UTC.
 For that you can use the `tz_lookup_coords` function from the package `lutz`:
 
-```{r}
+```{r,include = TRUE, eval = FALSE}
 (tz <- lutz::tz_lookup_coords(lon = coords[1], lat = coords[2], method = "accurate"))
 ```
 
 You can use the `generate_cliamte` function inside TROLL to prepare `TROLL` climatic data:
 
-```{r}
+```{r,include = TRUE, eval = FALSE}
 climate <- generate_climate(coords[1], coords[2], tz = tz,
                             era5land_hour = "ERA5land_hr_FG.nc", era5land_month = "ERA5land_mth_FG.nc")
 ```
 
 And as expected you obtain inputs ready to run models :
 
-```{r}
+```{r, include = TRUE, eval = FALSE}
 climate$daytimevar %>% head()
 ```
 
-```{r}
+```{r, include = TRUE, eval = FALSE}
 climate$climatedaytime12 %>% head()
 ```
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 data("TROLLv3_daytimevar")
 list(Nouraflux = TROLLv3_daytimevar,
      ERA5 = climate$daytimevar) %>% 
@@ -248,7 +248,7 @@ list(Nouraflux = TROLLv3_daytimevar,
   ggplot(aes(x = starttime, y = value, col = origin)) + geom_line() + facet_wrap(~variable, scales = "free_y") + theme_bw()
 ```
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 data("TROLLv3_climatedaytime12")
 list(Nouraflux = TROLLv3_climatedaytime12,
      ERA5 = climate$climatedaytime12) %>% 
@@ -262,7 +262,7 @@ list(Nouraflux = TROLLv3_climatedaytime12,
 
 This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:
 
-```{r, eval=F}
+```{r, include = TRUE, eval = FALSE}
 write_tsv(climate$daytimevar, "ERA5land_daytimevar.txt")
 write_tsv(climate$climatedaytime12, "ERA5land_climatedaytime12.txt")
 ```
