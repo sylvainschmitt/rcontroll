@@ -1,5 +1,6 @@
 # rcontroll 0.1.0.9051
 * Updated TROLL rcpp link lidar & stack
+
 # rcontroll 0.1.0.9050
 * Update TROLL to 3.1.6 & add lidar generation parameters 
 
