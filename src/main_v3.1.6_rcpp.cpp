@@ -3564,7 +3564,7 @@ void trollCpp(
   
   if(strlen(bufi_data) != 0) _FromInventory = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
   
-  if(strlen(bufi_data) != 0) _OUTPUT_pointcloud = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
+  if(strlen(bufi_pointcloud) != 0) _OUTPUT_pointcloud = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
   
   //int main(int argc,char *argv[]) { // now left as comment to recuperate original TROLL version
   
@@ -3706,6 +3706,10 @@ void trollCpp(
   // initial pattern, should be empty, unless an inventory has been provided
   if(_OUTPUT_extended) OutputSnapshot(output_basic[1], 1, 0.01);                  // Initial Pattern, for trees > 0.01m DBH
   else OutputSnapshot(output_basic[1], 1, 0.1);                                   // Initial Pattern, for trees > 0.1m DBH
+  
+  if(_OUTPUT_pointcloud > 0 && iter_pointcloud_generation == 0){
+    ExportPointcloud(mean_beam_pc, sd_beam_pc, klaser_pc, transmittance_laser, output_pointcloud); // v.3.1.6
+  }
   
   double start_time,stop_time, duration=0.0;           // for simulation duration
   stop_time = clock();
@@ -4012,7 +4016,7 @@ void AssignValuePointcloud(string parameter_name, string parameter_value){
   } else if(parameter_name == "transmittance_laser"){
     SetParameter(parameter_name, parameter_value, transmittance_laser, 0.0f, 1.0f, 0.4f, quiet);
   } else if(parameter_name == "iter_pointcloud_generation"){
-    SetParameter(parameter_name, parameter_value, iter_pointcloud_generation, 0, nbiter-1, nbiter-1, quiet);
+    SetParameter(parameter_name, parameter_value, iter_pointcloud_generation, 0, nbiter, nbiter, quiet);
   }
 }
 

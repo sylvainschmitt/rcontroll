@@ -191,6 +191,9 @@ stack <- function(name = NULL,
         bind_rows(.id = "simulation"),
       forest = lapply(stack_res, slot, "inputs") %>% 
         lapply(`[[`, "forest") %>% 
+        bind_rows(.id = "simulation"),
+      lidar = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "lidar") %>% 
         bind_rows(.id = "simulation")
     ),
     log = paste(lapply(stack_res, slot, "log")),
