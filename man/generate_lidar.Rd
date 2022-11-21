@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_lidar.R
 \name{generate_lidar}
 \alias{generate_lidar}
-\title{Generate lidar simulation parameters}
+\title{Generate lidar parameters}
 \usage{
 generate_lidar(
   mean_beam_pc = 10,
@@ -27,7 +27,7 @@ generate_lidar(
 A data frame of lidar simulation parameters.
 }
 \description{
-Function to generate the lidar simulation parameters used in TROLL lidar simulation. 
+Function to generate the lidar parameters used in TROLL lidar simulation. 
 All parameters have a default value from literature.
 }
 \examples{

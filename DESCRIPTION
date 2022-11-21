@@ -45,6 +45,7 @@ Collate:
     'TROLLv3_daytimevar.R'
     'TROLLv3_input.R'
     'TROLLv3_output.R'
+    'TROLLv3_pointcloud.R'
     'TROLLv3_species.R'
     'zzz.R'
     'TROLLversion.R'

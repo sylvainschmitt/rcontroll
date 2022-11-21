@@ -15,4 +15,6 @@ dev
 ^pkgdown$
 windows
 simulations
-vignettes/Calib_ALS
+src/new_troll.md
+inst/figures/troll.gif
+inst/figures/troll_gif.R

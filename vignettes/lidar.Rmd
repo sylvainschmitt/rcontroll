@@ -1,0 +1,71 @@
+---
+title: "Lidar simulation using TROLL"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lidar simulation using TROLL}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.height = 6,
+  fig.width = 6
+)
+```
+
+This vignette gives a quick example of a simple workflow to produce discrete lidar LAS from TROLL simulation.
+
+# Setup
+
+We will use `rcontroll`.
+
+```{r libs, eval=FALSE, include=TRUE}
+# suppressMessages(library(dplyr))
+# library(tidyr)
+# library(ggplot2)
+# suppressMessages(library(rcontroll))
+# library(lidR)
+# library(plot3D)
+# library(terra)
+# library(sf)
+# library(rGEDI)
+```
+
+# Lidar simulation
+
+A Lidar slot is added to TROLL simulation if lidar simulation parameters are specified.
+
+```{r, eval=FALSE, include=TRUE}
+data("TROLLv3_output")
+sim <- troll(name = "test",
+             path = getwd(),
+             global = update_parameters(TROLLv3_output, nbiter = 12*1),
+             species = TROLLv3_output@inputs$species,
+             climate = TROLLv3_output@inputs$climate,
+             daily = TROLLv3_output@inputs$daily,
+             forest = get_forest(TROLLv3_output),
+             lidar = generate_lidar(mean_beam_pc = 10,
+                                    sd_beam_pc = 5,
+                                    klaser_pc = 0.63,
+                                    transmittance_laser = 0.1,
+                                    iter_pointcloud_generation = 12*600-1),
+             verbose = TRUE)
+dir_current <- sim@path
+```
+
+The generated lidar simulation provide standard parameters to simulate LAS.
+But the iter of the lidar simulation must be specified using : iter_pointcloud_generation.
+The las file is produced in the same folder as other outputs files.
+It can be read as a typical las file.
+
+```{r, eval=FALSE, include=TRUE}
+pointcloud <- readLAS(file.path(dir_current,"test_0.las")) # read in file
+# pointcloud@header # check format
+# pointcloud@data   # check format
+# plot(pointcloud) # plot
+```
+
+
