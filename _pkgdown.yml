@@ -20,6 +20,7 @@ reference:
   - starts_with("summary")
   - starts_with("autoplot")
   - autogif
+  - get_chm
 - title: Data
   contents:
   - TROLLv3_climatedaytime12

@@ -16,56 +16,108 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette gives a quick example of a simple workflow to produce discrete lidar LAS from TROLL simulation.
+This vignette gives a quick example of a simple workflow to produce discrete lidar point clouds from TROLL simulation and corresponding height canopy models.
 
 # Setup
 
-We will use `rcontroll`.
+We will use `rcontroll` with a previous simulation (`TROLLv3_output`) as a starting point for new simulations. 
 
-```{r libs, eval=FALSE, include=TRUE}
-# suppressMessages(library(dplyr))
-# library(tidyr)
-# library(ggplot2)
-# suppressMessages(library(rcontroll))
-# library(lidR)
-# library(plot3D)
-# library(terra)
-# library(sf)
-# library(rGEDI)
+```{r}
+suppressMessages(library(rcontroll))
+data("TROLLv3_output")
 ```
 
 # Lidar simulation
 
-A Lidar slot is added to TROLL simulation if lidar simulation parameters are specified.
+The `troll` function include a `lidar` input to specify the details of the lidar simulation that can be easily generated using the `generate_lidar` function.
+Parameters for the lidar simulation includes mean and standard deviation of pulse density, the laser attenuation factor, the transmittance of laser after hit, and the iteration for point cloud generation (see `?generate_lidar`).
 
-```{r, eval=FALSE, include=TRUE}
-data("TROLLv3_output")
+```{r }
 sim <- troll(name = "test",
-             path = getwd(),
+             # path = getwd(),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
              daily = TROLLv3_output@inputs$daily,
              forest = get_forest(TROLLv3_output),
-             lidar = generate_lidar(mean_beam_pc = 10,
-                                    sd_beam_pc = 5,
-                                    klaser_pc = 0.63,
-                                    transmittance_laser = 0.1,
-                                    iter_pointcloud_generation = 12*600-1),
-             verbose = TRUE)
-dir_current <- sim@path
+             lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
+             verbose = FALSE)
 ```
 
-The generated lidar simulation provide standard parameters to simulate LAS.
-But the iter of the lidar simulation must be specified using : iter_pointcloud_generation.
-The las file is produced in the same folder as other outputs files.
-It can be read as a typical las file.
+Printing the output `rcontroll` inform the lidar simulation status:
 
-```{r, eval=FALSE, include=TRUE}
-pointcloud <- readLAS(file.path(dir_current,"test_0.las")) # read in file
-# pointcloud@header # check format
-# pointcloud@data   # check format
-# plot(pointcloud) # plot
+```{r}
+sim
 ```
 
+The point cloud can be accessed in a list in the attribute `@las`:
+
+```{r}
+sim@las
+# lidR::plot(sim@las[[1]])
+```
+
+> `lidR` include a `plot` method for las objects with a nice 3D interactive plot.
+
+`rcontroll` includes a `get_chm` method to extract the canopy height model from the point cloud as a raster:
+
+```{r}
+get_chm(sim)
+```
+
+`rcontroll` includes in the `autoplot` method an automatic plot of the canopy height model when choosing `what = "lidar"` (if the lidar simulations as been activated obviously):
+
+```{r}
+rcontroll::autoplot(sim, what = "lidar")
+```
+
+> Prefer to use `rcontroll::autoplot` instead of `autoplot` alone to avoid namespace conflict with `ggplot2`.
+
+# Lidar stack
+
+Similarly, the `stack` function include a `lidar` input to specify the details of the lidar simulation that can be easily generated using the `generate_lidar` function.
+Here we test the difference between a simulation with mean pulse density of 10 (`10pc`) and 20 (`20pc`):
+
+```{r}
+sim_stack <- stack(name = "teststack", 
+                   # path = getwd(),
+                   simulations = c("10pc", "20pc"),
+                   global = update_parameters(TROLLv3_output, nbiter = 12*1),
+                   species = TROLLv3_output@inputs$species,
+                   climate = TROLLv3_output@inputs$climate,
+                   daily = TROLLv3_output@inputs$daily,
+                   forest = get_forest(TROLLv3_output),
+                   lidar = list(
+                     "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
+                     "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12)
+                   ) %>% dplyr::bind_rows(.id = "simulation"),
+                   verbose = FALSE,
+                   cores = 2,
+                   thin = c(1,5,10))
+```
+
+Printing the output `rcontroll` inform the lidar simulation status:
+
+```{r}
+sim_stack
+```
+
+The point clouds can be accessed in a list in the attribute `@las`:
+
+```{r}
+sim_stack@las
+# lidR::plot(sim_stack@las[[2]])
+```
+
+`rcontroll` includes a `get_chm` method to extract the canopy height model from the point clouds as a raster:
+
+```{r}
+get_chm(sim_stack)
+```
+
+`rcontroll` includes in the `autoplot` method an automatic plot of the canopy height model when choosing `what = "lidar"` (if the lidar simulations as been activated obviously):
+
+```{r}
+rcontroll::autoplot(sim_stack, what = "lidar")
+```
 

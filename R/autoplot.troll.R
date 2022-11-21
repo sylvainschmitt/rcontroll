@@ -1,31 +1,34 @@
 #' @include trollsim.R
 #' @include trollstack.R
+#' @include get_chm.trollsim.R
 #' @import methods
 #' @import ggplot2
 #' @importFrom dplyr filter mutate select
 #' @importFrom reshape2 melt
+#' @importFrom terra as.data.frame
 NULL
 
 #' Plot TROLL simulation or stack
 #'
 #' This is a method to plot TROLL simulations, including either temporal
-#' trajectories of whole ecosystem or species metrics, or the initial or final
-#' pattern observed in the forest community. Metrics includes abundances of
-#' individuals above 1cm (N), above 10cm (N10), and above 30cm (N30),
-#' aboveground biomass (AGB), basal area of individuals above 1cm (BA), and
-#' above 10cm (BA10), gross primary production (GPP), net primary production
+#' trajectories of whole ecosystem or species metrics, the initial or final
+#' pattern observed in the forest community, or lidar outputs. Metrics includes
+#' abundances of individuals above 1cm (N), above 10cm (N10), and above 30cm
+#' (N30), aboveground biomass (AGB), basal area of individuals above 1cm (BA),
+#' and above 10cm (BA10), gross primary production (GPP), net primary production
 #' (NPP), respiration of day (Rday), night (Rnight) and stem (Rstem), and
 #' litterfall.
 #'
 #' @param object TROLL simulation or stack.
-#' @param what char. What to plot: "temporal", "spatial" or "distribution".
-#'   "temporal" is for temporal trajectories of the whole ecosystem or defined
-#'   species. "spatial" is for spatial patterns in the initial or final forest.
-#'   "distribution" is for metrics distribution in the initial or final forest.
+#' @param what char. What to plot: "temporal", "spatial" "distribution", or
+#'   "lidar". "temporal" is for temporal trajectories of the whole ecosystem or
+#'   defined species. "spatial" is for spatial patterns in the initial or final
+#'   forest. "distribution" is for metrics distribution in the initial or final
+#'   forest. "lidar" is for canopy height model plot.
 #' @param variables char. Which variable(s) to plot. Only one variable is
 #'   accepted when plotting "spatial".
-#' @param species char. Which species to plot. NULL indicates the whole ecosystem
-#'   level. "all" can be used to use all species.
+#' @param species char. Which species to plot. NULL indicates the whole
+#'   ecosystem level. "all" can be used to use all species.
 #' @param iter char. Which iteration(s) to plot, for temporal thinning or to
 #'   specify which forest to plot. "initial" or "final" can be used. NULL is
 #'   converted to "final".
@@ -47,9 +50,10 @@ setMethod("autoplot", "trollsim", function(
 ) {
   # dplyr
   spnames <- Niter <- value <- variable <- dbh <- s_name <- NULL
+  x <- y <- canopy_height <- NULL
   
   # check parameters
-  if(!(what %in% c("temporal", "spatial", "distribution")))
+  if(!(what %in% c("temporal", "spatial", "distribution", "lidar")))
     stop("what should be temporal, spatial, or distribution")
   if(!is.null(iter)){
     iter <- switch (iter,
@@ -221,6 +225,40 @@ setMethod("autoplot", "trollsim", function(
       g <- g + facet_wrap(~variable, scales = "free", labeller = label_parsed)
     else
       g <- g + facet_grid(variable ~ simulation, scales = "free", labeller = label_parsed)
+  }
+  
+  # lidar
+  if(what == "lidar"){
+    # check las existence
+    if(length(object@las) == 0)
+      stop("The TROLL outputs does not contain a las from lidar simulation.")
+    # variables
+    if(!is.null(variables))
+      message("variables should be null with lidar, the value will be ignored.")
+    # species
+    if(!is.null(species))
+      message("species should be null with lidar, the value will be ignored.")
+    # iter
+    if(!is.null(iter))
+      message("iter should be null with lidar, the value will be ignored.")
+    
+    if(is.null(iter))
+      iter <- max(object@forest$iter)
+    if(all(!(iter %in% unique(object@forest$iter))))
+      stop("iteration not available in the forest table, please check.")
+    Niter <- iter
+    # prep graph
+    g <- get_chm(object) %>% 
+      lapply(as.data.frame, xy = TRUE) %>% 
+      bind_rows(.id = "simulation") %>% 
+      ggplot(aes(x, y, fill = canopy_height)) +
+      geom_raster() +
+      coord_equal() +
+      xlab("X (m)") + ylab("Y (m)") +
+      viridis::scale_fill_viridis("Canpoy\nheight", option = "H") +
+      theme_bw()
+    if(inherits(object, "trollstack"))
+      g <- g + facet_wrap(~simulation)
   }
   
   return(g)

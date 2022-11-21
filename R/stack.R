@@ -202,8 +202,14 @@ stack <- function(name = NULL,
     ecosystem = lapply(stack_res, slot, "ecosystem") %>% 
       bind_rows(.id = "simulation"),
     species = lapply(stack_res, slot, "species") %>% 
-      bind_rows(.id = "simulation")
+      bind_rows(.id = "simulation"),
+    las = lapply(stack_res, slot, "las")
   )
+  
+  if(nrow(stack_res@inputs$lidar) == 0)
+    stack_res@las <- list()
+  if(nrow(stack_res@inputs$lidar) > 0)
+    stack_res@las <- lapply(stack_res@las, `[[`, 1)
   
   # unlink stack path with tmp
   if(tmp)

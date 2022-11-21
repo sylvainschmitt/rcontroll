@@ -15,16 +15,17 @@
 \arguments{
 \item{object}{TROLL simulation or stack.}
 
-\item{what}{char. What to plot: "temporal", "spatial" or "distribution".
-"temporal" is for temporal trajectories of the whole ecosystem or defined
-species. "spatial" is for spatial patterns in the initial or final forest.
-"distribution" is for metrics distribution in the initial or final forest.}
+\item{what}{char. What to plot: "temporal", "spatial" "distribution", or
+"lidar". "temporal" is for temporal trajectories of the whole ecosystem or
+defined species. "spatial" is for spatial patterns in the initial or final
+forest. "distribution" is for metrics distribution in the initial or final
+forest. "lidar" is for canopy height model plot.}
 
 \item{variables}{char. Which variable(s) to plot. Only one variable is
 accepted when plotting "spatial".}
 
-\item{species}{char. Which species to plot. NULL indicates the whole ecosystem
-level. "all" can be used to use all species.}
+\item{species}{char. Which species to plot. NULL indicates the whole
+ecosystem level. "all" can be used to use all species.}
 
 \item{iter}{char. Which iteration(s) to plot, for temporal thinning or to
 specify which forest to plot. "initial" or "final" can be used. NULL is
@@ -35,11 +36,11 @@ A ggplot2 object.
 }
 \description{
 This is a method to plot TROLL simulations, including either temporal
-trajectories of whole ecosystem or species metrics, or the initial or final
-pattern observed in the forest community. Metrics includes abundances of
-individuals above 1cm (N), above 10cm (N10), and above 30cm (N30),
-aboveground biomass (AGB), basal area of individuals above 1cm (BA), and
-above 10cm (BA10), gross primary production (GPP), net primary production
+trajectories of whole ecosystem or species metrics, the initial or final
+pattern observed in the forest community, or lidar outputs. Metrics includes
+abundances of individuals above 1cm (N), above 10cm (N10), and above 30cm
+(N30), aboveground biomass (AGB), basal area of individuals above 1cm (BA),
+and above 10cm (BA10), gross primary production (GPP), net primary production
 (NPP), respiration of day (Rday), night (Rnight) and stem (Rstem), and
 litterfall.
 }

@@ -12,7 +12,8 @@ trollsim(
   log = character(),
   forest = data.frame(),
   ecosystem = data.frame(),
-  species = data.frame()
+  species = data.frame(),
+  las = list()
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ trollsim(
 \item{ecosystem}{df. Ecosystem metrics.}
 
 \item{species}{df. Species metrics (with OUTPUT_extended option).}
+
+\item{las}{list. List with one simulated point cloud in LAS from lidar
+parameters (with lidar option). The LAS format correspond to lidr::LAS.}
 }
 \description{
 This is an S4 class to represent TROLL simulations.

@@ -1,3 +1,12 @@
+# rcontroll 0.1.0.9052
+* lidar backend:
+* las attribute as list(lidR::LAS) for trollsim & trollstack
+* lidR in DESCRIPTION
+* get_chm methods
+* print methods
+* autpolot methods
+* load_output and load_stack
+
 # rcontroll 0.1.0.9051
 * Guillaume cleaned frontend for lidar
 

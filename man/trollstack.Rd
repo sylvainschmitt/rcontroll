@@ -12,7 +12,8 @@ trollstack(
   log = character(),
   forest = data.frame(),
   ecosystem = data.frame(),
-  species = data.frame()
+  species = data.frame(),
+  las = list()
 )
 }
 \arguments{
@@ -22,7 +23,8 @@ trollstack(
 
 \item{parameters}{numeric. Parameters of the simulation (general inputs).}
 
-\item{inputs}{list. Simulation inputs (species, climate, daily, forest,lidar).}
+\item{inputs}{list. Simulation inputs (species, climate, daily,
+forest,lidar).}
 
 \item{log}{chr. Simulation log.}
 
@@ -31,6 +33,9 @@ trollstack(
 \item{ecosystem}{df. Ecosystem metrics.}
 
 \item{species}{df. Species metrics (with OUTPUT_extended option).}
+
+\item{las}{list. list. List with simulated point cloud in LAS from lidar
+parameters (with lidar option). The LAS format correspond to lidr::LAS.}
 }
 \description{
 This is an S4 class to represent TROLL stack.

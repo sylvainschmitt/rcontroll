@@ -25,5 +25,8 @@ This is an S4 class to represent TROLL simulations.
 \item{\code{ecosystem}}{df. Ecosystem metrics.}
 
 \item{\code{species}}{df. Species metrics (with OUTPUT_extended option).}
+
+\item{\code{las}}{list. List with one simulated point cloud in LAS from lidar
+parameters (with lidar option). The LAS format correspond to lidr::LAS.}
 }}
 
