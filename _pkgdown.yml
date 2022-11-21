@@ -2,7 +2,6 @@ url: https://sylvainschmitt.github.io/rcontroll/
 reference:
 - title: Prepare simulations
   contents: 
-  - generate_climate
   - generate_parameters
   - update_parameters
   - get_forest
@@ -36,3 +35,4 @@ reference:
   - trollstack-class
   - trollCpp
   - option.rcontroll
+

@@ -9,6 +9,7 @@ trollCpp(
   climate_file,
   species_file,
   day_file,
+  lidar_file,
   forest_file,
   output_file
 )
@@ -21,6 +22,8 @@ trollCpp(
 \item{species_file}{char. Path to the species file.}
 
 \item{day_file}{char. Path to the daytime file.}
+
+\item{lidar_file}{char. Path to the lidar file.}
 
 \item{forest_file}{char. Path to the forest file.}
 
@@ -38,6 +41,7 @@ trollCpp(global_file = "test/test_input_global.txt",
          climate_file = "test/test_input_climate.txt",
          species_file = "test/test_input_species.txt",
          day_file = "test/test_input_daily.txt",
+         lidar_file = "NULL",
          forest_file = "NULL",
          output_file = "test")
 }

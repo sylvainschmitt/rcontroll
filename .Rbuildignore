@@ -15,3 +15,4 @@ dev
 ^pkgdown$
 windows
 simulations
+vignettes/Calib_ALS

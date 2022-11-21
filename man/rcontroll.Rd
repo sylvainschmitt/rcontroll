@@ -53,6 +53,6 @@ taking advantage of the R package ecosystem.
 }
 
 \section{TROLL}{
- \describe{version 3.1.3}
+ \describe{version 3.1.6}
 }
 

@@ -1,12 +1,5 @@
 # rcontroll 0.1.0.9050
-* generate_climate
-* Climate data vignette
-* Updated README
-* Adding cran-comments
-* file suppression in .troll_child
-
-# rcontroll 0.1.0.9050
-* removing file suppression from .troll_child to avoid memory issues
+* Update TROLL to 3.1.6 & add lidar generation parameters 
 
 # rcontroll 0.1.0.9049
 * fixed and & or operands in cpp for windows-latest (release)

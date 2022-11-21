@@ -46,6 +46,10 @@ load_output <- function(name,
       )
     }
   )
+  lidar_file <- file.path(path, paste0(name, paste0("_input_lidar.txt")))
+  inputs$lidar <- data.frame()
+  if(file.exists(lidar_file))
+    inputs$lidar <- read_tsv(lidar_file, col_types = cols())
   forest_file <- file.path(path, paste0(name, paste0("_input_forest.txt")))
   inputs$forest <- data.frame()
   if(file.exists(forest_file))

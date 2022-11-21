@@ -22,7 +22,7 @@ trollsim(
 
 \item{parameters}{numeric. Parameters of the simulation (general inputs).}
 
-\item{inputs}{list. Simulation inputs (species, climate, daily, forest).}
+\item{inputs}{list. Simulation inputs (species, climate, daily, forest,lidar).}
 
 \item{log}{chr. Simulation log.}
 

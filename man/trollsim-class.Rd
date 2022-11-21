@@ -16,7 +16,7 @@ This is an S4 class to represent TROLL simulations.
 
 \item{\code{parameters}}{numeric. Parameters of the simulation (general inputs).}
 
-\item{\code{inputs}}{list. Simulation inputs (species, climate, daily, forest).}
+\item{\code{inputs}}{list. Simulation inputs (species, climate, daily, forest,lidar).}
 
 \item{\code{log}}{chr. Simulation log.}
 

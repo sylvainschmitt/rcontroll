@@ -12,6 +12,7 @@ stack(
   species,
   climate,
   daily,
+  lidar = NULL,
   forest = NULL,
   verbose = TRUE,
   cores = NULL,
@@ -34,6 +35,9 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{climate}{df. Climate parameters.}
 
 \item{daily}{df. Daily variation parameters.}
+
+\item{lidar}{df. Lidar simulation parameters, if null no computed
+(default NULL).}
 
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
