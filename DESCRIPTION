@@ -32,7 +32,8 @@ Imports:
     tidyr (>= 1.0.0),
     tibble (>= 3.0.0),
     lubridate (>= 1.6.0),
-    terra (>= 1.5-16)
+    terra (>= 1.5-16),
+    lidR (>= 4.0.1)
 Suggests:
     markdown,
     knitr,
@@ -45,6 +46,7 @@ Collate:
     'TROLLv3_daytimevar.R'
     'TROLLv3_input.R'
     'TROLLv3_output.R'
+    'TROLLv3_pointcloud.R'
     'TROLLv3_species.R'
     'zzz.R'
     'TROLLversion.R'
@@ -52,6 +54,7 @@ Collate:
     'load_output.R'
     'troll.R'
     'autogif.R'
+    'get_chm.trollsim.R'
     'trollstack.R'
     'autoplot.troll.R'
     'utils-pipe.R'

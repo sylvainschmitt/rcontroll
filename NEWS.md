@@ -1,5 +1,15 @@
+
+# rcontroll 0.1.0.9052
+* lidar backend:
+* las attribute as list(lidR::LAS) for trollsim & trollstack
+* lidR in DESCRIPTION
+* get_chm methods
+* print methods
+* autpolot methods
+* load_output and load_stack
+
 # rcontroll 0.1.0.9051
-* Updated TROLL rcpp link lidar & stack
+* Guillaume cleaned frontend for lidar
 
 # rcontroll 0.1.0.9050
 * Update TROLL to 3.1.6 & add lidar generation parameters 

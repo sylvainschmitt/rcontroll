@@ -29,6 +29,7 @@ setMethod("print", "trollsim", function(x, ...) {
     cat("Number of simulations :", length(unique(x@inputs$global$simulation)), "\n")
   cat("Extended :", as.logical(x@parameters["_OUTPUT_extended"]), "\n")
   cat("From data :", nrow(filter(x@forest, iter == 0)) > 0, "\n")
+  cat("Lidar simulation :", length(x@las) > 0, "\n")
   cat("Random :", !as.logical(x@parameters["_NONRANDOM"]), "\n\n")
   cat("2D discrete network: horizontal step = ",
       x@parameters["NV"], "m, one tree per 1 m^2 \n"

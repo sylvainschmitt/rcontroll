@@ -6,10 +6,15 @@
 # usethis::use_github_action("check-standard") will install it.
 on:
   push:
-    branches: [main,dev, WIP,LTS]
+    branches:
+      - main
+      - dev
+      - v3.1.6
   pull_request:
-    branches: [main,dev, WIP,LTS]
-
+    branches:
+      - main
+      - dev
+      
 name: R-CMD-check
 
 jobs:
@@ -22,15 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
 
-          - {os: windows-latest, r: 'release'}
-          # Use 3.6 to trigger usage of RTools35
-          - {os: windows-latest, r: '3.6'}
-          # use 4.1 to check with rtools40's older compiler
-          - {os: windows-latest, r: '4.2'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          # - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       GITHUB_PAT: ${{ secrets.GH_TOKEN }}

@@ -55,7 +55,7 @@ troll <- function(name = NULL,
   i <- NULL
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
-  sim <- foreach(i=1, .export = ".troll_child") %dopar%
+  sim <- foreach(i=1, .export = ".troll_child") %dopar% {
     .troll_child(
       name = name,
       path = path,
@@ -68,6 +68,7 @@ troll <- function(name = NULL,
       verbose = verbose,
       overwrite = overwrite,
       thin = thin)
+  }
   stopCluster(cl)
   return(sim[[1]])
 }
@@ -183,17 +184,20 @@ troll <- function(name = NULL,
     "abc_traits10",
     "abc_transmittance",
     "abc_transmittanceALS",
-    # "CHM",
+    "CHM",
     "death",
     "deathrate",
     "death_snapshots",
-    # "LAI",
+    "LAI",
     "ppfd0",
     "sdd",
     "vertd"
   ), function(x) {
     unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
   })
+  # cleaning unused las
+  if(is.null(lidar))
+    unlink(file.path(path, name, paste0(name, "_0", "", ".las")))
   
   # loading outputs
   sim <- load_output(name, file.path(path, name), thin = thin)

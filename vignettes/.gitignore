@@ -1,8 +1,4 @@
 *.html
 *.R
-Calibration.Rmd
-Gap_filling.Rmd
-Lidar_module.Rmd
-sensitivity.Rmd
-Calib_ALS
+*.nc
 
