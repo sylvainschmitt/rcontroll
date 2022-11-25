@@ -41,8 +41,8 @@ trollCpp(global_file = "test/test_input_global.txt",
          climate_file = "test/test_input_climate.txt",
          species_file = "test/test_input_species.txt",
          day_file = "test/test_input_daily.txt",
-         lidar_file = "NULL",
-         forest_file = "NULL",
+         lidar_file = "",
+         forest_file = "",
          output_file = "test")
 }
 

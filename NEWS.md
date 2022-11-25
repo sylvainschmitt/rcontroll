@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9053
+* Fabian TROLL v1.3.7 fixes las closing, no las automatic creation, leafflush bug
+* Fixing the NULL character to "" for TROLL cpp
+
 # rcontroll 0.1.0.9052
 * lidar backend:
 * las attribute as list(lidR::LAS) for trollsim & trollstack

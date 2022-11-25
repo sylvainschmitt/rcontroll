@@ -151,11 +151,11 @@ troll <- function(name = NULL,
   if(!is.null(forest))
     write_tsv(forest, file = forest_path)
   if(is.null(forest))
-    forest_path <- "NULL"
+    forest_path <- ""
   if(!is.null(lidar))
     write_tsv(lidar, file = lidar_path)
   if(is.null(lidar))
-    lidar_path <- "NULL"
+    lidar_path <- ""
   
   # run
   log <- capture.output(
@@ -195,9 +195,6 @@ troll <- function(name = NULL,
   ), function(x) {
     unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
   })
-  # cleaning unused las
-  if(is.null(lidar))
-    unlink(file.path(path, name, paste0(name, "_0", "", ".las")))
   
   # loading outputs
   sim <- load_output(name, file.path(path, name), thin = thin)
