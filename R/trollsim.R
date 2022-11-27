@@ -1,4 +1,5 @@
 #' @import methods
+#' @importFrom lidR LAS
 NULL
 
 #' An S4 class to represent TROLL simulations
@@ -13,6 +14,8 @@ NULL
 #' @slot forest df. Simulation initial and final forest.
 #' @slot ecosystem df. Ecosystem metrics.
 #' @slot species df. Species metrics (with OUTPUT_extended option).
+#' @slot las list. List with one simulated point cloud in LAS from lidar
+#'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
 #'
 #' @export
 setClass(
@@ -25,7 +28,8 @@ setClass(
     log = "character",
     forest = "data.frame",
     ecosystem = "data.frame",
-    species = "data.frame"
+    species = "data.frame",
+    las = "list"
   ),
   prototype(
     name = character(),
@@ -35,7 +39,8 @@ setClass(
     log = character(),
     forest = data.frame(),
     ecosystem = data.frame(),
-    species = data.frame()
+    species = data.frame(),
+    las = list()
   )
 )
 
@@ -51,6 +56,8 @@ setClass(
 #' @param forest df. Simulation initial and final forest.
 #' @param ecosystem df. Ecosystem metrics.
 #' @param species df. Species metrics (with OUTPUT_extended option).
+#' @param las list. List with one simulated point cloud in LAS from lidar
+#'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
 #'
 #' @export
 #' @rdname trollsim
@@ -62,7 +69,8 @@ trollsim <- function(
   log = character(),
   forest = data.frame(),
   ecosystem = data.frame(),
-  species = data.frame()
+  species = data.frame(),
+  las = list()
 ) {
   return(new("trollsim",
              name = name,
@@ -72,6 +80,7 @@ trollsim <- function(
              log = log,
              forest = forest,
              ecosystem = ecosystem,
-             species = species
+             species = species,
+             las = las
   ))
 }

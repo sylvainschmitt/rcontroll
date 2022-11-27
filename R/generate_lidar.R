@@ -1,6 +1,6 @@
-#' Generate lidar simulation parameters
+#' Generate lidar parameters
 #'
-#'@description Function to generate the lidar simulation parameters used in TROLL lidar simulation. 
+#'@description Function to generate the lidar parameters used in TROLL lidar simulation. 
 #'All parameters have a default value from literature.
 #'
 #' @param mean_beam_pc num. Mean pulse density (pulses per m2).

@@ -17,8 +17,7 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
  *    - Version 2.3: Isabelle Marechaux, Fabian Fischer, Jerome Chave (Oct 2016 to March 2017; Marechaux & Chave 2017)
  *    - Version 2.4 & 2.5: Fabian Fischer (Feb 2018 to May 2020)
  *    - Version 3.0: Fabian Fischer, Isabelle Marechaux, Jerome Chave (Jan 2021)
- *    - Version 3.1: Fabian Fischer, Isabelle Marechaux (Jan-Feb 2022)
- *    - Version 3.6 : Fabian Fischer (Oct-Nov 2022)
+ *    - Version 3.1: Fabian Fischer, Isabelle Marechaux (Jan-Feb 2022; corrections Sep-Nov 2022)
  *
  * Compiling options
  * -----------------
@@ -1360,7 +1359,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
     parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
     SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
     
-    if(t_leaflifespan == 0.0 | t_lambda_young == 0.0 | t_lambda_mature == 0.0 | t_lambda_old == 0.0) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
+    if((t_leaflifespan == 0.0) | (t_lambda_young == 0.0) | (t_lambda_mature == 0.0) | (t_lambda_old == 0.0)) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
     
     //*#######################################*/
     //*## Traits that vary during tree life ##*/
@@ -2756,9 +2755,9 @@ void Tree::UpdateLeafDynamics() {
         la_excess = 0.0;
         new_young = flush_fine;
       } else {
+        flush_needed = fmaxf(flush_needed-la_excess,0.0); // moved upwards in v.3.1.7; unnecessary if la_excess < 0.0, and flush_needed should be updated before calculating new_young
         new_young = fminf(flush_fine,flush_needed);
       }
-      flush_needed = fmaxf(flush_needed-la_excess,0.0);
       
       // subtract from flush whatever has been allocated
       flush -= new_young;
@@ -3536,8 +3535,8 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
 //'          climate_file = "test/test_input_climate.txt",
 //'          species_file = "test/test_input_species.txt",
 //'          day_file = "test/test_input_daily.txt",
-//'          lidar_file = "NULL",
-//'          forest_file = "NULL",
+//'          lidar_file = "",
+//'          forest_file = "",
 //'          output_file = "test")
 //' }
 //'
@@ -3562,10 +3561,12 @@ void trollCpp(
   bufi_pointcloud = &lidar_file[0] ;
   buf = &output_file[0] ;
   
+  _FromInventory = 0; // added v.3.1.7, was previously undefined when no inputfile was provided
+  _OUTPUT_pointcloud = 0;  // added v.3.1.7, was previously undefined when no inputfile was provided  
+  
   if(strlen(bufi_data) != 0) _FromInventory = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
-  
-  if(strlen(bufi_data) != 0) _OUTPUT_pointcloud = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
-  
+  if(strlen(bufi_pointcloud) != 0) _OUTPUT_pointcloud = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
+    
   //int main(int argc,char *argv[]) { // now left as comment to recuperate original TROLL version
   
   //!*********************
@@ -3623,11 +3624,11 @@ void trollCpp(
   sprintf(inputfile_soil,"%s",bufi_soil);
   sprintf(inputfile_species,"%s",bufi_species);
   
-  if(_OUTPUT_pointcloud){
+  if(_OUTPUT_pointcloud == 1){
     sprintf(inputfile_pointcloud,"%s",bufi_pointcloud); // v.3.1.6
   }
   
-  if(_FromInventory){
+  if(_FromInventory == 1){
     sprintf(inputfile_inventory,"%s",bufi_data);
   }
   
@@ -3661,11 +3662,11 @@ void trollCpp(
   InitialiseABC();
 #endif
   
-  if(_OUTPUT_pointcloud){
+  if(_OUTPUT_pointcloud == 1){
     ReadInputPointcloud();  // parameters for point cloud generation, v.3.1.6
   }
   
-  if(_FromInventory){
+  if(_FromInventory  == 1){
     ReadInputInventory();   // Initial configuration of the forest, read from data
   }
   
@@ -4723,7 +4724,7 @@ void InitialiseOutputStreams(){
     }
     
     // v.3.1.6 output for point cloud
-    if(_OUTPUT_pointcloud){
+    if(_OUTPUT_pointcloud == 1){
       sprintf(nnn,"%s_%i.las",buf, easympi_rank);
       output_pointcloud.open(nnn, ios::out | ios::binary);
       output_pointcloud.imbue(locale::classic()); // justification here: https://stackoverflow.com/questions/14750496/sending-integer-to-fstream-as-little-endian; locale regulates how streams print and read values (i.e. commas vs. points for decimals, etc.); setting it to classic to ensure portability, but not entirely sure how important this is in practice for binary files
@@ -4989,7 +4990,7 @@ void ReadInputInventory(){
     if(flag_dbh == 1){
       Rcout << "WARNING! No diameter column provided, no initialization from file will be carried out." << endl;
     } else {
-      if(flag_col == 1 | flag_row == 1) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
+      if((flag_col == 1) | (flag_row == 1)) Rcout << "WARNING! At least one coordinate column (col/row) is missing, random coordinates chosen" << endl;
       if(flag_species == 1) Rcout << "WARNING! No species column provided, random species chosen" << endl;
       
       int nb_parameterlines = 0;
@@ -6813,7 +6814,7 @@ void UpdateTransmittanceCHM_ABC(float mean_beam, float sd_beam, float klaser, fl
             float LAI_current = LAI3D[h][site + SBORD];
             
             float prob_hit;
-            if(LAI_above == 100.0 & LAI_current == 100.0){
+            if((LAI_above == 100.0) & (LAI_current == 100.0)){
               //stem returns
               hits = nbbeams;
               nbbeams = 0;
@@ -8329,6 +8330,8 @@ void CloseOutputs(){
       }
     }
   }
+  
+  if(_OUTPUT_pointcloud == 1) output_pointcloud.close(); // added in v.3.1.7 to properly close LAS file
   
 #ifdef Output_ABC
   for(int i = 0; i < 11; i++){

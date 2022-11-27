@@ -1,0 +1,6 @@
+param	value	description
+mean_beam_pc	10	/* mean pulse density (pulses per m2) */
+sd_beam_pc	5	/* sd of pulse density (per m2) */
+klaser_pc	0.63	/* the k constant (reflecting geometric properties of the canopy) */
+transmittance_laser	0.4	/* percentage of pulses that continue through the canopy after a hit, multiply with klaser_pc to obtain an effective klaser */
+iter_pointcloud_generation	3600	/* iteration for point cloud generation */

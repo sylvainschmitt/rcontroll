@@ -2,7 +2,9 @@ url: https://sylvainschmitt.github.io/rcontroll/
 reference:
 - title: Prepare simulations
   contents: 
+  - generate_climate
   - generate_parameters
+  - generate_lidar
   - update_parameters
   - get_forest
 - title: Run simulations
@@ -18,11 +20,13 @@ reference:
   - starts_with("summary")
   - starts_with("autoplot")
   - autogif
+  - get_chm
 - title: Data
   contents:
   - TROLLv3_climatedaytime12
   - TROLLv3_daytimevar
   - TROLLv3_input
+  - TROLLv3_pointcloud
   - TROLLv3_output
   - TROLLv3_species
 - title: Miscellaneous

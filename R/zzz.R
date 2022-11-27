@@ -18,3 +18,7 @@ NULL
 .onUnload <- function(libpath) {
   unlink(getOption("rcontroll.tmp"), force = TRUE, recursive = TRUE)
 }
+
+.gslCall <- function(){
+  RcppGSL::LdFlags()
+}
