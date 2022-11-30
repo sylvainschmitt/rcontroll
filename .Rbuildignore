@@ -18,3 +18,5 @@ simulations
 src/new_troll.md
 inst/figures/troll.gif
 inst/figures/troll_gif.R
+inst/figures/lidar.png
+inst/figures/lidr_fig.R
