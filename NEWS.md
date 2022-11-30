@@ -1,3 +1,10 @@
+# rcontroll 0.1.0.9056
+- remove license from build
+- update GA check
+- remove GA covr
+- update description title
+- code cleaning with lintr::lint_package & styler::style_pkg
+
 # rcontroll 0.1.0.9055
 * LICENSE.md
 

@@ -22,9 +22,8 @@ An S4 \linkS4class{trollsim} class object.
 Function to load a stack of outputs from TROLL simulations.
 }
 \examples{
-
 \dontrun{
- load_stack("test", "./")
+load_stack("test", "./")
 }
 
 }

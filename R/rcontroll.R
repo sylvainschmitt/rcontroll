@@ -53,6 +53,6 @@
 #'
 #' @docType package
 #' @name rcontroll
-#'   
+#'
 NULL
 # > NULL

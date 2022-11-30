@@ -9,10 +9,10 @@ NULL
 #' @return Print in console.
 #'
 #' @examples
-#' 
+#'
 #' data("TROLLv3_output")
 #' summary(TROLLv3_output)
-#' 
+#'
 #' @name summary.trollsim
 #'
 NULL
