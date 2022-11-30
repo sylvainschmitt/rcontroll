@@ -1,3 +1,6 @@
+# rcontroll 0.1.0.9055
+* LICENSE.md
+
 # rcontroll 0.1.0.9054
 * lidr figure, updated README & doc, updated version
 
