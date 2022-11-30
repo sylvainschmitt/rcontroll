@@ -35,6 +35,9 @@
       <a href="../articles/climate.html">Generate climate data</a>
     </li>
     <li>
+      <a href="../articles/lidar.html">Lidar simulation using TROLL</a>
+    </li>
+    <li>
       <a href="../articles/troll.html">The TROLL model</a>
     </li>
     <li>
@@ -77,6 +80,7 @@
 <span>  <span class="va">species</span>,</span>
 <span>  <span class="va">climate</span>,</span>
 <span>  <span class="va">daily</span>,</span>
+<span>  lidar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  forest <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cores <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -114,6 +118,11 @@ corresponding to a simulation in memory without saved intermediary files.</p></d
 
 <dt>daily</dt>
 <dd><p>df. Daily variation parameters.</p></dd>
+
+
+<dt>lidar</dt>
+<dd><p>df. Lidar simulation parameters, if null no computed
+(default NULL).</p></dd>
 
 
 <dt>forest</dt>

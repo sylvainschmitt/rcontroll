@@ -35,6 +35,9 @@
       <a href="../articles/climate.html">Generate climate data</a>
     </li>
     <li>
+      <a href="../articles/lidar.html">Lidar simulation using TROLL</a>
+    </li>
+    <li>
       <a href="../articles/troll.html">The TROLL model</a>
     </li>
     <li>
@@ -86,7 +89,7 @@
 
 
 <dt><code>inputs</code></dt>
-<dd><p>list. Simulation inputs (species, climate, daily, forest).</p></dd>
+<dd><p>list. Simulation inputs (species, climate, daily, forest,lidar).</p></dd>
 
 
 <dt><code>log</code></dt>
@@ -103,6 +106,11 @@
 
 <dt><code>species</code></dt>
 <dd><p>df. Species metrics (with OUTPUT_extended option).</p></dd>
+
+
+<dt><code>las</code></dt>
+<dd><p>list. List with one simulated point cloud in LAS from lidar
+parameters (with lidar option). The LAS format correspond to lidr::LAS.</p></dd>
 
 
 </dl></div>

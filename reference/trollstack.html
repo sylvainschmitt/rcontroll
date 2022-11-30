@@ -35,6 +35,9 @@
       <a href="../articles/climate.html">Generate climate data</a>
     </li>
     <li>
+      <a href="../articles/lidar.html">Lidar simulation using TROLL</a>
+    </li>
+    <li>
       <a href="../articles/troll.html">The TROLL model</a>
     </li>
     <li>
@@ -77,7 +80,8 @@
 <span>  log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  forest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  ecosystem <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  las <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,7 +100,8 @@
 
 
 <dt>inputs</dt>
-<dd><p>list. Simulation inputs (species, climate, daily, forest).</p></dd>
+<dd><p>list. Simulation inputs (species, climate, daily,
+forest,lidar).</p></dd>
 
 
 <dt>log</dt>
@@ -113,6 +118,11 @@
 
 <dt>species</dt>
 <dd><p>df. Species metrics (with OUTPUT_extended option).</p></dd>
+
+
+<dt>las</dt>
+<dd><p>list. list. List with simulated point cloud in LAS from lidar
+parameters (with lidar option). The LAS format correspond to lidr::LAS.</p></dd>
 
 </dl></div>
 

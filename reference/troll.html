@@ -35,6 +35,9 @@
       <a href="../articles/climate.html">Generate climate data</a>
     </li>
     <li>
+      <a href="../articles/lidar.html">Lidar simulation using TROLL</a>
+    </li>
+    <li>
       <a href="../articles/troll.html">The TROLL model</a>
     </li>
     <li>
@@ -76,6 +79,7 @@
 <span>  <span class="va">species</span>,</span>
 <span>  <span class="va">climate</span>,</span>
 <span>  <span class="va">daily</span>,</span>
+<span>  lidar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  forest <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -110,6 +114,11 @@ corresponding to a simulation in memory without saved intermediary files.</p></d
 <dd><p>df. Daily variation parameters.</p></dd>
 
 
+<dt>lidar</dt>
+<dd><p>df. Lidar simulation parameters, if null no computed
+(default NULL).</p></dd>
+
+
 <dt>forest</dt>
 <dd><p>df. TROLL with forest input, if null starts from an empty grid
 (default NULL).</p></dd>
@@ -125,7 +134,8 @@ corresponding to a simulation in memory without saved intermediary files.</p></d
 
 <dt>thin</dt>
 <dd><p>int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no thinning.</p></dd>
+kept to reduce output size, default is NULL and corresponds to no
+thinning.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -152,6 +162,7 @@ kept to reduce output size, default is NULL and corresponds to no thinning.</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> Path :  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Extended : TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> From data : FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lidar simulation : FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random : FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2D discrete network: horizontal step =  1 m, one tree per 1 m^2 </span>

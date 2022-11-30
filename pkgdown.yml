@@ -3,9 +3,10 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   climate: climate.html
+  lidar: lidar.html
   troll: troll.html
   workflow: workflow.html
-last_built: 2022-09-29T16:56Z
+last_built: 2022-11-30T18:04Z
 urls:
   reference: https://sylvainschmitt.github.io/rcontroll/reference
   article: https://sylvainschmitt.github.io/rcontroll/articles

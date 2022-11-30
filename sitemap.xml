@@ -4,10 +4,16 @@
     <loc>https://sylvainschmitt.github.io/rcontroll/404.html</loc>
   </url>
   <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/articles/climate.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/articles/lidar.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/articles/troll.html</loc>
@@ -40,6 +46,9 @@
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_output.html</loc>
   </url>
   <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_pointcloud.html</loc>
+  </url>
+  <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_species.html</loc>
   </url>
   <url>
@@ -52,7 +61,13 @@
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_climate.html</loc>
   </url>
   <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_lidar.html</loc>
+  </url>
+  <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_parameters.html</loc>
+  </url>
+  <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_chm.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_forest.html</loc>

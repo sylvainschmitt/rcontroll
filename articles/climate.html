@@ -60,6 +60,9 @@
       <a href="../articles/climate.html">Generate climate data</a>
     </li>
     <li>
+      <a href="../articles/lidar.html">Lidar simulation using TROLL</a>
+    </li>
+    <li>
       <a href="../articles/troll.html">The TROLL model</a>
     </li>
     <li>
@@ -250,7 +253,7 @@
 <span>  <span class="fu">addCircleMarkers</span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
 <p>You can extract corresponding coordinates using <code>st_coordinates</code> from <code>sf</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">geo_lite_sf</span><span class="op">(</span><span class="st">"Réserve naturelle des nouragues, 97301, Régina"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">st_coordinates</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">geo_lite_sf</span><span class="op">(</span><span class="st">"Réserve naturelle des nouragues, 97301, Régina"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You will also need the corresponding time zone for time correction as ERA5-land is giving us time in UTC. For that you can use the <code>tz_lookup_coords</code> function from the package <code>lutz</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">tz</span> <span class="op">&lt;-</span> <span class="fu">lutz</span><span class="fu">::</span><span class="fu">tz_lookup_coords</span><span class="op">(</span>lon <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, lat <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, method <span class="op">=</span> <span class="st">"accurate"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
