@@ -58,7 +58,7 @@ generate_climate <- function(x, y, tz,
   ddeg <- endtime <- monthlyvalue <- psat <- random <- seasonal <- sp <- sp_trans <- NULL
   ssrd <- ssrd_trans <- starttime <- t2m <- tdeg <- timestep <- tp <- tp_trans <- NULL
   trend <- u10 <- v10 <- value <- vardaytime_T <- vardaytime_light <- vardaytime_vpd <- NULL
-  variable <- vp <- vpd <- windspeed <- NULL
+  variable <- vp <- vpd <- windspeed <- M <- NULL
   
   # hourly
   era5_hr_r <- rast(era5land_hour)
@@ -75,7 +75,7 @@ generate_climate <- function(x, y, tz,
   tlag <- t1 - t0
   era5_hr$date <- era5_hr$date + hms("48:00:00")
   era5_hr$date <- era5_hr$date - tlag
-  rm(t0, t1, tlag)
+  rm(t0, t1)
   era5_hr <- era5_hr %>% 
     mutate(year = year(date)) %>% 
     mutate(month = month(date)) %>%
@@ -95,14 +95,16 @@ generate_climate <- function(x, y, tz,
       group_by(variable) %>% 
       do(decompose(ts(.$value,frequency=24),type = "additive")[c("seasonal", "trend", "random")] %>% 
            as.data.frame()) %>% 
+      group_by(variable) %>% 
+      mutate(M = mean(trend, na.rm = TRUE)) %>%
       slice(1:24) %>% 
       mutate(timestep = 1:24) %>% 
-      mutate_at(c("trend", "random"), funs(ifelse(timestep %in% daytime_start:daytime_end, ., NA))) %>% 
-      mutate(value = (seasonal + mean(trend + random, na.rm = TRUE)) / mean(trend + random, na.rm = TRUE)) %>% 
-      select(-seasonal, -trend, -random) %>% 
+      mutate(value = seasonal + M) %>% 
+      select(-seasonal, -trend, -random, -M) %>% 
       ungroup() %>% 
       spread(variable, value)
   )
+  tlag <- as.numeric(tlag) - 1
   daytimevar <- suppressWarnings(
     lapply(as.list(select(era5_hr, tdeg, ddeg, vpd, sp_trans)), function(x)
       spline(seq(0,23), x, xout = seq(0,23.5,0.5), method = "periodic") %>% 
@@ -110,14 +112,14 @@ generate_climate <- function(x, y, tz,
     spread(variable, y) %>% 
     left_join(
       spline(seq((daytime_start-1),(daytime_end+1)), 
-             era5_hr$ssrd_trans[(daytime_start-1):(daytime_end+1)],
-             xout = seq((daytime_start-1),daytime_end + 0.5,0.5), method = "natural") %>% 
-        as.data.frame() %>% 
+             era5_hr$ssrd_trans[(daytime_start-1+tlag):(daytime_end+1+tlag)],
+             xout = seq((daytime_start-1), daytime_end - 0.5,0.5), method = "natural") %>% 
+        as.data.frame() %>%  
         rename(ssrd_trans = y), by = "x"
     )) %>% 
     rename(starttime = x) %>% 
     mutate(endtime = starttime + 0.5)
-  rm(era5_hr)
+  rm(era5_hr, tlag)
 
   # monthly
   era5_mt_r <- rast(era5land_month)
@@ -173,13 +175,15 @@ generate_climate <- function(x, y, tz,
                                    "vpd" = "VaporPressureDeficit",
                                    "ssrd_trans" = "MeanIrradiance")) %>% 
           group_by(variable) %>% 
+          mutate(daytimevalue = ifelse(is.na(daytimevalue), 0, daytimevalue)) %>% 
+          mutate(daytimevalue = daytimevalue/mean(daytimevalue)) %>% 
           nest(), by = "variable"
       ) %>% 
       unnest(cols = c(data)) %>% 
       mutate(value = monthlyvalue*daytimevalue) %>%
       select(-monthlyvalue, -daytimevalue) %>% 
       spread(variable, value) %>% 
-      mutate(VapourPressureDeficitVPDbasic = .DewtoVPD(ddeg, Temperature, sp_trans)/1000) %>% 
+      mutate(VapourPressureDeficitVPDbasic = .DewtoVPD(ddeg, Temperature, sp_trans)/1000) %>%
       select(-ddeg, -sp_trans) %>% 
       gather(variable, value, -month, -starttime) %>% 
       mutate(Timeperiod = ifelse(starttime %in% daytime_start:daytime_end, "Daytime", "Night")) %>% 
@@ -204,8 +208,10 @@ generate_climate <- function(x, y, tz,
   daytimevar <- suppressWarnings(daytimevar %>% 
                                    rename(vardaytime_light = ssrd_trans, vardaytime_vpd = vpd, vardaytime_T = tdeg) %>% 
                                    select(starttime, endtime, vardaytime_light, vardaytime_vpd, vardaytime_T) %>% 
-                                   filter(starttime %in% seq(6.5, 18, 0.5)) %>% 
-                                   mutate_all(funs(ifelse(. < 0, 0, .))))
+                                   filter(starttime %in% seq(daytime_start - 0.5, daytime_end - 1, 0.5)) %>% 
+                                   mutate_all(funs(ifelse(. < 0, 0, .))) %>% 
+                                   mutate_at(c("vardaytime_light", "vardaytime_vpd", "vardaytime_T"), funs(./mean(.)))
+                                 )
   
   return(list(daytimevar = daytimevar,
               climatedaytime12 = climatedaytime12))

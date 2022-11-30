@@ -1,12 +1,24 @@
-# rcontroll 0.1.0.9050
-* generate_climate
-* Climate data vignette
-* Updated README
-* Adding cran-comments
-* file suppression in .troll_child
+# rcontroll 0.1.0.9054
+* lidr figure, updated README & doc, updated version
+
+# rcontroll 0.1.0.9053
+* Fabian TROLL v1.3.7 fixes las closing, no las automatic creation, leafflush bug
+* Fixing the NULL character to "" for TROLL cpp
+
+# rcontroll 0.1.0.9052
+* lidar backend:
+* las attribute as list(lidR::LAS) for trollsim & trollstack
+* lidR in DESCRIPTION
+* get_chm methods
+* print methods
+* autpolot methods
+* load_output and load_stack
+
+# rcontroll 0.1.0.9051
+* Guillaume cleaned frontend for lidar
 
 # rcontroll 0.1.0.9050
-* removing file suppression from .troll_child to avoid memory issues
+* Update TROLL to 3.1.6 & add lidar generation parameters 
 
 # rcontroll 0.1.0.9049
 * fixed and & or operands in cpp for windows-latest (release)

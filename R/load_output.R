@@ -2,6 +2,7 @@
 #' @importFrom readr read_tsv cols read_file
 #' @importFrom dplyr bind_rows n filter
 #' @importFrom reshape2 melt dcast
+#' @importFrom lidR readLAS LAS
 NULL
 
 #' Function to load outputs from a TROLL simulation.
@@ -46,6 +47,10 @@ load_output <- function(name,
       )
     }
   )
+  lidar_file <- file.path(path, paste0(name, paste0("_input_lidar.txt")))
+  inputs$lidar <- data.frame()
+  if(file.exists(lidar_file))
+    inputs$lidar <- read_tsv(lidar_file, col_types = cols())
   forest_file <- file.path(path, paste0(name, paste0("_input_forest.txt")))
   inputs$forest <- data.frame()
   if(file.exists(forest_file))
@@ -87,6 +92,15 @@ load_output <- function(name,
     species <- data.frame()
   }
   
+  # @las
+  las_file <- file.path(path, paste0(name, "_0", "", ".las"))
+  if(file.exists(las_file)){
+    file.copy(las_file, paste0(las_file, ".save.las"))
+    las <- list(readLAS(file.path(las_file)))
+  } else {
+    las <- list()
+  }
+  
   return(
     trollsim(
       name = name,
@@ -96,7 +110,8 @@ load_output <- function(name,
       log = log,
       forest = forest,
       ecosystem = ecosystem,
-      species = species
+      species = species,
+      las = las
     )
   )
 }

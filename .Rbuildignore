@@ -2,7 +2,7 @@
 ^\.Rproj\.user$
 .travis.yml
 README.Rmd
-cran-comment.md
+cran-comments.md
 dev
 ^appveyor\.yml$
 ^data-raw$
@@ -15,3 +15,8 @@ dev
 ^pkgdown$
 windows
 simulations
+src/new_troll.md
+inst/figures/troll.gif
+inst/figures/troll_gif.R
+inst/figures/lidar.png
+inst/figures/lidr_fig.R
