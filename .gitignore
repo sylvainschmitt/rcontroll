@@ -17,4 +17,4 @@ config.status
 windows
 simulations
 supplementary.html
-*.nc
+vignettes/calib_ALS

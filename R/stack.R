@@ -21,6 +21,8 @@ NULL
 #' @param species df. Species parameters.
 #' @param climate df. Climate parameters.
 #' @param daily df. Daily variation parameters.
+#' @param lidar df. Lidar simulation parameters, if null no computed
+#'   (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
 #'   (default NULL).
 #' @param verbose bool. Show TROLL outputs in the console.
@@ -30,7 +32,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
-#'   
+#'
 #' @return A trollstack object. 
 #'
 #' @export
@@ -65,6 +67,7 @@ stack <- function(name = NULL,
                   species,
                   climate,
                   daily,
+                  lidar = NULL,
                   forest = NULL,
                   verbose = TRUE,
                   cores = NULL,
@@ -127,6 +130,13 @@ stack <- function(name = NULL,
     forest <- lapply(simulations, function(x) forest)
     names(forest) <- simulations
   }
+  
+  if(!is.null(lidar)) {
+    lidar <- .prep_input(lidar, simulations)
+  } else {
+    lidar <- lapply(simulations, function(x) lidar)
+    names(lidar) <- simulations
+  }
   if(tmp) {
     sim_path <- lapply(simulations, function(x) NULL)
     names(sim_path) <- simulations
@@ -152,6 +162,7 @@ stack <- function(name = NULL,
                        species = species[[sim]],
                        climate = climate[[sim]],
                        daily = daily[[sim]],
+                       lidar = lidar[[sim]],
                        forest = forest[[sim]],
                        verbose = verbose,
                        overwrite = overwrite,
@@ -161,8 +172,6 @@ stack <- function(name = NULL,
   close(pb)
   stopCluster(cl)
   names(stack_res) <- simulations
-  
-  # list of sims to stack
   stack_res <- trollstack(
     name = stack_res[[1]]@name,
     path = path_o,
@@ -182,6 +191,9 @@ stack <- function(name = NULL,
         bind_rows(.id = "simulation"),
       forest = lapply(stack_res, slot, "inputs") %>% 
         lapply(`[[`, "forest") %>% 
+        bind_rows(.id = "simulation"),
+      lidar = lapply(stack_res, slot, "inputs") %>% 
+        lapply(`[[`, "lidar") %>% 
         bind_rows(.id = "simulation")
     ),
     log = paste(lapply(stack_res, slot, "log")),
@@ -190,9 +202,15 @@ stack <- function(name = NULL,
     ecosystem = lapply(stack_res, slot, "ecosystem") %>% 
       bind_rows(.id = "simulation"),
     species = lapply(stack_res, slot, "species") %>% 
-      bind_rows(.id = "simulation")
+      bind_rows(.id = "simulation"),
+    las = lapply(stack_res, slot, "las")
   )
-
+  
+  if(nrow(stack_res@inputs$lidar) == 0)
+    stack_res@las <- list()
+  if(nrow(stack_res@inputs$lidar) > 0)
+    stack_res@las <- lapply(stack_res@las, `[[`, 1)
+  
   # unlink stack path with tmp
   if(tmp)
     unlink(path_o)

@@ -11,6 +11,7 @@ troll(
   species,
   climate,
   daily,
+  lidar = NULL,
   forest = NULL,
   verbose = TRUE,
   overwrite = TRUE,
@@ -31,6 +32,9 @@ corresponding to a simulation in memory without saved intermediary files.}
 
 \item{daily}{df. Daily variation parameters.}
 
+\item{lidar}{df. Lidar simulation parameters, if null no computed
+(default NULL).}
+
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
 
@@ -39,7 +43,8 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{overwrite}{bool. Overwrite previous outputs.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no thinning.}
+kept to reduce output size, default is NULL and corresponds to no
+thinning.}
 }
 \value{
 A trollsim object.
