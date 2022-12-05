@@ -32,6 +32,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
+#' @param inmemory bool. Load outputs in memory.
 #'
 #' @return A trollstack object. 
 #'
@@ -72,7 +73,8 @@ stack <- function(name = NULL,
                   verbose = TRUE,
                   cores = NULL,
                   overwrite = TRUE,
-                  thin = NULL) {
+                  thin = NULL,
+                  inmemory = TRUE) {
   # cores
   if(is.null(cores)){
     cores <- detectCores()
@@ -166,7 +168,8 @@ stack <- function(name = NULL,
                        forest = forest[[sim]],
                        verbose = verbose,
                        overwrite = overwrite,
-                       thin = thin
+                       thin = thin,
+                       inmemory = inmemory
                      )
                    }
   close(pb)

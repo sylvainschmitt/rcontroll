@@ -24,6 +24,8 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
+#' @param inmemory bool. Load outputs in memory.
+#'   
 #'
 #' @return A trollsim object.
 #'
@@ -51,7 +53,8 @@ troll <- function(name = NULL,
                   forest = NULL,
                   verbose = TRUE,
                   overwrite = TRUE,
-                  thin = NULL) {
+                  thin = NULL,
+                  inmemory = TRUE) {
   i <- NULL
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
@@ -67,7 +70,8 @@ troll <- function(name = NULL,
       forest = forest,
       verbose = verbose,
       overwrite = overwrite,
-      thin = thin)
+      thin = thin,
+      inmemory = inmemory)
   }
   stopCluster(cl)
   return(sim[[1]])
@@ -83,7 +87,8 @@ troll <- function(name = NULL,
                          forest = NULL,
                          verbose = TRUE,
                          overwrite = TRUE,
-                         thin = NULL) {
+                         thin = NULL,
+                         inmemory = TRUE) {
   
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
@@ -197,11 +202,12 @@ troll <- function(name = NULL,
   })
   
   # loading outputs
-  sim <- load_output(name, file.path(path, name), thin = thin)
+  sim <- load_output(name, file.path(path, name), thin = thin, inmemory = inmemory)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()
   }
-  
   return(sim)
+  
+  
 }
