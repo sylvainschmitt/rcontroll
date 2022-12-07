@@ -101,6 +101,10 @@ troll <- function(name = NULL,
     stop("forest should be a data frame or null.")
   if(!(class(lidar) %in% c("data.frame", "NULL")))
     stop("lidar should be a data frame or null.")
+  if(lidar[5,2] > global[5,2] & lidar[5,2] > 0){
+    message("'iter_pointcloud_generation' is not within the simulation interval.\nAdjusting iter_pointcloud_generation to last available simulation iter.")
+    lidar[5,2] <- global[5,2]-1
+  }
   
   # model name
   if (is.null(name)) {
