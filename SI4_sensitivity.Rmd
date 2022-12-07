@@ -13,7 +13,7 @@ output:
     toc_float: yes
 linestretch: 1.5
 csl: bibliography/mee.csl
-bibliography: bibliography/library.bib
+bibliography: library.bib
 link-citations: yes
 ---
 
@@ -164,17 +164,12 @@ tibble(index_params = c(2,6,8,10)) |>
   mutate(parameters = colnames(calib_dataset$Y)[c(2,6,8,10)]) |> dplyr::select(parameters,cor_param,RMSE_param)|> kbl()
 ```
 
-+----------------------------------------------------------------------------------------+-----------------------------+-------------------------------+
-| Studied TROLL outputs                                                                  | Correlation factor ($\rho$) | Root Mean Square Error (RMSE) |
-+:======================================================================================:+:===========================:+:=============================:+
-| Above Ground Biomass $(\log(AGB+1)~.unitless)$                                         | 0.61                        | 0.72                          |
-+----------------------------------------------------------------------------------------+-----------------------------+-------------------------------+
-| Number of tree with a diameter at 1.30m height over 10 cm $(\log(N_{10}+1)~.unitless)$ | 0.78                        | 1.06                          |
-+----------------------------------------------------------------------------------------+-----------------------------+-------------------------------+
-| Number of tree with a diameter at 1.30m height over 30 cm $(\log(N_{30}+1)~.unitless)$ | 0.74                        | 0.90                          |
-+----------------------------------------------------------------------------------------+-----------------------------+-------------------------------+
-| Gross Primary Production $(GPP~MgC.ha^{-1})$                                           | 0.88                        | 0.35                          |
-+----------------------------------------------------------------------------------------+-----------------------------+-------------------------------+
+|                                 Studied TROLL outputs                                  | Correlation factor ($\rho$) | Root Mean Square Error (RMSE) |
+|:--------------------------------------------------------------------------------------:|:---------------------------:|:-----------------------------:|
+|                     Above Ground Biomass $(\log(AGB+1)~.unitless)$                     |            0.61             |             0.72              |
+| Number of tree with a diameter at 1.30m height over 10 cm $(\log(N_{10}+1)~.unitless)$ |            0.78             |             1.06              |
+| Number of tree with a diameter at 1.30m height over 30 cm $(\log(N_{30}+1)~.unitless)$ |            0.74             |             0.90              |
+|                      Gross Primary Production $(GPP~MgC.ha^{-1})$                      |            0.88             |             0.35              |
 
 : **Table 2:** Quality check of gaussian processes interpolators for studied TROLL outputs
 
