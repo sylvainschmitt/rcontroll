@@ -10,3 +10,5 @@
 simulations
 *_cache
 *_files
+data/*
+figures/*

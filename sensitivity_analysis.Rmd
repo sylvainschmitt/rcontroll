@@ -1,0 +1,647 @@
+---
+title: "Sensitivity analysis of the TROLL model in French Guiana"
+output: 
+  bookdown::html_document2:
+    number_sections: false  
+    toc: true
+    toc_float: yes
+  bookdown::word_document2:
+    reference_docx: ./template/template.docx
+  bookdown::pdf_document2:
+    includes:
+      before_body: ./template/doc_prefix.tex
+      in_header: ./template/preamble.tex
+    number_sections: false
+    toc: false
+    keep_tex: no
+linestretch: 1.5
+link-citations: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+Guillaume Salzet$^{1,2}$
+
+$^1$ INRAE, UMR BETA, 54042 Nancy, France; $^2$ INRAE, UMR EcoFoG
+(Agroparistech, Cirad, CNRS, Université des Antilles, Université de la
+Guyane), Campus Agronomique, 97310 Kourou, French Guiana;
+
+# Introduction
+
+Forest modelling aims to reproduce at a given scale of space and time
+emergent properties from sub-entities. Classically these entities in
+gap-models are cohorts of trees or for D(G)VM these are representative
+plant functional types. The underlying hypothesis is small scale
+interaction between entities can reproduce global patterns. In case of
+TROLL this hypothesis is furthermore implied with the use of individual
+ecophysiological processes.
+
+However, all this models rely on complex implementation and use high
+level of resources (time of computation) to provide results at their
+designed scale. Working with such complex models create challenges : \*
+Simulations are time consuming and require the use of High Performance
+Computers when replicates are needed; \* Model calibration are very
+complicated due to unpredictability of behaviour's model. This task need
+two steps to achieve calibration : a sensitivity analysis to select
+adapted parameters and a model inversion to selection which parameters
+of the model are more likely to produce observed outputs; \* Model
+prediction need to assess uncertainties produced by the model. This goal
+imply to select calibration methods that allow to use calibrated-model
+in a reverse and forward uncertainty propagation.
+
+As proof of concept of interface between TROLL simulator and R package
+ecosystem, we decide to interface TROLL through rcontroll and realize
+the first step for local calibration of the model : the sensitivity
+analysis.
+
+The sensitivity analysis is composed of three steps (sample design,
+computation of outputs and evaluation of indices). All these steps rely
+on available R packages and can be reproduced with this vignette.
+
+All used function designed for this analysis are available in the R file:
+
+:   SI5_calibration_functions.R
+
+```{r calibration functions, eval=FALSE, include=FALSE}
+source("SI5_calibration_functions.R")
+
+ls()
+```
+
+# Simulation experiment
+
+To perform the sensitivity analysis, we selected a set of global
+parameters previously studied in Maréchaux & Chave (2017), Rau *et al.*
+(2022) and Fisher (2019). Theses parameters are presented in the
+following table:
+
++------------+-------------+-----------+--------------+
+| **P        | Parameters  | ***A      | Source       |
+| rocessus** |             | priori*** |              |
+|            |             | interval  |              |
++:==========:+:===========:+:=========:+:============:+
+| **Leaf     | $           | [0.50,    | (Maréchaux & |
+| ecoph      | k_{light}$: | 0.95]     | Chave, 2017) |
+| ysiology** | light       |           |              |
+|            | extinction  |           |              |
+|            | coefficient |           |              |
+|            |             |           |              |
+|            | (d          |           |              |
+|            | im          |           |              |
+|            | ensionless) |           |              |
++------------+-------------+-----------+--------------+
+| \-         | $\Phi$ :    | [0.04,    | \-           |
+|            | apparent    | 0.09]     |              |
+|            | quantum     |           |              |
+|            | yield for C |           |              |
+|            | fixation    |           |              |
+|            |             |           |              |
+|            | ($m o l~C   |           |              |
+|            |  .mo l~p ho |           |              |
+|            | tons^{-1}$) |           |              |
++------------+-------------+-----------+--------------+
+| \-         | $g_{1}$:    | [2.00,    | \-           |
+|            | stomatal    | 5.00]     |              |
+|            | conductance |           |              |
+|            | parameter   |           |              |
+|            | (kPa)       |           |              |
++------------+-------------+-----------+--------------+
+| **Carbon   | $f_{wood}$  | [0.01,    | \            |
+| al         | :fraction   | 1.00]     | $f\_{wood} + |
+| location** | of NPP      |           | f            |
+|            | allocated   |           | \_{canopy} + |
+|            | to wood     |           | f\_{leaf} =  |
+|            | growth (%)  |           | 1 \$         |
++------------+-------------+-----------+--------------+
+| \-         | $           | [0.01,    | \-           |
+|            | f_{canopy}$ | 1.00]     |              |
+|            | :fraction   |           |              |
+|            | of NPP      |           |              |
+|            | allocated   |           |              |
+|            | to canopy   |           |              |
+|            | (%)         |           |              |
++------------+-------------+-----------+--------------+
+| Mortality  | $m_{0}$:    | [0.01,    | (Fisher,     |
+|            | maximal     | 0.05]     | 2019)        |
+|            | basal       |           |              |
+|            | mortality   |           |              |
+|            | rate        |           |              |
+|            |             |           |              |
+|            | (           |           |              |
+|            | $ev ent s.  |           |              |
+|            | year^{-1}$) |           |              |
++------------+-------------+-----------+--------------+
+| \-         | $wsg_{lim}$ | [1.00,    | (Maréchaux & |
+|            | : wood      | 1.20]     | Chave, 2017) |
+|            | specific    |           |              |
+|            | gravity     |           |              |
+|            | limiting    |           |              |
+|            | mortality   |           |              |
+|            | factor (d   |           |              |
+|            | im          |           |              |
+|            | ensionless) |           |              |
++------------+-------------+-----------+--------------+
+| \-         | $V_{c}$ :   | [0.01,    | (Rau *et     |
+|            | treefall    | 0.15]     | al.*, 2022)  |
+|            | stochastic  |           |              |
+|            | threshold   |           |              |
+|            | (d          |           |              |
+|            | im          |           |              |
+|            | ensionless) |           |              |
++------------+-------------+-----------+--------------+
+| **Re       | \$          | [100, 100 | (Maréchaux & |
+| pr         | C\_{        | 000]      | Chave, 2017) |
+| oduction** | seedrain}\$ |           |              |
+|            | : Total     |           |              |
+|            | number of   |           |              |
+|            | r           |           |              |
+|            | eproduction |           |              |
+|            | op          |           |              |
+|            | portunities |           |              |
+|            | coming from |           |              |
+|            | outside     |           |              |
++------------+-------------+-----------+--------------+
+| \-         | $nbs_{0}$ : | [1, 1000] | \-           |
+|            | local seed  |           |              |
+|            | dispersed   |           |              |
+|            | par mature  |           |              |
+|            | tree        |           |              |
++------------+-------------+-----------+--------------+
+| **Crown    | $CR_{a}$ :  | [1.5, 3]  | (Fisher,     |
+| a          | intercept   |           | 2019) with a |
+| llometry** | of Log-Log  |           | correlation  |
+|            | regression  |           | factor:      |
+|            | to infer    |           |              |
+|            | crown       |           | $            |
+|            | radius from |           | \rho = 0.65$ |
+|            | DBH         |           |              |
++------------+-------------+-----------+--------------+
+| \-         | $CR_{b}$ :  | [0.4,     | \-           |
+|            | slope of    | 0.8]      |              |
+|            | Log-Log     |           |              |
+|            | regression  |           |              |
+|            | to infer    |           |              |
+|            | crown       |           |              |
+|            | radius from |           |              |
+|            | DBH         |           |              |
++------------+-------------+-----------+--------------+
+
+: **Table 1:** Global parameters used for sensitivity analysis.
+Parameters have been classified by associated processus. The a priori
+interval used for sensitivity analysis is given for each parameter with
+its source.
+
+## Sampling design
+
+The first step is the sample design of the tested parameters. We define
+bounded ranges for each parameters to test according to (Maréchaux &
+Chave, 2017). The sampling design is optimized to maxime the minimal
+distance between sampling points in parameters hypercube using `lhs`
+package within the `Generate_LHS_Autocalib` function.
+
+The hypercube of parameters is re-projected to match the bounded ranges
+and correlation factor previously defined.
+
+```{r Standard_LHS, echo=FALSE}
+library(tidyverse)
+library(kableExtra)
+library(rcontroll)
+library(tidyverse)
+library(raster)
+library(doSNOW)
+library(kableExtra)
+parameters <- c("klight","phi","g1","fallocwood","falloccanopy","m","vC","Cseedrain","log10nbs0","CR_a","CR_b","m1")
+lower <- c(0.5,4E-2,2,1E-2,1E-2,1E-2,1E-2,1E2,0,1.5,0.4,1)
+upper = c(0.95,9E-2,5,1,1,0.05,0.15,1E5,3,3,0.8,1.2) 
+global_parameters_boundaries <- data.frame("parameter" = parameters,"lower" = lower,
+                                           "upper" = upper)
+
+global_parameters_boundaries %>%
+  kbl(caption = "a priori ranges of parameters and correction factor") %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "float_right")
+```
+
+```{r eval=FALSE, include=TRUE}
+LHS_design <- Generate_LHS_Autocalib(nsim = 500,nreplicat = 10,paramLHS = global_parameters_boundaries,Nyears = 600,Nsampling = 100)
+
+Generated_parameters <- Generate_parameters_autocalib(LHS_design = LHS_design)
+```
+
+## Computation of outputs
+
+The second step is computation of the variables of interest using TROLL
+model within rcontroll package.
+
+Once the parameters were defined and optimized, we use the `stack`
+function of `rcontroll` within the `autocalibGP` function to simulate
+forests from the bare ground for 600 years with 10 replicates. The
+extraction of variables of interest is processed by batch at the end of
+the simulation. A denoising processing of the estimate is used to obtain
+the mean response of variable of interest.
+
+```{r eval=FALSE, include=TRUE}
+calib_dataset <- autocalibGP(Generated_parameters = Generated_parameters,
+                             PATH = getwd(),
+                             ncores_sim = 100,
+                             ncores = 50,
+                             NiterHetGP = NULL,
+                             initj = 1,Jrefresh = 25,
+                             GPComputation = TRUE)
+
+save(calib_dataset, "rcontrollTROLL_calib_1000x10LHS_600y.rda")
+```
+
+We check the estimation quality of the denoised mean response vs value
+from the simulations. For example, the true vs fitted plot of GPP
+simulation:
+
+```{r echo=FALSE}
+library(hetGP)
+
+load("~/Nextcloud/Model/TROLL/datasets/rcontrollTROLL_calib_1000x10LHS_600y.rda")
+
+plot(calib_dataset$GPmodels$MeanGpp$mod.MeanGpp)
+
+```
+
+## Evaluation of sensitivity indices
+
+The third step is the estimation of the sensitivity indices through a
+qualitative approach with elementary effect analysis (Morris analysis)
+and for each variable the variance-based indices (Sobol indices). These
+analysis are processed using `sensitivity` and `sensobol` packages.
+
+### Elementary effects analysis
+
+The Morris analysis is a qualitative analysis for screening or
+eliminating non-influential factors (Morris, 1991). This method is also
+called the elementary effects method and relies on an one-step-at-a-time
+sampling design (i.e. in each run only one input parameter is given a
+new value). Therefore, it is possible to calculate the "elementary
+effect (EE)" of each parameter on the outputs, one by one, and finally
+evaluate the influence of all of them on the results. Finally,
+sensitivity factors can be compared globally and the
+non-linearity/interaction of the model can be described qualitatively.
+
+```{r eval=TRUE, include=TRUE}
+library(sensitivity)
+library(dplyr)
+library(hetGP)
+
+load("~/Nextcloud/Model/TROLL/datasets/rcontrollTROLL_calib_1000x10LHS_600y.rda")
+set.seed(42)
+
+morrisOut <- morris(
+  model = NULL,
+  factors = calib_dataset$params[c(1:9,11:13)],
+  r = 100,
+  design = list(type = "oat", levels = 20, grid.jump = 3),
+  binf = 0.33,
+  bsup = 0.66,
+  scale = FALSE)
+
+X <- cbind(morrisOut[['X']][,1:9], 
+           matrix(0.5,nrow =dim(morrisOut[['X']])[1],ncol = 1),
+           morrisOut[['X']][,10:12],
+           matrix(0.5,nrow =dim(morrisOut[['X']])[1],ncol = 2))
+
+Y <- matrix(c(scale(predict(calib_dataset$GPmodels$MeanAgb$mod.MeanAgb,X)$mean),
+              scale(predict(calib_dataset$GPmodels$MeanSum10$mod.MeanSum10,X)$mean),
+              scale(predict(calib_dataset$GPmodels$MeanSum30$mod.MeanSum30,X)$mean),
+              scale(predict(calib_dataset$GPmodels$MeanGpp$mod.MeanGpp,X)$mean)), 
+            ncol = 4, byrow = FALSE)
+
+tell(morrisOut,Y)
+
+# summarise the moris output
+morrisOut.df <- data.frame(
+  parameter = calib_dataset$params[c(1:9,11:13)],
+  mu.star = apply(abs(morrisOut$ee), 2, mean, na.rm = T),
+  sigma = apply(morrisOut$ee, 2, sd, na.rm = T)) |> 
+  arrange( mu.star )
+
+
+```
+
+For this Morris analysis we focused on same the model's outputs as
+Maréchaux & Chave (2017):
+
+-   $AGB$ Above Ground Biomass (including diameter at 1.30m height over
+    10 cm);
+
+-   $N_{10}$ Number of tree with a diameter at 1.30m height over 10 cm;
+
+-   $N_{30}$ Number of tree with a diameter at 1.30m height over 30 cm;
+
+-   $GPP$ Gross primary production.
+
+We use the morrisMultOut function which implement an extension for
+multidimensional outputs (Monari & Strachan, 2017).
+
+Following this method, the outputs are scaled to avoid biased
+estimation.
+
+```{r FigA_Morris, echo=FALSE, fig.height=7, fig.width=7}
+library(tidyverse)
+library(ggrepel)
+library(grid)
+
+Morris_fig <- morrisOut.df|> as_tibble() |> 
+  mutate(parameter_i = recode(parameter, 
+                              "m" = "m[0]",
+                              "CR_a" = "CR[a]",
+                              "phi" = "Phi",
+                              "fallocwood" = "f[wood]",
+                              "falloccanopy" = "f[canopy]",
+                              "klight" = "k",
+                              "vC" = "v[C]",
+                              "Cseedrain" = "seedrain",
+                              "CR_b" = "CR[b]",
+                              "log10nbs0" = "n[s]",
+                              "g1" = "g[1]",
+                              "m1" = "wsg[lim]"
+  ),
+  type = factor(recode(parameter, 
+                       "m" = "Mortality",
+                       "CR_a" = "Crown allometry",
+                       "phi" = "Leaf ecophysiology",
+                       "fallocwood" = "Carbon allocation",
+                       "falloccanopy" = "Carbon allocation",
+                       "klight" = "Leaf ecophysiology",
+                       "vC" = "Mortality",
+                       "Cseedrain" = "Reproduction",
+                       "CR_b" = "Crown allometry",
+                       "log10nbs0" = "Reproduction",
+                       "g1" = "Leaf ecophysiology",
+                       "m1" = "Mortality"
+  ))) |> dplyr::select(-parameter) |> 
+  rename(parameter = parameter_i) |> 
+  ggplot(aes(x = mu.star, y = sigma))+
+  geom_abline(slope = 1,intercept = 0, linetype = "solid", color = "grey50") + 
+  geom_abline(slope = 0.1,intercept = 0, linetype = "twodash", color = "grey50") +
+  geom_abline(slope = 0.5,intercept = 0, linetype = "dashed", color = "grey50") +
+  annotate(
+    geom = "text", x = 2.25, y = 4.8, 
+    label = "Non-linear and/ or \n  interactions", hjust = 0, vjust = 1, size = 5, color = "grey50") +
+  annotate(
+    geom = "text", x = 3.75, y = 3.2, 
+    label = "  Almost\nmonotonic", hjust = 0, vjust = 1, size = 5, color = "grey50") +
+  annotate(
+    geom = "text", x = 4.5, y = 1.5, 
+    label = "Monotonic", hjust = 0, vjust = 1, size = 5, color = "grey50") +
+  annotate(
+    geom = "text", x = 5.3, y = 0.3, 
+    label = "Linear", hjust = 0, vjust = 1, size = 5, color = "grey50") +
+  geom_point(size = 2) +
+  geom_label_repel(aes(label = parameter,fill = type), color = "black",parse = TRUE, size = 4.5,
+                   box.padding = unit(0.7, "lines"),
+                   point.padding = unit(0.7, "lines"),show.legend = FALSE, direction = "both",min.segment.length = 0.1) + 
+  scale_fill_grey(start = 0.6,end = 1) +
+  ylim(0.1,NA) + xlim(0.1,NA) +
+  labs( x = expression(Absolute~mean~of~elementary~effect ~ mu * "*" ~(unitless)),
+        y = expression(Variance~of~elementary~effect~sigma~(unitless))) +
+  theme_bw()+
+  theme(text = element_text(size = 14))
+
+ggsave(plot = Morris_fig,filename = "Morris_fig.png",device = "png",width = 10,height = 10,dpi = 300)
+```
+
+![**Figure A:** Sensitivity of TROLL global parameters using Morris
+analysis. 12 global parameters of TROLL were tested. The level of grey
+of the label indicates parameters implied in the same processus (from
+dark grey to white respectively : carbon allocation, crown allometry,
+leaf ecophysiology, mortality and reproduction). The x-axis represent
+represent the absolute mean of elementary effect µ\* and the y-axis
+represents the variance of elementary effect σ.](Morris_fig.png)
+
+The global outputs sensitivity is summarized in the figure $A$ for each
+Troll model parameters with its parameters of elementary effect
+distribution : the absolute mean ($\mu^{*}$) and standard-error
+($\sigma$).
+
+A high $\mu^{*}$ indicates a factor with a heavy overall influence on
+model outputs; a high $\sigma$ indicates heterogeneity of the
+sensitivity across the parameter space, which could indicate
+non-linearities or interactions with other parameters (over the solid
+line).
+
+A high $\mu^{*}$also tends to produce high $\sigma$, so $\sigma$ should
+be interpreted relative to $\mu^{*}$.
+
+To help the analysis, the three lines dividing the space provide the
+type of relation according to the ratio $\sigma / \mu^{*}$ :
+
+-   linear if $\sigma / \mu^{*}<0.1$ ;
+
+-   monotonic if $0.1<\sigma / \mu^{*}<0.5$ ;
+
+-   almost monotonic if $0.5 <\sigma / \mu^{*} < 1$
+
+-   non-linear and/ or with interactions if $\sigma / \mu^{*}>1$).
+
+We can observe our results are in agreement with Maréchaux & Chave
+(2017) and Fisher (2019), highlighting TROLL sensitivity to the
+parameters $CR_{a}$ of crown radius - DBH relationship, fraction of NPP
+allocated in canopy $f_{canopy}$ and apparent quantum yield for C
+fixation $\phi$, which are implied respectively in crown allometry,
+carbon allocation and photosynthesis processes.
+
+### Variance-based Indices
+
+Variance-based sensitivity analysis use the variance to describe the
+model output uncertainty. In this framework, the variance of the output
+of the model is decomposed into fractions which can be attributed to
+inputs or sets of inputs. The percent of variance attributed to an input
+can be interpreted directly as a sensibility index.
+
+Initially described by Sobol, the decomposition is commonly summarized
+into three order of indices :
+
+-   the first order indices ($S_{i}$) represents the marginal impact of
+    an input $i$ on the output of interest;
+
+-   the second order indices ($S_{ij}$) represents the interacting
+    impact of an input $i$ jointly with an input $j$ ($i \neq j$) on the
+    output of interest;
+
+-   the total order indices ($T_{i}$) represents the overall impact of
+    an input $i$ jointly with all the interaction on the output of
+    interest.
+
+To process these indices, we use the `sensobol` package and speed-up the
+computation by using the Azzani formula of indices.
+
+```{r,fig.height=10,fig.width=10,eval=FALSE,include=FALSE}
+library(sensobol)
+library(hetGP)
+library(ggraph)
+library(GGally)
+library(tidyverse)
+
+set.seed(42)
+load("~/Nextcloud/Model/TROLL/datasets/rcontrollTROLL_calib_1000x10LHS_600y.rda")
+N <- 2^10
+k <- 8
+params <- calib_dataset$params[c(1:9,11:13)]
+R <- 10^3
+type <- "percent"
+first <- total <- "azzini"
+conf <- 0.95
+order <- "second"
+matrices <- c("A", "B", "AB", "BA")
+mat <- sobol_matrices(matrices = matrices, N = N, params = params,
+                      order = order, type = "LHS")
+
+X <- cbind(mat[,1:9], 
+           matrix(0.5,nrow =dim(mat)[1],ncol = 1),
+           mat[,10:12],
+           matrix(0.5,nrow =dim(mat)[1],ncol = 2))
+
+Y <- matrix(c(scale(predict(calib_dataset$GPmodels$MeanAgb$mod.MeanAgb,X)$mean),
+              scale(predict(calib_dataset$GPmodels$MeanSum10$mod.MeanSum10,X)$mean),
+              scale(predict(calib_dataset$GPmodels$MeanSum30$mod.MeanSum30,X)$mean),
+              scale(predict(calib_dataset$GPmodels$MeanGpp$mod.MeanGpp,X)$mean)), 
+            ncol = 4, byrow = FALSE)
+
+
+ind <- sobol_indices(matrices = matrices, Y = Y[,3], N = N, params = params,
+                     first = first, total = total, order = order, boot = TRUE, 
+                     R = R,
+                     parallel = "no", type = type, conf = conf)
+
+ind.dummy <- sobol_dummy(Y = Y[,3], N = N, params = params, boot = TRUE,
+                         R = R)
+
+cols <- colnames(ind$results)[1:5]
+ind$results[, (cols) := round(.SD, 3), .SDcols = (cols)]
+val_sens <- ind$results |> 
+  as_tibble() |> 
+  mutate(param_sens = sub(pattern = '\u002E',replacement = " ",x = parameters,fixed = TRUE)) |> 
+  separate(param_sens, into = c("from","to"),fill = "right",remove = TRUE,sep = "\\s") |> 
+  mutate(sig = if_else(low.ci > 0 | sensitivity != "Sij", TRUE,FALSE),
+         original = if_else(original<=0, 0, original))
+
+val_sens$original[val_sens$sig == FALSE] <- NA
+
+ST_sens <- val_sens |> as_tibble() |> 
+  dplyr::select(original,parameters,sensitivity) |> 
+  filter(sensitivity != "Sij") |> 
+  mutate(parameter_i = recode(parameters, 
+                              "m" = "m[0]",
+                              "CR_a" = "CR[a]",
+                              "phi" = "Phi",
+                              "fallocwood" = "f[wood]",
+                              "falloccanopy" = "f[canopy]",
+                              "klight" = "k",
+                              "vC" = "v[C]",
+                              "Cseedrain" = "seedrain",
+                              "CR_b" = "CR[b]",
+                              "log10nbs0" = "n[s]",
+                              "g1" = "g[1]",
+                              "m1" = "wsg[lim]"
+  ),type = as.factor(recode(parameters, 
+                                    "m" = "Mortality",
+                                    "CR_a" = "Crown allometry",
+                                    "phi" = "Leaf ecophysiology",
+                                    "fallocwood" = "Carbon allocation",
+                                    "falloccanopy" = "Carbon allocation",
+                                    "klight" = "Leaf ecophysiology",
+                                    "vC" = "Mortality",
+                                    "Cseedrain" = "Reproduction",
+                                    "CR_b" = "Crown allometry",
+                                    "log10nbs0" = "Reproduction",
+                                    "g1" = "Leaf ecophysiology",
+                                    "m1" = "Mortality"
+  ))) |> spread(key = sensitivity, value = original)
+
+
+graph_sens <- val_sens |> filter(sensitivity == "Sij") |> 
+  select(from,to,original,sig) |> 
+  rename(weight = original) |> 
+  tidygraph::as_tbl_graph() |> 
+  left_join(ST_sens, by = c("name" = "parameters")) |> 
+  mutate(Si_dummy = ind.dummy$original[1],
+         Ti_dummy = ind.dummy$original[2],
+         sobol = paste0("Si: ", ifelse(is.na(Si*100),0,if_else(Si > Si_dummy, paste0(Si*100,"*"), paste0(Si*100)) ), 
+                        " %\n","Ti: ", ifelse(is.na(Ti*100),0,if_else(Ti > Ti_dummy, paste0(Ti*100,"*"), paste0(Ti*100)) )," %"),) |> 
+  arrange(type)
+
+# plot_scatter(data = mat, N = N, Y = Y[,1], params = params, method = "bin")
+# plot(ind, dummy = ind.dummy)
+
+ply <- ggraph(graph_sens, layout = 'linear', circular = TRUE) + 
+  geom_edge_arc(aes(width  = weight*100),alpha = 0.65) + 
+  geom_node_point(shape = 21, aes(size = Ti*100), fill = "black") +
+  geom_node_point(shape = 21, aes(size = Si*100,fill = type )) +
+  theme_graph() + theme(legend.position="right",legend.box = "vertical")+
+  scale_size(range = c(0,10),name = "1st (Si) & Total (Ti)\nSobol indices (%)") +
+  scale_edge_width_continuous(range = c(0.1,3),name = "2nd (Sij)\nSobol indices (%)") +
+  scale_fill_grey(start = 0.6,end = 1,name = "Processus\ntype") +
+  scale_edge_radius(range = c(0,10)) + 
+  coord_fixed(xlim = c(-1.4, 1.4), ylim = c(-1.4, 1.4)) +
+  ggtitle("Variance-based analysis of TROLL model","Variable of interest : N30")
+
+  
+
+graph_ply <- ply + geom_node_text(aes(label = parameter_i),nudge_x = ply$data$x * 0.32, nudge_y = ply$data$y * 0.32,
+                 parse = TRUE,size = 6,check_overlap = FALSE) +
+   geom_node_text(aes(label = sobol),parse = FALSE,
+                  nudge_x = ply$data$x * 0.33 , nudge_y = ply$data$y * 0.33-0.15,
+                  size = 4,check_overlap = FALSE) 
+
+ggsave(graph_ply,filename = "graph_sens_N30.png",height = 10,width = 10,dpi = 300,device = "png")
+
+```
+
+![**Figure B:** Sensitivity of TROLL global parameters using Sobol
+analysis. 12 global parameters of TROLL were tested. The level of grey
+of the label indicates parameters implied in the same processus (from
+dark grey to white respectively : carbon allocation, crown allometry,
+leaf ecophysiology, mortality and reproduction). Thre size of the dot
+indicate the percentage of the effet. the inner dot represent the first
+order index ($S_i$) and the outer dot represent the total order ($T_i$).
+The star next to the index indicate a significant effect compare to a
+dummy variable. The width of arc joining the edges represents the
+strength of the second order index ($S_{ij}$). Only significant arc are
+represented.](graph_sens_N30.png)
+
+We presents the results of the Sobol analysis for $N_{30}$ in Figure B.
+
+# Discussion
+
+# References
+
+1.  Maréchaux, I., & Chave, J. (2017). An individual-based forest model
+    to jointly simulate carbon and tree diversity in Amazonia:
+    Description and applications. *Ecological Monographs*, *87*(4),
+    632--664. <https://doi.org/10.1002/ecm.1271>
+
+2.  Rau, E.-P., Fischer, F., Joetzjer, É., Maréchaux, I., Sun, I. F., &
+    Chave, J. (2022). Transferability of an individual- and trait-based
+    forest dynamics model: A test case across the tropics. *Ecological
+    Modelling*, *463*, 109801.
+    <https://doi.org/10.1016/j.ecolmodel.2021.109801>
+
+3.  Fisher, F. (2019). *Inférence de la structure et dynamique des
+    forêts tropicales humides avec un modèle individu-centré* [Phd
+    thesis]. Université Toulouse 3 - Paul Sabatier.
+
+4.  Morris, M. D. (1991). Factorial Sampling Plans for Preliminary
+    Computational Experiments. *Technometrics*, *33*(2), 161--174.
+    <https://doi.org/10.1080/00401706.1991.10484804>
+
+5.  Monari, F., & Strachan, P. (2017). Characterization of an airflow
+    network model by sensitivity analysis: Parameter screening, fixing,
+    prioritizing and mapping. *Journal of Building Performance
+    Simulation*, *10*(1), 17--36.
+    <https://doi.org/10.1080/19401493.2015.1110621>
+
+6.  Binois, M., & Gramacy, R. B. (2021). hetGP: Heteroskedastic Gaussian
+    Process Modeling and Sequential Design in R. *Journal of Statistical
+    Software*, *98*, 1--44. <https://doi.org/10.18637/jss.v098.i13>
+
+7.  Puy, A., Piano, S. L., Saltelli, A., & Levin, S. A. (2022).
+    sensobol: An R Package to Compute Variance-Based Sensitivity
+    Indices. *Journal of Statistical Software*, *102*, 1--37.
+    <https://doi.org/10.18637/jss.v102.i05>

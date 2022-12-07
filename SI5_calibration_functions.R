@@ -289,25 +289,25 @@ Generate_parameters_autocalib <- function(LHS_design,
   
 }
 
-###################################dtexp################################################
-dtexp <- function(x, rate, low, upp)
+###################################.dtexp################################################
+.dtexp <- function(x, rate, low, upp)
 {
   PU <- pexp(upp, rate=rate)
   PL <- pexp(low, rate=rate)
   dexp(x, rate) / (PU-PL) * (x >= low) * (x <= upp) 
 }
 
-###################################ptexp################################################
-ptexp <- function(q, rate, low, upp)
+###################################.ptexp################################################
+.ptexp <- function(q, rate, low, upp)
 {
   PU <- pexp(upp, rate=rate)
   PL <- pexp(low, rate=rate)
   (pexp(q, rate)-PL) / (PU-PL) * (q >= low) * (q <= upp) + 1 * (q > upp)
 }
 
-###################################get_lambda################################################
+###################################.get_lambda################################################
 
-get_lambda <- function(CHM,sumCHM) {
+.get_lambda <- function(CHM,sumCHM) {
   
   gaps_stats <-ForestGapR::GapStats(gap_layer = ForestGapR::getForestGaps(CHM,threshold = sumCHM[4]*1/3),chm_layer = CHM)
   
@@ -323,15 +323,15 @@ get_lambda <- function(CHM,sumCHM) {
 }
 
 
-###################################SumVar################################################
+###################################.SumVar################################################
 
-SumVar <- function(i,
-                   WIP_folder_PATH,
-                   MCtotal,
-                   MCSpecies,
-                   FinalPattern,
-                   Nyears,
-                   Nsampling,Trait_phylo,bbox,precision,SpeciesCriteria){
+.SumVar <- function(i,
+                    WIP_folder_PATH,
+                    MCtotal,
+                    MCSpecies,
+                    FinalPattern,
+                    Nyears,
+                    Nsampling,Trait_phylo,bbox,precision,SpeciesCriteria){
   
   EstParam <- c()
   
@@ -533,9 +533,9 @@ SumVar <- function(i,
   return(as.numeric(EstParam))
 }
 
-###################################extractVar################################################
+###################################.extractVar################################################
 
-extractVar <- function(stacktmp,
+.extractVar <- function(stacktmp,
                        WIP_folder_PATH,
                        Nyears,
                        Nsampling,
@@ -558,7 +558,7 @@ extractVar <- function(stacktmp,
   cl <- parallel::makeCluster(ncores, outfile = "")
   #Register cluster
   registerDoSNOW(cl)
-  clusterExport(cl, c("dtexp","ptexp","SumVar","get_lambda"))
+  clusterExport(cl, c(".dtexp",".ptexp",".SumVar","get_lambda"))
   pb <- txtProgressBar(max = length(unique(MCtotal$simulation)), style = 3)
   progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
@@ -567,16 +567,16 @@ extractVar <- function(stacktmp,
                        .packages = c("dplyr","coda","tidyr","entropart","fitdistrplus","sf","sp","raster","ForestGapR","LoggingLab"),
                        .combine = rbind,
                        .inorder = TRUE,.options.snow = opts) %dopar% {
-                         results <- try(SumVar(i = i,
-                                WIP_folder_PATH = WIP_folder_PATH,
-                                MCtotal = MCtotal,
-                                MCSpecies = MCSpecies,
-                                FinalPattern = FinalPattern,
-                                Nyears = Nyears,
-                                Nsampling = Nsampling,
-                                Trait_phylo = Trait_phylo,
-                                bbox = bbox,
-                                precision = 1))
+                         results <- try(.SumVar(i = i,
+                                               WIP_folder_PATH = WIP_folder_PATH,
+                                               MCtotal = MCtotal,
+                                               MCSpecies = MCSpecies,
+                                               FinalPattern = FinalPattern,
+                                               Nyears = Nyears,
+                                               Nsampling = Nsampling,
+                                               Trait_phylo = Trait_phylo,
+                                               bbox = bbox,
+                                               precision = 1))
                          
                          if (inherits(results,"try-error")) {
                            return(rep(NA, times = 24))
@@ -644,7 +644,7 @@ autocalibGP <- function(Generated_parameters,
     mutate(ID_iter = ceiling(row_number()/ncores_sim))
   
   if (is.null(Y)){
-
+    
     initk <- Generated_parameters$initk
   }else{
     initk <- dim(Y)[1]
@@ -653,141 +653,15 @@ autocalibGP <- function(Generated_parameters,
   
   if ((initk/ncores_sim +1)<=max(nrep$ID_iter)) {
     
- 
-  for (blocki in (initk/ncores_sim +1):max(nrep$ID_iter)) {
     
-    simulations <- as.character(unlist(nrep %>%
-                                         filter(ID_iter == ( blocki)) %>% 
-                                         dplyr::select(Sim_ID)))
-    
-    
-    cat(paste0("Computing TROLL initial simulation # ", blocki , " / ", max(nrep$ID_iter), " ",
-               gsub(":", "-",
-                    gsub(
-                      " ", "_",
-                      timestamp(
-                        prefix = "",
-                        suffix = "",
-                        quiet = T
-                      )
-                    )),"\n"))
-    
-    gc()
-    
-    sim_stack <- try(rcontroll::stack(path = WIP_folder_PATH,
-                                      name = "sim_stack",
-                                      simulations = simulations,
-                                      global = Generated_parameters$TROLL_global_params %>% 
-                                        filter(simulation %in% simulations),
-                                      species = Generated_parameters$TROLL_species_data  %>% 
-                                        filter(simulation %in% simulations),
-                                      climate = Generated_parameters$TROLL_clim_mth_params,
-                                      daily = Generated_parameters$TROLL_clim_dayvar_params,
-                                      verbose = FALSE,
-                                      thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
-                                      cores = ncores_sim),silent = TRUE)
-    gc()
-    
-    if (inherits(sim_stack,"try-error")) {
+    for (blocki in (initk/ncores_sim +1):max(nrep$ID_iter)) {
       
-      nrep_tmp <- tibble(Sim_ID = simulations) %>% 
-        mutate(ID_iter = ceiling(row_number()/ncores))
-      
-      for (blocki_temp in 1:max(nrep_tmp$ID_iter)) {
-        
-        sim_i <- as.character(unlist(nrep_tmp %>%
-                                             filter(ID_iter == ( blocki_temp)) %>% 
-                                             dplyr::select(Sim_ID)))
-        
-        cat(paste0("Error TROLL simulations # ",  blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
-                   gsub(":", "-",
-                        gsub(
-                          " ", "_",
-                          timestamp(
-                            prefix = "",
-                            suffix = "",
-                            quiet = T
-                          )
-                        )),"\n"))
-        gc()
-        
-        sim_stack_i <- try(rcontroll::stack(path = WIP_folder_PATH,
-                                            name = "sim_stack",
-                                            simulations = sim_i,
-                                            global = Generated_parameters$TROLL_global_params %>% 
-                                              filter(simulation %in% sim_i),
-                                            species = Generated_parameters$TROLL_species_data  %>% 
-                                              filter(simulation %in% sim_i),
-                                            climate = Generated_parameters$TROLL_clim_mth_params,
-                                            daily = Generated_parameters$TROLL_clim_dayvar_params,
-                                            verbose = FALSE,
-                                            thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
-                                            cores = ncores),silent = TRUE)
-        
-        gc()
-        
-        cat(paste0("Extract TROLL simulations results # ", blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
-                   gsub(":", "-",
-                        gsub(
-                          " ", "_",
-                          timestamp(
-                            prefix = "",
-                            suffix = "",
-                            quiet = T
-                          )
-                        )),"\n"))
-        
-        
-        if (inherits(sim_stack_i,"try-error")) {
-          Yi <- matrix(rep(NA, times = 24*ncores),nrow = ncores)
-          colnames(Yi) <- c("lambda_dbh10",
-                            "agb_mean",
-                            "agb_sigma",
-                            "abu1_mean",
-                            "abu1_sigma",
-                            "abu10_mean",
-                            "abu10_sigma",
-                            "abu30_mean",
-                            "abu30_sigma",
-                            "gpp_mean",
-                            "gpp_sigma",
-                            "npp_mean",
-                            "npp_sigma",
-                            "ba10_mean",
-                            "ba10_sigma",
-                            "hill_mean",
-                            "hill_sigma",
-                            "rao_mean",
-                            "rao_sigma",
-                            "h_mean",
-                            "lambda_1ter",
-                            "Vol_ECMP",
-                            "Vol_ECMP_ECMS",
-                            "GM_DBH")
-        }else{
-          Yi <- extractVar(stacktmp = sim_stack_i,
-                           WIP_folder_PATH = WIP_folder_PATH,
-                           Nyears = Generated_parameters$Nyears,
-                           Nsampling = Generated_parameters$Nsampling,
-                           Trait_phylo = Generated_parameters$Trait_phylo,
-                           ncores = ncores)
-        }
-        
-        if (Generated_parameters$initk == 0) {
-          Y <- Yi
-        }else{
-          Y <- rbind(Y,Yi)
-        }
-        
-        
-      }
+      simulations <- as.character(unlist(nrep %>%
+                                           filter(ID_iter == ( blocki)) %>% 
+                                           dplyr::select(Sim_ID)))
       
       
-      
-      
-    }else{
-      
-      cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
+      cat(paste0("Computing TROLL initial simulation # ", blocki , " / ", max(nrep$ID_iter), " ",
                  gsub(":", "-",
                       gsub(
                         " ", "_",
@@ -798,48 +672,174 @@ autocalibGP <- function(Generated_parameters,
                         )
                       )),"\n"))
       
+      gc()
       
+      sim_stack <- try(rcontroll::stack(path = WIP_folder_PATH,
+                                        name = "sim_stack",
+                                        simulations = simulations,
+                                        global = Generated_parameters$TROLL_global_params %>% 
+                                          filter(simulation %in% simulations),
+                                        species = Generated_parameters$TROLL_species_data  %>% 
+                                          filter(simulation %in% simulations),
+                                        climate = Generated_parameters$TROLL_clim_mth_params,
+                                        daily = Generated_parameters$TROLL_clim_dayvar_params,
+                                        verbose = FALSE,
+                                        thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
+                                        cores = ncores_sim),silent = TRUE)
+      gc()
       
-      Yi <- extractVar(stacktmp = sim_stack,
-                       WIP_folder_PATH = WIP_folder_PATH,
-                       Nyears = Generated_parameters$Nyears,
-                       Nsampling = Generated_parameters$Nsampling,
-                       Trait_phylo = Generated_parameters$Trait_phylo,
-                       ncores = ncores)
-      
-      
-      if (Generated_parameters$initk == 0) {
-        Y <- Yi
+      if (inherits(sim_stack,"try-error")) {
+        
+        nrep_tmp <- tibble(Sim_ID = simulations) %>% 
+          mutate(ID_iter = ceiling(row_number()/ncores))
+        
+        for (blocki_temp in 1:max(nrep_tmp$ID_iter)) {
+          
+          sim_i <- as.character(unlist(nrep_tmp %>%
+                                         filter(ID_iter == ( blocki_temp)) %>% 
+                                         dplyr::select(Sim_ID)))
+          
+          cat(paste0("Error TROLL simulations # ",  blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
+                     gsub(":", "-",
+                          gsub(
+                            " ", "_",
+                            timestamp(
+                              prefix = "",
+                              suffix = "",
+                              quiet = T
+                            )
+                          )),"\n"))
+          gc()
+          
+          sim_stack_i <- try(rcontroll::stack(path = WIP_folder_PATH,
+                                              name = "sim_stack",
+                                              simulations = sim_i,
+                                              global = Generated_parameters$TROLL_global_params %>% 
+                                                filter(simulation %in% sim_i),
+                                              species = Generated_parameters$TROLL_species_data  %>% 
+                                                filter(simulation %in% sim_i),
+                                              climate = Generated_parameters$TROLL_clim_mth_params,
+                                              daily = Generated_parameters$TROLL_clim_dayvar_params,
+                                              verbose = FALSE,
+                                              thin = (12*(Generated_parameters$Nyears - Generated_parameters$Nsampling +1 )):(12*Generated_parameters$Nyears),
+                                              cores = ncores),silent = TRUE)
+          
+          gc()
+          
+          cat(paste0("Extract TROLL simulations results # ", blocki_temp , " / ", max(nrep_tmp$ID_iter), " in ",  blocki , " / ", max(nrep$ID_iter), " ",
+                     gsub(":", "-",
+                          gsub(
+                            " ", "_",
+                            timestamp(
+                              prefix = "",
+                              suffix = "",
+                              quiet = T
+                            )
+                          )),"\n"))
+          
+          
+          if (inherits(sim_stack_i,"try-error")) {
+            Yi <- matrix(rep(NA, times = 24*ncores),nrow = ncores)
+            colnames(Yi) <- c("lambda_dbh10",
+                              "agb_mean",
+                              "agb_sigma",
+                              "abu1_mean",
+                              "abu1_sigma",
+                              "abu10_mean",
+                              "abu10_sigma",
+                              "abu30_mean",
+                              "abu30_sigma",
+                              "gpp_mean",
+                              "gpp_sigma",
+                              "npp_mean",
+                              "npp_sigma",
+                              "ba10_mean",
+                              "ba10_sigma",
+                              "hill_mean",
+                              "hill_sigma",
+                              "rao_mean",
+                              "rao_sigma",
+                              "h_mean",
+                              "lambda_1ter",
+                              "Vol_ECMP",
+                              "Vol_ECMP_ECMS",
+                              "GM_DBH")
+          }else{
+            Yi <- .extractVar(stacktmp = sim_stack_i,
+                             WIP_folder_PATH = WIP_folder_PATH,
+                             Nyears = Generated_parameters$Nyears,
+                             Nsampling = Generated_parameters$Nsampling,
+                             Trait_phylo = Generated_parameters$Trait_phylo,
+                             ncores = ncores)
+          }
+          
+          if (Generated_parameters$initk == 0) {
+            Y <- Yi
+          }else{
+            Y <- rbind(Y,Yi)
+          }
+          
+          
+        }
+        
+        
+        
+        
       }else{
-        Y <- rbind(Y,Yi)
+        
+        cat(paste0("Extract TROLL simulations results # ", blocki , " / ", max(nrep$ID_iter), " ",
+                   gsub(":", "-",
+                        gsub(
+                          " ", "_",
+                          timestamp(
+                            prefix = "",
+                            suffix = "",
+                            quiet = T
+                          )
+                        )),"\n"))
+        
+        
+        
+        Yi <- .extractVar(stacktmp = sim_stack,
+                         WIP_folder_PATH = WIP_folder_PATH,
+                         Nyears = Generated_parameters$Nyears,
+                         Nsampling = Generated_parameters$Nsampling,
+                         Trait_phylo = Generated_parameters$Trait_phylo,
+                         ncores = ncores)
+        
+        
+        if (Generated_parameters$initk == 0) {
+          Y <- Yi
+        }else{
+          Y <- rbind(Y,Yi)
+        }
+        
+      }
+      
+      
+      
+      
+      Generated_parameters$initk <- blocki * ncores_sim
+      
+      if (blocki %% 10 == 0) {
+        save(Generated_parameters,
+             Y,
+             file = paste0(PATH,
+                           "tmp_env_save_iter","_autocalibGP_", Generated_parameters$initk , "-", dim(Generated_parameters$X)[1], "_", 
+                           gsub(":", "-",
+                                gsub(
+                                  " ", "_",
+                                  timestamp(
+                                    prefix = "",
+                                    suffix = "",
+                                    quiet = T
+                                  )
+                                ))
+                           ,".Rdata"))
       }
       
     }
     
-    
-    
-    
-    Generated_parameters$initk <- blocki * ncores_sim
-    
-    if (blocki %% 10 == 0) {
-      save(Generated_parameters,
-           Y,
-           file = paste0(PATH,
-                         "tmp_env_save_iter","_autocalibGP_", Generated_parameters$initk , "-", dim(Generated_parameters$X)[1], "_", 
-                         gsub(":", "-",
-                              gsub(
-                                " ", "_",
-                                timestamp(
-                                  prefix = "",
-                                  suffix = "",
-                                  quiet = T
-                                )
-                              ))
-                         ,".Rdata"))
-    }
-    
-  }
-  
     
   }  
   if (GPComputation) {
@@ -1261,7 +1261,7 @@ autocalibGP <- function(Generated_parameters,
                                     "Vol_ECMP_ECMS",
                                     "GM_DBH")
               }else{
-                Ynew <- extractVar(stacktmp = sim_stack_i,
+                Ynew <- .extractVar(stacktmp = sim_stack_i,
                                    WIP_folder_PATH = WIP_folder_PATH,
                                    Nyears = Generated_parameters$Nyears,
                                    Nsampling = Generated_parameters$Nsampling,
@@ -1293,7 +1293,7 @@ autocalibGP <- function(Generated_parameters,
             
             
             
-            Ynew <- extractVar(stacktmp = sim_stack,
+            Ynew <- .extractVar(stacktmp = sim_stack,
                                WIP_folder_PATH = WIP_folder_PATH,
                                Nyears = Generated_parameters$Nyears,
                                Nsampling = Generated_parameters$Nsampling,
@@ -1590,9 +1590,9 @@ autocalibGP <- function(Generated_parameters,
                                     "SdAgb" = list("h.SdAgb" = h.SdAgb,
                                                    "mod.SdAgb" = mod.SdAgb),
                                     "MeanSum1" = list("h.MeanSum1" = h.MeanAbu1,
-                                                       "mod.MeanSum1" = mod.MeanAbu1),
+                                                      "mod.MeanSum1" = mod.MeanAbu1),
                                     "SdSum1" = list("h.SdSum10" = h.SdAbu1,
-                                                     "mod.SdAgb" = mod.SdAbu1),
+                                                    "mod.SdAgb" = mod.SdAbu1),
                                     "MeanSum10" = list("h.MeanSum10" = h.MeanAbu10,
                                                        "mod.MeanSum10" = mod.MeanAbu10),
                                     "SdSum10" = list("h.SdSum10" = h.SdAbu10,
@@ -1719,9 +1719,9 @@ autocalibGP <- function(Generated_parameters,
                                     "SdAgb" = list("h.SdAgb" = NA,
                                                    "mod.SdAgb" = mod.SdAgb),
                                     "MeanSum1" = list("h.MeanSum1" = NA,
-                                                       "mod.MeanSum1" = mod.MeanAbu1),
+                                                      "mod.MeanSum1" = mod.MeanAbu1),
                                     "SdSum1" = list("h.SdSum1" = NA,
-                                                     "mod.SdSum1" = mod.SdAbu1),
+                                                    "mod.SdSum1" = mod.SdAbu1),
                                     "MeanSum10" = list("h.MeanSum10" = NA,
                                                        "mod.MeanSum10" = mod.MeanAbu10),
                                     "SdSum10" = list("h.SdSum10" = NA,
@@ -1761,50 +1761,27 @@ autocalibGP <- function(Generated_parameters,
                                     "GmDBH" = list("h.GmDBH" = NA,
                                                    "mod.GmDBH" = mod.GmDBH)
                   )))
-      }
-    }else{
-      return(list("params" = Generated_parameters$params, 
-                  "paramLHS" = Generated_parameters$paramLHS,
-                  "nreplicat" = Generated_parameters$nreplicat,
-                  "X" = Generated_parameters$X, 
-                  "XGP" = Generated_parameters$XGP, 
-                  "XRd" = Generated_parameters$XRd,  
-                  "Y" = Y,
-                  "XGPCor" = NULL,
-                  "Ycor" = NULL,
-                  "Nyears" = Generated_parameters$Nyears,
-                  "Nsampling" = Generated_parameters$Nsampling,
-                  "TROLL_clim_mth_params" = Generated_parameters$dataclim12mths,
-                  "TROLL_clim_dayvar_params" = Generated_parameters$dataclimdayvar,
-                  "TROLL_global_params" = Generated_parameters$TROLL_global_params,
-                  "TROLL_species_data" = Generated_parameters$TROLL_species_data,
-                  "Trait_phylo" = Generated_parameters$Trait_phylo,
-                  "initk" = Generated_parameters$initk,
-                  "NiterHetGP" = NiterHetGP,
-                  "GPmodels" = NULL))
     }
+  }else{
+    return(list("params" = Generated_parameters$params, 
+                "paramLHS" = Generated_parameters$paramLHS,
+                "nreplicat" = Generated_parameters$nreplicat,
+                "X" = Generated_parameters$X, 
+                "XGP" = Generated_parameters$XGP, 
+                "XRd" = Generated_parameters$XRd,  
+                "Y" = Y,
+                "XGPCor" = NULL,
+                "Ycor" = NULL,
+                "Nyears" = Generated_parameters$Nyears,
+                "Nsampling" = Generated_parameters$Nsampling,
+                "TROLL_clim_mth_params" = Generated_parameters$dataclim12mths,
+                "TROLL_clim_dayvar_params" = Generated_parameters$dataclimdayvar,
+                "TROLL_global_params" = Generated_parameters$TROLL_global_params,
+                "TROLL_species_data" = Generated_parameters$TROLL_species_data,
+                "Trait_phylo" = Generated_parameters$Trait_phylo,
+                "initk" = Generated_parameters$initk,
+                "NiterHetGP" = NiterHetGP,
+                "GPmodels" = NULL))
+  }
   
-}
-
-############# lpost.invert ###############
-
-lpost.invert <- function(theta, XF, yF, GP)
-{
-  ## input processing and checking
-  if(length(theta) != ncol(GP$X0) - ncol(XF) + 1) 
-    stop("length(theta), ncol(XF), ncol(GP$X0) mismatch")
-  u <- theta[-length(theta)]
-  s2 <- theta[length(theta)]
-  
-  ## prior checking  
-  if(any(u < 0 | u > 1)) return (-Inf)
-  if(s2 < 0) return(-Inf)
-  
-  ## derive predictive distribution for XF paired with u
-  XFU <- cbind(XF, matrix(rep(u, nrow(XF)), ncol=length(u), byrow=TRUE)) 
-  p <- predict(GP, XFU, xprime=XFU)
-  C <- s2*diag(nrow(p$cov)) + (p$cov + t(p$cov))/2
-  
-  ## gaussian log density evaluation for yF under that predictive
-  return(dmvnorm(yF, p$mean, C, log=TRUE) - log(s2))
 }
