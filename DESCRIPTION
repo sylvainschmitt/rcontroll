@@ -71,7 +71,9 @@ Collate:
     'update_parameters.trollsim.R'
 VignetteBuilder: knitr
 Depends: 
-    R (>= 3.6)
+    R (>= 3.6),
+    Rcpp (>= 1.0.5),
+    RcppGSL (>= 0.3.5)
 LinkingTo: 
     Rcpp,
     RcppGSL
