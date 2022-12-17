@@ -101,13 +101,15 @@ troll <- function(name = NULL,
     stop("forest should be a data frame or null.")
   if(!(class(lidar) %in% c("data.frame", "NULL")))
     stop("lidar should be a data frame or null.")
-  if(((lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] > global[which(global[,"param"]=="nbiter"),"value"]-1) & 
-      global[which(global[,"param"]=="nbiter"),"value"] > 0) | 
-     lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] < 0){
+  if(!is.null(lidar)){
+    if(((lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] > global[which(global[,"param"]=="nbiter"),"value"]-1) & 
+       global[which(global[,"param"]=="nbiter"),"value"] > 0) | 
+      lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] < 0){
     message("'iter_pointcloud_generation' is not within the simulation interval.\n
             Adjusting iter_pointcloud_generation to last available simulation iter.")
     lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] <- global[which(global[,"param"]=="nbiter"),"value"]-1
-  }
+  }}
+  
   
   # model name
   if (is.null(name)) {

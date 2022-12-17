@@ -1,5 +1,5 @@
 GSL_CFLAGS = -I/usr/include
 GSL_LIBS   = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
 
-PKG_CPPFLAGS = -W $(GSL_CFLAGS) -I../inst/include
-PKG_LIBS += $(GSL_LIBS)
+PKG_CPPFLAGS = $(GSL_CFLAGS) -I../inst/include
+PKG_LIBS = -O3 -W -fsanitize=undefined $(GSL_LIBS)
