@@ -10,6 +10,7 @@ on:
       - main
       - dev
       - v3.1.6
+      - WIP
   pull_request:
     branches:
       - main
@@ -28,8 +29,11 @@ jobs:
       matrix:
         config:
 
-          # - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: macos-latest,   r: 'release'}
+
+          - {os: windows-latest, r: '4.2'}
+
+          - {os: ubuntu-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GH_TOKEN }}
@@ -54,5 +58,3 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'
-          error-on: '"error"'
-          upload-snapshots: true

@@ -12,6 +12,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
+#' @param inmemory bool. Load outputs in memory.
 #'
 #' @return An S4 \linkS4class{trollsim} class object.
 #'
@@ -25,14 +26,15 @@ NULL
 #' 
 load_output <- function(name,
                         path,
-                        thin = NULL) {
+                        thin = NULL,
+                        inmemory = TRUE) {
   # tidyverse
   iter <- NULL
   
   # Check inputs
   if(!all(unlist(lapply(list(name, path), class)) %in% c("character")))
     stop("name and path should be character.")
-
+  
   # @inputs
   inputs <- lapply(
     list(
@@ -43,17 +45,17 @@ load_output <- function(name,
     ),
     function(x) {
       read_tsv(file.path(path, paste0(name, paste0("_input_", x, ".txt"))),
-        col_types = cols()
+               col_types = cols()
       )
     }
   )
   lidar_file <- file.path(path, paste0(name, paste0("_input_lidar.txt")))
   inputs$lidar <- data.frame()
-  if(file.exists(lidar_file))
+  if(file.exists(lidar_file) & inmemory)
     inputs$lidar <- read_tsv(lidar_file, col_types = cols())
   forest_file <- file.path(path, paste0(name, paste0("_input_forest.txt")))
   inputs$forest <- data.frame()
-  if(file.exists(forest_file))
+  if(file.exists(forest_file) & inmemory)
     inputs$forest <- read_tsv(forest_file, col_types = cols())
   
   # @parameters
@@ -94,12 +96,14 @@ load_output <- function(name,
   
   # @las
   las_file <- file.path(path, paste0(name, "_0", "", ".las"))
-  if(file.exists(las_file)){
+  if(file.exists(las_file) & inmemory){
     file.copy(las_file, paste0(las_file, ".save.las"))
     las <- list(readLAS(file.path(las_file)))
   } else {
     las <- list()
   }
+    
+  
   
   return(
     trollsim(

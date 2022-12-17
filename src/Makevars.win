@@ -1,12 +1,4 @@
-ARCH=$(PROCESSOR_ARCHITECTURE)
-
-PKG_CPPFLAGS= -I../windows/gsl-2.7/include -I../inst/include
-PKG_LIBS= -L../windows/gsl-2.7/lib${R_ARCH}${CRT} -lgsl -lgslcblas
-
-all: clean winlibs
-
-winlibs:
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
-
-clean:
-	rm -f $(SHLIB) $(OBJECTS)
+GSL_LIBS     = -LC:tools40mingw64/lib -lgsl -lgslcblas
+GSL_CFLAGS   = -IC:tools40mingw64/include
+PKG_CXXFLAGS = $(GSL_CFLAGS)
+PKG_LIBS     = -O3 -Wall -pedantic $(LDFLAGS) $(GSL_LIBS)

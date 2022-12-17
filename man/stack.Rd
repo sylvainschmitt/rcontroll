@@ -17,7 +17,8 @@ stack(
   verbose = TRUE,
   cores = NULL,
   overwrite = TRUE,
-  thin = NULL
+  thin = NULL,
+  inmemory = TRUE
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ cores - 1 (default NULL).}
 \item{thin}{int. Vector of integers corresponding to the iterations to be
 kept to reduce output size, default is NULL and corresponds to no
 thinning.}
+
+\item{inmemory}{bool. Load outputs in memory.}
 }
 \value{
 A trollstack object.

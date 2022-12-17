@@ -17,8 +17,7 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
  *    - Version 2.3: Isabelle Marechaux, Fabian Fischer, Jerome Chave (Oct 2016 to March 2017; Marechaux & Chave 2017)
  *    - Version 2.4 & 2.5: Fabian Fischer (Feb 2018 to May 2020)
  *    - Version 3.0: Fabian Fischer, Isabelle Marechaux, Jerome Chave (Jan 2021)
- *    - Version 3.1: Fabian Fischer, Isabelle Marechaux (Jan-Feb 2022)
- *    - Version 3.6 : Fabian Fischer (Oct-Nov 2022)
+ *    - Version 3.1: Fabian Fischer, Isabelle Marechaux (Jan-Feb 2022; corrections Sep-Nov 2022)
  *
  * Compiling options
  * -----------------
@@ -2756,9 +2755,9 @@ void Tree::UpdateLeafDynamics() {
         la_excess = 0.0;
         new_young = flush_fine;
       } else {
+        flush_needed = fmaxf(flush_needed-la_excess,0.0); // moved upwards in v.3.1.7; unnecessary if la_excess < 0.0, and flush_needed should be updated before calculating new_young
         new_young = fminf(flush_fine,flush_needed);
       }
-      flush_needed = fmaxf(flush_needed-la_excess,0.0);
       
       // subtract from flush whatever has been allocated
       flush -= new_young;
@@ -3536,8 +3535,8 @@ void AddCrownVolumeLayer(int row_center, int col_center, float height, float CR,
 //'          climate_file = "test/test_input_climate.txt",
 //'          species_file = "test/test_input_species.txt",
 //'          day_file = "test/test_input_daily.txt",
-//'          lidar_file = "NULL",
-//'          forest_file = "NULL",
+//'          lidar_file = "",
+//'          forest_file = "",
 //'          output_file = "test")
 //' }
 //'
@@ -3562,10 +3561,12 @@ void trollCpp(
   bufi_pointcloud = &lidar_file[0] ;
   buf = &output_file[0] ;
   
+  _FromInventory = 0; // added v.3.1.7, was previously undefined when no inputfile was provided
+  _OUTPUT_pointcloud = 0;  // added v.3.1.7, was previously undefined when no inputfile was provided  
+  
   if(strlen(bufi_data) != 0) _FromInventory = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
-  
   if(strlen(bufi_pointcloud) != 0) _OUTPUT_pointcloud = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
-  
+    
   //int main(int argc,char *argv[]) { // now left as comment to recuperate original TROLL version
   
   //!*********************
@@ -3623,11 +3624,11 @@ void trollCpp(
   sprintf(inputfile_soil,"%s",bufi_soil);
   sprintf(inputfile_species,"%s",bufi_species);
   
-  if(_OUTPUT_pointcloud){
+  if(_OUTPUT_pointcloud == 1){
     sprintf(inputfile_pointcloud,"%s",bufi_pointcloud); // v.3.1.6
   }
   
-  if(_FromInventory){
+  if(_FromInventory == 1){
     sprintf(inputfile_inventory,"%s",bufi_data);
   }
   
@@ -3661,11 +3662,11 @@ void trollCpp(
   InitialiseABC();
 #endif
   
-  if(_OUTPUT_pointcloud){
+  if(_OUTPUT_pointcloud == 1){
     ReadInputPointcloud();  // parameters for point cloud generation, v.3.1.6
   }
   
-  if(_FromInventory){
+  if(_FromInventory  == 1){
     ReadInputInventory();   // Initial configuration of the forest, read from data
   }
   
@@ -3707,7 +3708,9 @@ void trollCpp(
   if(_OUTPUT_extended) OutputSnapshot(output_basic[1], 1, 0.01);                  // Initial Pattern, for trees > 0.01m DBH
   else OutputSnapshot(output_basic[1], 1, 0.1);                                   // Initial Pattern, for trees > 0.1m DBH
   
-  if(_OUTPUT_pointcloud > 0 && iter_pointcloud_generation == 0){
+
+  if(_OUTPUT_pointcloud == 1 && iter_pointcloud_generation == 0){
+
     ExportPointcloud(mean_beam_pc, sd_beam_pc, klaser_pc, transmittance_laser, output_pointcloud); // v.3.1.6
   }
   
@@ -3725,7 +3728,7 @@ void trollCpp(
       if(timeofyear == 0) OutputVisual();
     }
     
-    if(_OUTPUT_pointcloud > 0 && iter == iter_pointcloud_generation){
+    if(_OUTPUT_pointcloud == 1 && iter == iter_pointcloud_generation && iter_pointcloud_generation > 0){
       ExportPointcloud(mean_beam_pc, sd_beam_pc, klaser_pc, transmittance_laser, output_pointcloud); // v.3.1.6
     }
     
@@ -4727,7 +4730,7 @@ void InitialiseOutputStreams(){
     }
     
     // v.3.1.6 output for point cloud
-    if(_OUTPUT_pointcloud){
+    if(_OUTPUT_pointcloud == 1){
       sprintf(nnn,"%s_%i.las",buf, easympi_rank);
       output_pointcloud.open(nnn, ios::out | ios::binary);
       output_pointcloud.imbue(locale::classic()); // justification here: https://stackoverflow.com/questions/14750496/sending-integer-to-fstream-as-little-endian; locale regulates how streams print and read values (i.e. commas vs. points for decimals, etc.); setting it to classic to ensure portability, but not entirely sure how important this is in practice for binary files
@@ -8333,6 +8336,8 @@ void CloseOutputs(){
       }
     }
   }
+  
+  if(_OUTPUT_pointcloud == 1) output_pointcloud.close(); // added in v.3.1.7 to properly close LAS file
   
 #ifdef Output_ABC
   for(int i = 0; i < 11; i++){

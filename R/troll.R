@@ -24,6 +24,8 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
+#' @param inmemory bool. Load outputs in memory.
+#'   
 #'
 #' @return A trollsim object.
 #'
@@ -51,7 +53,8 @@ troll <- function(name = NULL,
                   forest = NULL,
                   verbose = TRUE,
                   overwrite = TRUE,
-                  thin = NULL) {
+                  thin = NULL,
+                  inmemory = TRUE) {
   i <- NULL
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
@@ -67,7 +70,8 @@ troll <- function(name = NULL,
       forest = forest,
       verbose = verbose,
       overwrite = overwrite,
-      thin = thin)
+      thin = thin,
+      inmemory = inmemory)
   }
   stopCluster(cl)
   return(sim[[1]])
@@ -83,7 +87,8 @@ troll <- function(name = NULL,
                          forest = NULL,
                          verbose = TRUE,
                          overwrite = TRUE,
-                         thin = NULL) {
+                         thin = NULL,
+                         inmemory = TRUE) {
   
   # check all inputs
   if(!all(unlist(lapply(list(overwrite), class)) == "logical"))
@@ -96,6 +101,15 @@ troll <- function(name = NULL,
     stop("forest should be a data frame or null.")
   if(!(class(lidar) %in% c("data.frame", "NULL")))
     stop("lidar should be a data frame or null.")
+  if(!is.null(lidar)){
+    if(((lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] > global[which(global[,"param"]=="nbiter"),"value"]-1) & 
+       global[which(global[,"param"]=="nbiter"),"value"] > 0) | 
+      lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] < 0){
+    message("'iter_pointcloud_generation' is not within the simulation interval.\n
+            Adjusting iter_pointcloud_generation to last available simulation iter.")
+    lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] <- global[which(global[,"param"]=="nbiter"),"value"]-1
+  }}
+  
   
   # model name
   if (is.null(name)) {
@@ -151,11 +165,11 @@ troll <- function(name = NULL,
   if(!is.null(forest))
     write_tsv(forest, file = forest_path)
   if(is.null(forest))
-    forest_path <- "NULL"
+    forest_path <- ""
   if(!is.null(lidar))
     write_tsv(lidar, file = lidar_path)
   if(is.null(lidar))
-    lidar_path <- "NULL"
+    lidar_path <- ""
   
   # run
   log <- capture.output(
@@ -195,16 +209,14 @@ troll <- function(name = NULL,
   ), function(x) {
     unlink(file.path(path, name, paste0(name, "_0_", x, ".txt")))
   })
-  # cleaning unused las
-  if(is.null(lidar))
-    unlink(file.path(path, name, paste0(name, "_0", "", ".las")))
   
   # loading outputs
-  sim <- load_output(name, file.path(path, name), thin = thin)
+  sim <- load_output(name, file.path(path, name), thin = thin, inmemory = inmemory)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()
   }
-  
   return(sim)
+  
+  
 }

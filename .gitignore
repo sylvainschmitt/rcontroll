@@ -1,5 +1,9 @@
-.Rproj.user
 .Rhistory
+.Rproj.user
+config.log
+config.status
+src/Makevars
+src/Makevars.win
 .RData
 .Ruserdata
 .DS_Store
@@ -14,7 +18,6 @@ docs
 autom4te.cache
 config.log
 config.status
-windows
 simulations
 supplementary.html
 vignettes/calib_ALS
