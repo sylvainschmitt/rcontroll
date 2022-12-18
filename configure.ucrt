@@ -3,7 +3,7 @@
 VERSION_GSL = 2.7
 CRT = -ucrt
 
-"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" ${VERSION_GSL}
+${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe ./tools/winlibs.R ${VERSION_GSL}
 
 GSL_CFLAGS= -I../windows/gsl-${VERSION_GSL}/include -I../inst/include
 GSL_LIBS= -L../windows/gsl-${VERSION_GSL}/lib${R_ARCH}${CRT} -lgsl -lgslcblas
