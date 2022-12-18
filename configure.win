@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION_GSL = 2.7
+VERSION_GSL=2.7
 
 ${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe ./tools/winlibs.R ${VERSION_GSL}
 
