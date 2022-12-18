@@ -1,11 +1,8 @@
 #!/bin/sh
 
-VERSION_GSL=2.7
 
-${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe ./tools/winlibs.R ${VERSION_GSL}
-
-GSL_CFLAGS= -I../windows/gsl-${VERSION_GSL}/include -I../inst/include
-GSL_LIBS= -L../windows/gsl-${VERSION_GSL}/lib${R_ARCH}${CRT} -lgsl -lgslcblas
+GSL_CFLAGS=`${R_HOME}/bin/Rscript.exe -e "RcppGSL:::CFlags()"`
+GSL_LIBS=`${R_HOME}/bin/Rscript.exe -e "RcppGSL:::LdFlags()"`
 
 sed -e "s|@GSL_LIBS@|${GSL_LIBS}|" \
     -e "s|@GSL_CFLAGS@|${GSL_CFLAGS}|" \
