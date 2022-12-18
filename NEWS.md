@@ -1,10 +1,14 @@
-# rcontroll 0.1.0.9055
+# rcontroll 0.1.0.9056
+* Adapted GSL lib link to rcppGSL (configure/configure.win, makevars.in, cleanup/cleanup)
+* Fix iter definition between global & lidar 
 * Add chmod +x to configure & cleanup
 ex: `git update-index --chmod=+x configure`
 
+# rcontroll 0.1.0.9055
+* LICENSE.md
+
 # rcontroll 0.1.0.9054
-* Adapted GSL lib link to rcppGSL (configure/configure.win, makevars.in, cleanup/cleanup)
-* Fix iter definition between global & lidar 
+* lidr figure, updated README & doc, updated version
 
 # rcontroll 0.1.0.9053
 * Fabian TROLL v1.3.7 fixes las closing, no las automatic creation, leafflush bug
