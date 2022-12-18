@@ -1,4 +1,0 @@
-GSL_LIBS     = -LC:tools40mingw64/lib -lgsl -lgslcblas
-GSL_CFLAGS   = -IC:tools40mingw64/include
-PKG_CXXFLAGS = $(GSL_CFLAGS)
-PKG_LIBS     = -O3 -Wall -pedantic $(LDFLAGS) $(GSL_LIBS)

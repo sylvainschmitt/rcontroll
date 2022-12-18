@@ -1,9 +1,5 @@
 .Rhistory
 .Rproj.user
-config.log
-config.status
-src/Makevars
-src/Makevars.win
 .RData
 .Ruserdata
 .DS_Store
