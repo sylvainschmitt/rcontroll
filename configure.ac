@@ -1,4 +1,6 @@
-AC_INIT([rcontroll],[0.1.0])
+define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))
+AC_INIT([rcontroll],[pkgversion],[sylvain.m.schmitt@gmail.com])
+AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
 
 ## Set R_HOME, respecting an environment variable if one is set
 : ${R_HOME=$(R RHOME)}
