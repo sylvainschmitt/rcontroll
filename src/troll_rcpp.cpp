@@ -144,6 +144,7 @@ int nbiter;     //!< Global variable: total number of timesteps
 int iter;       //!< Global variable: current timestep
 int nbout;      //!< Global variable: number of outputs
 int freqout;    //!< Global variable: frequency HDF outputs
+int Rseed;      //!< Global variable: selected R seed
 
 // Random number generator for trait covariance calculation
 gsl_rng *gslrng;   //!< Global variable: random number generator, name change in v.3.1 to avoid confusion with previous functions or other random number generation functions
@@ -3645,7 +3646,12 @@ void trollCpp(
   unsigned long int t = (unsigned long int) time(NULL);
   unsigned long int seed = 3*t + 2*(easympi_rank+1)+1;
   
-  if(_NONRANDOM == 1) seed = 1;
+  if(_NONRANDOM > 0){
+    seed = Rseed;
+    _NONRANDOM = bool(1);
+    }else{
+    _NONRANDOM = bool(0);
+    }
   
   gsl_rng_set(gslrng, seed);
   
@@ -3948,6 +3954,8 @@ void AssignValueGlobal(string parameter_name, string parameter_value){
     SetParameter(parameter_name, parameter_value, _seedsadditional, bool(0), bool(1), bool(0), quiet);
   } else if(parameter_name == "_NONRANDOM"){
     SetParameter(parameter_name, parameter_value, _NONRANDOM, bool(0), bool(1), bool(1), quiet);
+  } else if(parameter_name == "Rseed"){
+    SetParameter(parameter_name, parameter_value, Rseed, 0, 2147483647, 1, quiet);
   } else if(parameter_name == "_GPPcrown"){
     SetParameter(parameter_name, parameter_value, _GPPcrown, bool(0), bool(1), bool(0), quiet);
   } else if(parameter_name == "_BASICTREEFALL"){
@@ -4030,8 +4038,8 @@ void AssignValuePointcloud(string parameter_name, string parameter_value){
 void ReadInputGeneral(){
   fstream In(inputfile, ios::in);
   if(In){
-    string parameter_names[61] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};
-    int nb_parameters = 61;
+    string parameter_names[62] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","Rseed","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};
+    int nb_parameters = 62;
     vector<string> parameter_values(nb_parameters,"");
     
     Rcout << endl << "Reading in file: " << inputfile << endl;

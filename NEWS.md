@@ -3,6 +3,7 @@
 * Fix iter definition between global & lidar 
 * Add chmod +x to configure & cleanup
 ex: `git update-index --chmod=+x configure`
+* Add seed setup from R for enhanced reproductibility
 
 # rcontroll 0.1.0.9055
 * LICENSE.md

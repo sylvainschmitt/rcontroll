@@ -73,8 +73,8 @@
 #' @param sapwood num. Sapwood parameterizations: constant thickness (0.04),
 #'   Fyllas percentage, Fyllas lower limit (0,1,2).
 #' @param seedsadditional num. Excess biomass into seeds after maturation (0,1).
-#' @param NONRANDOM num. If _NONRANDOM == 1, the seeds for the random number
-#'   generators will be kept fixed at 1, default for bug fixing (0,1).
+#' @param NONRANDOM num. If _NONRANDOM >= 1, the seeds for the random number
+#'   generators will be set using fixed seed in R, default for bug fixing (0,1).
 #' @param GPPcrown num. This defines an option to compute only GPP from the
 #'   topmost value of PPFD and GPP, instead of looping within the crown (0,1).
 #' @param BASICTREEFALL num. If defined: treefall is a source of tree death
@@ -176,6 +176,15 @@ generate_parameters <- function(
          CROWN_MM, OUTPUT_extended, extent_visual), 
     class)) == "numeric"))
   stop("parameters should be numeric.")
+
+  if (NONRANDOM > 1) {
+    Rseed <- sample.int(.Machine$integer.max, 1)
+    NONRANDOM <- 1
+  }else{
+    Rseed <- 1
+  }
+
+
   
   data.frame(
     param = c("cols", "rows", "HEIGHT", "length_dcell",
@@ -191,7 +200,7 @@ generate_parameters <- function(
               "p_tfsecondary", "hurt_decay", "crown_gap_fraction", 
               "m", "m1", "Cair", "_LL_parameterization", 
               "_LA_regulation", "_sapwood", "_seedsadditional",
-              "_NONRANDOM", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
+              "_NONRANDOM", "Rseed","_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
               "_CROWN_MM", "_OUTPUT_extended", "extent_visual"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
               NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
@@ -203,7 +212,7 @@ generate_parameters <- function(
               leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
               m, m1, Cair, LL_parameterization, LA_regulation, 
               sapwood, seedsadditional,
-              NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+              NONRANDOM,Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
               CROWN_MM, OUTPUT_extended, extent_visual),
     description = c(
       "/* nb of columns */",
@@ -262,6 +271,7 @@ generate_parameters <- function(
       "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */",
       "/* excess biomass into seeds after maturation (0,1) */",
       "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */",
+      "/* selected seed according to _NONRANDOM and R fixed seed */",
       "/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */",
       "/* if defined: treefall is a source of tree death */",
       "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */",
