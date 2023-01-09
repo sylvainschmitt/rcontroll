@@ -1,6 +1,6 @@
 Package: rcontroll
 Type: Package
-Title: Package for individual-based forest growth simulator TROLL
+Title: Package for Individual-Based Forest Growth Simulator TROLL
 Version: 0.1.0
 Author: Sylvain Schmitt, Guillaume Salzet, Fabian Fischer, Isabelle Marechaux, Jerome Chave
 Maintainer: Sylvain Schmitt <sylvain.m.schmitt@gmail.com>

@@ -40,7 +40,7 @@ Before you will be able to download any data you need to get a free personal acc
 
 First ECMWF:
 
-* [Register yourself for ECMWF services](https://apps.ecmwf.int/registration/)
+* [Register yourself for ECMWF services](https://accounts.ecmwf.int/auth/realms/ecmwf/protocol/openid-connect/registrations?client_id=apps&response_type=code&scope=openid%20email&redirect_uri=https://www.ecmwf.int)
 
 Then Copernicus:
 
