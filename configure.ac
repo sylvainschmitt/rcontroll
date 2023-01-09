@@ -1,6 +1,5 @@
-define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))
-AC_INIT([rcontroll],[pkgversion],[sylvain.m.schmitt@gmail.com])
-AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
+AC_INIT([rcontroll],[0.1.0],[sylvain.m.schmitt@gmail.com])
+AC_MSG_NOTICE([rcontroll: 0.1.0])
 
 
 ## We are using C++
