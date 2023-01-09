@@ -1827,15 +1827,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 { $as_echo "$as_me:${as_lineno-$LINENO}: ${PACKAGE_NAME}: ${PACKAGE_VERSION}" >&5
 $as_echo "$as_me: ${PACKAGE_NAME}: ${PACKAGE_VERSION}" >&6;}
 
-## Set R_HOME, respecting an environment variable if one is set
-: ${R_HOME=$(R RHOME)}
-if test -z "${R_HOME}"; then
-    as_fn_error $? "Could not determine R_HOME." "$LINENO" 5
-fi
-
-## Use R to set CXX and CXXFLAGS
-CXX=$(${R_HOME}/bin/R CMD config CXX)
-CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXXFLAGS)
 
 ## We are using C++
 ac_ext=cpp

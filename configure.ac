@@ -2,15 +2,6 @@ define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 |
 AC_INIT([rcontroll],[pkgversion],[sylvain.m.schmitt@gmail.com])
 AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
 
-## Set R_HOME, respecting an environment variable if one is set
-: ${R_HOME=$(R RHOME)}
-if test -z "${R_HOME}"; then
-    AC_MSG_ERROR([Could not determine R_HOME.])
-fi
-
-## Use R to set CXX and CXXFLAGS
-CXX=$(${R_HOME}/bin/R CMD config CXX)
-CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXXFLAGS)
 
 ## We are using C++
 AC_LANG(C++)
