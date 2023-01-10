@@ -1,5 +1,6 @@
 # rcontroll 0.1.0.9057
 * -O3 -Wall -pedantic flags for Makevars.win/ Makevars.ucrt
+* dos2unix whole files
 
 # rcontroll 0.1.0.9056
 * Adapted GSL lib link to rcppGSL (configure/configure.win, makevars.in, cleanup/cleanup)

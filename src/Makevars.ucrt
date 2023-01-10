@@ -2,18 +2,15 @@ VERSION = 2.7
 CRT=-ucrt
 RWINLIB = ../windows/gsl-$(VERSION)
 
-PKG_CPPFLAGS = -I ../inst/gsl/include \
+PKG_CPPFLAGS = -I $(RWINLIB)/include \
 	
 	
-PKG_LIBS = -O3 -Wall -pedantic -L ../inst/gsl/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
+PKG_LIBS = -O3 -Wall -pedantic -L $(RWINLIB)/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
 
 all: clean winlibs
 
 winlibs:
-	mkdir -p ../inst/gsl
 	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
-	cp -r "$(RWINLIB)/include" ../inst/gsl
-	cp -r "$(RWINLIB)/lib" ../inst/gsl
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)

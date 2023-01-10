@@ -4,7 +4,7 @@ if(getRversion() < "3.3.0") {
 
 # For details see: https://github.com/rwinlib/gsl
 VERSION <- commandArgs(TRUE)
-# wrong path: if(!file.exists(sprintf("../windows/gdal3-%s/include/gdal/gdal.h", VERSION))){
+
 testfile <- sprintf("../windows/gsl-%s/include/gsl/gsl_blas.h", VERSION)
 if(!file.exists(testfile)){  
   if(getRversion() < "3.3.0") setInternet2()
