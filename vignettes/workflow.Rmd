@@ -24,7 +24,6 @@ We will use `rcontroll` with packages `dplyr` and `tidyr` for data wrangling and
 
 ```{r libs}
 suppressMessages(library(dplyr))
-library(readr)
 library(tidyr)
 library(ggplot2)
 suppressMessages(library(rcontroll))
@@ -47,8 +46,6 @@ TROLLv3_input_stack <- generate_parameters(cols = 100, rows = 100,
   mutate(simulation = list(c("seed50000", "seed500"))) %>% 
   unnest(simulation)
 TROLLv3_input_stack[62,2] <- 500 # Cseedrain
-
-dir.create(paste0(getwd(),"/sim"))
 ```
 
 # Generate parameters
@@ -68,7 +65,6 @@ Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 
 ```{r troll}
 sim <- troll(name = "test1",
-             path = paste0(getwd(),"/sim"),
              global = generate_parameters(cols = 100, rows = 100,
                                           iterperyear = 12, nbiter = 12*1),
              species = TROLLv3_species,
@@ -123,7 +119,6 @@ And we can define a thinning of outputs by giving the number of iterations to be
 
 ```{r fullstack}
 sim_stack <- stack(name = "teststack",
-                   path = paste0(getwd(),"/sim"),
                    simulations = c("seed50000", "seed500"),
                    global = TROLLv3_input_stack,
                    species = TROLLv3_species,
@@ -178,7 +173,6 @@ A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
 sim <- troll(name = "test2",
-             path = paste0(getwd(),"/sim"),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
@@ -209,7 +203,6 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 
 ```{r, eval=F}
 gifs <- autogif(name = "dynamic",
-                path = paste0(getwd(),"/sim"),
                 variables = "height_ct",
                 global = update_parameters(TROLLv3_output, nbiter = 12*100, extent_visual = 100),
                 species = TROLLv3_output@inputs$species,

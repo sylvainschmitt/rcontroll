@@ -24,9 +24,7 @@ We will use `rcontroll` with a previous simulation (`TROLLv3_output`) as a start
 
 ```{r}
 suppressMessages(library(rcontroll))
-library(readr)
 data("TROLLv3_output")
-dir.create(paste0(getwd(),"/sim"))
 ```
 
 # Lidar simulation
@@ -36,7 +34,6 @@ Parameters for the lidar simulation includes mean and standard deviation of puls
 
 ```{r }
 sim <- troll(name = "testLid",
-             path = paste0(getwd(),"/sim"),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
@@ -81,8 +78,7 @@ Similarly, the `stack` function include a `lidar` input to specify the details o
 Here we test the difference between a simulation with mean pulse density of 10 (`10pc`) and 20 (`20pc`):
 
 ```{r}
-sim_stack <- stack(name = "teststack", 
-                   path = paste0(getwd(),"/sim"),
+sim_stack <- stack(name = "teststack",
                    simulations = c("10pc", "20pc"),
                    global = update_parameters(TROLLv3_output, nbiter = 12*1),
                    species = TROLLv3_output@inputs$species,
@@ -123,8 +119,5 @@ get_chm(sim_stack)
 rcontroll::autoplot(sim_stack, what = "lidar")
 ```
 
-```{r}
-unlink(paste0(getwd(),"/sim"))
-```
 
 
