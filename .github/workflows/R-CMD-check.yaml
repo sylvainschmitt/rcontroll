@@ -49,6 +49,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          temp_directory: ${{ runner.temp }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
