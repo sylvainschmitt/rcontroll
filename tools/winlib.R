@@ -2,6 +2,6 @@
 if (!file.exists("./windows/gsl-2.7/include/gsl/gsl_blas.h")) {
   download.file("https://github.com/rwinlib/gsl/archive/v2.7.zip", "lib.zip", quiet = TRUE)
   dir.create("./src/windows", showWarnings = FALSE)
-  unzip("lib.zip", exdir = "./windows")
+  unzip("lib.zip", exdir = "./src/windows")
   unlink("lib.zip")
 }
