@@ -15,7 +15,8 @@ troll(
   forest = NULL,
   verbose = TRUE,
   overwrite = TRUE,
-  thin = NULL
+  thin = NULL,
+  inmemory = TRUE
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{thin}{int. Vector of integers corresponding to the iterations to be
 kept to reduce output size, default is NULL and corresponds to no
 thinning.}
+
+\item{inmemory}{bool. Load outputs in memory.}
 }
 \value{
 A trollsim object.

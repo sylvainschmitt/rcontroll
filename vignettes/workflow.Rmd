@@ -119,7 +119,7 @@ We can define the number of cores used for parallelization.
 And we can define a thinning of outputs by giving the number of iterations to be kept to reduce the output size.
 
 ```{r fullstack}
-sim_stack <- stack(name = "teststack", 
+sim_stack <- stack(name = "teststack",
              simulations = c("seed50000", "seed500"),
              global = TROLLv3_input_stack,
              species = TROLLv3_species,

@@ -1,3 +1,10 @@
+# rcontroll 0.1.0.9056
+* Adapted GSL lib link to rcppGSL (configure/configure.win, makevars.in, cleanup/cleanup)
+* Fix iter definition between global & lidar 
+* Add chmod +x to configure & cleanup
+ex: `git update-index --chmod=+x configure`
+* Add seed setup from R for enhanced reproductibility
+
 # rcontroll 0.1.0.9055
 * LICENSE.md
 
@@ -10,11 +17,11 @@
 
 # rcontroll 0.1.0.9052
 * lidar backend:
-* las attribute as list(lidR::LAS) for trollsim & trollstack
+* las attribute as list(`lidR::LAS`) for trollsim & trollstack
 * lidR in DESCRIPTION
 * get_chm methods
 * print methods
-* autpolot methods
+* autoplot methods
 * load_output and load_stack
 
 # rcontroll 0.1.0.9051
@@ -27,13 +34,13 @@
 * fixed and & or operands in cpp for windows-latest (release)
 
 # rcontroll 0.1.0.9048
-* methods get_forest & update_parameters
+* methods `get_forest` & `update_parameters`
 
 # rcontroll 0.1.0.9047
-* autogif v1
+* `autogif` v1
 
 # rcontroll 0.1.0.9046
-* TROLL 1.3.3, TROLL.version() & autogif begins
+* TROLL 1.3.3, `TROLL.version()` & `autogif` begins
 
 # rcontroll 0.1.0.9044
 * merge @gsalzet rcpp_gsl

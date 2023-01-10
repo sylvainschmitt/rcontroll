@@ -50,7 +50,7 @@ In addition, a function is available to visualise `TROLL` simulations as an anim
 
 ## Installation
 
-You can install the latest version of **rcontroll** from Github using the [`devtools`](https://github.com/hadley/devtools) package:
+You can install the latest version of **rcontroll** from Github using the [`devtools`](https://github.com/r-lib/devtools) package:
 
 ``` r
 if (!requireNamespace("devtools", quietly = TRUE))
