@@ -1,5 +1,5 @@
 PKG_CPPFLAGS = -I../inst/include
-PKG_LIBS = -lgsl -lgslcblas
+PKG_LIBS = -O3 -Wall -pedantic -lgsl -lgslcblas
 
 all: clean winlibs
 
