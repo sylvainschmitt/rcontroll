@@ -53,8 +53,9 @@ jobs:
       - name: SetVar windows
         if: runner.os == 'Windows'
         run: |
-         echo "::set-env name=TMP::$env:USERPROFILE\AppData\Local\Temp"
-         echo "::set-env name=TEMP::$env:USERPROFILE\AppData\Local\Temp"
+         echo "TMPDIR=USERPROFILE\AppData\Local\Temp" >> $GITHUB_ENV
+         echo "TEMP=USERPROFILE\AppData\Local\Temp" >> $GITHUB_ENV
+        shell: bash
          
       - name: Install gsl macos
         if: runner.os == 'macos'

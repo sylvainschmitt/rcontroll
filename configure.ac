@@ -44,7 +44,7 @@ else
   ---------------------------------------------])
 fi
 
-AC_MSG_CHECKING([if GSL version >= 2.5])
+AC_MSG_CHECKING([if GSL version >= 1.15])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <string.h>
 #include <gsl/gsl_version.h>
@@ -68,7 +68,7 @@ int main() {
 [gsl_version_ok=no],
 [gsl_version_ok=yes])
 if test "${gsl_version_ok}" = no; then
-  AC_MSG_ERROR([Need GSL version >= 1.16])
+  AC_MSG_ERROR([Need GSL version >= 1.10])
 else
   AC_MSG_RESULT([yes])
 fi
