@@ -50,11 +50,10 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           
-      - name: SetVar windows
+      - name: Change temp dir windows #https://github.com/r-lib/actions/issues/217
         if: runner.os == 'Windows'
         run: |
-         echo "TMPDIR=USERPROFILE\AppData\Local\Temp" >> $GITHUB_ENV
-         echo "TEMP=USERPROFILE\AppData\Local\Temp" >> $GITHUB_ENV
+         echo "TMPDIR=${{ runner.temp }}" >> $GITHUB_ENV
         shell: bash
          
       - name: Install gsl macos

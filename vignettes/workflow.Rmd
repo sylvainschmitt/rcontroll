@@ -24,6 +24,7 @@ We will use `rcontroll` with packages `dplyr` and `tidyr` for data wrangling and
 
 ```{r libs}
 suppressMessages(library(dplyr))
+library(readr)
 library(tidyr)
 library(ggplot2)
 suppressMessages(library(rcontroll))
