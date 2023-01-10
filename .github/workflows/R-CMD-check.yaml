@@ -50,9 +50,17 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           
-      - name: change temp dir #https://github.com/r-lib/actions/issues/217
-        run: echo "TMPDIR=./tmp" >> $GITHUB_ENV
-        shell: bash
+      - name: SetVar windows
+        if: runner.os == 'Windows'
+        run: |
+         echo "::set-env name=TMP::$env:USERPROFILE\AppData\Local\Temp"
+         echo "::set-env name=TEMP::$env:USERPROFILE\AppData\Local\Temp"
+         
+      - name: Install gsl macos
+        if: runner.os == 'macos'
+        run: |
+         brew install gsl
+         
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

@@ -41,7 +41,7 @@ sim <- troll(name = "testLid",
              climate = TROLLv3_output@inputs$climate,
              daily = TROLLv3_output@inputs$daily,
              forest = get_forest(TROLLv3_output),
-             lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
+             lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
              verbose = FALSE)
 ```
 
@@ -89,8 +89,8 @@ sim_stack <- stack(name = "teststack",
                    daily = TROLLv3_output@inputs$daily,
                    forest = get_forest(TROLLv3_output),
                    lidar = list(
-                     "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
-                     "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12)
+                     "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
+                     "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 1)
                    ) %>% dplyr::bind_rows(.id = "simulation"),
                    verbose = FALSE,
                    cores = 2,
