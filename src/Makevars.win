@@ -11,10 +11,10 @@ all: clean winlibs
 winlibs:
 	mkdir -p ../inst/gsl
 	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
-	cp -r "$(RWINLIB)" ../inst/gsl
+	cp -r "$(RWINLIB)/include" ../inst/gsl
+	cp -r "$(RWINLIB)/lib" ../inst/gsl
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)
-	rm -r ../inst/gsl
 
 .PHONY: all winlibs clean
