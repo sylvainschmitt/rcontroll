@@ -34,6 +34,7 @@ Parameters for the lidar simulation includes mean and standard deviation of puls
 
 ```{r }
 sim <- troll(name = "testLid",
+             path = getwd(),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
@@ -79,6 +80,7 @@ Here we test the difference between a simulation with mean pulse density of 10 (
 
 ```{r}
 sim_stack <- stack(name = "teststack",
+                   path = getwd(),
                    simulations = c("10pc", "20pc"),
                    global = update_parameters(TROLLv3_output, nbiter = 12*1),
                    species = TROLLv3_output@inputs$species,

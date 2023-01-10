@@ -119,6 +119,7 @@ And we can define a thinning of outputs by giving the number of iterations to be
 
 ```{r fullstack}
 sim_stack <- stack(name = "teststack",
+                   path = getwd(),
                    simulations = c("seed50000", "seed500"),
                    global = TROLLv3_input_stack,
                    species = TROLLv3_species,
@@ -173,6 +174,7 @@ A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
 sim <- troll(name = "test2",
+             path = getwd(),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
@@ -203,6 +205,7 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 
 ```{r, eval=F}
 gifs <- autogif(name = "dynamic",
+                path = getwd(),
                 variables = "height_ct",
                 global = update_parameters(TROLLv3_output, nbiter = 12*100, extent_visual = 100),
                 species = TROLLv3_output@inputs$species,

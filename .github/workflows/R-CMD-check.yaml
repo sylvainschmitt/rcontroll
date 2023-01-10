@@ -58,8 +58,6 @@ jobs:
         if: runner.os == 'macos'
         run: |
          brew install gsl
-         brew install gcc
-         ln -s $(which g++-11) /usr/local/bin/g++
         shell: bash
          
 
