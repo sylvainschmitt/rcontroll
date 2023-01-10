@@ -49,7 +49,10 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          temp_directory: ${{ runner.temp }}
+          
+      - name: change temp dir #https://github.com/r-lib/actions/issues/217
+        run: echo "TMPDIR=./tmp" >> $GITHUB_ENV
+        shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
