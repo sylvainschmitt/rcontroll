@@ -1,10 +1,23 @@
-PKG_CPPFLAGS= -I ./windows/gsl-2.7/include -I../inst/include
-PKG_LIBS= -L ./windows/gsl-2.7/lib${R_ARCH}${CRT} -lgsl -lgslcblas
+VERSION = 2.7
+RWINLIB = ../windows/gsl-$(VERSION)
+TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
+
+PKG_CPPFLAGS =\
+	-I$(RWINLIB)/include \
+	
+	
+PKG_LIBS = \
+	-L$(RWINLIB)/$(TARGET) \
+	-L$(RWINLIB)/lib$(R_ARCH) \ -lgsl -lgslcblas
 
 all: clean winlibs
 
 winlibs:
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+	mkdir -p ../inst
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
+	cp -r "$(RWINLIB)/include/gsl" ../inst/
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)
+
+.PHONY: all winlibs clean

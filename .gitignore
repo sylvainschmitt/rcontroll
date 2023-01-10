@@ -17,4 +17,4 @@ config.log
 config.status
 simulations
 supplementary.html
-vignettes/calib_ALS
+inst/gsl

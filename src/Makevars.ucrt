@@ -1,4 +1,12 @@
-## -*- mode: Makefile; -*-
-##
 PKG_CPPFLAGS = -I../inst/include
 PKG_LIBS = -lgsl -lgslcblas
+
+all: clean winlibs
+
+winlibs:
+	cp -r "$(R_TOOLS_SOFT)/include/gsl" ../inst/
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
+
+.PHONY: all winlibs clean
