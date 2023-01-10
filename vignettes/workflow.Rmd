@@ -220,5 +220,5 @@ gifs$height_ct
 ```
 
 ```{r}
-unlink(paste0(getwd(),"/sim"))
+unlink(paste0(getwd(),"/sim"),force = TRUE)
 ```
