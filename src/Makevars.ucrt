@@ -5,7 +5,7 @@ RWINLIB = ../windows/gsl-$(VERSION)
 PKG_CPPFLAGS = -I $(RWINLIB)/include \
 	
 	
-PKG_LIBS = -O3 -Wall -pedantic -L $(RWINLIB)/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
+PKG_LIBS = -OFast -std=c++11 -Wall -pedantic -L $(RWINLIB)/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
 
 all: clean winlibs
 

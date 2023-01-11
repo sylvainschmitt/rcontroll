@@ -65,6 +65,7 @@ Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 
 ```{r troll}
 sim <- troll(name = "test1",
+             path = getwd(),
              global = generate_parameters(cols = 100, rows = 100,
                                           iterperyear = 12, nbiter = 12*1),
              species = TROLLv3_species,
@@ -217,5 +218,8 @@ gifs$height_ct
 ```
 
 ```{r}
-unlink(paste0(getwd(),"/sim"),force = TRUE)
+unlink(paste0(getwd(),"/test1"),force = TRUE)
+unlink(paste0(getwd(),"/test2"),force = TRUE)
+unlink(paste0(getwd(),"/teststack"),force = TRUE)
+unlink(paste0(getwd(),"/dynamic"),force = TRUE)
 ```

@@ -79,7 +79,7 @@ Similarly, the `stack` function include a `lidar` input to specify the details o
 Here we test the difference between a simulation with mean pulse density of 10 (`10pc`) and 20 (`20pc`):
 
 ```{r}
-sim_stack <- stack(name = "teststack",
+sim_stack <- stack(name = "teststackLid",
                    path = getwd(),
                    simulations = c("10pc", "20pc"),
                    global = update_parameters(TROLLv3_output, nbiter = 12*1),
@@ -119,6 +119,11 @@ get_chm(sim_stack)
 
 ```{r}
 rcontroll::autoplot(sim_stack, what = "lidar")
+```
+
+```{r}
+unlink(paste0(getwd(),"/testLid"),force = TRUE)
+unlink(paste0(getwd(),"/teststackLid"),force = TRUE)
 ```
 
 
