@@ -24,6 +24,7 @@ We will use `rcontroll` with a previous simulation (`TROLLv3_output`) as a start
 
 ```{r}
 suppressMessages(library(rcontroll))
+library(readr)
 data("TROLLv3_output")
 ```
 
