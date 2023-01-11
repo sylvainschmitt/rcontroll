@@ -51,7 +51,7 @@ jobs:
       - name: Change temp dir windows #https://github.com/r-lib/actions/issues/217
         if: runner.os == 'Windows'
         run: |
-         echo "TMPDIR=D:\a\rcontroll\" >> $GITHUB_ENV
+         echo "TMPDIR=." >> $GITHUB_ENV
         shell: bash
          
       - name: Install gsl macos
