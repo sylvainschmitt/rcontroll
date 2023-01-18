@@ -44,35 +44,6 @@ else
   ---------------------------------------------])
 fi
 
-AC_MSG_CHECKING([if GSL version >= 2.5])
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <string.h>
-#include <gsl/gsl_version.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main() {
-#ifdef GSL_VERSION
-   int major, minor;
-   char *gslv = GSL_VERSION;
-   if ((sscanf(gslv, "%d.%d", &major, &minor)) != 2) {
-     exit (1);
-   }
-   exit (minor < 5);
-   exit (major < 2);
-#else
-  exit(1);
-#endif
-}
-]])],
-[gsl_version_ok=yes],
-[gsl_version_ok=no],
-[gsl_version_ok=yes])
-if test "${gsl_version_ok}" = no; then
-  AC_MSG_ERROR([Need GSL version >= 1.16])
-else
-  AC_MSG_RESULT([yes])
-fi
-
 # Now substitute these variables in src/Makevars.in to create src/Makevars
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)

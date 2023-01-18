@@ -64,7 +64,7 @@ We run a simple simulation using the `troll` function with loaded and generated 
 Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 
 ```{r troll}
-sim <- troll(name = "test",
+sim <- troll(name = "test1",
              path = getwd(),
              global = generate_parameters(cols = 100, rows = 100,
                                           iterperyear = 12, nbiter = 12*1),
@@ -120,14 +120,15 @@ And we can define a thinning of outputs by giving the number of iterations to be
 
 ```{r fullstack}
 sim_stack <- stack(name = "teststack",
-             simulations = c("seed50000", "seed500"),
-             global = TROLLv3_input_stack,
-             species = TROLLv3_species,
-             climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar,
-             verbose = F,
-             cores = 2,
-             thin = c(1,5,10))
+                   path = getwd(),
+                   simulations = c("seed50000", "seed500"),
+                   global = TROLLv3_input_stack,
+                   species = TROLLv3_species,
+                   climate = TROLLv3_climatedaytime12,
+                   daily = TROLLv3_daytimevar,
+                   verbose = F,
+                   cores = 2,
+                   thin = c(1,5,10))
 ```
 
 We can print a simple summary of the simulations.
@@ -173,7 +174,8 @@ And we finally used the same `troll` function adding the previous forest to init
 A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
-sim <- troll(name = "test",
+sim <- troll(name = "test2",
+             path = getwd(),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
@@ -204,6 +206,7 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 
 ```{r, eval=F}
 gifs <- autogif(name = "dynamic",
+                path = getwd(),
                 variables = "height_ct",
                 global = update_parameters(TROLLv3_output, nbiter = 12*100, extent_visual = 100),
                 species = TROLLv3_output@inputs$species,
@@ -212,4 +215,11 @@ gifs <- autogif(name = "dynamic",
                 forest = get_forest(TROLLv3_output),
                 verbose = FALSE)
 gifs$height_ct
+```
+
+```{r}
+unlink(paste0(getwd(),"/test1"),force = TRUE)
+unlink(paste0(getwd(),"/test2"),force = TRUE)
+unlink(paste0(getwd(),"/teststack"),force = TRUE)
+unlink(paste0(getwd(),"/dynamic"),force = TRUE)
 ```

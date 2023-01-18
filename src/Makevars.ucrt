@@ -1,10 +1,16 @@
-PKG_CPPFLAGS = -I../inst/include
-PKG_LIBS = -lgsl -lgslcblas
+VERSION = 2.7
+CRT=-ucrt
+RWINLIB = ../windows/gsl-$(VERSION)
+
+PKG_CPPFLAGS = -I $(RWINLIB)/include \
+	
+	
+PKG_LIBS = -OFast -Wall -pedantic -L $(RWINLIB)/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
 
 all: clean winlibs
 
 winlibs:
-	cp -r "$(R_TOOLS_SOFT)/include/gsl" ../inst/
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)

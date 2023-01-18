@@ -33,14 +33,14 @@ The `troll` function include a `lidar` input to specify the details of the lidar
 Parameters for the lidar simulation includes mean and standard deviation of pulse density, the laser attenuation factor, the transmittance of laser after hit, and the iteration for point cloud generation (see `?generate_lidar`).
 
 ```{r }
-sim <- troll(name = "test",
-             # path = getwd(),
+sim <- troll(name = "testLid",
+             path = getwd(),
              global = update_parameters(TROLLv3_output, nbiter = 12*1),
              species = TROLLv3_output@inputs$species,
              climate = TROLLv3_output@inputs$climate,
              daily = TROLLv3_output@inputs$daily,
              forest = get_forest(TROLLv3_output),
-             lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
+             lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
              verbose = FALSE)
 ```
 
@@ -79,8 +79,8 @@ Similarly, the `stack` function include a `lidar` input to specify the details o
 Here we test the difference between a simulation with mean pulse density of 10 (`10pc`) and 20 (`20pc`):
 
 ```{r}
-sim_stack <- stack(name = "teststack", 
-                   # path = getwd(),
+sim_stack <- stack(name = "teststackLid",
+                   path = getwd(),
                    simulations = c("10pc", "20pc"),
                    global = update_parameters(TROLLv3_output, nbiter = 12*1),
                    species = TROLLv3_output@inputs$species,
@@ -88,8 +88,8 @@ sim_stack <- stack(name = "teststack",
                    daily = TROLLv3_output@inputs$daily,
                    forest = get_forest(TROLLv3_output),
                    lidar = list(
-                     "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
-                     "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12)
+                     "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
+                     "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 1)
                    ) %>% dplyr::bind_rows(.id = "simulation"),
                    verbose = FALSE,
                    cores = 2,
@@ -120,4 +120,11 @@ get_chm(sim_stack)
 ```{r}
 rcontroll::autoplot(sim_stack, what = "lidar")
 ```
+
+```{r}
+unlink(paste0(getwd(),"/testLid"),force = TRUE)
+unlink(paste0(getwd(),"/teststackLid"),force = TRUE)
+```
+
+
 
