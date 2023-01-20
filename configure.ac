@@ -1,18 +1,23 @@
 AC_INIT([rcontroll],[0.1.0],[sylvain.m.schmitt@gmail.com])
 AC_MSG_NOTICE([rcontroll: 0.1.0])
 
-
-## We are using C++
-AC_LANG(C++)
-AC_REQUIRE_CPP
-AC_PROG_CXX
-
 ## Ensure TMPDIR is set.
 AC_MSG_CHECKING([whether we have a suitable tempdir])
 TMPDIR=$("${R_HOME}/bin/R" --vanilla --slave -e "cat(dirname(tempdir()))")
 AC_MSG_RESULT([${TMPDIR}])
 
+# Find the compiler and compiler flags used by R.
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
 
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+AC_LANG(C++)
+AC_PROG_CPP
 
 ## Use gsl-config to find arguments for compiler and linker flags
 ##
@@ -55,6 +60,8 @@ echo "
   --------------------------------------------------
   Configuration for ${PACKAGE_NAME} ${PACKAGE_VERSION}
 
+    c++:       ${CXX}
+    c++ flags: ${CXXFLAGS} ${CPPFLAGS}
     gsl-flags: ${GSL_CFLAGS}
     gsl-libs:  ${GSL_LIBS}
 
