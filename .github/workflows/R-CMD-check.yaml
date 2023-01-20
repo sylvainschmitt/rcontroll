@@ -61,6 +61,7 @@ jobs:
          brew install gsl
          brew install gcc@11
          brew info gcc
+         ln -s $(which g++-11) /usr/local/bin/g++
         shell: bash
          
 
