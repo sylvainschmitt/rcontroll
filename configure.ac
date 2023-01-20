@@ -37,7 +37,7 @@ else
    'GSL' and its header files are required.
    Please install:
    * libgsl-dev (on Debian and Ubuntu)
-   * ibgsl-devel (on Fedora, CentOS and RHEL)
+   * libgsl-devel (on Fedora, CentOS and RHEL)
    * libgsl (via Homebrew on macOS)
    * libgsl (on Solaris)
    and try again.
