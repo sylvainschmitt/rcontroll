@@ -16,8 +16,8 @@ fi
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-AC_LANG(C++)
-AC_PROG_CPP
+AC_PROG_CC([gcc cc])
+AC_PROG_CXX([g++ c++])
 
 ## Use gsl-config to find arguments for compiler and linker flags
 ##

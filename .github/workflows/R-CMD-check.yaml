@@ -59,6 +59,8 @@ jobs:
         if: runner.os == 'macos'
         run: |
          brew install gsl
+         brew install gcc@11
+         brew info gcc
         shell: bash
          
 
