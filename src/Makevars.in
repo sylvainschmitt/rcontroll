@@ -1,4 +1,4 @@
 GSL_LIBS     = @GSL_LIBS@
 GSL_CFLAGS   = @GSL_CFLAGS@
 PKG_CXXFLAGS = $(GSL_CFLAGS)
-PKG_LIBS     = -OFast -Wall -pedantic $(LDFLAGS) $(GSL_LIBS) -lgsl -lgslcblas 
+PKG_LIBS     = -OFast -Wall -pedantic $(LDFLAGS) $(GSL_LIBS) -lgsl -lgslcblas -std=c++11
