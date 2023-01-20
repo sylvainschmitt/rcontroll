@@ -4,7 +4,7 @@
 * add inmemory option to load simulation(s) results
 * check consistency between Niter (global parameter)  &  iter_pointcloud_generation (lidar parameters)
 * checked url in documents
-* 
+* MacOS set g++ compiler to gcc
 
 # rcontroll 0.1.0.9056
 * Add compilation configure files with gsl-config and download on Wondows OS (configure/configure.win, makevars.in, cleanup/cleanup)
