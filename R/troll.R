@@ -105,7 +105,7 @@ troll <- function(name = NULL,
     if(((lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] > global[which(global[,"param"]=="nbiter"),"value"]-1) & 
        global[which(global[,"param"]=="nbiter"),"value"] > 0) | 
       lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] < 0){
-    message("'iter_pointcloud_generation' is not within the simulation interval.\n
+    warning("'iter_pointcloud_generation' is not within the simulation interval.\n
             Adjusting iter_pointcloud_generation to last available simulation iter.")
     lidar[which(lidar[,"param"]=="iter_pointcloud_generation"),"value"] <- global[which(global[,"param"]=="nbiter"),"value"]-1
   }}

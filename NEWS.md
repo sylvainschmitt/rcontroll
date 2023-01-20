@@ -1,13 +1,17 @@
 # rcontroll 0.1.0.9057
-* -O3 -Wall -pedantic flags for Makevars.win/ Makevars.ucrt
+* -O3 -Wall -pedantic flags for Makevars.in/ Makevars.win/ Makevars.ucrt
 * dos2unix whole files
+* add inmemory option to load simulation(s) results
+* check consistency between Niter (global parameter)  &  iter_pointcloud_generation (lidar parameters)
+* checked url in documents
+* 
 
 # rcontroll 0.1.0.9056
-* Adapted GSL lib link to rcppGSL (configure/configure.win, makevars.in, cleanup/cleanup)
+* Add compilation configure files with gsl-config and download on Wondows OS (configure/configure.win, makevars.in, cleanup/cleanup)
 * Fix iter definition between global & lidar 
 * Add chmod +x to configure & cleanup
 ex: `git update-index --chmod=+x configure`
-* Add seed setup from R for enhanced reproductibility
+* Add Rseed setup to connect set.seed with gsl seed for enhanced reproductibility
 
 # rcontroll 0.1.0.9055
 * LICENSE.md
