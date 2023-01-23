@@ -1,7 +1,5 @@
-VER=-11
-CC=gcc$(VER)
-CXX=g++$(VER)
 GSL_LIBS     = @GSL_LIBS@
 GSL_CFLAGS   = @GSL_CFLAGS@
+
 PKG_CXXFLAGS = $(GSL_CFLAGS)
-PKG_LIBS     = -mtune=native -std=c++0x -OFast -Wall -pedantic $(LDFLAGS) $(GSL_LIBS)
+PKG_LIBS     = $(LDFLAGS) $(GSL_LIBS)

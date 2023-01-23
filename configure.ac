@@ -12,12 +12,13 @@ if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
   exit 1
 fi
-
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
+if test -z "$CXX"; then
+  AC_MSG_ERROR([No C++ compiler is available])
+fi
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-AC_PROG_CC([gcc cc])
-AC_PROG_CXX([g++ c++])
+AC_LANG(C++)
 
 ## Use gsl-config to find arguments for compiler and linker flags
 ##
@@ -60,8 +61,6 @@ echo "
   --------------------------------------------------
   Configuration for ${PACKAGE_NAME} ${PACKAGE_VERSION}
 
-    c++:       ${CXX}
-    c++ flags: ${CXXFLAGS} ${CPPFLAGS}
     gsl-flags: ${GSL_CFLAGS}
     gsl-libs:  ${GSL_LIBS}
 
