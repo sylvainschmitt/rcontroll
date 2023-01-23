@@ -1,10 +1,10 @@
 VERSION = 2.7
+
 RWINLIB = ../windows/gsl-$(VERSION)
 
 PKG_CPPFLAGS = -I $(RWINLIB)/include \
 	
-	
-PKG_LIBS = -OFast -Wall -pedantic -L $(RWINLIB)/lib$(R_ARCH) -lgsl -lgslcblas
+PKG_LIBS =  -L $(RWINLIB)/lib$(R_ARCH) -lgsl -lgslcblas
 
 all: clean winlibs
 
