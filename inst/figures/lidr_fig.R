@@ -9,5 +9,5 @@ sim <- troll(name = "test",
              lidar = generate_lidar(mean_beam_pc = 100,
                                     iter_pointcloud_generation = 12),
              verbose = FALSE)
-lidR::plot(sim@las[[1]], bg = "white", axis = TRUE, size = 1)
+lidR::plot(sim@las[[1]], bg = "white", axis = TRUE, size = 1, legend = TRUE)
 # currently manual capture

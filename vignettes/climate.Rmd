@@ -275,7 +275,7 @@ list(
   theme_bw()
 ```
 
-```{r, eval=F}
+```{r, eval=F, fig.width=12, fig.height=6}
 data("TROLLv3_climatedaytime12")
 list(
   Nouraflux = TROLLv3_climatedaytime12,
@@ -283,12 +283,27 @@ list(
 ) %>%
   bind_rows(.id = "origin") %>%
   group_by(origin) %>%
-  mutate(month = 1:12) %>%
-  gather(variable, value, -origin, -month) %>%
-  ggplot(aes(x = month, y = value, col = origin)) +
+  mutate(order = 1:12) %>% 
+  mutate(month = as.character(lubridate::month(1:12, label = T))) %>% 
+  gather(variable, value, -origin, -month, -order) %>%
+  mutate(variable = recode(variable,
+                           "Temperature" = "Temperature~(degree~C)",
+                           "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
+                           "NightTemperature" = "NightTemperature~(degree~C)",
+                           "Rainfall" = "Rainfall (cm)",
+                           "WindSpeed" = "WindSpeed (m~s^{-1})",
+                           "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
+                           "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
+                           "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
+                           "VapourPressure" = "VapourPressure (hPa)",
+                           "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
+                           "DayTimeVapourPressureDeficitVPDbasic" = "DayTimeVapourPressureDeficitVPDbasic (hPa)",
+                           "DaytimeMeanVapourPressureDeficit" = "DaytimeMeanVapourPressureDeficit (hPa)")) %>% 
+  ggplot(aes(x = reorder(month, order), y = value, col = origin, group = origin)) +
   geom_line() +
-  facet_wrap(~variable, scales = "free_y") +
-  theme_bw()
+  facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
+  theme_bw() +
+  theme(axis.title = element_blank(), axis.text.x = element_text(angle = 90), legend.position = "bottom")
 ```
 
 
