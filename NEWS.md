@@ -10,6 +10,7 @@
 * Add chmod +x to configure & cleanup
 ex: `git update-index --chmod=+x configure`
 * Add Rseed setup to connect set.seed with gsl seed for enhanced reproductibility
+* Set hack to simulate at t = 0 lidar 
 
 # rcontroll 0.1.0.9055
 * LICENSE.md
