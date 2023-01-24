@@ -195,8 +195,8 @@ Fyllas percentage, Fyllas lower limit (0,1,2).}
 
 \item{seedsadditional}{num. Excess biomass into seeds after maturation (0,1).}
 
-\item{NONRANDOM}{num. If _NONRANDOM == 1, the seeds for the random number
-generators will be kept fixed at 1, default for bug fixing (0,1).}
+\item{NONRANDOM}{num. If _NONRANDOM >= 1, the seeds for the random number
+generators will be set using fixed seed in R, default for bug fixing (0,1).}
 
 \item{GPPcrown}{num. This defines an option to compute only GPP from the
 topmost value of PPFD and GPP, instead of looping within the crown (0,1).}

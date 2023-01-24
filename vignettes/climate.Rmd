@@ -9,29 +9,28 @@ vignette: >
 
 TROLL forest simulator relies on climate tables with half-hourly variations of a typical day and monthly variations of a typical year which are recycled through simulation days and years. Initially, TROLL climate tables were computed from the Nouraflux dataset. Variations in quantities of interests (temperatures, ...) were averaged to the target resolution (half-hour for daily variation or month for monthly variation). The purpose of climate generation functions is to compute equivalent climate tables from the ERA5 land reanalysis dataset. With these functions, rcontroll users only need inventories and associated functional traits to run TROLL simulations.
 
-```{r, include = FALSE}
+This vignette requires numerous packages (12) to work. Some are not integrated to `rcontroll`. Consequently, the corresponding chunks are not compiled. But we strongly encourage users that want to generate their climate data for TROLL to install all the packages and run manually this vignette. All the packages role is detailed below. Some may be avoided, only `ecmwfr` is mandatory to download the ERA5 land data from Copernicus and obviously `rcontroll` to convert the data to TROLL inputs.
+
+```{r, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
-  collapse = TRUE,
   comment = "#>"
 )
-```
-
-This vignette requires numerous packages (12) to work. Some are not integrated to `rcontroll`. Consequently, the chunks are not compiled. But we strongly encourage users that want to generate their climate data for TROLL to install all the packages and run manually this vignette. All the packages role is detailed below. Some may be avoided, only `ecmwfr` is mandatory to download the ERA5 land data from Copernicus and obviously `rcontroll` to convert the data to TROLL inputs.
-
-```{r setup, message=F}
-library(ecmwfr) # to request data from Copernicus
-library(osmdata) # to get bounding box from the study area
-library(leaflet) # to make interactive maps
 library(terra) # to read the netCDF files
-library(lubridate) # to deal with dates and times 
+library(lubridate) # to deal with dates and times
 library(dplyr) # to wrangle and tidy the data
 library(tidyr) # to wrangle and tidy the data
 library(ggplot2) # to make statis maps
 library(gganimate) # to make a temporal gif of climate variation
-library(nominatimlite) # to get coordinates from the study area
-library(sf) # to extract coordinates from spatial objects
 library(rcontroll) # to generate TROLL climate inputs
+```
+
+```{r, eval=FALSE}
+library(ecmwfr) # to request data from Copernicus
+library(osmdata) # to get bounding box from the study area
+library(lutz) # to get time zone
+library(nominatimlite) # to get coordinates from the study area
+library(leaflet) # to make interactive maps
+library(sf) # to extract coordinates from spatial objects
 ```
 
 # Download ERA5-land data
@@ -40,7 +39,7 @@ Before you will be able to download any data you need to get a free personal acc
 
 First ECMWF:
 
-* [Register yourself for ECMWF services](https://apps.ecmwf.int/registration/)
+* [Register yourself for ECMWF services](https://accounts.ecmwf.int/auth/realms/ecmwf/protocol/openid-connect/registrations?client_id=apps&response_type=code&scope=openid%20email&redirect_uri=https://www.ecmwf.int)
 
 Then Copernicus:
 
@@ -52,7 +51,7 @@ You need to manually set your account information in R using `wf_set_key` from t
 Beware, you will need the **ECMWF password** to connect to Copernicus services with `wf_set_key`.
 Replace the user ID and API key in the following chunk and run it.
 
-```{r }
+```{r, eval=FALSE}
 wf_set_key(user = "******",
            key = "********-****-****-****-************",
            service = "cds")
@@ -64,35 +63,45 @@ for example here the French Guiana for which the default species data have been 
 We recommend using a large entity as the request preparation time is often longer than the resulting object to download 
 (see estimates below for French Guiana).
 
-```{r}
-getbb("French Guiana", format_out = "sf_polygon", limit = 1)$multipolygon %>% 
-  leaflet() %>% 
-  addTiles() %>% 
+```{r, eval=FALSE}
+getbb("French Guiana", format_out = "sf_polygon", limit = 1)$multipolygon %>%
+  leaflet() %>%
+  addTiles() %>%
   addPolygons()
 ```
 
 you can then convert the coordinates into the desired request format with `gsub`:
 
-```{r}
-(coords <- gsub(",", "/", getbb("French Guiana", format_out = "string", limit = 1)))
+```{r, eval=FALSE}
+(coords <- gsub(",", "/", getbb("French Guiana",
+                                format_out = "string", limit = 1)))
 ```
 
 You need two types of product: (1) monthly averages by hour of day and (2) monthly averages at 00:00.
 
-Now you can use the coordinates to build the request corresponding to the first set of data (monthly averages by hour of day) needed:
+Now you can use the coordinates to build the request corresponding to the first set of data (monthly averages by hour of day) needed.
+For this example, we will limit our query to the coordinates of the Nouragues station in 2022 for a reduced output.
+But we encourage users to use both a larger spatial extent and a larger temporal extent.
 
-```{r, eval=F}
+```{r, eval=FALSE}
 request <- list(
-  "dataset_short_name" = 'reanalysis-era5-land-monthly-means',
-  'format'= 'netcdf',
-  'product_type' = 'monthly_averaged_reanalysis_by_hour_of_day',
-  "variable" = c("10m_u_component_of_wind", "10m_v_component_of_wind", "2m_dewpoint_temperature",
-                 "2m_temperature", "surface_pressure", "total_precipitation"),
+  "dataset_short_name" = "reanalysis-era5-land-monthly-means",
+  "format" = "netcdf",
+  "product_type" = "monthly_averaged_reanalysis_by_hour_of_day",
+  "variable" = c(
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_dewpoint_temperature",
+    "2m_temperature",
+    "surface_pressure",
+    "total_precipitation",
+    "surface_solar_radiation_downwards"
+  ),
   "month" = sprintf("%02d", 1:12),
   "time" = sprintf("%02d:00", 0:23),
-  "year" = as.character(2012:2022),
-  "target" = "ERA5land_hr_FG.nc",
-  "area" = coords
+  "year" = as.character(2022),
+  "target" = "ERA5land_hr_Nouragues_2022.nc",
+  "area" = "3.960414/-52.85468/4.160414/-52.65468"
 )
 ```
 
@@ -100,15 +109,15 @@ request <- list(
 
 Finally you can use `wf_request` to download locally the request with the registered user id (UID):
 
-**Request time:**
+**Request time: 0:05:07**
 
-**Download size: 199.4 Mb**
+**Download size:  76.6 KB**
 
-```{r, eval=F}
+```{r, eval=FALSE}
 ncfile <- wf_request(
   user = "152268",
-  request = request,   
-  transfer = TRUE,  
+  request = request,
+  transfer = TRUE,
   path = ".",
   verbose = FALSE
 )
@@ -118,81 +127,103 @@ You can follow your request here : https://cds.climate.copernicus.eu/cdsapp#!/yo
 
 > As the resquest can be very long you can play with the `time_out` option in `wf_request`. By default it is set to 1 hour, but the request may take longer. We recommand either expanding the time out to expected request time, but you will block you R session (can be useful on cluster if you don't want manual intervention). Or on the oppposite setting a short time out. Then `wf_request` is only used to make the request. And you can download later when ready your request on the Copernicus website (can be useful on local session to avoid blocking the rsession).
 
-You can do the same for the second set of data (monthly averages) needed:
+The result of the request is included in the package external data (`system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll")`, example of use below).
 
-```{r, eval=F}
+You can do the same for the second set of data (monthly averages) needed.
+For this example, we will use all French Guiana but limit our query to 2021 and 2022 for a reduced output.
+But we encourage users to use a larger temporal extent.
+
+```{r, eval=FALSE}
 request <- list(
-  "dataset_short_name" = 'reanalysis-era5-land-monthly-means',
-  'format'= 'netcdf',
-  'product_type' = 'monthly_averaged_reanalysis', "time" = "00:00",
-  "variable" = c("10m_u_component_of_wind", "10m_v_component_of_wind", "2m_dewpoint_temperature",
-                 "2m_temperature", "surface_pressure", "total_precipitation"),
+  "dataset_short_name" = "reanalysis-era5-land-monthly-means",
+  "format" = "netcdf",
+  "product_type" = "monthly_averaged_reanalysis", "time" = "00:00",
+  "variable" = c(
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_dewpoint_temperature",
+    "2m_temperature",
+    "surface_pressure",
+    "total_precipitation",
+    "surface_solar_radiation_downwards"
+  ),
   "month" = sprintf("%02d", 1:12),
   "time" = sprintf("%02d:00", 0:23),
-  "year" = as.character(2012:2022),
-  "target" = "ERA5land_mth_FG.nc",
+  "year" = as.character(2021:2022),
+  "target" = "ERA5land_mth_FG_2021_2022.nc",
   "area" = coords
 )
 ```
 
 Finally you can use `wf_request` to download locally the request with the registered user id (UID):
 
-**Request time:**
+**Request time: 0:00:53**
 
-**Download size: 9.1 Mb**
+**Download size: 749.1 KB**
 
-```{r, eval=F}
+```{r, eval=FALSE}
 ncfile <- wf_request(
   user = "152268",
-  request = request,   
-  transfer = TRUE,  
+  request = request,
+  transfer = TRUE,
   path = ".",
   verbose = FALSE
 )
 ```
 
+The result of the request is included in the package external data (`system.file("extdata", "ERA5land_mth_FG_2021_2022.nc", package = "rcontroll")`, example of use below).
+
 # Have a look to the downloaded data
 
-You can have a look to the resulting ERA5 land data. First extract the chosen value in your file, for instance here total precipitation `tp` and consolidate the data as a table using `dplyr`:
+You can have a look to the resulting ERA5 land data. 
+For instance here we consolidate the data as a table using `dplyr`:
 
-```{r}
-test_r <- rast("ERA5land_mth_FG.nc", "tp")
-test <- as.data.frame(test_r, xy = T) %>% 
-  gather("variable", "value", -x , -y) %>% 
-  separate(variable, c("variable", "t")) %>% 
-  mutate(date = as_date(time(test_r)[as.numeric(t)])) %>% 
-  spread(variable, value)
+```{r }
+test_r <- suppressWarnings(rast(system.file("extdata", "ERA5land_mth_FG_2021_2022.nc", package = "rcontroll")))
+test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
+  gather("variable", "value", -x, -y) %>% 
+  group_by(x,y) %>% 
+  mutate(date = rep(as_date(terra::time(test_r)))) %>% 
+  separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
+  select(-t) %>% 
+  separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
+  group_by(x,y, date, variable) %>% 
+  summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
+  spread(variable, value) %>% 
+  arrange(date)
 ```
 
 You can then plot the result as a static figure for a chosen year and month using `ggplot`:
 
-```{r}
-ggplot(filter(test, t == 1)) +
-  geom_raster(aes(x, y, fill = tp)) +
-  geom_sf(data = spData::world, fill = NA) +
+```{r }
+ggplot(filter(test, date == first(date))) +
+  geom_raster(aes(x, y, fill = `tp`)) +
   scale_fill_viridis_c("Total\nprecipitation", direction = -1) +
   theme_bw() +
-  coord_sf(xlim = c(-54.6026945,-51.6346139), ylim = c(2.1109401,5.7769491)) +
-  xlab("Longitue") + ylab("Latitude") +
-  ggtitle(filter(test, t == 1)$date[1])
+  coord_sf(xlim = c(-54.6026945, -51.6346139), ylim = c(2.1109401, 5.7769491)) +
+  ylab("Longitude") +
+  xlab("Latitude") +
+  ggtitle(filter(test, date == first(date))$date[1])
 ```
 
 Or as a dynamic gif using `gganimate`:
 
-```{r }
-test %>% 
-  group_by(x, y, month = lubridate::floor_date(date, 'month')) %>%
-  summarize(tp = sum(tp)) %>% 
+```{r, eval=FALSE}
+test %>%
+  group_by(x, y, month = lubridate::floor_date(date, "month")) %>%
   ggplot() +
-  geom_raster(aes(x, y, fill = tp)) +
+  geom_raster(aes(x, y, fill = `tp`)) +
   geom_sf(data = spData::world, fill = NA) +
   scale_fill_viridis_c("Total\nprecipitation\n", direction = -1) +
   theme_bw() +
-  coord_sf(xlim = c(-54.6026945,-51.6346139), ylim = c(2.1109401,5.7769491)) +
-  xlab("Longitue") + ylab("Latitude") +
-  labs(title = 'Month: {frame_time}') +
+  coord_sf(xlim = c(-54.6026945, -51.6346139), ylim = c(2.1109401, 5.7769491)) +
+  xlab("Longitue") +
+  ylab("Latitude") +
+  labs(title = "Month: {frame_time}") +
   transition_time(month)
 ```
+
+>Because this takes time and memory, we do not run the chunk here, but invite the user to do so.
 
 # Prepare TROLL inputs
 
@@ -200,71 +231,104 @@ Next you need coordinates of the location where you want to run your TROLL simul
 We will use here the coordinates from the Reserve naturelle des Nouragues where the functional data have been partly collected from.
 For that `nominatimlite` provide a useful function called `geo_lite_sf` to easily geocode locations:
 
-```{r}
-geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addPolygons(data =  getbb("French Guiana", format_out = "sf_polygon", limit = 1)$multipolygon) %>% 
+```{r, eval=FALSE}
+geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
+  leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = getbb("French Guiana", format_out = "sf_polygon",
+                           limit = 1)$multipolygon) %>%
   addCircleMarkers(col = "red")
 ```
 
 You can extract corresponding coordinates using `st_coordinates` from `sf`:
 
-```{r}
-(coords <- geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>% st_coordinates())
+```{r, eval=FALSE}
+(coords <- geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
+   st_coordinates())
 ```
 
 You will also need the corresponding time zone for time correction as ERA5-land is giving us time in UTC.
 For that you can use the `tz_lookup_coords` function from the package `lutz`:
 
-```{r}
-(tz <- lutz::tz_lookup_coords(lon = coords[1], lat = coords[2], method = "accurate"))
+```{r, eval=FALSE}
+(tz <- tz_lookup_coords(lon = coords[1],
+                              lat = coords[2], method = "accurate"))
 ```
 
+We invite users to take advantage of `geo_lite_sf` and `tz_lookup_coords` to retrieve the coordinates and time zone, but we show an example with known values below.
 You can use the `generate_cliamte` function inside TROLL to prepare `TROLL` climatic data:
 
-```{r}
-climate <- generate_climate(coords[1], coords[2], tz = tz,
-                            era5land_hour = "ERA5land_hr_FG.nc", era5land_month = "ERA5land_mth_FG.nc")
+```{r }
+climate <- generate_climate(
+  x = -52.75468, 
+  y = 4.060414,
+  tz = "America/Cayenne",
+  era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll"), 
+  era5land_month = system.file("extdata", "ERA5land_mth_FG_2021_2022.nc", package = "rcontroll")
+)
 ```
 
-And as expected you obtain inputs ready to run models :
+And as expected you obtain inputs ready to run models:
 
-```{r}
+```{r }
 climate$daytimevar %>% head()
 ```
 
-```{r}
+```{r }
 climate$climatedaytime12 %>% head()
 ```
 
-```{r, eval=F}
+Finally, we can compare obtained climatic data from ERA5-land with included data in the package grom the Nouraflux eddy tower:
+
+```{r, fig.width=6, fig.height=3}
 data("TROLLv3_daytimevar")
-list(Nouraflux = TROLLv3_daytimevar,
-     ERA5 = climate$daytimevar) %>% 
-  bind_rows(.id = "origin") %>% 
-  gather(variable, value, -starttime, -endtime, -origin) %>% 
-  group_by(origin, variable) %>% 
-  ggplot(aes(x = starttime, y = value, col = origin)) + geom_line() + facet_wrap(~variable, scales = "free_y") + theme_bw()
+list(
+  Nouraflux = TROLLv3_daytimevar,
+  ERA5 = climate$daytimevar
+) %>%
+  bind_rows(.id = "origin") %>%
+  gather(variable, value, -starttime, -endtime, -origin) %>%
+  group_by(origin, variable) %>%
+  ggplot(aes(x = starttime, y = value, col = origin)) +
+  geom_line() +
+  facet_wrap(~variable, scales = "free_y") +
+  theme_bw()
 ```
 
-```{r, eval=F}
+```{r, fig.width=12, fig.height=6}
 data("TROLLv3_climatedaytime12")
-list(Nouraflux = TROLLv3_climatedaytime12,
-     ERA5 = climate$climatedaytime12) %>% 
-  bind_rows(.id = "origin") %>% 
-  group_by(origin) %>% 
-  mutate(month = 1:12) %>% 
-  gather(variable, value, -origin, -month) %>% 
-  ggplot(aes(x = month, y = value, col = origin)) + geom_line() + facet_wrap(~variable, scales = "free_y") + theme_bw()
+list(
+  Nouraflux = TROLLv3_climatedaytime12,
+  ERA5 = climate$climatedaytime12
+) %>%
+  bind_rows(.id = "origin") %>%
+  group_by(origin) %>%
+  mutate(order = 1:12) %>% 
+  mutate(month = as.character(lubridate::month(1:12, label = T))) %>% 
+  gather(variable, value, -origin, -month, -order) %>%
+  mutate(variable = recode(variable,
+                           "Temperature" = "Temperature~(degree~C)",
+                           "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
+                           "NightTemperature" = "NightTemperature~(degree~C)",
+                           "Rainfall" = "Rainfall (cm)",
+                           "WindSpeed" = "WindSpeed (m~s^{-1})",
+                           "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
+                           "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
+                           "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
+                           "VapourPressure" = "VapourPressure (hPa)",
+                           "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
+                           "DayTimeVapourPressureDeficitVPDbasic" = "DayTimeVapourPressureDeficitVPDbasic (hPa)",
+                           "DaytimeMeanVapourPressureDeficit" = "DaytimeMeanVapourPressureDeficit (hPa)")) %>% 
+  ggplot(aes(x = reorder(month, order), y = value, col = origin, group = origin)) +
+  geom_line() +
+  facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
+  theme_bw() +
+  theme(axis.title = element_blank(), axis.text.x = element_text(angle = 90), legend.position = "bottom")
 ```
-
 
 This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:
 
-```{r, eval=F}
+```{r, eval=FALSE}
 write_tsv(climate$daytimevar, "ERA5land_daytimevar.txt")
 write_tsv(climate$climatedaytime12, "ERA5land_climatedaytime12.txt")
 ```
-
-

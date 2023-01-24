@@ -73,8 +73,8 @@
 #' @param sapwood num. Sapwood parameterizations: constant thickness (0.04),
 #'   Fyllas percentage, Fyllas lower limit (0,1,2).
 #' @param seedsadditional num. Excess biomass into seeds after maturation (0,1).
-#' @param NONRANDOM num. If _NONRANDOM == 1, the seeds for the random number
-#'   generators will be kept fixed at 1, default for bug fixing (0,1).
+#' @param NONRANDOM num. If _NONRANDOM >= 1, the seeds for the random number
+#'   generators will be set using fixed seed in R, default for bug fixing (0,1).
 #' @param GPPcrown num. This defines an option to compute only GPP from the
 #'   topmost value of PPFD and GPP, instead of looping within the crown (0,1).
 #' @param BASICTREEFALL num. If defined: treefall is a source of tree death
@@ -95,87 +95,96 @@
 #' @examples
 #'
 #' generate_parameters(nbiter = 12)
-#' 
-generate_parameters <- function(
-  cols = 200,
-  rows = 200,
-  HEIGHT = 70,
-  length_dcell = 25,
-  nbiter,
-  iterperyear = 12,
-  NV = 1,
-  NH = 1,
-  nbout = 4,
-  nbspp = 45,
-  SWtoPPFD = 2.27,
-  p_nonvert = 0.05,
-  klight = 0.63,
-  phi = 0.093,
-  absorptance_leaves = 0.9,
-  theta = 0.7,
-  g1 = 3.77,
-  vC = 0.021,
-  DBH0 = 0.005,
-  H0 = 0.950,
-  CR_min = 0.3,
-  CR_a = 2.13,
-  CR_b = 0.63,
-  CD_a = 0,
-  CD_b = 0.2,
-  CD0 = 0.3,
-  shape_crown = 0.72,
-  dens = 1,
-  fallocwood = 0.35,
-  falloccanopy = 0.25,
-  Cseedrain = 50000,
-  nbs0 = 10,
-  sigma_height = 0,
-  sigma_CR = 0,
-  sigma_CD = 0,
-  sigma_P = 0,
-  sigma_N = 0,
-  sigma_LMA = 0,
-  sigma_wsg = 0,
-  sigma_dbhmax = 0,
-  corr_CR_height = 0,
-  corr_N_P = 0,
-  corr_N_LMA = 0,
-  corr_P_LMA = 0,
-  leafdem_resolution = 30,
-  p_tfsecondary =  1,
-  hurt_decay = 0,
-  crown_gap_fraction = 0.15,
-  m = 0.013,
-  m1 = 0.013,
-  Cair = 400,
-  LL_parameterization = 1,
-  LA_regulation = 2,
-  sapwood = 1,
-  seedsadditional = 0,
-  NONRANDOM = 1,
-  GPPcrown = 0,
-  BASICTREEFALL = 1,
-  SEEDTRADEOFF = 0,
-  CROWN_MM = 0,
-  OUTPUT_extended = 1,
-  extent_visual = 0
-){
+#'
+generate_parameters <- function(cols = 200,
+                                rows = 200,
+                                HEIGHT = 70,
+                                length_dcell = 25,
+                                nbiter,
+                                iterperyear = 12,
+                                NV = 1,
+                                NH = 1,
+                                nbout = 4,
+                                nbspp = 45,
+                                SWtoPPFD = 2.27,
+                                p_nonvert = 0.05,
+                                klight = 0.63,
+                                phi = 0.093,
+                                absorptance_leaves = 0.9,
+                                theta = 0.7,
+                                g1 = 3.77,
+                                vC = 0.021,
+                                DBH0 = 0.005,
+                                H0 = 0.950,
+                                CR_min = 0.3,
+                                CR_a = 2.13,
+                                CR_b = 0.63,
+                                CD_a = 0,
+                                CD_b = 0.2,
+                                CD0 = 0.3,
+                                shape_crown = 0.72,
+                                dens = 1,
+                                fallocwood = 0.35,
+                                falloccanopy = 0.25,
+                                Cseedrain = 50000,
+                                nbs0 = 10,
+                                sigma_height = 0,
+                                sigma_CR = 0,
+                                sigma_CD = 0,
+                                sigma_P = 0,
+                                sigma_N = 0,
+                                sigma_LMA = 0,
+                                sigma_wsg = 0,
+                                sigma_dbhmax = 0,
+                                corr_CR_height = 0,
+                                corr_N_P = 0,
+                                corr_N_LMA = 0,
+                                corr_P_LMA = 0,
+                                leafdem_resolution = 30,
+                                p_tfsecondary = 1,
+                                hurt_decay = 0,
+                                crown_gap_fraction = 0.15,
+                                m = 0.013,
+                                m1 = 0.013,
+                                Cair = 400,
+                                LL_parameterization = 1,
+                                LA_regulation = 2,
+                                sapwood = 1,
+                                seedsadditional = 0,
+                                NONRANDOM = 1,
+                                GPPcrown = 0,
+                                BASICTREEFALL = 1,
+                                SEEDTRADEOFF = 0,
+                                CROWN_MM = 0,
+                                OUTPUT_extended = 1,
+                                extent_visual = 0) {
   # check args
-  if(!all(unlist(lapply(
-    list(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
-         NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
-         absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
-         CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
-         falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
-         sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
-         corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
-         leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
-         m, m1, Cair, LL_parameterization, LA_regulation, 
-         sapwood, seedsadditional, 
-         NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-         CROWN_MM, OUTPUT_extended, extent_visual), 
-    class)) == "numeric"))
-  stop("parameters should be numeric.")
+  if (!all(unlist(lapply(
+    list(
+      cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
+      NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
+      absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min,
+      CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
+      falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
+      sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
+      corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
+      leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction,
+      m, m1, Cair, LL_parameterization, LA_regulation,
+      sapwood, seedsadditional,
+      NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+      CROWN_MM, OUTPUT_extended, extent_visual
+    ),
+    class
+  )) == "numeric")) {
+    stop("parameters should be numeric.")
+  }
+
+  if (NONRANDOM > 1) {
+    Rseed <- sample.int(.Machine$integer.max, 1)
+    NONRANDOM <- 1
+  }else{
+    Rseed <- 1
+  }
   
   data.frame(
     param = c("cols", "rows", "HEIGHT", "length_dcell",
@@ -191,7 +200,7 @@ generate_parameters <- function(
               "p_tfsecondary", "hurt_decay", "crown_gap_fraction", 
               "m", "m1", "Cair", "_LL_parameterization", 
               "_LA_regulation", "_sapwood", "_seedsadditional",
-              "_NONRANDOM", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
+              "_NONRANDOM", "Rseed","_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
               "_CROWN_MM", "_OUTPUT_extended", "extent_visual"),
     value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
               NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
@@ -203,7 +212,7 @@ generate_parameters <- function(
               leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
               m, m1, Cair, LL_parameterization, LA_regulation, 
               sapwood, seedsadditional,
-              NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+              NONRANDOM,Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
               CROWN_MM, OUTPUT_extended, extent_visual),
     description = c(
       "/* nb of columns */",
@@ -262,6 +271,7 @@ generate_parameters <- function(
       "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */",
       "/* excess biomass into seeds after maturation (0,1) */",
       "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */",
+      "/* selected seed according to _NONRANDOM and R fixed seed */",
       "/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */",
       "/* if defined: treefall is a source of tree death */",
       "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */",

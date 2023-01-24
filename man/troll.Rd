@@ -57,11 +57,15 @@ Run a TROLL simulation.
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
-troll(name = "test",
-      global = generate_parameters(cols = 100, rows = 100,
-                                   iterperyear = 12, nbiter = 12*1),
-      species = TROLLv3_species,
-      climate = TROLLv3_climatedaytime12,
-      daily = TROLLv3_daytimevar)
+troll(
+  name = "test",
+  global = generate_parameters(
+    cols = 100, rows = 100,
+    iterperyear = 12, nbiter = 12 * 1
+  ),
+  species = TROLLv3_species,
+  climate = TROLLv3_climatedaytime12,
+  daily = TROLLv3_daytimevar
+)
 
 }

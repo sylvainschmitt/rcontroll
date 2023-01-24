@@ -33,15 +33,16 @@ The `troll` function include a `lidar` input to specify the details of the lidar
 Parameters for the lidar simulation includes mean and standard deviation of pulse density, the laser attenuation factor, the transmittance of laser after hit, and the iteration for point cloud generation (see `?generate_lidar`).
 
 ```{r }
-sim <- troll(name = "test",
-             # path = getwd(),
-             global = update_parameters(TROLLv3_output, nbiter = 12*1),
-             species = TROLLv3_output@inputs$species,
-             climate = TROLLv3_output@inputs$climate,
-             daily = TROLLv3_output@inputs$daily,
-             forest = get_forest(TROLLv3_output),
-             lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
-             verbose = FALSE)
+sim <- troll(
+  name = "test",
+  global = update_parameters(TROLLv3_output, nbiter = 12 * 1),
+  species = TROLLv3_output@inputs$species,
+  climate = TROLLv3_output@inputs$climate,
+  daily = TROLLv3_output@inputs$daily,
+  forest = get_forest(TROLLv3_output),
+  lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
+  verbose = FALSE
+)
 ```
 
 Printing the output `rcontroll` inform the lidar simulation status:
@@ -54,8 +55,12 @@ The point cloud can be accessed in a list in the attribute `@las`:
 
 ```{r}
 sim@las
-# lidR::plot(sim@las[[1]])
 ```
+
+```{r, eval=FALSE}
+lidR::plot(sim@las[[1]])
+```
+
 
 > `lidR` include a `plot` method for las objects with a nice 3D interactive plot.
 
@@ -79,21 +84,22 @@ Similarly, the `stack` function include a `lidar` input to specify the details o
 Here we test the difference between a simulation with mean pulse density of 10 (`10pc`) and 20 (`20pc`):
 
 ```{r}
-sim_stack <- stack(name = "teststack", 
-                   # path = getwd(),
-                   simulations = c("10pc", "20pc"),
-                   global = update_parameters(TROLLv3_output, nbiter = 12*1),
-                   species = TROLLv3_output@inputs$species,
-                   climate = TROLLv3_output@inputs$climate,
-                   daily = TROLLv3_output@inputs$daily,
-                   forest = get_forest(TROLLv3_output),
-                   lidar = list(
-                     "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
-                     "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12)
-                   ) %>% dplyr::bind_rows(.id = "simulation"),
-                   verbose = FALSE,
-                   cores = 2,
-                   thin = c(1,5,10))
+sim_stack <- stack(
+  name = "teststack",
+  simulations = c("10pc", "20pc"),
+  global = update_parameters(TROLLv3_output, nbiter = 12 * 1),
+  species = TROLLv3_output@inputs$species,
+  climate = TROLLv3_output@inputs$climate,
+  daily = TROLLv3_output@inputs$daily,
+  forest = get_forest(TROLLv3_output),
+  lidar = list(
+    "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
+    "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11)
+  ) %>% dplyr::bind_rows(.id = "simulation"),
+  verbose = FALSE,
+  cores = 2,
+  thin = c(1, 5, 10)
+)
 ```
 
 Printing the output `rcontroll` inform the lidar simulation status:
@@ -106,7 +112,10 @@ The point clouds can be accessed in a list in the attribute `@las`:
 
 ```{r}
 sim_stack@las
-# lidR::plot(sim_stack@las[[2]])
+```
+
+```{r, eval=FALSE}
+lidR::plot(sim_stack@las[[2]])
 ```
 
 `rcontroll` includes a `get_chm` method to extract the canopy height model from the point clouds as a raster:
@@ -120,4 +129,3 @@ get_chm(sim_stack)
 ```{r}
 rcontroll::autoplot(sim_stack, what = "lidar")
 ```
-

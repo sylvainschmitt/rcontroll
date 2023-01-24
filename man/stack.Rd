@@ -60,26 +60,29 @@ A trollstack object.
 Run a TROLL stack.
 }
 \examples{
-
 \dontrun{
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
 data("TROLLv3_output")
-TROLLv3_input_stack <- generate_parameters(cols = 100, rows = 100,
-                                           iterperyear = 12, nbiter = 12*1) \%>\% 
-                                           mutate(simulation = list(c("seed50000", "seed500"))) \%>\% 
-                                           unnest(simulation)
-TROLLv3_input_stack[62,2] <- 500 # Cseedrain
-stack(name = "teststack", 
-      simulations = c("seed50000", "seed500"),
-      global = TROLLv3_input_stack,
-      species = TROLLv3_species,
-      climate = TROLLv3_climatedaytime12,
-      daily = TROLLv3_daytimevar,
-      verbose = F,
-      cores = 2,
-      thin = c(1,5,10))
+TROLLv3_input_stack <- generate_parameters(
+  cols = 100, rows = 100,
+  iterperyear = 12, nbiter = 12 * 1
+) \%>\%
+  mutate(simulation = list(c("seed50000", "seed500"))) \%>\%
+  unnest(simulation)
+TROLLv3_input_stack[62, 2] <- 500 # Cseedrain
+stack(
+  name = "teststack",
+  simulations = c("seed50000", "seed500"),
+  global = TROLLv3_input_stack,
+  species = TROLLv3_species,
+  climate = TROLLv3_climatedaytime12,
+  daily = TROLLv3_daytimevar,
+  verbose = F,
+  cores = 2,
+  thin = c(1, 5, 10)
+)
 }
 
 }
