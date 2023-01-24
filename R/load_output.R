@@ -43,7 +43,7 @@ load_output <- function(name,
     ),
     function(x) {
       read_tsv(file.path(path, paste0(name, paste0("_input_", x, ".txt"))),
-        col_types = cols()
+               col_types = cols()
       )
     }
   )
@@ -113,7 +113,7 @@ load_output <- function(name,
   } else {
     las <- list()
   }
-
+  
   return(
     trollsim(
       name = name,

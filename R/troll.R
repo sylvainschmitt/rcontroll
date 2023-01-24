@@ -24,6 +24,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
+#'   
 #'
 #' @return A trollsim object.
 #'
@@ -224,6 +225,6 @@ troll <- function(name = NULL,
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()
   }
-
+  
   return(sim)
 }

@@ -40,7 +40,7 @@ sim <- troll(
   climate = TROLLv3_output@inputs$climate,
   daily = TROLLv3_output@inputs$daily,
   forest = get_forest(TROLLv3_output),
-  lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
+  lidar = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
   verbose = FALSE
 )
 ```
@@ -56,6 +56,7 @@ The point cloud can be accessed in a list in the attribute `@las`:
 ```{r}
 sim@las
 ```
+
 ```{r, eval=FALSE}
 lidR::plot(sim@las[[1]])
 ```
@@ -92,8 +93,8 @@ sim_stack <- stack(
   daily = TROLLv3_output@inputs$daily,
   forest = get_forest(TROLLv3_output),
   lidar = list(
-    "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12),
-    "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 12)
+    "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
+    "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11)
   ) %>% dplyr::bind_rows(.id = "simulation"),
   verbose = FALSE,
   cores = 2,
@@ -128,4 +129,3 @@ get_chm(sim_stack)
 ```{r}
 rcontroll::autoplot(sim_stack, what = "lidar")
 ```
-

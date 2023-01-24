@@ -1,2 +1,17 @@
+VERSION = 2.7
 CRT=-ucrt
-include Makevars.win
+RWINLIB = ../windows/gsl-$(VERSION)
+
+PKG_CPPFLAGS = -I $(RWINLIB)/include \
+	
+PKG_LIBS =  -L $(RWINLIB)/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
+
+all: clean winlibs
+
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
+
+.PHONY: all winlibs clean
