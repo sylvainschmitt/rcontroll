@@ -11,6 +11,7 @@ test_that("stack", {
   stack_parameters[62, 2] <- 500
   sims <- stack(
     name = "test3",
+    path = getwd(),
     simulations = c("seed50000", "seed500"),
     global = stack_parameters,
     species = TROLLv3_species,
@@ -19,6 +20,7 @@ test_that("stack", {
     verbose = FALSE,
     cores = 2
   )
+  sims <- load_stack("test3", path = getwd())
   expect_true(is.character(capture.output(show(sims))))
   expect_true(is.character(capture.output(print(sims))))
   expect_true(is.character(capture.output(summary(sims))))
@@ -26,4 +28,5 @@ test_that("stack", {
   expect_s3_class(autoplot(sims, what = "spatial"), "ggplot")
   expect_s3_class(autoplot(sims, what = "temporal"), "ggplot")
   expect_s3_class(autoplot(sims, what = "distribution"), "ggplot")
+  unlink(file.path(getwd(), "test3"), recursive = TRUE)
 })

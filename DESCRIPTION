@@ -2,7 +2,13 @@ Package: rcontroll
 Type: Package
 Title: Package for Individual-Based Forest Growth Simulator TROLL
 Version: 0.1.0
-Author: Sylvain Schmitt, Guillaume Salzet, Fabian Fischer, Isabelle Marechaux, Jerome Chave
+Authors@R: c(
+    person("Sylvain", "Schmitt", email="sylvain.m.schmitt@gmail.com", role=c("aut", "cre"), comment = c(ORCID = "0000-0001-7759-7106")),
+    person("Guillaume", "Salzet", email="guillaume.salzet@inrae.fr", role="aut", comment = c(ORCID = "0000-0003-4548-5673")),
+    person("Fabian", "Fischer", email="fabian.fischer@univ-tlse3.fr", role="aut", comment = c(ORCID = "0000-0003-2325-9886")),
+    person("Isabelle", "Maréchaux", email="isabelle.mj.marechaux@gmail.com", role="aut", comment = c(ORCID = "0000-0002-5401-0197")),
+    person("Jérôme", "Chave", email="jerome.chave@univ-tlse3.fr", role="aut", comment = c(ORCID = "0000-0002-7766-1347"))
+    )
 Maintainer: Sylvain Schmitt <sylvain.m.schmitt@gmail.com>
 URL: https://github.com/sylvainschmitt/rcontroll,
     https://sylvainschmitt.github.io/rcontroll/
@@ -39,7 +45,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Collate: 
     'RcppExports.R'
     'TROLLv3_climatedaytime12.R'

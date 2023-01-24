@@ -66,18 +66,21 @@ generate_climate <- function(x, y, tz,
   variable <- vp <- vpd <- windspeed <- M <- NULL
 
   # hourly
-  era5_hr_r <- rast(era5land_hour)
-  era5_hr <- extract(era5_hr_r, cbind(x, y)) %>%
+  era5_hr_r <- suppressWarnings(rast(era5land_hour))
+  era5_hr <- suppressWarnings(extract(era5_hr_r, cbind(x, y))) %>%
     gather("variable", "value") %>%
+    mutate(date = as_datetime(terra::time(era5_hr_r))) %>% 
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    mutate(date = as_datetime(time(era5_hr_r)[as.numeric(t)])) %>%
-    spread(variable, value) %>%
-    select(-t) %>%
+    select(-t) %>% 
+    separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
+    group_by(date, variable) %>% 
+    summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
+    spread(variable, value) %>% 
     arrange(date)
   rm(era5_hr_r)
   t0 <- t1 <- era5_hr$date[1]
   t1 <- force_tz(t1, tz)
-  tlag <- t1 - t0
+  tlag <- t1 - as.POSIXct(t0)
   era5_hr$date <- era5_hr$date + hms("48:00:00")
   era5_hr$date <- era5_hr$date - tlag
   rm(t0, t1)
@@ -140,13 +143,17 @@ generate_climate <- function(x, y, tz,
   rm(era5_hr, tlag)
 
   # monthly
-  era5_mt_r <- rast(era5land_month)
-  era5_mt <- extract(era5_mt_r, cbind(x, y)) %>%
+  era5_mt_r <- suppressWarnings(rast(era5land_month))
+  era5_mt <- suppressWarnings(extract(era5_mt_r, cbind(x, y))) %>%
     gather("variable", "value") %>%
+    mutate(date = as_date(terra::time(era5_mt_r))) %>% 
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    mutate(date = as_date(terra::time(era5_mt_r)[as.numeric(t)])) %>%
-    spread(variable, value) %>%
     select(-t) %>%
+    separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
+    group_by(date, variable) %>% 
+    summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
+    spread(variable, value) %>% 
+    arrange(date) %>% 
     mutate(month = month(date)) %>%
     mutate(year = year(date)) %>%
     group_by(year) %>%
@@ -226,7 +233,7 @@ generate_climate <- function(x, y, tz,
                                  "Daytime", "Night")) %>%
       mutate(variable = paste0(variable, "_", Timeperiod)) %>%
       group_by(variable, month) %>%
-      summarise(value = mean(value)) %>%
+      summarise(value = mean(value), .groups = 'drop') %>%
       spread(variable, value) %>%
       select(month, Temperature_Daytime, Temperature_Night,
              MeanIrradiance_Daytime, VaporPressureDeficit_Daytime,

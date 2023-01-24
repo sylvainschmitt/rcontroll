@@ -1,2 +1,2 @@
+src/troll_rcpp.cpp
 R/zzz.R
-R/load_stack.R

@@ -1,4 +1,25 @@
+# rcontroll 0.1.0.9058
+* including PR #39
+* Guillaume's dev (configure, seed, lidar iter 0, CI)
+* Reject `inmemory` option
+* Cleaning code
+* Adding test (covr>80%)
+* Fixing era5 new version
+* Adding era5 extdata
+* Compiling climate vignette
+
+# rcontroll 0.1.0.9057
+* `dos2unix` whole files
+* add `inmemory` option to load simulation(s) results
+* check consistency between `Niter` (global parameter)  &  `iter_pointcloud_generation` (lidar parameters)
+* checked url in documents
+
 # rcontroll 0.1.0.9056
+* Add compilation configure files with gsl-config and download on Wondows OS (configure/configure.win, makevars.in, cleanup/cleanup)
+* Add chmod +x to configure & cleanup
+ex: `git update-index --chmod=+x configure`
+* Add Rseed setup to connect set.seed with gsl seed for enhanced reproductibility
+* Set hack to simulate at t = 0 lidar 
 - remove license from build
 - update GA check
 - remove GA covr
@@ -17,11 +38,11 @@
 
 # rcontroll 0.1.0.9052
 * lidar backend:
-* las attribute as list(lidR::LAS) for trollsim & trollstack
+* las attribute as list(`lidR::LAS`) for trollsim & trollstack
 * lidR in DESCRIPTION
 * get_chm methods
 * print methods
-* autpolot methods
+* autoplot methods
 * load_output and load_stack
 
 # rcontroll 0.1.0.9051
@@ -34,13 +55,13 @@
 * fixed and & or operands in cpp for windows-latest (release)
 
 # rcontroll 0.1.0.9048
-* methods get_forest & update_parameters
+* methods `get_forest` & `update_parameters`
 
 # rcontroll 0.1.0.9047
-* autogif v1
+* `autogif` v1
 
 # rcontroll 0.1.0.9046
-* TROLL 1.3.3, TROLL.version() & autogif begins
+* TROLL 1.3.3, `TROLL.version()` & `autogif` begins
 
 # rcontroll 0.1.0.9044
 * merge @gsalzet rcpp_gsl
