@@ -91,7 +91,7 @@
 
       
 
-      </header><script src="lidar_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Lidar simulation using TROLL</h1>
@@ -104,11 +104,15 @@
 
     
     
-<p>This vignette gives a quick example of a simple workflow to produce discrete lidar point clouds from TROLL simulation and corresponding height canopy models.</p>
+<p>This vignette gives a quick example of a simple workflow to produce
+discrete lidar point clouds from TROLL simulation and corresponding
+height canopy models.</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p>We will use <code>rcontroll</code> with a previous simulation (<code>TROLLv3_output</code>) as a starting point for new simulations.</p>
+<p>We will use <code>rcontroll</code> with a previous simulation
+(<code>TROLLv3_output</code>) as a starting point for new
+simulations.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sylvainschmitt/rcontroll" class="external-link">rcontroll</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_output"</span><span class="op">)</span></span></code></pre></div>
@@ -116,18 +120,26 @@
 <div class="section level2">
 <h2 id="lidar-simulation">Lidar simulation<a class="anchor" aria-label="anchor" href="#lidar-simulation"></a>
 </h2>
-<p>The <code>troll</code> function include a <code>lidar</code> input to specify the details of the lidar simulation that can be easily generated using the <code>generate_lidar</code> function. Parameters for the lidar simulation includes mean and standard deviation of pulse density, the laser attenuation factor, the transmittance of laser after hit, and the iteration for point cloud generation (see <code><a href="../reference/generate_lidar.html">?generate_lidar</a></code>).</p>
+<p>The <code>troll</code> function include a <code>lidar</code> input to
+specify the details of the lidar simulation that can be easily generated
+using the <code>generate_lidar</code> function. Parameters for the lidar
+simulation includes mean and standard deviation of pulse density, the
+laser attenuation factor, the transmittance of laser after hit, and the
+iteration for point cloud generation (see
+<code><a href="../reference/generate_lidar.html">?generate_lidar</a></code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/troll.html">troll</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"test"</span>,</span>
-<span>             <span class="co"># path = getwd(),</span></span>
-<span>             global <span class="op">=</span> <span class="fu"><a href="../reference/update_parameters.html">update_parameters</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, nbiter <span class="op">=</span> <span class="fl">12</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>             species <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">species</span>,</span>
-<span>             climate <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">climate</span>,</span>
-<span>             daily <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">daily</span>,</span>
-<span>             forest <span class="op">=</span> <span class="fu"><a href="../reference/get_forest.html">get_forest</a></span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span>,</span>
-<span>             lidar <span class="op">=</span> <span class="fu"><a href="../reference/generate_lidar.html">generate_lidar</a></span><span class="op">(</span>mean_beam_pc <span class="op">=</span> <span class="fl">10</span>, iter_pointcloud_generation <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
-<span>             verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>Printing the output <code>rcontroll</code> inform the lidar simulation status:</p>
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/troll.html">troll</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"test"</span>,</span>
+<span>  global <span class="op">=</span> <span class="fu"><a href="../reference/update_parameters.html">update_parameters</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, nbiter <span class="op">=</span> <span class="fl">12</span> <span class="op">*</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  species <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">species</span>,</span>
+<span>  climate <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">climate</span>,</span>
+<span>  daily <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">daily</span>,</span>
+<span>  forest <span class="op">=</span> <span class="fu"><a href="../reference/get_forest.html">get_forest</a></span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span>,</span>
+<span>  lidar <span class="op">=</span> <span class="fu"><a href="../reference/generate_lidar.html">generate_lidar</a></span><span class="op">(</span>mean_beam_pc <span class="op">=</span> <span class="fl">10</span>, iter_pointcloud_generation <span class="op">=</span> <span class="fl">11</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Printing the output <code>rcontroll</code> inform the lidar
+simulation status:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span></span>
 <span><span class="co">#&gt; Object of class : trollsim </span></span>
@@ -143,7 +155,8 @@
 <span><span class="co">#&gt; Number of iterations :  12 </span></span>
 <span><span class="co">#&gt; Duration of timestep :  30.41667 days </span></span>
 <span><span class="co">#&gt; Number of Species    :  45</span></span></code></pre></div>
-<p>The point cloud can be accessed in a list in the attribute <code>@las</code>:</p>
+<p>The point cloud can be accessed in a list in the attribute
+<code>@las</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">@</span><span class="va">las</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
@@ -154,13 +167,16 @@
 <span><span class="co">#&gt; area         : 10028 units²</span></span>
 <span><span class="co">#&gt; points       : 142.3 thousand points</span></span>
 <span><span class="co">#&gt; density      : 14.19 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span>
-<span><span class="co"># lidR::plot(sim@las[[1]])</span></span></code></pre></div>
-<blockquote>
-<p><code>lidR</code> include a <code>plot</code> method for las objects with a nice 3D interactive plot.</p>
-</blockquote>
-<p><code>rcontroll</code> includes a <code>get_chm</code> method to extract the canopy height model from the point cloud as a raster:</p>
+<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<blockquote>
+<p><code>lidR</code> include a <code>plot</code> method for las objects
+with a nice 3D interactive plot.</p>
+</blockquote>
+<p><code>rcontroll</code> includes a <code>get_chm</code> method to
+extract the canopy height model from the point cloud as a raster:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_chm.html">get_chm</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $test</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
@@ -172,46 +188,57 @@
 <span><span class="co">#&gt; name        : canopy_height </span></span>
 <span><span class="co">#&gt; min value   :      1.101667 </span></span>
 <span><span class="co">#&gt; max value   :     41.005556</span></span></code></pre></div>
-<p><code>rcontroll</code> includes in the <code>autoplot</code> method an automatic plot of the canopy height model when choosing <code>what = "lidar"</code> (if the lidar simulations as been activated obviously):</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><code>rcontroll</code> includes in the <code>autoplot</code> method
+an automatic plot of the canopy height model when choosing
+<code>what = "lidar"</code> (if the lidar simulations as been activated
+obviously):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"lidar"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="lidar_files/figure-html/unnamed-chunk-7-1.png" width="576"></p>
+<p><img src="lidar_files/figure-html/unnamed-chunk-8-1.png" width="576"></p>
 <blockquote>
-<p>Prefer to use <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">rcontroll::autoplot</a></code> instead of <code>autoplot</code> alone to avoid namespace conflict with <code>ggplot2</code>.</p>
+<p>Prefer to use <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">rcontroll::autoplot</a></code> instead of
+<code>autoplot</code> alone to avoid namespace conflict with
+<code>ggplot2</code>.</p>
 </blockquote>
 </div>
 <div class="section level2">
 <h2 id="lidar-stack">Lidar stack<a class="anchor" aria-label="anchor" href="#lidar-stack"></a>
 </h2>
-<p>Similarly, the <code>stack</code> function include a <code>lidar</code> input to specify the details of the lidar simulation that can be easily generated using the <code>generate_lidar</code> function. Here we test the difference between a simulation with mean pulse density of 10 (<code>10pc</code>) and 20 (<code>20pc</code>):</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>sim_stack &lt;-<span class="st"> </span><span class="kw">stack</span>(<span class="dt">name =</span> <span class="st">"teststack"</span>, </span>
-<span id="cb7-2"><a href="#cb7-2"></a>                   <span class="co"># path = getwd(),</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>                   <span class="dt">simulations =</span> <span class="kw">c</span>(<span class="st">"10pc"</span>, <span class="st">"20pc"</span>),</span>
-<span id="cb7-4"><a href="#cb7-4"></a>                   <span class="dt">global =</span> <span class="kw">update_parameters</span>(TROLLv3_output, <span class="dt">nbiter =</span> <span class="dv">12</span><span class="op">*</span><span class="dv">1</span>),</span>
-<span id="cb7-5"><a href="#cb7-5"></a>                   <span class="dt">species =</span> TROLLv3_output<span class="op">@</span>inputs<span class="op">$</span>species,</span>
-<span id="cb7-6"><a href="#cb7-6"></a>                   <span class="dt">climate =</span> TROLLv3_output<span class="op">@</span>inputs<span class="op">$</span>climate,</span>
-<span id="cb7-7"><a href="#cb7-7"></a>                   <span class="dt">daily =</span> TROLLv3_output<span class="op">@</span>inputs<span class="op">$</span>daily,</span>
-<span id="cb7-8"><a href="#cb7-8"></a>                   <span class="dt">forest =</span> <span class="kw">get_forest</span>(TROLLv3_output),</span>
-<span id="cb7-9"><a href="#cb7-9"></a>                   <span class="dt">lidar =</span> <span class="kw">list</span>(</span>
-<span id="cb7-10"><a href="#cb7-10"></a>                     <span class="st">"10pc"</span> =<span class="st"> </span><span class="kw">generate_lidar</span>(<span class="dt">mean_beam_pc =</span> <span class="dv">10</span>, <span class="dt">iter_pointcloud_generation =</span> <span class="dv">12</span>),</span>
-<span id="cb7-11"><a href="#cb7-11"></a>                     <span class="st">"20pc"</span> =<span class="st"> </span><span class="kw">generate_lidar</span>(<span class="dt">mean_beam_pc =</span> <span class="dv">10</span>, <span class="dt">iter_pointcloud_generation =</span> <span class="dv">12</span>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a>                   ) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">"simulation"</span>),</span>
-<span id="cb7-13"><a href="#cb7-13"></a>                   <span class="dt">verbose =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb7-14"><a href="#cb7-14"></a>                   <span class="dt">cores =</span> <span class="dv">2</span>,</span>
-<span id="cb7-15"><a href="#cb7-15"></a>                   <span class="dt">thin =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">10</span>))</span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; </span></span>
-<span id="cb7-17"><a href="#cb7-17"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
-<span id="cb7-18"><a href="#cb7-18"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb7-19"><a href="#cb7-19"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
-<span id="cb7-20"><a href="#cb7-20"></a><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</span>
-<span id="cb7-21"><a href="#cb7-21"></a>  <span class="op">|</span><span class="st">                                                                            </span></span>
-<span id="cb7-22"><a href="#cb7-22"></a><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span></code></pre></div>
-<p>Printing the output <code>rcontroll</code> inform the lidar simulation status:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Similarly, the <code>stack</code> function include a
+<code>lidar</code> input to specify the details of the lidar simulation
+that can be easily generated using the <code>generate_lidar</code>
+function. Here we test the difference between a simulation with mean
+pulse density of 10 (<code>10pc</code>) and 20 (<code>20pc</code>):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sim_stack <span class="ot">&lt;-</span> <span class="fu">stack</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"teststack"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">simulations =</span> <span class="fu">c</span>(<span class="st">"10pc"</span>, <span class="st">"20pc"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">global =</span> <span class="fu">update_parameters</span>(TROLLv3_output, <span class="at">nbiter =</span> <span class="dv">12</span> <span class="sc">*</span> <span class="dv">1</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">species =</span> TROLLv3_output<span class="sc">@</span>inputs<span class="sc">$</span>species,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">climate =</span> TROLLv3_output<span class="sc">@</span>inputs<span class="sc">$</span>climate,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">daily =</span> TROLLv3_output<span class="sc">@</span>inputs<span class="sc">$</span>daily,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">forest =</span> <span class="fu">get_forest</span>(TROLLv3_output),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lidar =</span> <span class="fu">list</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"10pc"</span> <span class="ot">=</span> <span class="fu">generate_lidar</span>(<span class="at">mean_beam_pc =</span> <span class="dv">10</span>, <span class="at">iter_pointcloud_generation =</span> <span class="dv">11</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"20pc"</span> <span class="ot">=</span> <span class="fu">generate_lidar</span>(<span class="at">mean_beam_pc =</span> <span class="dv">10</span>, <span class="at">iter_pointcloud_generation =</span> <span class="dv">11</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"simulation"</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                      <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===================================</span>                                   <span class="er">|</span>  <span class="dv">50</span>%</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="er">|======================================================================|</span> <span class="dv">100</span>%</span></code></pre></div>
+<p>Printing the output <code>rcontroll</code> inform the lidar
+simulation status:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span></span>
 <span><span class="co">#&gt; Object of class : trollstack </span></span>
 <span><span class="co">#&gt; Name : 10pc </span></span>
-<span><span class="co">#&gt; Path : /tmp/RtmpTm7o0R/rcontroll/teststack </span></span>
+<span><span class="co">#&gt; Path : /tmp/RtmpouYwPb/rcontroll/teststack </span></span>
 <span><span class="co">#&gt; Number of simulations : 2 </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
@@ -223,8 +250,9 @@
 <span><span class="co">#&gt; Number of iterations :  12 </span></span>
 <span><span class="co">#&gt; Duration of timestep :  30.41667 days </span></span>
 <span><span class="co">#&gt; Number of Species    :  45</span></span></code></pre></div>
-<p>The point clouds can be accessed in a list in the attribute <code>@las</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>The point clouds can be accessed in a list in the attribute
+<code>@las</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span></span>
 <span><span class="co">#&gt; $`10pc`</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
@@ -244,10 +272,12 @@
 <span><span class="co">#&gt; area         : 10028 units²</span></span>
 <span><span class="co">#&gt; points       : 142.3 thousand points</span></span>
 <span><span class="co">#&gt; density      : 14.19 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span>
-<span><span class="co"># lidR::plot(sim_stack@las[[2]])</span></span></code></pre></div>
-<p><code>rcontroll</code> includes a <code>get_chm</code> method to extract the canopy height model from the point clouds as a raster:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p><code>rcontroll</code> includes a <code>get_chm</code> method to
+extract the canopy height model from the point clouds as a raster:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_chm.html">get_chm</a></span><span class="op">(</span><span class="va">sim_stack</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`10pc`</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
@@ -270,10 +300,13 @@
 <span><span class="co">#&gt; name        : canopy_height </span></span>
 <span><span class="co">#&gt; min value   :      1.101667 </span></span>
 <span><span class="co">#&gt; max value   :     41.005556</span></span></code></pre></div>
-<p><code>rcontroll</code> includes in the <code>autoplot</code> method an automatic plot of the canopy height model when choosing <code>what = "lidar"</code> (if the lidar simulations as been activated obviously):</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p><code>rcontroll</code> includes in the <code>autoplot</code> method
+an automatic plot of the canopy height model when choosing
+<code>what = "lidar"</code> (if the lidar simulations as been activated
+obviously):</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, what <span class="op">=</span> <span class="st">"lidar"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="lidar_files/figure-html/unnamed-chunk-12-1.png" width="576"></p>
+<p><img src="lidar_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
 </div>
   </div>
 
@@ -289,12 +322,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Sylvain Schmitt.</p>
+<p>Developed by Sylvain Schmitt, Guillaume Salzet, Fabian Fischer, Isabelle Maréchaux, Jérôme Chave.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

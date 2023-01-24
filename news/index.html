@@ -67,65 +67,121 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0.9059" id="rcontroll-0109059">rcontroll 0.1.0.9059<a class="anchor" aria-label="anchor" href="#rcontroll-0109059"></a></h2>
+<ul><li>cover fix 1</li>
+<li>removed RcppGSL</li>
+<li>badges added</li>
+<li>climate vignette typos</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0.9058" id="rcontroll-0109058">rcontroll 0.1.0.9058<a class="anchor" aria-label="anchor" href="#rcontroll-0109058"></a></h2>
+<ul><li>including PR <a href="https://github.com/sylvainschmitt/rcontroll/issues/39" class="external-link">#39</a></li>
+<li>Guillaume’s dev (configure, seed, lidar iter 0, CI)</li>
+<li>Reject <code>inmemory</code> option</li>
+<li>Cleaning code</li>
+<li>Adding test (covr&gt;80%)</li>
+<li>Fixing era5 new version</li>
+<li>Adding era5 extdata</li>
+<li>Compiling climate vignette</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0.9057" id="rcontroll-0109057">rcontroll 0.1.0.9057<a class="anchor" aria-label="anchor" href="#rcontroll-0109057"></a></h2>
+<ul><li>
+<code>dos2unix</code> whole files</li>
+<li>add <code>inmemory</code> option to load simulation(s) results</li>
+<li>check consistency between <code>Niter</code> (global parameter) &amp; <code>iter_pointcloud_generation</code> (lidar parameters)</li>
+<li>checked url in documents</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0.9056" id="rcontroll-0109056">rcontroll 0.1.0.9056<a class="anchor" aria-label="anchor" href="#rcontroll-0109056"></a></h2>
+<ul><li>Add compilation configure files with gsl-config and download on Wondows OS (configure/configure.win, makevars.in, cleanup/cleanup)</li>
+<li>Add chmod +x to configure &amp; cleanup ex: <code>git update-index --chmod=+x configure</code>
+</li>
+<li>Add Rseed setup to connect set.seed with gsl seed for enhanced reproductibility</li>
+<li>Set hack to simulate at t = 0 lidar</li>
+<li>remove license from build</li>
+<li>update GA check</li>
+<li>remove GA covr</li>
+<li>update description title</li>
+<li>code cleaning with lintr::lint_package &amp; styler::style_pkg</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9055" id="rcontroll-0109055">rcontroll 0.1.0.9055<a class="anchor" aria-label="anchor" href="#rcontroll-0109055"></a></h2>
-<ul><li>LICENSE.md</li></ul></div>
+<ul><li>LICENSE.md</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9054" id="rcontroll-0109054">rcontroll 0.1.0.9054<a class="anchor" aria-label="anchor" href="#rcontroll-0109054"></a></h2>
-<ul><li>lidr figure, updated README &amp; doc, updated version</li></ul></div>
+<ul><li>lidr figure, updated README &amp; doc, updated version</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9053" id="rcontroll-0109053">rcontroll 0.1.0.9053<a class="anchor" aria-label="anchor" href="#rcontroll-0109053"></a></h2>
 <ul><li>Fabian TROLL v1.3.7 fixes las closing, no las automatic creation, leafflush bug</li>
-<li>Fixing the NULL character to "" for TROLL cpp</li>
+<li>Fixing the NULL character to “” for TROLL cpp</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9052" id="rcontroll-0109052">rcontroll 0.1.0.9052<a class="anchor" aria-label="anchor" href="#rcontroll-0109052"></a></h2>
 <ul><li>lidar backend:</li>
-<li>las attribute as list(lidR::LAS) for trollsim &amp; trollstack</li>
+<li>las attribute as list(<code><a href="https://rdrr.io/pkg/lidR/man/LAS-class.html" class="external-link">lidR::LAS</a></code>) for trollsim &amp; trollstack</li>
 <li>lidR in DESCRIPTION</li>
 <li>get_chm methods</li>
 <li>print methods</li>
-<li>autpolot methods</li>
+<li>autoplot methods</li>
 <li>load_output and load_stack</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9051" id="rcontroll-0109051">rcontroll 0.1.0.9051<a class="anchor" aria-label="anchor" href="#rcontroll-0109051"></a></h2>
-<ul><li>Guillaume cleaned frontend for lidar</li></ul></div>
+<ul><li>Guillaume cleaned frontend for lidar</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9050" id="rcontroll-0109050">rcontroll 0.1.0.9050<a class="anchor" aria-label="anchor" href="#rcontroll-0109050"></a></h2>
-<ul><li>Update TROLL to 3.1.6 &amp; add lidar generation parameters</li></ul></div>
+<ul><li>Update TROLL to 3.1.6 &amp; add lidar generation parameters</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9049" id="rcontroll-0109049">rcontroll 0.1.0.9049<a class="anchor" aria-label="anchor" href="#rcontroll-0109049"></a></h2>
-<ul><li>fixed and &amp; or operands in cpp for windows-latest (release)</li></ul></div>
+<ul><li>fixed and &amp; or operands in cpp for windows-latest (release)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9048" id="rcontroll-0109048">rcontroll 0.1.0.9048<a class="anchor" aria-label="anchor" href="#rcontroll-0109048"></a></h2>
-<ul><li>methods get_forest &amp; update_parameters</li></ul></div>
+<ul><li>methods <code>get_forest</code> &amp; <code>update_parameters</code>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9047" id="rcontroll-0109047">rcontroll 0.1.0.9047<a class="anchor" aria-label="anchor" href="#rcontroll-0109047"></a></h2>
-<ul><li>autogif v1</li></ul></div>
+<ul><li>
+<code>autogif</code> v1</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9046" id="rcontroll-0109046">rcontroll 0.1.0.9046<a class="anchor" aria-label="anchor" href="#rcontroll-0109046"></a></h2>
-<ul><li>TROLL 1.3.3, TROLL.version() &amp; autogif begins</li></ul></div>
+<ul><li>TROLL 1.3.3, <code><a href="../reference/TROLL.version.html">TROLL.version()</a></code> &amp; <code>autogif</code> begins</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9044" id="rcontroll-0109044">rcontroll 0.1.0.9044<a class="anchor" aria-label="anchor" href="#rcontroll-0109044"></a></h2>
-<ul><li>merge <a href="https://github.com/gsalzet" class="external-link">@gsalzet</a> rcpp_gsl</li></ul></div>
+<ul><li>merge <a href="https://github.com/gsalzet" class="external-link">@gsalzet</a> rcpp_gsl</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9043" id="rcontroll-0109043">rcontroll 0.1.0.9043<a class="anchor" aria-label="anchor" href="#rcontroll-0109043"></a></h2>
-<ul><li>Add import GSL and Add CI on GH Actions multi-arch</li></ul></div>
+<ul><li>Add import GSL and Add CI on GH Actions multi-arch</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9042" id="rcontroll-0109042">rcontroll 0.1.0.9042<a class="anchor" aria-label="anchor" href="#rcontroll-0109042"></a></h2>
-<ul><li>Add CI on GH Actions multi-arch</li></ul></div>
+<ul><li>Add CI on GH Actions multi-arch</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9041" id="rcontroll-0109041">rcontroll 0.1.0.9041<a class="anchor" aria-label="anchor" href="#rcontroll-0109041"></a></h2>
-<ul><li>Add CI on GH Actions ubuntu alone</li></ul></div>
+<ul><li>Add CI on GH Actions ubuntu alone</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9040" id="rcontroll-0109040">rcontroll 0.1.0.9040<a class="anchor" aria-label="anchor" href="#rcontroll-0109040"></a></h2>
-<ul><li>Add configure.win, cleanup.win and Makevars.win files</li></ul></div>
+<ul><li>Add configure.win, cleanup.win and Makevars.win files</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9039" id="rcontroll-0109039">rcontroll 0.1.0.9039<a class="anchor" aria-label="anchor" href="#rcontroll-0109039"></a></h2>
-<ul><li>Change permission access of configure file</li></ul></div>
+<ul><li>Change permission access of configure file</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9038" id="rcontroll-0109038">rcontroll 0.1.0.9038<a class="anchor" aria-label="anchor" href="#rcontroll-0109038"></a></h2>
-<ul><li>Update GH actions</li></ul></div>
+<ul><li>Update GH actions</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9037" id="rcontroll-0109037">rcontroll 0.1.0.9037<a class="anchor" aria-label="anchor" href="#rcontroll-0109037"></a></h2>
 <ul><li>add configure file to detect GSL install</li>
@@ -134,10 +190,12 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9036" id="rcontroll-0109036">rcontroll 0.1.0.9036<a class="anchor" aria-label="anchor" href="#rcontroll-0109036"></a></h2>
 <ul><li>
-<code>autoplot</code> v2</li></ul></div>
+<code>autoplot</code> v2</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9035" id="rcontroll-0109035">rcontroll 0.1.0.9035<a class="anchor" aria-label="anchor" href="#rcontroll-0109035"></a></h2>
-<ul><li>Fabian’s cleaned CPP</li></ul></div>
+<ul><li>Fabian’s cleaned CPP</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9034" id="rcontroll-0109034">rcontroll 0.1.0.9034<a class="anchor" aria-label="anchor" href="#rcontroll-0109034"></a></h2>
 <ul><li>using TROLL child for fake parralelisation</li>
@@ -150,13 +208,16 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9032" id="rcontroll-0109032">rcontroll 0.1.0.9032<a class="anchor" aria-label="anchor" href="#rcontroll-0109032"></a></h2>
-<ul><li>pkgdown init</li></ul></div>
+<ul><li>pkgdown init</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9031" id="rcontroll-0109031">rcontroll 0.1.0.9031<a class="anchor" aria-label="anchor" href="#rcontroll-0109031"></a></h2>
-<ul><li>reviewed doc, vignettes, &amp; README</li></ul></div>
+<ul><li>reviewed doc, vignettes, &amp; README</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9030" id="rcontroll-0109030">rcontroll 0.1.0.9030<a class="anchor" aria-label="anchor" href="#rcontroll-0109030"></a></h2>
-<ul><li>fixed tests</li></ul></div>
+<ul><li>fixed tests</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9029" id="rcontroll-0109029">rcontroll 0.1.0.9029<a class="anchor" aria-label="anchor" href="#rcontroll-0109029"></a></h2>
 <ul><li>reduced TROLLV3_output</li>
@@ -171,7 +232,8 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9027" id="rcontroll-0109027">rcontroll 0.1.0.9027<a class="anchor" aria-label="anchor" href="#rcontroll-0109027"></a></h2>
-<ul><li>test reprex, news to be filled</li></ul></div>
+<ul><li>test reprex, news to be filled</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9026" id="rcontroll-0109026">rcontroll 0.1.0.9026<a class="anchor" aria-label="anchor" href="#rcontroll-0109026"></a></h2>
 <ul><li>integration of TROLL main_v3.1_rcpp.cpp with corresponding new parameters</li>
@@ -179,13 +241,16 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9025" id="rcontroll-0109025">rcontroll 0.1.0.9025<a class="anchor" aria-label="anchor" href="#rcontroll-0109025"></a></h2>
-<ul><li>doc &amp; vignette</li></ul></div>
+<ul><li>doc &amp; vignette</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9024" id="rcontroll-0109024">rcontroll 0.1.0.9024<a class="anchor" aria-label="anchor" href="#rcontroll-0109024"></a></h2>
-<ul><li>adding tests and fixing check</li></ul></div>
+<ul><li>adding tests and fixing check</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9024" id="rcontroll-0109024-1">rcontroll 0.1.0.9024<a class="anchor" aria-label="anchor" href="#rcontroll-0109024-1"></a></h2>
-<ul><li>adding forest_path to work with FromData but is not correctly programmed in the cpp</li></ul></div>
+<ul><li>adding forest_path to work with FromData but is not correctly programmed in the cpp</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9023" id="rcontroll-0109023">rcontroll 0.1.0.9023<a class="anchor" aria-label="anchor" href="#rcontroll-0109023"></a></h2>
 <ul><li>cout and cerr to Rcout and Rcerr</li>
@@ -199,7 +264,8 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9021" id="rcontroll-0109021">rcontroll 0.1.0.9021<a class="anchor" aria-label="anchor" href="#rcontroll-0109021"></a></h2>
-<ul><li>simplifying trollsim and trollstack to one</li></ul></div>
+<ul><li>simplifying trollsim and trollstack to one</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9020" id="rcontroll-0109020">rcontroll 0.1.0.9020<a class="anchor" aria-label="anchor" href="#rcontroll-0109020"></a></h2>
 <ul><li>seamless integration of trollCpp thanks to Rcpp !</li>
@@ -227,31 +293,39 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9016" id="rcontroll-0109016">rcontroll 0.1.0.9016<a class="anchor" aria-label="anchor" href="#rcontroll-0109016"></a></h2>
-<ul><li>generate_parameters <a href="https://github.com/sylvainschmitt/rcontroll/issues/12" class="external-link">#12</a></li></ul></div>
+<ul><li>generate_parameters <a href="https://github.com/sylvainschmitt/rcontroll/issues/12" class="external-link">#12</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9015" id="rcontroll-0109015">rcontroll 0.1.0.9015<a class="anchor" aria-label="anchor" href="#rcontroll-0109015"></a></h2>
-<ul><li>load_stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/9" class="external-link">#9</a>, print, show, summary stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/10" class="external-link">#10</a>, autoplot.stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/16" class="external-link">#16</a>, is.stack</li></ul></div>
+<ul><li>load_stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/9" class="external-link">#9</a>, print, show, summary stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/10" class="external-link">#10</a>, autoplot.stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/16" class="external-link">#16</a>, is.stack</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9014" id="rcontroll-0109014">rcontroll 0.1.0.9014<a class="anchor" aria-label="anchor" href="#rcontroll-0109014"></a></h2>
-<ul><li>stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/8" class="external-link">#8</a></li></ul></div>
+<ul><li>stack <a href="https://github.com/sylvainschmitt/rcontroll/issues/8" class="external-link">#8</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9013" id="rcontroll-0109013">rcontroll 0.1.0.9013<a class="anchor" aria-label="anchor" href="#rcontroll-0109013"></a></h2>
-<ul><li>trollstack <a href="https://github.com/sylvainschmitt/rcontroll/issues/6" class="external-link">#6</a></li></ul></div>
+<ul><li>trollstack <a href="https://github.com/sylvainschmitt/rcontroll/issues/6" class="external-link">#6</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9012" id="rcontroll-0109012">rcontroll 0.1.0.9012<a class="anchor" aria-label="anchor" href="#rcontroll-0109012"></a></h2>
-<ul><li>autoplot.trollsim <a href="https://github.com/sylvainschmitt/rcontroll/issues/11" class="external-link">#11</a></li></ul></div>
+<ul><li>autoplot.trollsim <a href="https://github.com/sylvainschmitt/rcontroll/issues/11" class="external-link">#11</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9011" id="rcontroll-0109011">rcontroll 0.1.0.9011<a class="anchor" aria-label="anchor" href="#rcontroll-0109011"></a></h2>
-<ul><li>#2 trollsim:<ul><li>parameters as a named vector</li>
+<ul><li>#2 trollsim:
+<ul><li>parameters as a named vector</li>
 <li>forest and random as parameters</li>
 <li>final_pattern</li>
 <li>architecture for stacks</li>
 </ul></li>
-<li>#3 troll:<ul><li>work with all binaries</li>
+<li>#3 troll:
+<ul><li>work with all binaries</li>
 <li>forest and random parameters</li>
 <li>final_pattern</li>
 </ul></li>
-<li>#4 load_output:<ul><li>parameters as a named vector</li>
+<li>#4 load_output:
+<ul><li>parameters as a named vector</li>
 <li>forest and random as parameters</li>
 <li>final_pattern</li>
 <li>consolidated reduced outputs</li>
@@ -259,16 +333,20 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9010" id="rcontroll-0109010">rcontroll 0.1.0.9010<a class="anchor" aria-label="anchor" href="#rcontroll-0109010"></a></h2>
-<ul><li>compile_troll and unix binaries <a href="https://github.com/sylvainschmitt/rcontroll/issues/1" class="external-link">#1</a></li></ul></div>
+<ul><li>compile_troll and unix binaries <a href="https://github.com/sylvainschmitt/rcontroll/issues/1" class="external-link">#1</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9009" id="rcontroll-0109009">rcontroll 0.1.0.9009<a class="anchor" aria-label="anchor" href="#rcontroll-0109009"></a></h2>
-<ul><li>troll and load_output for all trollsimclasses <a href="https://github.com/sylvainschmitt/rcontroll/issues/3" class="external-link">#3</a> &amp; <a href="https://github.com/sylvainschmitt/rcontroll/issues/5" class="external-link">#5</a></li></ul></div>
+<ul><li>troll and load_output for all trollsimclasses <a href="https://github.com/sylvainschmitt/rcontroll/issues/3" class="external-link">#3</a> &amp; <a href="https://github.com/sylvainschmitt/rcontroll/issues/5" class="external-link">#5</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9008" id="rcontroll-0109008">rcontroll 0.1.0.9008<a class="anchor" aria-label="anchor" href="#rcontroll-0109008"></a></h2>
-<ul><li>trollsimclasses <a href="https://github.com/sylvainschmitt/rcontroll/issues/2" class="external-link">#2</a></li></ul></div>
+<ul><li>trollsimclasses <a href="https://github.com/sylvainschmitt/rcontroll/issues/2" class="external-link">#2</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9007" id="rcontroll-0109007">rcontroll 0.1.0.9007<a class="anchor" aria-label="anchor" href="#rcontroll-0109007"></a></h2>
-<ul><li>TROLL binaries for windows <a href="https://github.com/sylvainschmitt/rcontroll/issues/1" class="external-link">#1</a></li></ul></div>
+<ul><li>TROLL binaries for windows <a href="https://github.com/sylvainschmitt/rcontroll/issues/1" class="external-link">#1</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9006" id="rcontroll-0109006">rcontroll 0.1.0.9006<a class="anchor" aria-label="anchor" href="#rcontroll-0109006"></a></h2>
 <ul><li>load_output read all, consolidated output for TROLL_full <a href="https://github.com/sylvainschmitt/rcontroll/issues/5" class="external-link">#5</a></li>
@@ -282,10 +360,12 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9005" id="rcontroll-0109005">rcontroll 0.1.0.9005<a class="anchor" aria-label="anchor" href="#rcontroll-0109005"></a></h2>
-<ul><li>tidyverse style guide <a href="https://github.com/sylvainschmitt/rcontroll/issues/14" class="external-link">#14</a></li></ul></div>
+<ul><li>tidyverse style guide <a href="https://github.com/sylvainschmitt/rcontroll/issues/14" class="external-link">#14</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9004" id="rcontroll-0109004">rcontroll 0.1.0.9004<a class="anchor" aria-label="anchor" href="#rcontroll-0109004"></a></h2>
-<ul><li>TROLL binaries for unix <a href="https://github.com/sylvainschmitt/rcontroll/issues/1" class="external-link">#1</a></li></ul></div>
+<ul><li>TROLL binaries for unix <a href="https://github.com/sylvainschmitt/rcontroll/issues/1" class="external-link">#1</a></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9003" id="rcontroll-0109003">rcontroll 0.1.0.9003<a class="anchor" aria-label="anchor" href="#rcontroll-0109003"></a></h2>
 <ul><li>opened dev branch</li>
@@ -293,10 +373,12 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9002" id="rcontroll-0109002">rcontroll 0.1.0.9002<a class="anchor" aria-label="anchor" href="#rcontroll-0109002"></a></h2>
-<ul><li>opened old branch and cleaned main branch</li></ul></div>
+<ul><li>opened old branch and cleaned main branch</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0.9001" id="rcontroll-0109001">rcontroll 0.1.0.9001<a class="anchor" aria-label="anchor" href="#rcontroll-0109001"></a></h2>
-<ul><li>relaunch of the package</li></ul></div>
+<ul><li>relaunch of the package</li>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -307,11 +389,11 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Sylvain Schmitt.</p>
+  <p></p><p>Developed by Sylvain Schmitt, Guillaume Salzet, Fabian Fischer, Isabelle Maréchaux, Jérôme Chave.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
