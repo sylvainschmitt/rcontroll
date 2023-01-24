@@ -1,3 +1,9 @@
+# rcontroll 0.1.0.9059
+* cover fix 1
+* removed RcppGSL
+* badges added
+* climate vignette typos
+
 # rcontroll 0.1.0.9058
 * including PR #39
 * Guillaume's dev (configure, seed, lidar iter 0, CI)

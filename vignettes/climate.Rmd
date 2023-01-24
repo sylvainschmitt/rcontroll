@@ -201,8 +201,8 @@ ggplot(filter(test, date == first(date))) +
   scale_fill_viridis_c("Total\nprecipitation", direction = -1) +
   theme_bw() +
   coord_sf(xlim = c(-54.6026945, -51.6346139), ylim = c(2.1109401, 5.7769491)) +
-  xlab("Longitue") +
-  ylab("Latitude") +
+  ylab("Longitude") +
+  xlab("Latitude") +
   ggtitle(filter(test, date == first(date))$date[1])
 ```
 

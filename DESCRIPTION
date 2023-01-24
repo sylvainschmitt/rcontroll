@@ -32,7 +32,6 @@ Imports:
     foreach (>= 1.4.1),
     iterators (>= 1.0.5),
     Rcpp (>= 1.0.5),
-    RcppGSL (>= 0.3.5),
     gganimate (>= 1.0.0),
     vroom (>= 1.0.0),
     tidyr (>= 1.0.0),
@@ -44,7 +43,8 @@ Suggests:
     markdown,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    covr
 RoxygenNote: 7.2.3
 Collate: 
     'RcppExports.R'
