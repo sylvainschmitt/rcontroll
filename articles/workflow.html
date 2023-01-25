@@ -144,7 +144,7 @@ using a <code>seedrain</code> of 5000 (default) and 500
 <span>  iterperyear <span class="op">=</span> <span class="fl">12</span>, nbiter <span class="op">=</span> <span class="fl">12</span> <span class="op">*</span> <span class="fl">1</span></span>
 <span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>simulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"seed50000"</span>, <span class="st">"seed500"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">simulation</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">simulation</span><span class="op">)</span></span>
 <span><span class="va">stack_parameters</span><span class="op">[</span><span class="fl">62</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">500</span> <span class="co"># Cseedrain</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -206,7 +206,6 @@ to see the TROLL log directly in the console.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/troll.html">troll</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"test"</span>,</span>
-<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  global <span class="op">=</span> <span class="fu"><a href="../reference/generate_parameters.html">generate_parameters</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="fl">100</span>, rows <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>    iterperyear <span class="op">=</span> <span class="fl">12</span>, nbiter <span class="op">=</span> <span class="fl">12</span> <span class="op">*</span> <span class="fl">1</span></span>
@@ -221,7 +220,7 @@ to see the TROLL log directly in the console.</p>
 <code class="sourceCode R"><span><span class="va">sim</span></span>
 <span><span class="co">#&gt; Object of class : trollsim </span></span>
 <span><span class="co">#&gt; Name : test </span></span>
-<span><span class="co">#&gt; Path : /home/runner/work/rcontroll/rcontroll/vignettes/test </span></span>
+<span><span class="co">#&gt; Path :  </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
 <span><span class="co">#&gt; Lidar simulation : FALSE </span></span>
@@ -272,7 +271,6 @@ change the legend position.</p>
 <code>spatial</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/fullsimG2-1.png" width="576"></p>
 <p>Finally, we can quickly plot variables distribution at forest final
 patterns using <code>autoplot</code> and <code>what</code> defined on
 <code>distribution</code>:</p>
@@ -313,7 +311,7 @@ number of iterations to be kept to reduce the output size.</p>
 <code class="sourceCode R"><span><span class="va">sim_stack</span></span>
 <span><span class="co">#&gt; Object of class : trollstack </span></span>
 <span><span class="co">#&gt; Name : seed50000 </span></span>
-<span><span class="co">#&gt; Path : /tmp/RtmplcagMy/rcontroll/teststack </span></span>
+<span><span class="co">#&gt; Path : /tmp/RtmpQBd8LM/rcontroll/teststack </span></span>
 <span><span class="co">#&gt; Number of simulations : 2 </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
@@ -340,7 +338,6 @@ aboveground biomass (agb):</p>
 <code>spatial</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, what <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/fullstackG2-1.png" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="from-a-forest">From a forest<a class="anchor" aria-label="anchor" href="#from-a-forest"></a>
@@ -358,7 +355,6 @@ the <code>TROLLv3_output</code> simulation:</p>
 simulation:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, what <span class="op">=</span> <span class="st">"spatial"</span>, variables <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-5-1.png" width="576"></p>
 <p>To run the simulation we first extracted the forest from
 <code>TROLLv3_output</code>, in which we removed unused columns (not
 mandatory). Then we extracted the previous simulation parameters to run
