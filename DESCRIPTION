@@ -13,7 +13,7 @@ Maintainer: Sylvain Schmitt <sylvain.m.schmitt@gmail.com>
 URL: https://github.com/sylvainschmitt/rcontroll,
     https://sylvainschmitt.github.io/rcontroll/
 BugReports: https://github.com/sylvainschmitt/rcontroll/issues
-Description: Function and code to manage and use indivdual-based and spatially-explicit forest growth model TROLL.
+Description: Function and code to manage and use individual-based and spatially-explicit forest growth model TROLL.
 License: GPL-3
 LazyData: TRUE
 Imports:

@@ -31,7 +31,7 @@ NULL
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' data("TROLLv3_species")
 #' data("TROLLv3_climatedaytime12")
 #' data("TROLLv3_daytimevar")
@@ -45,7 +45,8 @@ NULL
 #'   climate = TROLLv3_climatedaytime12,
 #'   daily = TROLLv3_daytimevar
 #' )
-#'
+#' }
+#' 
 troll <- function(name = NULL,
                   path = NULL,
                   global,

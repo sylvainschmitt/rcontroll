@@ -1,3 +1,9 @@
+# rcontroll 0.1.0.9060
+* fixing win-build notes (wrong link & typo)
+* dontrun troll example because >10s
+* reducing era5 data in climate vignette to reduce package size (<100MB)
+* removing worflow spatial figure to reduce size
+
 # rcontroll 0.1.0.9059
 * cover fix 1
 * removed RcppGSL
