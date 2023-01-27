@@ -70,6 +70,7 @@ using namespace Rcpp;   // is there not a potential problem with "using namespac
 #include <algorithm>
 #include <typeinfo> // added 3.1.5, necessary for typeid in input control
 #include <cstdint>  // added 3.1.6, defines fixed-width integers (i.e. system-independent byte size, for writing to point cloud)
+#include <random>
 
 #ifdef MPI
 #include "mpi.h"
@@ -5021,7 +5022,11 @@ void ReadInputInventory(){
       for(int s = 0; s < sites; s++){
         sites_shuffled.push_back(s);
       }
-      random_shuffle ( sites_shuffled.begin(), sites_shuffled.end() );
+      // random_shuffle ( sites_shuffled.begin(), sites_shuffled.end() );
+      std::random_device rd;
+      std::mt19937 g(rd());
+      std::shuffle(sites_shuffled.begin(), sites_shuffled.end(), g);
+      // gsl_ran_shuffle (gsl_rng *r, sites_shuffled, sites, sizeof (int));
       
       int sites_shuffled_index = 0;
       
