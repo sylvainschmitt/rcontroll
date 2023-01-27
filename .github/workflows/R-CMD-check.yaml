@@ -27,12 +27,10 @@ jobs:
       matrix:
         config:
 
-         - {os: macos-latest,   r: 'release'}
-
          # - {os: windows-latest, r: 'release'}
-
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: '3.6'}
+          - {os: macos-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GH_TOKEN }}
