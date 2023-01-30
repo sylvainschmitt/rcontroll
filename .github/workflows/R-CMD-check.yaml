@@ -9,10 +9,13 @@ on:
     branches:
       - main
       - dev
+      - WIP
+      - LTS
   pull_request:
     branches:
       - main
       - dev
+      - LTS
       
 name: R-CMD-check
 
