@@ -185,10 +185,10 @@ You can have a look to the resulting ERA5 land data.
 For instance here we consolidate the data as a table using `dplyr`:
 
 ```{r }
-# test_r <- try(suppressWarnings(rast(system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll"))))
-# if (inherits(test_r,"try-error")) {
+test_r <- try(suppressWarnings(rast(system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll"))))
+if (inherits(test_r,"try-error")) {
   test_r <- suppressWarnings(rast("../inst/extdata/ERA5land_mth_Nouragues_2021_2022.nc"))
-# }
+}
 
 test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
   gather("variable", "value", -x, -y) %>% 
