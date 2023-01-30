@@ -24,7 +24,8 @@ autogif(
 \item{path}{char. Path to save the simulation outputs, the default is null
 corresponding to a simulation in memory without saved intermediary files.}
 
-\item{variables}{char. Variables to build as a gif among 'species', 'height_ct', 'npp_gpp', 'height', or 'lai' (see details).}
+\item{variables}{char. Variables to build as a gif among 'species',
+'height_ct', 'npp_gpp', 'height', or 'lai' (see details).}
 
 \item{global}{df. Global parameters.}
 
@@ -42,8 +43,7 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{overwrite}{bool. Overwrite previous outputs.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no
-thinning.}
+kept to reduce output size, default is NULL and corresponds to no thinning.}
 }
 \value{
 A list of gganimate objects corresponding to chosen outputs.
@@ -52,18 +52,21 @@ A list of gganimate objects corresponding to chosen outputs.
 Make a gif from a TROLL simulation
 }
 \examples{
-
 \dontrun{
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
- autogif(name = "test", global = generate_parameters(cols = 100, rows = 100, 
-                                                     iterperyear = 12, nbiter = 12*100,  
-                                                     extent_visual = 10),
-        species = TROLLv3_species,
-        climate = TROLLv3_climatedaytime12,
-        daily = TROLLv3_daytimevar,
-        verbose = FALSE)
+autogif(
+  name = "test", global = generate_parameters(
+    cols = 100, rows = 100,
+    iterperyear = 12, nbiter = 12 * 100,
+    extent_visual = 10
+  ),
+  species = TROLLv3_species,
+  climate = TROLLv3_climatedaytime12,
+  daily = TROLLv3_daytimevar,
+  verbose = FALSE
+)
 }
 
 }

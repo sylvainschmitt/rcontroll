@@ -4,7 +4,7 @@
 \alias{load_output}
 \title{Function to load outputs from a TROLL simulation.}
 \usage{
-load_output(name, path, thin = NULL, inmemory = TRUE)
+load_output(name, path, thin = NULL)
 }
 \arguments{
 \item{name}{char. Name given to the model output.}
@@ -14,8 +14,6 @@ load_output(name, path, thin = NULL, inmemory = TRUE)
 \item{thin}{int. Vector of integers corresponding to the iterations to be
 kept to reduce output size, default is NULL and corresponds to no
 thinning.}
-
-\item{inmemory}{bool. Load outputs in memory.}
 }
 \value{
 An S4 \linkS4class{trollsim} class object.
@@ -24,9 +22,8 @@ An S4 \linkS4class{trollsim} class object.
 Function to load outputs from a TROLL simulation.
 }
 \examples{
-
 \dontrun{
- load_output("test", "./")
+load_output("test", "./")
 }
 
 }

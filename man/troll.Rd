@@ -15,8 +15,7 @@ troll(
   forest = NULL,
   verbose = TRUE,
   overwrite = TRUE,
-  thin = NULL,
-  inmemory = TRUE
+  thin = NULL
 )
 }
 \arguments{
@@ -46,8 +45,6 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{thin}{int. Vector of integers corresponding to the iterations to be
 kept to reduce output size, default is NULL and corresponds to no
 thinning.}
-
-\item{inmemory}{bool. Load outputs in memory.}
 }
 \value{
 A trollsim object.
@@ -56,15 +53,20 @@ A trollsim object.
 Run a TROLL simulation.
 }
 \examples{
-
+\dontrun{
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
-troll(name = "test",
-      global = generate_parameters(cols = 100, rows = 100,
-                                   iterperyear = 12, nbiter = 12*1),
-      species = TROLLv3_species,
-      climate = TROLLv3_climatedaytime12,
-      daily = TROLLv3_daytimevar)
+troll(
+  name = "test",
+  global = generate_parameters(
+    cols = 100, rows = 100,
+    iterperyear = 12, nbiter = 12 * 1
+  ),
+  species = TROLLv3_species,
+  climate = TROLLv3_climatedaytime12,
+  daily = TROLLv3_daytimevar
+)
+}
 
 }
