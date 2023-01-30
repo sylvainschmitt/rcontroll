@@ -41,11 +41,13 @@ data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
 data("TROLLv3_output")
-TROLLv3_input_stack <- generate_parameters(cols = 100, rows = 100,
-                                           iterperyear = 12, nbiter = 12*1) %>% 
-  mutate(simulation = list(c("seed50000", "seed500"))) %>% 
+stack_parameters <- generate_parameters(
+  cols = 100, rows = 100,
+  iterperyear = 12, nbiter = 12 * 1
+) %>%
+  mutate(simulation = list(c("seed50000", "seed500"))) %>%
   unnest(simulation)
-TROLLv3_input_stack[62,2] <- 500 # Cseedrain
+stack_parameters[62, 2] <- 500 # Cseedrain
 ```
 
 # Generate parameters
@@ -53,8 +55,8 @@ TROLLv3_input_stack[62,2] <- 500 # Cseedrain
 We can generate parameters and view them directly as a table with a description of its effect using `generate_parameters` and `kable`.
 
 ```{r genPar}
-generate_parameters(cols = 250, rows = 250,nbiter = 12*1) %>% 
-  head() %>% 
+generate_parameters(cols = 250, rows = 250, nbiter = 12 * 1) %>%
+  head() %>%
   knitr::kable()
 ```
 
@@ -64,14 +66,17 @@ We run a simple simulation using the `troll` function with loaded and generated 
 Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 
 ```{r troll}
-sim <- troll(name = "test1",
-             path = getwd(),
-             global = generate_parameters(cols = 100, rows = 100,
-                                          iterperyear = 12, nbiter = 12*1),
-             species = TROLLv3_species,
-             climate = TROLLv3_climatedaytime12,
-             daily = TROLLv3_daytimevar,
-             verbose = TRUE)
+sim <- troll(
+  name = "test",
+  global = generate_parameters(
+    cols = 100, rows = 100,
+    iterperyear = 12, nbiter = 12 * 1
+  ),
+  species = TROLLv3_species,
+  climate = TROLLv3_climatedaytime12,
+  daily = TROLLv3_daytimevar,
+  verbose = TRUE
+)
 ```
 
 We can print a simple summary of the simulation.
@@ -91,9 +96,13 @@ We can quickly plot simulation outputs using the `autoplot` method for three typ
 For instance here we show species temporal trajectories for all available variables using 4 species: *Cecropia obtusa, Dicorynia guianensis, Eperua grandiflora,* and *Vouacapoua americana*:
 
 ```{r fullsimG1, fig.width=8}
-rcontroll::autoplot(sim, what = "temporal", 
-         species = c("Cecropia_obtusa","Dicorynia_guianensis",
-                     "Eperua_grandiflora","Vouacapoua_americana")) +
+rcontroll::autoplot(sim,
+  what = "temporal",
+  species = c(
+    "Cecropia_obtusa", "Dicorynia_guianensis",
+    "Eperua_grandiflora", "Vouacapoua_americana"
+  )
+) +
   theme(legend.position = "bottom")
 ```
 
@@ -101,14 +110,15 @@ rcontroll::autoplot(sim, what = "temporal",
 
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
-```{r fullsimG2}
+```{r fullsimG2, eval=FALSE}
 rcontroll::autoplot(sim, what = "spatial")
 ```
 
 Finally, we can quickly plot variables distribution at forest final patterns using `autoplot` and `what` defined on `distribution`:
 
 ```{r fullsimG3}
-rcontroll::autoplot(sim, what = "distribution", variables = c("dbh", "height", "LA", "LMA"))
+rcontroll::autoplot(sim, what = "distribution",
+                    variables = c("dbh", "height", "LA", "LMA"))
 ```
 
 # Stack of simulations
@@ -119,16 +129,17 @@ We can define the number of cores used for parallelization.
 And we can define a thinning of outputs by giving the number of iterations to be kept to reduce the output size.
 
 ```{r fullstack}
-sim_stack <- stack(name = "teststack",
-                   path = getwd(),
-                   simulations = c("seed50000", "seed500"),
-                   global = TROLLv3_input_stack,
-                   species = TROLLv3_species,
-                   climate = TROLLv3_climatedaytime12,
-                   daily = TROLLv3_daytimevar,
-                   verbose = F,
-                   cores = 2,
-                   thin = c(1,5,10))
+sim_stack <- stack(
+  name = "teststack",
+  simulations = c("seed50000", "seed500"),
+  global = stack_parameters,
+  species = TROLLv3_species,
+  climate = TROLLv3_climatedaytime12,
+  daily = TROLLv3_daytimevar,
+  verbose = FALSE,
+  cores = 2,
+  thin = c(1, 5, 10)
+)
 ```
 
 We can print a simple summary of the simulations.
@@ -140,14 +151,15 @@ sim_stack
 We can quickly plot temporal trajectories for all simulations using `autoplot` and `what` defined on `temporal`, for instance here with basal area (ba) and aboveground biomass (agb):
 
 ```{r fullstackG1}
-rcontroll::autoplot(sim_stack, 
-         what = "temporal", 
-         variables = c("ba", "agb"))
+rcontroll::autoplot(sim_stack,
+  what = "temporal",
+  variables = c("ba", "agb")
+)
 ```
 
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
-```{r fullstackG2, fig.height=4}
+```{r fullstackG2, eval=FALSE}
 rcontroll::autoplot(sim_stack, what = "spatial")
 ```
 
@@ -164,7 +176,7 @@ rcontroll::autoplot(TROLLv3_output, what = "temporal")
 
 Similarly we can have a look to the the forest final pattern from `TROLLv3_output` that we will use to initiate the next simulation:
 
-```{r}
+```{r, eval=FALSE}
 rcontroll::autoplot(TROLLv3_output, what = "spatial", variables = "age")
 ```
 
@@ -174,14 +186,15 @@ And we finally used the same `troll` function adding the previous forest to init
 A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
-sim <- troll(name = "test2",
-             path = getwd(),
-             global = update_parameters(TROLLv3_output, nbiter = 12*1),
-             species = TROLLv3_output@inputs$species,
-             climate = TROLLv3_output@inputs$climate,
-             daily = TROLLv3_output@inputs$daily,
-             forest = get_forest(TROLLv3_output),
-             verbose = FALSE)
+sim <- troll(
+  name = "test",
+  global = update_parameters(TROLLv3_output, nbiter = 12 * 1),
+  species = TROLLv3_output@inputs$species,
+  climate = TROLLv3_output@inputs$climate,
+  daily = TROLLv3_output@inputs$daily,
+  forest = get_forest(TROLLv3_output),
+  verbose = FALSE
+)
 ```
 
 We can quickly plot temporal trajectories of both simulations to check that the initialization from `TROLLv3_output` worked. 
@@ -190,14 +203,18 @@ Then we simply joined ecosystem outputs with `bind_rows` before using `ggplot` t
 
 ```{r}
 sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv3_output@ecosystem$iter)
-list("TROLLv3_output" = TROLLv3_output@ecosystem,
-     "sim" = sim@ecosystem) %>% 
-  bind_rows(.id = "simulation") %>% 
-  ggplot(aes(iter/12, agb, col = simulation)) +
+list(
+  "TROLLv3_output" = TROLLv3_output@ecosystem,
+  "sim" = sim@ecosystem
+) %>%
+  bind_rows(.id = "simulation") %>%
+  ggplot(aes(iter / 12, agb, col = simulation)) +
   geom_point() +
   theme_bw() +
   xlab("Time (years)") +
-  ylab(expression(Abovergound~biomass~(AGB~Kg~ha^{-1})))
+  ylab(expression(Abovergound ~ biomass ~ (AGB ~ Kg ~ ha^{
+    -1
+  })))
 ```
 
 >Note how the simulation AGB starts at the end of `TROLLv3_output`'s temporal trajectory.
@@ -205,21 +222,17 @@ list("TROLLv3_output" = TROLLv3_output@ecosystem,
 # Dynamic visualisation
 
 ```{r, eval=F}
-gifs <- autogif(name = "dynamic",
-                path = getwd(),
-                variables = "height_ct",
-                global = update_parameters(TROLLv3_output, nbiter = 12*100, extent_visual = 100),
-                species = TROLLv3_output@inputs$species,
-                climate = TROLLv3_output@inputs$climate,
-                daily = TROLLv3_output@inputs$daily,
-                forest = get_forest(TROLLv3_output),
-                verbose = FALSE)
+gifs <- autogif(
+  name = "dynamic",
+  variables = "height_ct",
+  global = update_parameters(TROLLv3_output,
+                             nbiter = 12 * 100,
+                             extent_visual = 100),
+  species = TROLLv3_output@inputs$species,
+  climate = TROLLv3_output@inputs$climate,
+  daily = TROLLv3_output@inputs$daily,
+  forest = get_forest(TROLLv3_output),
+  verbose = FALSE
+)
 gifs$height_ct
-```
-
-```{r}
-unlink(paste0(getwd(),"/test1"),force = TRUE)
-unlink(paste0(getwd(),"/test2"),force = TRUE)
-unlink(paste0(getwd(),"/teststack"),force = TRUE)
-unlink(paste0(getwd(),"/dynamic"),force = TRUE)
 ```

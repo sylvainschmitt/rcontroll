@@ -51,7 +51,8 @@ setClass(
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.
 #' @param parameters numeric. Parameters of the simulation (general inputs).
-#' @param inputs list. Simulation inputs (species, climate, daily, forest,lidar).
+#' @param inputs list. Simulation inputs (species, climate, daily,
+#'   forest,lidar).
 #' @param log chr. Simulation log.
 #' @param forest df. Simulation initial and final forest.
 #' @param ecosystem df. Ecosystem metrics.
@@ -61,26 +62,24 @@ setClass(
 #'
 #' @export
 #' @rdname trollsim
-trollsim <- function(
-  name = character(),
-  path = character(),
-  parameters = numeric(),
-  inputs = list(),
-  log = character(),
-  forest = data.frame(),
-  ecosystem = data.frame(),
-  species = data.frame(),
-  las = list()
-) {
+trollsim <- function(name = character(),
+                     path = character(),
+                     parameters = numeric(),
+                     inputs = list(),
+                     log = character(),
+                     forest = data.frame(),
+                     ecosystem = data.frame(),
+                     species = data.frame(),
+                     las = list()) {
   return(new("trollsim",
-             name = name,
-             path = path,
-             parameters = parameters,
-             inputs = inputs,
-             log = log,
-             forest = forest,
-             ecosystem = ecosystem,
-             species = species,
-             las = las
+    name = name,
+    path = path,
+    parameters = parameters,
+    inputs = inputs,
+    log = log,
+    forest = forest,
+    ecosystem = ecosystem,
+    species = species,
+    las = las
   ))
 }

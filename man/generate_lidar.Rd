@@ -19,18 +19,19 @@ generate_lidar(
 
 \item{klaser_pc}{num. laser attenuation factor.}
 
-\item{transmittance_laser}{num. Percentage of pulses that continue through the canopy after a hit.}
+\item{transmittance_laser}{num. Percentage of pulses that continue through
+the canopy after a hit.}
 
-\item{iter_pointcloud_generation}{num. Number of iteration for point cloud generation.}
+\item{iter_pointcloud_generation}{num. Number of iteration for point cloud
+generation.}
 }
 \value{
 A data frame of lidar simulation parameters.
 }
 \description{
-Function to generate the lidar parameters used in TROLL lidar simulation. 
-All parameters have a default value from literature.
+Function to generate the lidar parameters used in TROLL lidar
+  simulation. All parameters have a default value from literature.
 }
 \examples{
 generate_lidar(iter_pointcloud_generation = 3600)
-
 }

@@ -10,7 +10,7 @@ NULL
 #' @export
 setClass(
   "trollstack",
-  contains = 'trollsim'
+  contains = "trollsim"
 )
 
 #' An S4 class to represent TROLL stack
@@ -31,26 +31,24 @@ setClass(
 #'
 #' @export
 #' @rdname trollstack
-trollstack <- function(
-  name = character(),
-  path = character(),
-  parameters = numeric(),
-  inputs = list(),
-  log = character(),
-  forest = data.frame(),
-  ecosystem = data.frame(),
-  species = data.frame(),
-  las = list()
-) {
+trollstack <- function(name = character(),
+                       path = character(),
+                       parameters = numeric(),
+                       inputs = list(),
+                       log = character(),
+                       forest = data.frame(),
+                       ecosystem = data.frame(),
+                       species = data.frame(),
+                       las = list()) {
   return(new("trollstack",
-             name = name,
-             path = path,
-             parameters = parameters,
-             inputs = inputs,
-             log = log,
-             forest = forest,
-             ecosystem = ecosystem,
-             species = species,
-             las = las
+    name = name,
+    path = path,
+    parameters = parameters,
+    inputs = inputs,
+    log = log,
+    forest = forest,
+    ecosystem = ecosystem,
+    species = species,
+    las = las
   ))
 }

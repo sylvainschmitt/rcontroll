@@ -6,7 +6,7 @@
 #' been thinned and species output has been removed to save disk space.
 #'
 #' @format A trollsim object.
-#'   
+#'
 "TROLLv3_output"
 
 # data("TROLLv3_species")
@@ -23,8 +23,6 @@
 #                         climate = TROLLv3_climatedaytime12,
 #                         daily = TROLLv3_daytimevar,
 #                         verbose = T)
-# # save(TROLLv3_output, file = "/home/sylvain/Documents/ECOFOG/TROLLv3_output.Rdata")
-# # load("/home/sylvain/Documents/ECOFOG/TROLLv3_output.Rdata")
 # thin <- c(0, round(seq(1, 100, length.out = 50))*12-1)
 # TROLLv3_output@ecosystem <- TROLLv3_output@ecosystem %>%
 #   dplyr::filter(iter %in% thin)
