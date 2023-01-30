@@ -95,7 +95,7 @@ using namespace std;
 # define Pis2 1.570796327 //!< Global constant: Pi/2.0
 # define iPi 0.3183099 //!< Global constant: 1.0/Pi
 
-char buffer[256], inputfile[256], inputfile_daytimevar[256], inputfile_climate[256], inputfile_soil[256], outputinfo[256], inputfile_inventory[256], inputfile_pointcloud[256], *bufi(0), *bufi_daytimevar(0), *bufi_climate(0), *bufi_soil(0), *buf(0), *bufi_data(0), *bufi_pointcloud(0); //!< Global variable: character strings used to read file names, or other features
+char buffer[256], inputfile[256], inputfile_daytimevar[256], inputfile_climate[256], inputfile_soil[256], outputinfo[256], inputfile_inventory[256], inputfile_pointcloud[256], *bufi(0), *bufi_daytimevar(0), *bufi_climate(0), *buf(0), *bufi_data(0), *bufi_pointcloud(0); //!< Global variable: character strings used to read file names, or other features REMOVED *bufi_soil(0)
 char inputfile_species[256], *bufi_species(0); //!< Global variable: vector of input files
 
 // FILE OUTPUT STREAMS. Updated in v.3.1 to reduce number of streams and increase clarity
@@ -3621,7 +3621,7 @@ void trollCpp(
   sprintf(inputfile,"%s",bufi);
   sprintf(inputfile_daytimevar,"%s",bufi_daytimevar);
   sprintf(inputfile_climate,"%s",bufi_climate);
-  sprintf(inputfile_soil,"%s",bufi_soil);
+  //sprintf(inputfile_soil,"%s",bufi_soil);
   sprintf(inputfile_species,"%s",bufi_species);
   
   if(_OUTPUT_pointcloud == 1){
