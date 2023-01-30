@@ -52,6 +52,9 @@ jobs:
         if: runner.os == 'macos'
         run: |
          brew install gsl
+         brew install pkg-config
+         brew install gdal
+         Rscript -e "install.packages('terra', repos='https://rspatial.r-universe.dev’)"
         shell: bash
          
 
