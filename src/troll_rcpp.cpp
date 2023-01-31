@@ -3618,20 +3618,20 @@ void trollCpp(
   // }
 
   // input files
-  sprintf(inputfile,"%s",bufi);
-  sprintf(inputfile_daytimevar,"%s",bufi_daytimevar);
-  sprintf(inputfile_climate,"%s",bufi_climate);
-  sprintf(inputfile_species,"%s",bufi_species);
+  snprintf(inputfile,sizeof(inputfile),"%s",bufi);
+  snprintf(inputfile_daytimevar,sizeof(inputfile_daytimevar),"%s",bufi_daytimevar);
+  snprintf(inputfile_climate,sizeof(inputfile_climate),"%s",bufi_climate);
+  snprintf(inputfile_species,sizeof(inputfile_species),"%s",bufi_species);
   // #ifdef WATER //GS debugging Feb2023: (Added inputfile_soil not defined)
-  //   sprintf(inputfile_soil,"%s",bufi_soil); 
+  //   snprintf(inputfile_soil,sizeof(inputfile_soil),"%s",bufi_soil); 
   // #endif
   
   if(_OUTPUT_pointcloud == 1){
-    sprintf(inputfile_pointcloud,"%s",bufi_pointcloud); // v.3.1.6
+    snprintf(inputfile_pointcloud,sizeof(inputfile_pointcloud),"%s",bufi_pointcloud); // v.3.1.6
   }
   
   if(_FromInventory == 1){
-    sprintf(inputfile_inventory,"%s",bufi_data);
+    snprintf(inputfile_inventory,sizeof(inputfile_inventory),"%s",bufi_data);
   }
   
   // v.3.1: removed par output, because no single parameter sheet provided anymore (in future all separate parameter sheets could be provided as outputs as well
@@ -3657,7 +3657,7 @@ void trollCpp(
   gsl_rng_set(gslrng, seed);
   
   Rcout << "On proc #" << easympi_rank << " seed: " << seed << endl;
-  sprintf(outputinfo,"%s_%i_info.txt",buf, easympi_rank);
+  snprintf(outputinfo,sizeof(outputinfo),"%s_%i_info.txt",buf, easympi_rank);
   output_info.open(outputinfo, ios::out);
   if(!output_info) Rcerr<< "ERROR with info file"<< endl;
   
@@ -4683,11 +4683,11 @@ void InitialiseLookUpTables(){
 void InitialiseOutputStreams(){
   char nnn[200];
   if(!mpi_rank) {
-    sprintf(nnn,"%s_%i_sumstats.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_sumstats.txt",buf, easympi_rank);
     output_basic[0].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_initial_pattern.txt",buf, easympi_rank); // previously "state" output, but not used anymore, overwritten for initial pattern
+    snprintf(nnn,sizeof(nnn),"%s_%i_initial_pattern.txt",buf, easympi_rank); // previously "state" output, but not used anymore, overwritten for initial pattern
     output_basic[1].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_final_pattern.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_final_pattern.txt",buf, easympi_rank);
     output_basic[2].open(nnn, ios::out);
     
     // write headers for files
@@ -4695,23 +4695,23 @@ void InitialiseOutputStreams(){
     // headers for initial and final patterns are written automatically
     
     if(_OUTPUT_extended){
-      sprintf(nnn,"%s_%i_sumstats_species.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_sumstats_species.txt",buf, easympi_rank);
       output_extended[0].open(nnn, ios::out);
-      sprintf(nnn,"%s_%i_ppfd0.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_ppfd0.txt",buf, easympi_rank);
       output_extended[1].open(nnn, ios::out);
-      sprintf(nnn,"%s_%i_death.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_death.txt",buf, easympi_rank);
       output_extended[2].open(nnn, ios::out);
-      sprintf(nnn,"%s_%i_death_snapshots.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_death_snapshots.txt",buf, easympi_rank);
       output_extended[3].open(nnn, ios::out);
-      sprintf(nnn,"%s_%i_deathrate.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_deathrate.txt",buf, easympi_rank);
       output_extended[4].open(nnn, ios::out);
-      sprintf(nnn,"%s_%i_sdd.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_sdd.txt",buf, easympi_rank);
       output_extended[5].open(nnn,ios::out);
-      sprintf(nnn,"%s_%i_vertd.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_vertd.txt",buf, easympi_rank);
       output_extended[6].open(nnn,ios::out);
-      sprintf(nnn,"%s_%i_LAI.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_LAI.txt",buf, easympi_rank);
       output_extended[7].open(nnn, ios::out);
-      sprintf(nnn,"%s_%i_CHM.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_CHM.txt",buf, easympi_rank);
       output_extended[8].open(nnn, ios::out);
       
       // write headers
@@ -4724,7 +4724,7 @@ void InitialiseOutputStreams(){
       output_extended[6] << "iter\th\tfreq" << endl;
       
       if(extent_visual > 0){
-        sprintf(nnn,"%s_%i_visual_field.txt",buf, easympi_rank);
+        snprintf(nnn,sizeof(nnn),"%s_%i_visual_field.txt",buf, easympi_rank);
         output_visual[0].open(nnn, ios::out);
 #ifdef CHM_SPIKEFREE
         output_visual[0] << "iter" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "height_spikefree" << "\t" << "LAI" << endl; // header
@@ -4732,7 +4732,7 @@ void InitialiseOutputStreams(){
         output_visual[0] << "iter" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "LAI" << endl; // header
 #endif
         
-        sprintf(nnn,"%s_%i_visual_slice.txt",buf, easympi_rank);
+        snprintf(nnn,sizeof(nnn),"%s_%i_visual_slice.txt",buf, easympi_rank);
         output_visual[1].open(nnn, ios::out);
         output_visual[1] << "iter" << "\t" << "row" << "\t" << "col" << "\t"  << "height" << "\t" << "sp_lab" << "\t" << "ratio_height_Ct" << "\t" << "ratio_NPP_GPP" << endl; // header
       }
@@ -4740,75 +4740,75 @@ void InitialiseOutputStreams(){
     
     // v.3.1.6 output for point cloud
     if(_OUTPUT_pointcloud == 1){
-      sprintf(nnn,"%s_%i.las",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i.las",buf, easympi_rank);
       output_pointcloud.open(nnn, ios::out | ios::binary);
       output_pointcloud.imbue(locale::classic()); // justification here: https://stackoverflow.com/questions/14750496/sending-integer-to-fstream-as-little-endian; locale regulates how streams print and read values (i.e. commas vs. points for decimals, etc.); setting it to classic to ensure portability, but not entirely sure how important this is in practice for binary files
       
     }
     
 #ifdef Output_ABC
-    sprintf(nnn,"%s_%i_abc_traitconservation.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_traitconservation.txt",buf, easympi_rank);
     output_abc[0].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_ground.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_ground.txt",buf, easympi_rank);
     output_abc[1].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_chm.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_chm.txt",buf, easympi_rank);
     output_abc[2].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_chmALS.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_chmALS.txt",buf, easympi_rank);
     output_abc[3].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_transmittance.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_transmittance.txt",buf, easympi_rank);
     output_abc[4].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_transmittanceALS.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_transmittanceALS.txt",buf, easympi_rank);
     output_abc[5].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_species.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_species.txt",buf, easympi_rank);
     output_abc[6].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_species10.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_species10.txt",buf, easympi_rank);
     output_abc[7].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_traits.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_traits.txt",buf, easympi_rank);
     output_abc[8].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_traits10.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_traits10.txt",buf, easympi_rank);
     output_abc[9].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_abc_biomass.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_abc_biomass.txt",buf, easympi_rank);
     output_abc[10].open(nnn, ios::out);
 #endif
     
 #ifdef WATER
-    sprintf(nnn,"%s_%i_water_balance.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_water_balance.txt",buf, easympi_rank);
     output_water[0].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_state_begin.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_state_begin.txt",buf, easympi_rank);
     output_water[1].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_state_mid.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_state_mid.txt",buf, easympi_rank);
     output_water[2].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_state_end.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_state_end.txt",buf, easympi_rank);
     output_water[3].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_site1.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_site1.txt",buf, easympi_rank);
     output_water[4].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_site2.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_site2.txt",buf, easympi_rank);
     output_water[5].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_site3.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_site3.txt",buf, easympi_rank);
     output_water[6].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_site4.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_site4.txt",buf, easympi_rank);
     output_water[7].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_site5.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_site5.txt",buf, easympi_rank);
     output_water[8].open(nnn, ios::out);
-    sprintf(nnn,"%s_%i_site6.txt",buf, easympi_rank);
+    snprintf(nnn,sizeof(nnn),"%s_%i_site6.txt",buf, easympi_rank);
     output_water[9].open(nnn, ios::out);
 #endif
     
 #ifdef TRACK_INDIVIDUALS
     if(_OUTPUT_extended){
       // these are the "cases" of trees that are followed
-      sprintf(nnn,"%s_%i_trees_fortracking.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_trees_fortracking.txt",buf, easympi_rank);
       output_track[0].open(nnn, ios::out);
       output_track[0] << "site" << "\t" << "timeofyear_born" << "\t" << "col" << "\t" << "row" << "\t" << "species" << "\t" << "dbh" << "\t" << "cr" << "\t" << "height"  << "\t" << "agb" << "\t" << "multiplier_cr" << "\t" << "multiplier_height" << "\t" << "wsg" << "\t" << "Nmass" << "\t" << "Pmass" << "\t" << "LMA" << "\t" << "deviation_wsg" << "\t" << "multiplier_Nmass" << "\t" << "multiplier_Pmass" << "\t" << "multiplier_lma" << "\t" << "Vcmax" << "\t" << "Jmax" << "\t" << "Rdark" << "\t" << "LAImax" << "\t" << "leaflifespan" << endl;
       
       // these are the "activities" that are recorded for each tree
-      sprintf(nnn,"%s_%i_trees_tracked.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_trees_tracked.txt",buf, easympi_rank);
       output_track[1].open(nnn, ios::out);
       
       output_track[1] << "site" << "\t" << "timeofyear_born" << "\t" << "Iter" << "\t" << "age" << "\t" << "seeds" << "\t" << "seedstotal" << "\t" << "carbstarv" << "\t" << "carbstarvtotal" << "\t" << "dbh" << "\t" << "dbhgrowth" << "\t" << "height" << "\t" << "heightgrowth" << "\t" << "cr" << "\t" << "crgrowth" << "\t" << "agb" << "\t" << "agbgrowth" << "\t" << "GPP" << "\t" << "GPPsq" << "\t" << "NPP" << "\t" << "NPPsq" << "\t" << "Rday" << "\t" << "Rnight" << "\t" << "Rstem" << "\t" << "LAIabove_avg" << "\t" << "LAIabove_effavg" << "\t" << "carbstore_avg" << endl;
       
       // this is to get information on the dead trees > 10cm
-      sprintf(nnn,"%s_%i_trees_aftertracking.txt",buf, easympi_rank);
+      snprintf(nnn,sizeof(nnn),"%s_%i_trees_aftertracking.txt",buf, easympi_rank);
       output_track[2].open(nnn, ios::out);
       
       output_track[2] << "site" << "\t" << "timeofyear_born" << "\t" << "Iter" << "\t" << "age" << "\t" << "seedstotal" << "\t" << "carbstarvtotal" << "\t" << "dbh" << "\t" << "height" << "\t" << "cr" << "\t" << "agb" << "\t" << "GPP" << "\t" << "NPP" << "\t" << "LAIabove_avg" << "\t" << "LAIabove_effavg" << "\t" << "GPPsquared" << "\t" << "NPPsquared" << "\t" << "LAIabovesquared_avg" << "\t" << "LAIabovesquared_effavg" << endl;
@@ -5199,28 +5199,32 @@ void AllocMem() {
   
   if(NULL==(traits_species=new float*[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species traits every recorded timestep
   
-  for(int spp=0;spp<(nbspp+1);spp++)
+  for(int spp=0;spp<(nbspp+1);spp++){
     if(NULL==(traits_species[spp]=new float[10]))
       Rcerr<<"!!! Mem_Alloc\n";
+  }
     if(NULL==(traits_species10=new float*[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";               // vector to save species traits every recorded timestep  (dbh > 10cm)
-    for(int spp=0;spp<(nbspp+1);spp++)
+    for(int spp=0;spp<(nbspp+1);spp++){
       if(NULL==(traits_species10[spp]=new float[10]))
         Rcerr<<"!!! Mem_Alloc\n";
+    }
 #endif
       if(NULL==(SPECIES_GERM=new int[nbspp+1])) Rcerr<<"!!! Mem_Alloc\n";  // Field for democratic seed germination
       if(NULL==(SPECIES_SEEDS=new int*[sites]))  Rcerr<<"!!! Mem_Alloc\n"; // Field of seeds
-      for(int site=0;site<sites;site++)                           // For each processor, we define a stripe above (labelled 0) and a stripe below (1). Each stripe is SBORD in width.
+      for(int site=0;site<sites;site++){                          // For each processor, we define a stripe above (labelled 0) and a stripe below (1). Each stripe is SBORD in width.
         if (NULL==(SPECIES_SEEDS[site]=new int[nbspp+1]))       // ALL the sites need to be updated.
           Rcerr<<"!!! Mem_Alloc\n";
-        for(int site=0;site<sites;site++)
-          for(int spp=0;spp<=nbspp;spp++)
+      } 
+        for(int site=0;site<sites;site++){
+          for(int spp=0;spp<=nbspp;spp++){
             SPECIES_SEEDS[site][spp] = 0;
+          }}
         if(NULL==(p_seed=new double[sites])) Rcerr<<"!!! Mem_Alloc\n";
         if(NULL==(n_seed=new unsigned int[sites])) Rcerr<<"!!! Mem_Alloc\n";
         
         double prob_seed = 1.0/double(sites);
-        for(int i = 0; i < sites; i++) p_seed[i] = prob_seed;
-        for(int i = 0; i < sites; i++) n_seed[i] = 0;
+        for(int i = 0; i < sites; i++) {p_seed[i] = prob_seed;}
+        for(int i = 0; i < sites; i++) {n_seed[i] = 0;}
         
         if(NULL==(p_species=new double[nbspp])) Rcerr<<"!!! Mem_Alloc\n";
         if(NULL==(n_species=new unsigned int[nbspp])) Rcerr<<"!!! Mem_Alloc\n";
@@ -5240,17 +5244,20 @@ void AllocMem() {
         
         if(NULL==(LAI3D=new float*[HEIGHT+1]))                                                   // Field 3D
           Rcerr<<"!!! Mem_Alloc\n";                                                            // Trees at the border of the simulated forest need to know the canopy occupancy by trees in the neighboring processor.
-        for(int h=0;h<(HEIGHT+1);h++)                                                          // For each processor, we define a stripe above (labelled 0) and a stripe below (1). Each stripe is SBORD in width.
+        for(int h=0;h<(HEIGHT+1);h++){                                                         // For each processor, we define a stripe above (labelled 0) and a stripe below (1). Each stripe is SBORD in width.
           if (NULL==(LAI3D[h]=new float[sites+2*SBORD]))                                   // ALL the sites need to be updated.
             Rcerr<<"!!! Mem_Alloc\n";
-          for(int h=0;h<(HEIGHT+1);h++)
+        } 
+          for(int h=0;h<(HEIGHT+1);h++){
             for(int site=0;site<sites+2*SBORD;site++)
               LAI3D[h][site] = 0.0;
+          }
           if (NULL==(Thurt[0]=new unsigned short[3*sites]))                                       // Field for treefall impacts
             Rcerr<<"!!! Mem_Alloc\n";
-          for(int i=1;i<3;i++)
+          for(int i=1;i<3;i++){
             if (NULL==(Thurt[i]=new unsigned short[sites]))
               Rcerr<<"!!! Mem_Alloc\n";
+          }
             
 #ifdef WATER
             if(NULL==(SWC3D=new float*[nblayers_soil])) Rcerr<<"!!! Mem_Alloc\n";
@@ -6448,7 +6455,7 @@ void ExportPointcloudHeader(vector<int> &beams, fstream& output_pointcloud){
   output_pointcloud.write(reinterpret_cast<const char *>(&version_minor), sizeof(version_minor));
   
   char system_identifier[33];
-  sprintf(system_identifier,"ALS simulator");
+  snprintf(system_identifier,sizeof(system_identifier),"ALS simulator");
   output_pointcloud.write(system_identifier, sizeof(system_identifier) - 1); // remove terminating NULL in char
   
   char generating_software[33] = "TROLL v.3.1.6+ forest simulator";
