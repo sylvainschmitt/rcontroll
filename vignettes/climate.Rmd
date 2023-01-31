@@ -24,6 +24,13 @@ library(gganimate) # to make a temporal gif of climate variation
 library(rcontroll) # to generate TROLL climate inputs
 ```
 
+```{r message=TRUE, warning=TRUE, include=FALSE}
+if(Sys.info()[['sysname']] == "Darwin")
+  knitr::opts_chunk$set(
+    eval = FALSE
+  )
+```
+
 ```{r, eval=FALSE}
 library(ecmwfr) # to request data from Copernicus
 library(osmdata) # to get bounding box from the study area
@@ -54,12 +61,6 @@ Replace the user ID and API key in the following chunk and run it.
 ```{r, eval=FALSE}
 wf_set_key(user = "******",
            key = "********-****-****-****-************",
-           service = "cds")
-```
-
-```{r, eval=FALSE}
-wf_set_key(user = "152268",
-           key = "40942d56-a02c-467b-926d-1120be322979",
            service = "cds")
 ```
 

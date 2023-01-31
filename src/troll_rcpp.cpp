@@ -3621,8 +3621,10 @@ void trollCpp(
   sprintf(inputfile,"%s",bufi);
   sprintf(inputfile_daytimevar,"%s",bufi_daytimevar);
   sprintf(inputfile_climate,"%s",bufi_climate);
-  sprintf(inputfile_soil,"%s",bufi_soil);
   sprintf(inputfile_species,"%s",bufi_species);
+  // #ifdef WATER //GS debugging Feb2023: (Added inputfile_soil not defined)
+  //   sprintf(inputfile_soil,"%s",bufi_soil); 
+  // #endif
   
   if(_OUTPUT_pointcloud == 1){
     sprintf(inputfile_pointcloud,"%s",bufi_pointcloud); // v.3.1.6
