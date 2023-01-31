@@ -3,6 +3,7 @@
 This is a resubmission. In this version I have:
 
 * fixed the compilation of C++ source code with clang for macOS and debian 
+    * replaced the deprecated function `sprintf` by `snprintf` 
     * replaced the deprecated function `random_shuffle` by `shuffle` 
     * removed `bufi_soil` variable which was causing segfault
 
