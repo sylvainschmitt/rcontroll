@@ -2,4 +2,4 @@ GSL_LIBS     = @GSL_LIBS@
 GSL_CFLAGS   = @GSL_CFLAGS@
 
 PKG_CXXFLAGS =  $(GSL_CFLAGS) 
-PKG_LIBS     = $(LDFLAGS) $(GSL_LIBS)# -fsanitize=address -ggdb3 
+PKG_LIBS     = $(LDFLAGS) $(GSL_LIBS) -Wdeprecated-declarations # -fsanitize=address -ggdb3 
