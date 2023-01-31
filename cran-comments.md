@@ -16,11 +16,4 @@ This is a resubmission. In this version I have:
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs. 
-
- * checking compilation flags used ... NOTE
-Compilation used the following non-portable flag(s):
-  ‘-Wdeprecated-declarations’
-      
-`-Wdeprecated-declarations` flags was added to pass check with macOS on GitHub Actions 
-because the source code is using the deprecated `sprintf` function.
+There were no ERRORs, WARNINGs or NOTEs locally.
