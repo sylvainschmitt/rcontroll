@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9064
+
+- replace `sprintf` to `snprintf` with `sizeof()` argument
+
 # rcontroll 0.1.0.9063
 
 -   removing `terra` reading NETcdf from climate vignette in macOS
