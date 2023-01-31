@@ -25,10 +25,10 @@ library(rcontroll) # to generate TROLL climate inputs
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
-if(Sys.info()[['sysname']] != "Darwin")
+if(Sys.info()[['sysname']] == "Darwin")
   knitr::opts_chunk$set(
-  eval = FALSE
-)
+    eval = FALSE
+  )
 ```
 
 ```{r, eval=FALSE}
