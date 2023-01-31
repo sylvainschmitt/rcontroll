@@ -169,10 +169,6 @@ following chunk and run it.</p>
 <code class="sourceCode R"><span><span class="fu">wf_set_key</span><span class="op">(</span>user <span class="op">=</span> <span class="st">"******"</span>,</span>
 <span>           key <span class="op">=</span> <span class="st">"********-****-****-****-************"</span>,</span>
 <span>           service <span class="op">=</span> <span class="st">"cds"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">wf_set_key</span><span class="op">(</span>user <span class="op">=</span> <span class="st">"152268"</span>,</span>
-<span>           key <span class="op">=</span> <span class="st">"40942d56-a02c-467b-926d-1120be322979"</span>,</span>
-<span>           service <span class="op">=</span> <span class="st">"cds"</span><span class="op">)</span></span></code></pre></div>
 <p>You then define the location to retrieve climate data. Thanks to the
 function <code>getbb</code> from the package <code>osmdata</code> you
 can directly use the name of the entity, for example here the French
@@ -180,14 +176,14 @@ Guiana for which the default species data have been initialized. We
 recommend using a large entity as the request preparation time is often
 longer than the resulting object to download (see estimates below for
 French Guiana).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">getbb</span><span class="op">(</span><span class="st">"French Guiana"</span>, format_out <span class="op">=</span> <span class="st">"sf_polygon"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">multipolygon</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">leaflet</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">addTiles</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">addPolygons</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>you can then convert the coordinates into the desired request format
 with <code>gsub</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">","</span>, <span class="st">"/"</span>, <span class="fu">getbb</span><span class="op">(</span><span class="st">"French Guiana"</span>,</span>
 <span>                                format_out <span class="op">=</span> <span class="st">"string"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You need two types of product: (1) monthly averages by hour of day
@@ -197,7 +193,7 @@ the first set of data (monthly averages by hour of day) needed. For this
 example, we will limit our query to the coordinates of the Nouragues
 station in 2022 for a reduced output. But we encourage users to use both
 a larger spatial extent and a larger temporal extent.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">request</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"dataset_short_name"</span> <span class="op">=</span> <span class="st">"reanalysis-era5-land-monthly-means"</span>,</span>
 <span>  <span class="st">"format"</span> <span class="op">=</span> <span class="st">"netcdf"</span>,</span>
@@ -225,7 +221,7 @@ Copernicus website.</p>
 request with the registered user id (UID):</p>
 <p><strong>Request time: 0:05:07</strong></p>
 <p><strong>Download size: 76.6 KB</strong></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncfile</span> <span class="op">&lt;-</span> <span class="fu">wf_request</span><span class="op">(</span></span>
 <span>  user <span class="op">=</span> <span class="st">"152268"</span>,</span>
 <span>  request <span class="op">=</span> <span class="va">request</span>,</span>
@@ -254,7 +250,7 @@ needed. For this example, we will limit our query to the coordinates of
 the Nouragues station in 2021 and 2022 for a reduced output. But we
 encourage users to use both a larger spatial extent and a larger
 temporal extent.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">request</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"dataset_short_name"</span> <span class="op">=</span> <span class="st">"reanalysis-era5-land-monthly-means"</span>,</span>
 <span>  <span class="st">"format"</span> <span class="op">=</span> <span class="st">"netcdf"</span>,</span>
@@ -278,7 +274,7 @@ temporal extent.</p>
 request with the registered user id (UID):</p>
 <p><strong>Request time: 0:00:53</strong></p>
 <p><strong>Download size: 9.0 KB</strong></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncfile</span> <span class="op">&lt;-</span> <span class="fu">wf_request</span><span class="op">(</span></span>
 <span>  user <span class="op">=</span> <span class="st">"152268"</span>,</span>
 <span>  request <span class="op">=</span> <span class="va">request</span>,</span>
@@ -295,7 +291,7 @@ example of use below).</p>
 </h2>
 <p>You can have a look to the resulting ERA5 land data. For instance
 here we consolidate the data as a table using <code>dplyr</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test_r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"ERA5land_mth_Nouragues_2021_2022.nc"</span>, package <span class="op">=</span> <span class="st">"rcontroll"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">test_r</span>, xy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">gather</a></span><span class="op">(</span><span class="st">"variable"</span>, <span class="st">"value"</span>, <span class="op">-</span><span class="va">x</span>, <span class="op">-</span><span class="va">y</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -310,7 +306,7 @@ here we consolidate the data as a table using <code>dplyr</code>:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span></code></pre></div>
 <p>You can then plot the result as a static figure for a chosen year and
 month using <code>ggplot</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">test</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">tp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -329,7 +325,7 @@ naturelle des Nouragues where the functional data have been partly
 collected from. For that <code>nominatimlite</code> provide a useful
 function called <code>geo_lite_sf</code> to easily geocode
 locations:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">geo_lite_sf</span><span class="op">(</span><span class="st">"Réserve naturelle des nouragues, 97301, Régina"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">leaflet</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">addTiles</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -338,14 +334,14 @@ locations:</p>
 <span>  <span class="fu">addCircleMarkers</span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
 <p>You can extract corresponding coordinates using
 <code>st_coordinates</code> from <code>sf</code>:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">geo_lite_sf</span><span class="op">(</span><span class="st">"Réserve naturelle des nouragues, 97301, Régina"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You will also need the corresponding time zone for time correction as
 ERA5-land is giving us time in UTC. For that you can use the
 <code>tz_lookup_coords</code> function from the package
 <code>lutz</code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">tz</span> <span class="op">&lt;-</span> <span class="fu">tz_lookup_coords</span><span class="op">(</span>lon <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>                              lat <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, method <span class="op">=</span> <span class="st">"accurate"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We invite users to take advantage of <code>geo_lite_sf</code> and
@@ -353,7 +349,7 @@ ERA5-land is giving us time in UTC. For that you can use the
 but we show an example with known values below. You can use the
 <code>generate_cliamte</code> function inside TROLL to prepare
 <code>TROLL</code> climatic data:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">climate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_climate.html">generate_climate</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="op">-</span><span class="fl">52.75468</span>, </span>
 <span>  y <span class="op">=</span> <span class="fl">4.060414</span>,</span>
@@ -362,7 +358,7 @@ but we show an example with known values below. You can use the
 <span>  era5land_month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"ERA5land_mth_Nouragues_2021_2022.nc"</span>, package <span class="op">=</span> <span class="st">"rcontroll"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>And as expected you obtain inputs ready to run models:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">climate</span><span class="op">$</span><span class="va">daytimevar</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;   starttime endtime vardaytime_light vardaytime_vpd vardaytime_T</span></span>
 <span><span class="co">#&gt; 1       6.5     7.0        0.1413943     0.06585713    0.8487613</span></span>
@@ -371,7 +367,7 @@ but we show an example with known values below. You can use the
 <span><span class="co">#&gt; 4       8.0     8.5        0.6920539     0.24787386    0.8913729</span></span>
 <span><span class="co">#&gt; 5       8.5     9.0        0.9026792     0.36424334    0.9137656</span></span>
 <span><span class="co">#&gt; 6       9.0     9.5        1.1021304     0.49402285    0.9364671</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">climate</span><span class="op">$</span><span class="va">climatedaytime12</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 12</span></span></span>
 <span><span class="co">#&gt;   Temperature DaytimeM…¹ Night…² Rainf…³ WindS…⁴ Dayti…⁵ MeanI…⁶ Satur…⁷ Vapou…⁸</span></span>
@@ -390,13 +386,13 @@ but we show an example with known values below. You can use the
 <span><span class="co">#&gt; <span style="color: #949494;">#   ⁸​VapourPressure</span></span></span></code></pre>
 <p>Finally, we can compare obtained climatic data from ERA5-land with
 included data in the package grom the Nouraflux eddy tower:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_daytimevar"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  Nouraflux <span class="op">=</span> <span class="va">TROLLv3_daytimevar</span>,</span>
 <span>  ERA5 <span class="op">=</span> <span class="va">climate</span><span class="op">$</span><span class="va">daytimevar</span></span>
 <span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span>.id <span class="op">=</span> <span class="st">"origin"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span>.id <span class="op">=</span> <span class="st">"origin"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">gather</a></span><span class="op">(</span><span class="va">variable</span>, <span class="va">value</span>, <span class="op">-</span><span class="va">starttime</span>, <span class="op">-</span><span class="va">endtime</span>, <span class="op">-</span><span class="va">origin</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">origin</span>, <span class="va">variable</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">starttime</span>, y <span class="op">=</span> <span class="va">value</span>, col <span class="op">=</span> <span class="va">origin</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -404,13 +400,13 @@ included data in the package grom the Nouraflux eddy tower:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">variable</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="climate_files/figure-html/unnamed-chunk-19-1.png" width="576"></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_climatedaytime12"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  Nouraflux <span class="op">=</span> <span class="va">TROLLv3_climatedaytime12</span>,</span>
 <span>  ERA5 <span class="op">=</span> <span class="va">climate</span><span class="op">$</span><span class="va">climatedaytime12</span></span>
 <span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span>.id <span class="op">=</span> <span class="st">"origin"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span>.id <span class="op">=</span> <span class="st">"origin"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">origin</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html" class="external-link">month</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, label <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -437,7 +433,7 @@ included data in the package grom the Nouraflux eddy tower:</p>
 <p>This is only R objects. <code>generate_climate</code> is running
 fast. But in case you want to run multiple simulations at the same
 location we recommend saving the corresponding files for later:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">write_tsv</span><span class="op">(</span><span class="va">climate</span><span class="op">$</span><span class="va">daytimevar</span>, <span class="st">"ERA5land_daytimevar.txt"</span><span class="op">)</span></span>
 <span><span class="fu">write_tsv</span><span class="op">(</span><span class="va">climate</span><span class="op">$</span><span class="va">climatedaytime12</span>, <span class="st">"ERA5land_climatedaytime12.txt"</span><span class="op">)</span></span></code></pre></div>
 </div>
