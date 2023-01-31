@@ -68,7 +68,6 @@ Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 ```{r troll}
 sim <- troll(
   name = "test",
-  path = getwd(),
   global = generate_parameters(
     cols = 100, rows = 100,
     iterperyear = 12, nbiter = 12 * 1
@@ -111,7 +110,7 @@ rcontroll::autoplot(sim,
 
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
-```{r fullsimG2}
+```{r fullsimG2, eval=FALSE}
 rcontroll::autoplot(sim, what = "spatial")
 ```
 
@@ -160,7 +159,7 @@ rcontroll::autoplot(sim_stack,
 
 Similarly, we can quickly plot the forest final patterns using `autoplot` and `what` defined on `spatial`:
 
-```{r fullstackG2, fig.height=4}
+```{r fullstackG2, eval=FALSE}
 rcontroll::autoplot(sim_stack, what = "spatial")
 ```
 
@@ -177,7 +176,7 @@ rcontroll::autoplot(TROLLv3_output, what = "temporal")
 
 Similarly we can have a look to the the forest final pattern from `TROLLv3_output` that we will use to initiate the next simulation:
 
-```{r}
+```{r, eval=FALSE}
 rcontroll::autoplot(TROLLv3_output, what = "spatial", variables = "age")
 ```
 

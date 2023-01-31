@@ -9,10 +9,13 @@ on:
     branches:
       - main
       - dev
+      - WIP
+      - LTS
   pull_request:
     branches:
       - main
       - dev
+      - LTS
       
 name: R-CMD-check
 
@@ -27,12 +30,10 @@ jobs:
       matrix:
         config:
 
-         # - {os: macos-latest,   r: 'release'}
-
          # - {os: windows-latest, r: 'release'}
-
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: '3.6'}
+          - {os: macos-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GH_TOKEN }}
@@ -51,6 +52,8 @@ jobs:
         if: runner.os == 'macos'
         run: |
          brew install gsl
+         brew install gdal
+         R -e 'install.packages("terra", repos="https://rspatial.r-universe.dev")'
         shell: bash
          
 

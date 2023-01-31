@@ -216,7 +216,7 @@ Maréchaux, I., & Chave, J. (2017). An individual-based forest model to jointly 
 
 Baraloto, C., Paine, C.E.T., Poorter, L., Beauchene, J., Bonal, D., Domenach, A.M., Hérault, B., Patiño, S., Roggy, J.C. & Chave, J. (2010). Decoupled leaf and stem economics in rain forest trees. Ecology Letters, 13, 1338–1347.
 
-Kattge, J., Diaz, S., Lavorel, S., Prentice, I. C., Leadley, P., Bonisch, G., … Wirth, C. (2011). TRY - a global database of plant traits. Global Change Biology, 17(9), 2905–2935. https://doi.org/10.1111/j.1365-2486.2011.02451.x
+Kattge, J., Diaz, S., Lavorel, S., Prentice, I. C., Leadley, P., Bonisch, G., … Wirth, C. (2011). TRY - a global database of plant traits. Global Change Biology, 17(9), 2905–2935. doi:10.1111
 
 Meir, P., Grace, J. & Miranda, A.C. (2000). Photographic method to measure the vertical distribution of leaf area density in forests. Agricultural and Forest Meteorology, 102, 105–111.
 

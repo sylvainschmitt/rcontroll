@@ -1,5 +1,0 @@
-GSL_LIBS     = -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm
-GSL_CFLAGS   = -I/usr/include
-
-PKG_CXXFLAGS = $(GSL_CFLAGS)
-PKG_LIBS     = $(LDFLAGS) $(GSL_LIBS)

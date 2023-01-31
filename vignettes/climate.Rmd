@@ -57,6 +57,12 @@ wf_set_key(user = "******",
            service = "cds")
 ```
 
+```{r, eval=FALSE}
+wf_set_key(user = "152268",
+           key = "40942d56-a02c-467b-926d-1120be322979",
+           service = "cds")
+```
+
 You then define the location to retrieve climate data.
 Thanks to the function `getbb` from the package `osmdata` you can directly use the name of the entity, 
 for example here the French Guiana for which the default species data have been initialized.
@@ -130,8 +136,8 @@ You can follow your request here : https://cds.climate.copernicus.eu/cdsapp#!/yo
 The result of the request is included in the package external data (`system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll")`, example of use below).
 
 You can do the same for the second set of data (monthly averages) needed.
-For this example, we will use all French Guiana but limit our query to 2021 and 2022 for a reduced output.
-But we encourage users to use a larger temporal extent.
+For this example, we will limit our query to the coordinates of the Nouragues station in 2021 and 2022 for a reduced output.
+But we encourage users to use both a larger spatial extent and a larger temporal extent.
 
 ```{r, eval=FALSE}
 request <- list(
@@ -150,8 +156,8 @@ request <- list(
   "month" = sprintf("%02d", 1:12),
   "time" = sprintf("%02d:00", 0:23),
   "year" = as.character(2021:2022),
-  "target" = "ERA5land_mth_FG_2021_2022.nc",
-  "area" = coords
+  "target" = "ERA5land_mth_Nouragues_2021_2022.nc",
+  "area" = "3.960414/-52.85468/4.160414/-52.65468"
 )
 ```
 
@@ -159,7 +165,7 @@ Finally you can use `wf_request` to download locally the request with the regist
 
 **Request time: 0:00:53**
 
-**Download size: 749.1 KB**
+**Download size: 9.0 KB**
 
 ```{r, eval=FALSE}
 ncfile <- wf_request(
@@ -171,7 +177,7 @@ ncfile <- wf_request(
 )
 ```
 
-The result of the request is included in the package external data (`system.file("extdata", "ERA5land_mth_FG_2021_2022.nc", package = "rcontroll")`, example of use below).
+The result of the request is included in the package external data (`system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")`, example of use below).
 
 # Have a look to the downloaded data
 
@@ -179,7 +185,9 @@ You can have a look to the resulting ERA5 land data.
 For instance here we consolidate the data as a table using `dplyr`:
 
 ```{r }
-test_r <- suppressWarnings(rast(system.file("extdata", "ERA5land_mth_FG_2021_2022.nc", package = "rcontroll")))
+test_r <- suppressWarnings(rast(system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")))
+
+
 test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
   gather("variable", "value", -x, -y) %>% 
   group_by(x,y) %>% 
@@ -196,34 +204,12 @@ test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
 You can then plot the result as a static figure for a chosen year and month using `ggplot`:
 
 ```{r }
-ggplot(filter(test, date == first(date))) +
-  geom_raster(aes(x, y, fill = `tp`)) +
-  scale_fill_viridis_c("Total\nprecipitation", direction = -1) +
+ggplot(test, aes(date, tp)) +
+  geom_point() +
+  geom_smooth() +
   theme_bw() +
-  coord_sf(xlim = c(-54.6026945, -51.6346139), ylim = c(2.1109401, 5.7769491)) +
-  ylab("Longitude") +
-  xlab("Latitude") +
-  ggtitle(filter(test, date == first(date))$date[1])
+  xlab("") + ylab("Total precipitation")
 ```
-
-Or as a dynamic gif using `gganimate`:
-
-```{r, eval=FALSE}
-test %>%
-  group_by(x, y, month = lubridate::floor_date(date, "month")) %>%
-  ggplot() +
-  geom_raster(aes(x, y, fill = `tp`)) +
-  geom_sf(data = spData::world, fill = NA) +
-  scale_fill_viridis_c("Total\nprecipitation\n", direction = -1) +
-  theme_bw() +
-  coord_sf(xlim = c(-54.6026945, -51.6346139), ylim = c(2.1109401, 5.7769491)) +
-  xlab("Longitue") +
-  ylab("Latitude") +
-  labs(title = "Month: {frame_time}") +
-  transition_time(month)
-```
-
->Because this takes time and memory, we do not run the chunk here, but invite the user to do so.
 
 # Prepare TROLL inputs
 
@@ -264,7 +250,7 @@ climate <- generate_climate(
   y = 4.060414,
   tz = "America/Cayenne",
   era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll"), 
-  era5land_month = system.file("extdata", "ERA5land_mth_FG_2021_2022.nc", package = "rcontroll")
+  era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")
 )
 ```
 

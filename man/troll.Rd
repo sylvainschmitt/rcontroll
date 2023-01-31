@@ -53,7 +53,7 @@ A trollsim object.
 Run a TROLL simulation.
 }
 \examples{
-
+\dontrun{
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
@@ -67,5 +67,6 @@ troll(
   climate = TROLLv3_climatedaytime12,
   daily = TROLLv3_daytimevar
 )
+}
 
 }
