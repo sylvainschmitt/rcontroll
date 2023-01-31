@@ -9,13 +9,10 @@ on:
     branches:
       - main
       - dev
-      - WIP
-      - LTS
   pull_request:
     branches:
       - main
       - dev
-      - LTS
       
 name: R-CMD-check
 
@@ -29,8 +26,6 @@ jobs:
       fail-fast: false
       matrix:
         config:
-
-         # - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: '3.6'}
           - {os: macos-latest,   r: 'release'}

@@ -1,7 +1,11 @@
+# rcontroll 0.1.0.9063
+
+-   removing `terra` reading NETcdf from climate vignette
+
 # rcontroll 0.1.0.9062
- - clang support 
- - REMINDER use valgrind for segfault : 
- R -d "valgrind -s" -e 'rcontroll::troll(name = "test",global = rcontroll::generate_parameters(cols = 100, rows = 100,iterperyear = 12, nbiter = 12 * 1),species = rcontroll::TROLLv3_species,climate = rcontroll::TROLLv3_climatedaytime12,daily = rcontroll::TROLLv3_daytimevar,verbose = TRUE)' 
+
+-   clang support
+-   REMINDER use valgrind for segfault : R -d "valgrind -s" -e 'rcontroll::troll(name = "test",global = rcontroll::generate_parameters(cols = 100, rows = 100,iterperyear = 12, nbiter = 12 \* 1),species = rcontroll::TROLLv3_species,climate = rcontroll::TROLLv3_climatedaytime12,daily = rcontroll::TROLLv3_daytimevar,verbose = TRUE)'
 
 # rcontroll 0.1.0.9061
 
