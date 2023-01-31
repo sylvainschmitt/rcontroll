@@ -24,6 +24,13 @@ library(gganimate) # to make a temporal gif of climate variation
 library(rcontroll) # to generate TROLL climate inputs
 ```
 
+```{r message=TRUE, warning=TRUE, include=FALSE}
+if(Sys.info()[['sysname']] != "Darwin")
+  knitr::opts_chunk$set(
+  eval = FALSE
+)
+```
+
 ```{r, eval=FALSE}
 library(ecmwfr) # to request data from Copernicus
 library(osmdata) # to get bounding box from the study area
@@ -179,29 +186,24 @@ You can have a look to the resulting ERA5 land data.
 For instance here we consolidate the data as a table using `dplyr`:
 
 ```{r }
-if(Sys.info()[['sysname']] != "Darwin"){
-  test_r <- suppressWarnings(rast(system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")))
-  test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
-    gather("variable", "value", -x, -y) %>% 
-    group_by(x,y) %>% 
-    mutate(date = rep(as_date(terra::time(test_r)))) %>% 
-    separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    select(-t) %>% 
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
-    group_by(x,y, date, variable) %>% 
-    summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
-    spread(variable, value) %>% 
-    arrange(date)
-}
+test_r <- suppressWarnings(rast(system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")))
+test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
+  gather("variable", "value", -x, -y) %>% 
+  group_by(x,y) %>% 
+  mutate(date = rep(as_date(terra::time(test_r)))) %>% 
+  separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
+  select(-t) %>% 
+  separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
+  group_by(x,y, date, variable) %>% 
+  summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
+  spread(variable, value) %>% 
+  arrange(date)
 ```
-
->`terra` has known problems with macOS, so the chunk and subsequent chunks are not run on macOS.
 
 You can then plot the result as a static figure for a chosen year and month using `ggplot`:
 
 ```{r }
-if(Sys.info()[['sysname']] != "Darwin")
-  ggplot(test, aes(date, tp)) +
+ggplot(test, aes(date, tp)) +
   geom_point() +
   geom_smooth() +
   theme_bw() +
@@ -242,78 +244,71 @@ We invite users to take advantage of `geo_lite_sf` and `tz_lookup_coords` to ret
 You can use the `generate_cliamte` function inside TROLL to prepare `TROLL` climatic data:
 
 ```{r }
-if(Sys.info()[['sysname']] != "Darwin")
-  climate <- generate_climate(
-    x = -52.75468, 
-    y = 4.060414,
-    tz = "America/Cayenne",
-    era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll"), 
-    era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")
-  )
+climate <- generate_climate(
+  x = -52.75468, 
+  y = 4.060414,
+  tz = "America/Cayenne",
+  era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll"), 
+  era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")
+)
 ```
 
 And as expected you obtain inputs ready to run models:
 
 ```{r }
-if(Sys.info()[['sysname']] != "Darwin")
-  climate$daytimevar %>% head()
+climate$daytimevar %>% head()
 ```
 
 ```{r }
-if(Sys.info()[['sysname']] != "Darwin")
-  climate$climatedaytime12 %>% head()
+climate$climatedaytime12 %>% head()
 ```
 
 Finally, we can compare obtained climatic data from ERA5-land with included data in the package grom the Nouraflux eddy tower:
 
 ```{r, fig.width=6, fig.height=3}
-if(Sys.info()[['sysname']] != "Darwin"){
-  data("TROLLv3_daytimevar")
-  list(
-    Nouraflux = TROLLv3_daytimevar,
-    ERA5 = climate$daytimevar
-  ) %>%
-    bind_rows(.id = "origin") %>%
-    gather(variable, value, -starttime, -endtime, -origin) %>%
-    group_by(origin, variable) %>%
-    ggplot(aes(x = starttime, y = value, col = origin)) +
-    geom_line() +
-    facet_wrap(~variable, scales = "free_y") +
-    theme_bw()
-}
+data("TROLLv3_daytimevar")
+list(
+  Nouraflux = TROLLv3_daytimevar,
+  ERA5 = climate$daytimevar
+) %>%
+  bind_rows(.id = "origin") %>%
+  gather(variable, value, -starttime, -endtime, -origin) %>%
+  group_by(origin, variable) %>%
+  ggplot(aes(x = starttime, y = value, col = origin)) +
+  geom_line() +
+  facet_wrap(~variable, scales = "free_y") +
+  theme_bw()
 ```
 
 ```{r, fig.width=12, fig.height=6}
-if(Sys.info()[['sysname']] != "Darwin"){
-  data("TROLLv3_climatedaytime12")
-  list(
-    Nouraflux = TROLLv3_climatedaytime12,
-    ERA5 = climate$climatedaytime12
-  ) %>%
-    bind_rows(.id = "origin") %>%
-    group_by(origin) %>%
-    mutate(order = 1:12) %>% 
-    mutate(month = as.character(lubridate::month(1:12, label = T))) %>% 
-    gather(variable, value, -origin, -month, -order) %>%
-    mutate(variable = recode(variable,
-                             "Temperature" = "Temperature~(degree~C)",
-                             "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
-                             "NightTemperature" = "NightTemperature~(degree~C)",
-                             "Rainfall" = "Rainfall (cm)",
-                             "WindSpeed" = "WindSpeed (m~s^{-1})",
-                             "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
-                             "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
-                             "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
-                             "VapourPressure" = "VapourPressure (hPa)",
-                             "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
-                             "DayTimeVapourPressureDeficitVPDbasic" = "DayTimeVapourPressureDeficitVPDbasic (hPa)",
-                             "DaytimeMeanVapourPressureDeficit" = "DaytimeMeanVapourPressureDeficit (hPa)")) %>% 
-    ggplot(aes(x = reorder(month, order), y = value, col = origin, group = origin)) +
-    geom_line() +
-    facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
-    theme_bw() +
-    theme(axis.title = element_blank(), axis.text.x = element_text(angle = 90), legend.position = "bottom")
-}
+data("TROLLv3_climatedaytime12")
+list(
+  Nouraflux = TROLLv3_climatedaytime12,
+  ERA5 = climate$climatedaytime12
+) %>%
+  bind_rows(.id = "origin") %>%
+  group_by(origin) %>%
+  mutate(order = 1:12) %>% 
+  mutate(month = as.character(lubridate::month(1:12, label = T))) %>% 
+  gather(variable, value, -origin, -month, -order) %>%
+  mutate(variable = recode(variable,
+                           "Temperature" = "Temperature~(degree~C)",
+                           "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
+                           "NightTemperature" = "NightTemperature~(degree~C)",
+                           "Rainfall" = "Rainfall (cm)",
+                           "WindSpeed" = "WindSpeed (m~s^{-1})",
+                           "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
+                           "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
+                           "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
+                           "VapourPressure" = "VapourPressure (hPa)",
+                           "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
+                           "DayTimeVapourPressureDeficitVPDbasic" = "DayTimeVapourPressureDeficitVPDbasic (hPa)",
+                           "DaytimeMeanVapourPressureDeficit" = "DaytimeMeanVapourPressureDeficit (hPa)")) %>% 
+  ggplot(aes(x = reorder(month, order), y = value, col = origin, group = origin)) +
+  geom_line() +
+  facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
+  theme_bw() +
+  theme(axis.title = element_blank(), axis.text.x = element_text(angle = 90), legend.position = "bottom")
 ```
 
 This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:
