@@ -1,6 +1,6 @@
 # rcontroll 0.1.0.9063
 
--   removing `terra` reading NETcdf from climate vignette
+-   removing `terra` reading NETcdf from climate vignette in macOS
 
 # rcontroll 0.1.0.9062
 
