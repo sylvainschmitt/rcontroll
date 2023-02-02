@@ -26,8 +26,6 @@ jobs:
       fail-fast: false
       matrix:
         config:
-
-         # - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: '3.6'}
           - {os: macos-latest,   r: 'release'}
@@ -49,6 +47,8 @@ jobs:
         if: runner.os == 'macos'
         run: |
          brew install gsl
+         brew install gdal
+         R -e 'install.packages("terra", repos="https://rspatial.r-universe.dev")'
         shell: bash
          
 
