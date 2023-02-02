@@ -158,7 +158,7 @@ thinning.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_species"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_climatedaytime12"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_daytimevar"</span><span class="op">)</span></span></span>
@@ -169,9 +169,7 @@ thinning.</p></dd>
 <span class="r-in"><span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">mutate</span><span class="op">(</span>simulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"seed50000"</span>, <span class="st">"seed500"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">simulation</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in unnest(., simulation):</span> could not find function "unnest"</span>
 <span class="r-in"><span><span class="va">TROLLv3_input_stack</span><span class="op">[</span><span class="fl">62</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">500</span> <span class="co"># Cseedrain</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in TROLLv3_input_stack[62, 2] &lt;- 500:</span> object 'TROLLv3_input_stack' not found</span>
 <span class="r-in"><span><span class="fu">stack</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"teststack"</span>,</span></span>
 <span class="r-in"><span>  simulations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"seed50000"</span>, <span class="st">"seed500"</span><span class="op">)</span>,</span></span>
@@ -183,8 +181,7 @@ thinning.</p></dd>
 <span class="r-in"><span>  cores <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.data.frame(x):</span> object 'TROLLv3_input_stack' not found</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
