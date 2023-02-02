@@ -146,7 +146,7 @@ kept to reduce output size, default is NULL and corresponds to no thinning.</p><
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_species"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_climatedaytime12"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_daytimevar"</span><span class="op">)</span></span></span>
@@ -161,7 +161,1206 @@ kept to reduce output size, default is NULL and corresponds to no thinning.</p><
 <span class="r-in"><span>  daily <span class="op">=</span> <span class="va">TROLLv3_daytimevar</span>,</span></span>
 <span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $species</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "./gganim_plot0001.png" "./gganim_plot0002.png" "./gganim_plot0003.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "./gganim_plot0004.png" "./gganim_plot0005.png" "./gganim_plot0006.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "./gganim_plot0007.png" "./gganim_plot0008.png" "./gganim_plot0009.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "./gganim_plot0010.png" "./gganim_plot0011.png" "./gganim_plot0012.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "./gganim_plot0013.png" "./gganim_plot0014.png" "./gganim_plot0015.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "./gganim_plot0016.png" "./gganim_plot0017.png" "./gganim_plot0018.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "./gganim_plot0019.png" "./gganim_plot0020.png" "./gganim_plot0021.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "./gganim_plot0022.png" "./gganim_plot0023.png" "./gganim_plot0024.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "./gganim_plot0025.png" "./gganim_plot0026.png" "./gganim_plot0027.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "./gganim_plot0028.png" "./gganim_plot0029.png" "./gganim_plot0030.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "./gganim_plot0031.png" "./gganim_plot0032.png" "./gganim_plot0033.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "./gganim_plot0034.png" "./gganim_plot0035.png" "./gganim_plot0036.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "./gganim_plot0037.png" "./gganim_plot0038.png" "./gganim_plot0039.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "./gganim_plot0040.png" "./gganim_plot0041.png" "./gganim_plot0042.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "./gganim_plot0043.png" "./gganim_plot0044.png" "./gganim_plot0045.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "./gganim_plot0046.png" "./gganim_plot0047.png" "./gganim_plot0048.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "./gganim_plot0049.png" "./gganim_plot0050.png" "./gganim_plot0051.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "./gganim_plot0052.png" "./gganim_plot0053.png" "./gganim_plot0054.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "./gganim_plot0055.png" "./gganim_plot0056.png" "./gganim_plot0057.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "./gganim_plot0058.png" "./gganim_plot0059.png" "./gganim_plot0060.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "./gganim_plot0061.png" "./gganim_plot0062.png" "./gganim_plot0063.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "./gganim_plot0064.png" "./gganim_plot0065.png" "./gganim_plot0066.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "./gganim_plot0067.png" "./gganim_plot0068.png" "./gganim_plot0069.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "./gganim_plot0070.png" "./gganim_plot0071.png" "./gganim_plot0072.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "./gganim_plot0073.png" "./gganim_plot0074.png" "./gganim_plot0075.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "./gganim_plot0076.png" "./gganim_plot0077.png" "./gganim_plot0078.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "./gganim_plot0079.png" "./gganim_plot0080.png" "./gganim_plot0081.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "./gganim_plot0082.png" "./gganim_plot0083.png" "./gganim_plot0084.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "./gganim_plot0085.png" "./gganim_plot0086.png" "./gganim_plot0087.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "./gganim_plot0088.png" "./gganim_plot0089.png" "./gganim_plot0090.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "./gganim_plot0091.png" "./gganim_plot0092.png" "./gganim_plot0093.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "./gganim_plot0094.png" "./gganim_plot0095.png" "./gganim_plot0096.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "./gganim_plot0097.png" "./gganim_plot0098.png" "./gganim_plot0099.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "./gganim_plot0100.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"frame_vars")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     frame nframes progress frame_time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1     100     0.01          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2     100     0.02         12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3     100     0.03         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4     100     0.04         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5     100     0.05         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6     100     0.06         60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       7     100     0.07         72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       8     100     0.08         84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       9     100     0.09         96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     10     100     0.10        108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     11     100     0.11        120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     12     100     0.12        132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     13     100     0.13        144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     14     100     0.14        156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     15     100     0.15        168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     16     100     0.16        180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     17     100     0.17        192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     18     100     0.18        204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     19     100     0.19        216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     20     100     0.20        228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     21     100     0.21        240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     22     100     0.22        252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     23     100     0.23        264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     24     100     0.24        276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     25     100     0.25        288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     26     100     0.26        300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     27     100     0.27        312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     28     100     0.28        324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     29     100     0.29        336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     30     100     0.30        348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     31     100     0.31        360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     32     100     0.32        372</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     33     100     0.33        384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     34     100     0.34        396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     35     100     0.35        408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     36     100     0.36        420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     37     100     0.37        432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     38     100     0.38        444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     39     100     0.39        456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     40     100     0.40        468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     41     100     0.41        480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     42     100     0.42        492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     43     100     0.43        504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     44     100     0.44        516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     45     100     0.45        528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     46     100     0.46        540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     47     100     0.47        552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     48     100     0.48        564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     49     100     0.49        576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     50     100     0.50        588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     51     100     0.51        600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     52     100     0.52        612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     53     100     0.53        624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     54     100     0.54        636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     55     100     0.55        648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     56     100     0.56        660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     57     100     0.57        672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     58     100     0.58        684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     59     100     0.59        696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     60     100     0.60        708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     61     100     0.61        720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     62     100     0.62        732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     63     100     0.63        744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     64     100     0.64        756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     65     100     0.65        768</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     66     100     0.66        780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     67     100     0.67        792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     68     100     0.68        804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     69     100     0.69        816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     70     100     0.70        828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     71     100     0.71        840</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     72     100     0.72        852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     73     100     0.73        864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     74     100     0.74        876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     75     100     0.75        888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     76     100     0.76        900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     77     100     0.77        912</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     78     100     0.78        924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     79     100     0.79        936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     80     100     0.80        948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     81     100     0.81        960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     82     100     0.82        972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     83     100     0.83        984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     84     100     0.84        996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     85     100     0.85       1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     86     100     0.86       1020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     87     100     0.87       1032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88     88     100     0.88       1044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     89     100     0.89       1056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90     90     100     0.90       1068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     91     100     0.91       1080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92     92     100     0.92       1092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     93     100     0.93       1104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94     94     100     0.94       1116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     95     100     0.95       1128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     96     100     0.96       1140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     97     100     0.97       1152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     98     100     0.98       1164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     99     100     0.99       1176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100   100     100     1.00       1188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         frame_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0001.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0002.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0003.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0004.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0005.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0006.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0007.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0008.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0009.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0010.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0011.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0012.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0013.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0014.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0015.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0016.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0017.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0018.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0019.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0020.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0021.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0022.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0023.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0024.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0025.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0026.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0027.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0028.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0029.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0030.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0031.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0032.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0033.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0034.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0035.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0036.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0037.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0038.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0039.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0040.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0041.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0042.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0043.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0044.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0045.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0046.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0047.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0048.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0049.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0050.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0051.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0052.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0053.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0054.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0055.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0056.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0057.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0058.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0059.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0060.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0061.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0062.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0063.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0064.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0065.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0066.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0067.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0068.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0069.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0070.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0071.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0072.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0073.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0074.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0075.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0076.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0077.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0078.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0079.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0080.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0081.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0082.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0083.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0084.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0085.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0086.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0087.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0088.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0089.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0090.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0091.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0092.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0093.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0094.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0095.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0096.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0097.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0098.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99  /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0099.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100 /tmp/Rtmpqk4sxT/235542a2499d/gganim_plot0100.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $npp_gpp</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>file_renderer failed to copy frames to the destination directory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "./gganim_plot0001.png" "./gganim_plot0002.png" "./gganim_plot0003.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "./gganim_plot0004.png" "./gganim_plot0005.png" "./gganim_plot0006.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "./gganim_plot0007.png" "./gganim_plot0008.png" "./gganim_plot0009.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "./gganim_plot0010.png" "./gganim_plot0011.png" "./gganim_plot0012.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "./gganim_plot0013.png" "./gganim_plot0014.png" "./gganim_plot0015.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "./gganim_plot0016.png" "./gganim_plot0017.png" "./gganim_plot0018.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "./gganim_plot0019.png" "./gganim_plot0020.png" "./gganim_plot0021.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "./gganim_plot0022.png" "./gganim_plot0023.png" "./gganim_plot0024.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "./gganim_plot0025.png" "./gganim_plot0026.png" "./gganim_plot0027.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "./gganim_plot0028.png" "./gganim_plot0029.png" "./gganim_plot0030.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "./gganim_plot0031.png" "./gganim_plot0032.png" "./gganim_plot0033.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "./gganim_plot0034.png" "./gganim_plot0035.png" "./gganim_plot0036.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "./gganim_plot0037.png" "./gganim_plot0038.png" "./gganim_plot0039.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "./gganim_plot0040.png" "./gganim_plot0041.png" "./gganim_plot0042.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "./gganim_plot0043.png" "./gganim_plot0044.png" "./gganim_plot0045.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "./gganim_plot0046.png" "./gganim_plot0047.png" "./gganim_plot0048.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "./gganim_plot0049.png" "./gganim_plot0050.png" "./gganim_plot0051.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "./gganim_plot0052.png" "./gganim_plot0053.png" "./gganim_plot0054.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "./gganim_plot0055.png" "./gganim_plot0056.png" "./gganim_plot0057.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "./gganim_plot0058.png" "./gganim_plot0059.png" "./gganim_plot0060.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "./gganim_plot0061.png" "./gganim_plot0062.png" "./gganim_plot0063.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "./gganim_plot0064.png" "./gganim_plot0065.png" "./gganim_plot0066.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "./gganim_plot0067.png" "./gganim_plot0068.png" "./gganim_plot0069.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "./gganim_plot0070.png" "./gganim_plot0071.png" "./gganim_plot0072.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "./gganim_plot0073.png" "./gganim_plot0074.png" "./gganim_plot0075.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "./gganim_plot0076.png" "./gganim_plot0077.png" "./gganim_plot0078.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "./gganim_plot0079.png" "./gganim_plot0080.png" "./gganim_plot0081.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "./gganim_plot0082.png" "./gganim_plot0083.png" "./gganim_plot0084.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "./gganim_plot0085.png" "./gganim_plot0086.png" "./gganim_plot0087.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "./gganim_plot0088.png" "./gganim_plot0089.png" "./gganim_plot0090.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "./gganim_plot0091.png" "./gganim_plot0092.png" "./gganim_plot0093.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "./gganim_plot0094.png" "./gganim_plot0095.png" "./gganim_plot0096.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "./gganim_plot0097.png" "./gganim_plot0098.png" "./gganim_plot0099.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "./gganim_plot0100.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"frame_vars")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     frame nframes progress frame_time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1     100     0.01          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2     100     0.02         12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3     100     0.03         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4     100     0.04         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5     100     0.05         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6     100     0.06         60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       7     100     0.07         72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       8     100     0.08         84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       9     100     0.09         96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     10     100     0.10        108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     11     100     0.11        120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     12     100     0.12        132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     13     100     0.13        144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     14     100     0.14        156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     15     100     0.15        168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     16     100     0.16        180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     17     100     0.17        192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     18     100     0.18        204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     19     100     0.19        216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     20     100     0.20        228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     21     100     0.21        240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     22     100     0.22        252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     23     100     0.23        264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     24     100     0.24        276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     25     100     0.25        288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     26     100     0.26        300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     27     100     0.27        312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     28     100     0.28        324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     29     100     0.29        336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     30     100     0.30        348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     31     100     0.31        360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     32     100     0.32        372</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     33     100     0.33        384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     34     100     0.34        396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     35     100     0.35        408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     36     100     0.36        420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     37     100     0.37        432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     38     100     0.38        444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     39     100     0.39        456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     40     100     0.40        468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     41     100     0.41        480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     42     100     0.42        492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     43     100     0.43        504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     44     100     0.44        516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     45     100     0.45        528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     46     100     0.46        540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     47     100     0.47        552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     48     100     0.48        564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     49     100     0.49        576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     50     100     0.50        588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     51     100     0.51        600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     52     100     0.52        612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     53     100     0.53        624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     54     100     0.54        636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     55     100     0.55        648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     56     100     0.56        660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     57     100     0.57        672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     58     100     0.58        684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     59     100     0.59        696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     60     100     0.60        708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     61     100     0.61        720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     62     100     0.62        732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     63     100     0.63        744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     64     100     0.64        756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     65     100     0.65        768</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     66     100     0.66        780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     67     100     0.67        792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     68     100     0.68        804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     69     100     0.69        816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     70     100     0.70        828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     71     100     0.71        840</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     72     100     0.72        852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     73     100     0.73        864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     74     100     0.74        876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     75     100     0.75        888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     76     100     0.76        900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     77     100     0.77        912</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     78     100     0.78        924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     79     100     0.79        936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     80     100     0.80        948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     81     100     0.81        960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     82     100     0.82        972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     83     100     0.83        984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     84     100     0.84        996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     85     100     0.85       1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     86     100     0.86       1020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     87     100     0.87       1032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88     88     100     0.88       1044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     89     100     0.89       1056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90     90     100     0.90       1068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     91     100     0.91       1080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92     92     100     0.92       1092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     93     100     0.93       1104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94     94     100     0.94       1116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     95     100     0.95       1128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     96     100     0.96       1140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     97     100     0.97       1152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     98     100     0.98       1164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     99     100     0.99       1176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100   100     100     1.00       1188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         frame_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0001.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0002.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0003.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0004.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0005.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0006.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0007.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0008.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0009.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0010.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0011.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0012.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0013.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0014.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0015.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0016.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0017.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0018.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0019.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0020.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0021.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0022.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0023.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0024.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0025.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0026.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0027.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0028.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0029.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0030.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0031.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0032.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0033.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0034.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0035.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0036.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0037.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0038.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0039.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0040.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0041.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0042.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0043.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0044.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0045.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0046.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0047.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0048.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0049.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0050.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0051.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0052.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0053.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0054.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0055.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0056.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0057.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0058.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0059.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0060.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0061.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0062.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0063.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0064.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0065.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0066.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0067.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0068.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0069.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0070.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0071.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0072.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0073.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0074.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0075.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0076.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0077.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0078.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0079.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0080.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0081.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0082.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0083.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0084.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0085.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0086.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0087.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0088.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0089.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0090.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0091.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0092.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0093.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0094.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0095.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0096.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0097.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0098.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99  /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0099.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100 /tmp/Rtmpqk4sxT/235544df2119/gganim_plot0100.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $height_ct</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>file_renderer failed to copy frames to the destination directory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "./gganim_plot0001.png" "./gganim_plot0002.png" "./gganim_plot0003.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "./gganim_plot0004.png" "./gganim_plot0005.png" "./gganim_plot0006.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "./gganim_plot0007.png" "./gganim_plot0008.png" "./gganim_plot0009.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "./gganim_plot0010.png" "./gganim_plot0011.png" "./gganim_plot0012.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "./gganim_plot0013.png" "./gganim_plot0014.png" "./gganim_plot0015.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "./gganim_plot0016.png" "./gganim_plot0017.png" "./gganim_plot0018.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "./gganim_plot0019.png" "./gganim_plot0020.png" "./gganim_plot0021.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "./gganim_plot0022.png" "./gganim_plot0023.png" "./gganim_plot0024.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "./gganim_plot0025.png" "./gganim_plot0026.png" "./gganim_plot0027.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "./gganim_plot0028.png" "./gganim_plot0029.png" "./gganim_plot0030.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "./gganim_plot0031.png" "./gganim_plot0032.png" "./gganim_plot0033.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "./gganim_plot0034.png" "./gganim_plot0035.png" "./gganim_plot0036.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "./gganim_plot0037.png" "./gganim_plot0038.png" "./gganim_plot0039.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "./gganim_plot0040.png" "./gganim_plot0041.png" "./gganim_plot0042.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "./gganim_plot0043.png" "./gganim_plot0044.png" "./gganim_plot0045.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "./gganim_plot0046.png" "./gganim_plot0047.png" "./gganim_plot0048.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "./gganim_plot0049.png" "./gganim_plot0050.png" "./gganim_plot0051.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "./gganim_plot0052.png" "./gganim_plot0053.png" "./gganim_plot0054.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "./gganim_plot0055.png" "./gganim_plot0056.png" "./gganim_plot0057.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "./gganim_plot0058.png" "./gganim_plot0059.png" "./gganim_plot0060.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "./gganim_plot0061.png" "./gganim_plot0062.png" "./gganim_plot0063.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "./gganim_plot0064.png" "./gganim_plot0065.png" "./gganim_plot0066.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "./gganim_plot0067.png" "./gganim_plot0068.png" "./gganim_plot0069.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "./gganim_plot0070.png" "./gganim_plot0071.png" "./gganim_plot0072.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "./gganim_plot0073.png" "./gganim_plot0074.png" "./gganim_plot0075.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "./gganim_plot0076.png" "./gganim_plot0077.png" "./gganim_plot0078.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "./gganim_plot0079.png" "./gganim_plot0080.png" "./gganim_plot0081.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "./gganim_plot0082.png" "./gganim_plot0083.png" "./gganim_plot0084.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "./gganim_plot0085.png" "./gganim_plot0086.png" "./gganim_plot0087.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "./gganim_plot0088.png" "./gganim_plot0089.png" "./gganim_plot0090.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "./gganim_plot0091.png" "./gganim_plot0092.png" "./gganim_plot0093.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "./gganim_plot0094.png" "./gganim_plot0095.png" "./gganim_plot0096.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "./gganim_plot0097.png" "./gganim_plot0098.png" "./gganim_plot0099.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "./gganim_plot0100.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"frame_vars")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     frame nframes progress frame_time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1     100     0.01          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2     100     0.02         12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3     100     0.03         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4     100     0.04         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5     100     0.05         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6     100     0.06         60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       7     100     0.07         72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       8     100     0.08         84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       9     100     0.09         96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     10     100     0.10        108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     11     100     0.11        120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     12     100     0.12        132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     13     100     0.13        144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     14     100     0.14        156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     15     100     0.15        168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     16     100     0.16        180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     17     100     0.17        192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     18     100     0.18        204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     19     100     0.19        216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     20     100     0.20        228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     21     100     0.21        240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     22     100     0.22        252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     23     100     0.23        264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     24     100     0.24        276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     25     100     0.25        288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     26     100     0.26        300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     27     100     0.27        312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     28     100     0.28        324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     29     100     0.29        336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     30     100     0.30        348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     31     100     0.31        360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     32     100     0.32        372</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     33     100     0.33        384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     34     100     0.34        396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     35     100     0.35        408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     36     100     0.36        420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     37     100     0.37        432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     38     100     0.38        444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     39     100     0.39        456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     40     100     0.40        468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     41     100     0.41        480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     42     100     0.42        492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     43     100     0.43        504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     44     100     0.44        516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     45     100     0.45        528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     46     100     0.46        540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     47     100     0.47        552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     48     100     0.48        564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     49     100     0.49        576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     50     100     0.50        588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     51     100     0.51        600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     52     100     0.52        612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     53     100     0.53        624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     54     100     0.54        636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     55     100     0.55        648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     56     100     0.56        660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     57     100     0.57        672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     58     100     0.58        684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     59     100     0.59        696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     60     100     0.60        708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     61     100     0.61        720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     62     100     0.62        732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     63     100     0.63        744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     64     100     0.64        756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     65     100     0.65        768</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     66     100     0.66        780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     67     100     0.67        792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     68     100     0.68        804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     69     100     0.69        816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     70     100     0.70        828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     71     100     0.71        840</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     72     100     0.72        852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     73     100     0.73        864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     74     100     0.74        876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     75     100     0.75        888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     76     100     0.76        900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     77     100     0.77        912</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     78     100     0.78        924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     79     100     0.79        936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     80     100     0.80        948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     81     100     0.81        960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     82     100     0.82        972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     83     100     0.83        984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     84     100     0.84        996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     85     100     0.85       1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     86     100     0.86       1020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     87     100     0.87       1032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88     88     100     0.88       1044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     89     100     0.89       1056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90     90     100     0.90       1068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     91     100     0.91       1080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92     92     100     0.92       1092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     93     100     0.93       1104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94     94     100     0.94       1116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     95     100     0.95       1128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     96     100     0.96       1140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     97     100     0.97       1152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     98     100     0.98       1164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     99     100     0.99       1176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100   100     100     1.00       1188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         frame_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0001.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0002.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0003.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0004.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0005.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0006.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0007.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0008.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0009.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0010.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0011.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0012.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0013.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0014.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0015.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0016.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0017.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0018.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0019.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0020.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0021.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0022.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0023.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0024.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0025.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0026.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0027.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0028.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0029.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0030.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0031.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0032.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0033.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0034.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0035.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0036.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0037.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0038.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0039.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0040.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0041.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0042.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0043.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0044.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0045.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0046.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0047.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0048.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0049.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0050.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0051.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0052.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0053.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0054.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0055.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0056.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0057.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0058.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0059.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0060.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0061.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0062.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0063.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0064.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0065.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0066.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0067.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0068.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0069.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0070.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0071.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0072.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0073.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0074.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0075.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0076.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0077.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0078.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0079.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0080.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0081.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0082.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0083.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0084.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0085.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0086.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0087.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0088.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0089.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0090.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0091.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0092.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0093.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0094.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0095.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0096.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0097.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0098.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99  /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0099.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100 /tmp/Rtmpqk4sxT/235569ab91cd/gganim_plot0100.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $height</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>file_renderer failed to copy frames to the destination directory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "./gganim_plot0001.png" "./gganim_plot0002.png" "./gganim_plot0003.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "./gganim_plot0004.png" "./gganim_plot0005.png" "./gganim_plot0006.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "./gganim_plot0007.png" "./gganim_plot0008.png" "./gganim_plot0009.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "./gganim_plot0010.png" "./gganim_plot0011.png" "./gganim_plot0012.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "./gganim_plot0013.png" "./gganim_plot0014.png" "./gganim_plot0015.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "./gganim_plot0016.png" "./gganim_plot0017.png" "./gganim_plot0018.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "./gganim_plot0019.png" "./gganim_plot0020.png" "./gganim_plot0021.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "./gganim_plot0022.png" "./gganim_plot0023.png" "./gganim_plot0024.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "./gganim_plot0025.png" "./gganim_plot0026.png" "./gganim_plot0027.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "./gganim_plot0028.png" "./gganim_plot0029.png" "./gganim_plot0030.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "./gganim_plot0031.png" "./gganim_plot0032.png" "./gganim_plot0033.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "./gganim_plot0034.png" "./gganim_plot0035.png" "./gganim_plot0036.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "./gganim_plot0037.png" "./gganim_plot0038.png" "./gganim_plot0039.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "./gganim_plot0040.png" "./gganim_plot0041.png" "./gganim_plot0042.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "./gganim_plot0043.png" "./gganim_plot0044.png" "./gganim_plot0045.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "./gganim_plot0046.png" "./gganim_plot0047.png" "./gganim_plot0048.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "./gganim_plot0049.png" "./gganim_plot0050.png" "./gganim_plot0051.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "./gganim_plot0052.png" "./gganim_plot0053.png" "./gganim_plot0054.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "./gganim_plot0055.png" "./gganim_plot0056.png" "./gganim_plot0057.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "./gganim_plot0058.png" "./gganim_plot0059.png" "./gganim_plot0060.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "./gganim_plot0061.png" "./gganim_plot0062.png" "./gganim_plot0063.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "./gganim_plot0064.png" "./gganim_plot0065.png" "./gganim_plot0066.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "./gganim_plot0067.png" "./gganim_plot0068.png" "./gganim_plot0069.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "./gganim_plot0070.png" "./gganim_plot0071.png" "./gganim_plot0072.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "./gganim_plot0073.png" "./gganim_plot0074.png" "./gganim_plot0075.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "./gganim_plot0076.png" "./gganim_plot0077.png" "./gganim_plot0078.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "./gganim_plot0079.png" "./gganim_plot0080.png" "./gganim_plot0081.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "./gganim_plot0082.png" "./gganim_plot0083.png" "./gganim_plot0084.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "./gganim_plot0085.png" "./gganim_plot0086.png" "./gganim_plot0087.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "./gganim_plot0088.png" "./gganim_plot0089.png" "./gganim_plot0090.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "./gganim_plot0091.png" "./gganim_plot0092.png" "./gganim_plot0093.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "./gganim_plot0094.png" "./gganim_plot0095.png" "./gganim_plot0096.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "./gganim_plot0097.png" "./gganim_plot0098.png" "./gganim_plot0099.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "./gganim_plot0100.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"frame_vars")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     frame nframes progress frame_time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1     100     0.01          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2     100     0.02         12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3     100     0.03         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4     100     0.04         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5     100     0.05         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6     100     0.06         60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       7     100     0.07         72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       8     100     0.08         84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       9     100     0.09         96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     10     100     0.10        108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     11     100     0.11        120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     12     100     0.12        132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     13     100     0.13        144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     14     100     0.14        156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     15     100     0.15        168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     16     100     0.16        180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     17     100     0.17        192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     18     100     0.18        204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     19     100     0.19        216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     20     100     0.20        228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     21     100     0.21        240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     22     100     0.22        252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     23     100     0.23        264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     24     100     0.24        276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     25     100     0.25        288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     26     100     0.26        300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     27     100     0.27        312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     28     100     0.28        324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     29     100     0.29        336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     30     100     0.30        348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     31     100     0.31        360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     32     100     0.32        372</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     33     100     0.33        384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     34     100     0.34        396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     35     100     0.35        408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     36     100     0.36        420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     37     100     0.37        432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     38     100     0.38        444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     39     100     0.39        456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     40     100     0.40        468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     41     100     0.41        480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     42     100     0.42        492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     43     100     0.43        504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     44     100     0.44        516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     45     100     0.45        528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     46     100     0.46        540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     47     100     0.47        552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     48     100     0.48        564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     49     100     0.49        576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     50     100     0.50        588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     51     100     0.51        600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     52     100     0.52        612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     53     100     0.53        624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     54     100     0.54        636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     55     100     0.55        648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     56     100     0.56        660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     57     100     0.57        672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     58     100     0.58        684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     59     100     0.59        696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     60     100     0.60        708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     61     100     0.61        720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     62     100     0.62        732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     63     100     0.63        744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     64     100     0.64        756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     65     100     0.65        768</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     66     100     0.66        780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     67     100     0.67        792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     68     100     0.68        804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     69     100     0.69        816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     70     100     0.70        828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     71     100     0.71        840</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     72     100     0.72        852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     73     100     0.73        864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     74     100     0.74        876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     75     100     0.75        888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     76     100     0.76        900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     77     100     0.77        912</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     78     100     0.78        924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     79     100     0.79        936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     80     100     0.80        948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     81     100     0.81        960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     82     100     0.82        972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     83     100     0.83        984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     84     100     0.84        996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     85     100     0.85       1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     86     100     0.86       1020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     87     100     0.87       1032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88     88     100     0.88       1044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     89     100     0.89       1056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90     90     100     0.90       1068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     91     100     0.91       1080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92     92     100     0.92       1092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     93     100     0.93       1104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94     94     100     0.94       1116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     95     100     0.95       1128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     96     100     0.96       1140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     97     100     0.97       1152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     98     100     0.98       1164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     99     100     0.99       1176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100   100     100     1.00       1188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         frame_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0001.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0002.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0003.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0004.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0005.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0006.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0007.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0008.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0009.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0010.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0011.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0012.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0013.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0014.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0015.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0016.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0017.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0018.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0019.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0020.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0021.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0022.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0023.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0024.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0025.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0026.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0027.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0028.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0029.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0030.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0031.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0032.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0033.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0034.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0035.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0036.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0037.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0038.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0039.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0040.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0041.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0042.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0043.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0044.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0045.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0046.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0047.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0048.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0049.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0050.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0051.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0052.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0053.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0054.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0055.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0056.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0057.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0058.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0059.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0060.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0061.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0062.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0063.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0064.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0065.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0066.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0067.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0068.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0069.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0070.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0071.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0072.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0073.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0074.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0075.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0076.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0077.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0078.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0079.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0080.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0081.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0082.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0083.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0084.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0085.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0086.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0087.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0088.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0089.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0090.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0091.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0092.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0093.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0094.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0095.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0096.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0097.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0098.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99  /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0099.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100 /tmp/Rtmpqk4sxT/23553835a7b2/gganim_plot0100.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lai</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>file_renderer failed to copy frames to the destination directory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "./gganim_plot0001.png" "./gganim_plot0002.png" "./gganim_plot0003.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "./gganim_plot0004.png" "./gganim_plot0005.png" "./gganim_plot0006.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "./gganim_plot0007.png" "./gganim_plot0008.png" "./gganim_plot0009.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "./gganim_plot0010.png" "./gganim_plot0011.png" "./gganim_plot0012.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "./gganim_plot0013.png" "./gganim_plot0014.png" "./gganim_plot0015.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "./gganim_plot0016.png" "./gganim_plot0017.png" "./gganim_plot0018.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "./gganim_plot0019.png" "./gganim_plot0020.png" "./gganim_plot0021.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "./gganim_plot0022.png" "./gganim_plot0023.png" "./gganim_plot0024.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "./gganim_plot0025.png" "./gganim_plot0026.png" "./gganim_plot0027.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "./gganim_plot0028.png" "./gganim_plot0029.png" "./gganim_plot0030.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "./gganim_plot0031.png" "./gganim_plot0032.png" "./gganim_plot0033.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "./gganim_plot0034.png" "./gganim_plot0035.png" "./gganim_plot0036.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "./gganim_plot0037.png" "./gganim_plot0038.png" "./gganim_plot0039.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "./gganim_plot0040.png" "./gganim_plot0041.png" "./gganim_plot0042.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "./gganim_plot0043.png" "./gganim_plot0044.png" "./gganim_plot0045.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "./gganim_plot0046.png" "./gganim_plot0047.png" "./gganim_plot0048.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "./gganim_plot0049.png" "./gganim_plot0050.png" "./gganim_plot0051.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "./gganim_plot0052.png" "./gganim_plot0053.png" "./gganim_plot0054.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "./gganim_plot0055.png" "./gganim_plot0056.png" "./gganim_plot0057.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "./gganim_plot0058.png" "./gganim_plot0059.png" "./gganim_plot0060.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "./gganim_plot0061.png" "./gganim_plot0062.png" "./gganim_plot0063.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "./gganim_plot0064.png" "./gganim_plot0065.png" "./gganim_plot0066.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "./gganim_plot0067.png" "./gganim_plot0068.png" "./gganim_plot0069.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "./gganim_plot0070.png" "./gganim_plot0071.png" "./gganim_plot0072.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "./gganim_plot0073.png" "./gganim_plot0074.png" "./gganim_plot0075.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "./gganim_plot0076.png" "./gganim_plot0077.png" "./gganim_plot0078.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "./gganim_plot0079.png" "./gganim_plot0080.png" "./gganim_plot0081.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "./gganim_plot0082.png" "./gganim_plot0083.png" "./gganim_plot0084.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "./gganim_plot0085.png" "./gganim_plot0086.png" "./gganim_plot0087.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "./gganim_plot0088.png" "./gganim_plot0089.png" "./gganim_plot0090.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "./gganim_plot0091.png" "./gganim_plot0092.png" "./gganim_plot0093.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "./gganim_plot0094.png" "./gganim_plot0095.png" "./gganim_plot0096.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "./gganim_plot0097.png" "./gganim_plot0098.png" "./gganim_plot0099.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "./gganim_plot0100.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"frame_vars")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     frame nframes progress frame_time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1     100     0.01          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       2     100     0.02         12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       3     100     0.03         24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       4     100     0.04         36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       5     100     0.05         48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       6     100     0.06         60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       7     100     0.07         72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       8     100     0.08         84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       9     100     0.09         96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     10     100     0.10        108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     11     100     0.11        120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     12     100     0.12        132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     13     100     0.13        144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     14     100     0.14        156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     15     100     0.15        168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     16     100     0.16        180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     17     100     0.17        192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     18     100     0.18        204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     19     100     0.19        216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     20     100     0.20        228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     21     100     0.21        240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     22     100     0.22        252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     23     100     0.23        264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     24     100     0.24        276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     25     100     0.25        288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     26     100     0.26        300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     27     100     0.27        312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     28     100     0.28        324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     29     100     0.29        336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     30     100     0.30        348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     31     100     0.31        360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     32     100     0.32        372</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     33     100     0.33        384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     34     100     0.34        396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     35     100     0.35        408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     36     100     0.36        420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     37     100     0.37        432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     38     100     0.38        444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     39     100     0.39        456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     40     100     0.40        468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     41     100     0.41        480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     42     100     0.42        492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     43     100     0.43        504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     44     100     0.44        516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     45     100     0.45        528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     46     100     0.46        540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     47     100     0.47        552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     48     100     0.48        564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     49     100     0.49        576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     50     100     0.50        588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     51     100     0.51        600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     52     100     0.52        612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     53     100     0.53        624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     54     100     0.54        636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     55     100     0.55        648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     56     100     0.56        660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     57     100     0.57        672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     58     100     0.58        684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     59     100     0.59        696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     60     100     0.60        708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     61     100     0.61        720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     62     100     0.62        732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     63     100     0.63        744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     64     100     0.64        756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     65     100     0.65        768</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     66     100     0.66        780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     67     100     0.67        792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     68     100     0.68        804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     69     100     0.69        816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     70     100     0.70        828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     71     100     0.71        840</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     72     100     0.72        852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     73     100     0.73        864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     74     100     0.74        876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     75     100     0.75        888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     76     100     0.76        900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     77     100     0.77        912</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     78     100     0.78        924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     79     100     0.79        936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     80     100     0.80        948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     81     100     0.81        960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     82     100     0.82        972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     83     100     0.83        984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     84     100     0.84        996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     85     100     0.85       1008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     86     100     0.86       1020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     87     100     0.87       1032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88     88     100     0.88       1044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     89     100     0.89       1056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90     90     100     0.90       1068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     91     100     0.91       1080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92     92     100     0.92       1092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     93     100     0.93       1104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94     94     100     0.94       1116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     95     100     0.95       1128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     96     100     0.96       1140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     97     100     0.97       1152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     98     100     0.98       1164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     99     100     0.99       1176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100   100     100     1.00       1188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         frame_source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0001.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0002.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0003.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0004.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0005.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0006.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0007.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0008.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0009.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0010.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0011.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0012.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0013.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0014.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0015.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0016.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0017.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0018.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0019.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0020.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0021.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0022.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0023.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0024.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0025.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0026.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0027.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0028.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0029.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0030.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0031.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0032.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0033.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0034.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0035.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0036.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0037.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0038.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0039.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0040.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0041.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0042.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0043.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0044.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0045.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0046.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0047.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0048.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0049.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0050.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0051.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0052.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0053.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0054.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0055.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0056.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0057.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0058.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0059.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0060.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0061.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0062.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0063.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0064.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0065.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0066.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0067.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0068.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0069.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0070.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0071.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0072.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0073.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0074.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0075.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0076.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0077.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0078.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0079.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0080.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0081.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0082.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0083.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0084.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0085.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0086.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0087.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0088.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0089.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0090.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0091.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0092.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0093.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0094.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0095.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0096.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0097.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0098.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99  /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0099.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100 /tmp/Rtmpqk4sxT/23554283653f/gganim_plot0100.png</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
