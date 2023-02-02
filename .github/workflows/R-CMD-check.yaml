@@ -9,10 +9,12 @@ on:
     branches:
       - main
       - dev
+      - CRAN
   pull_request:
     branches:
       - main
       - dev
+      - CRAN
       
 name: R-CMD-check
 
