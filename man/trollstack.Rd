@@ -37,6 +37,9 @@ forest,lidar).}
 \item{las}{list. list. List with simulated point cloud in LAS from lidar
 parameters (with lidar option). The LAS format correspond to lidr::LAS.}
 }
+\value{
+An empty S4 \linkS4class{trollstack} class object.
+}
 \description{
 This is an S4 class to represent TROLL stack.
 }

@@ -29,6 +29,8 @@ setClass(
 #' @param las list. list. List with simulated point cloud in LAS from lidar
 #'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
 #'
+#' @return An empty S4 \linkS4class{trollstack} class object.
+#' 
 #' @export
 #' @rdname trollstack
 trollstack <- function(name = character(),

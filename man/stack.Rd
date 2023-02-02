@@ -60,7 +60,7 @@ A trollstack object.
 Run a TROLL stack.
 }
 \examples{
-\dontrun{
+\donttest{
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
