@@ -52,7 +52,7 @@ A list of gganimate objects corresponding to chosen outputs.
 Make a gif from a TROLL simulation
 }
 \examples{
-\donttest{
+\dontrun{
 data("TROLLv3_species")
 data("TROLLv3_climatedaytime12")
 data("TROLLv3_daytimevar")
