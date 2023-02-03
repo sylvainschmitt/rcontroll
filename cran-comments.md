@@ -2,10 +2,11 @@
 
 This is a resubmission. In this version I have:
 
+* Written software names single quotes
 * Omitted the redundant "Package for" at the start of the title
 * Extended the description of the package in the field description to one paragraph
 * Added \value to pipe.Rd, trollsim.Rd and trollstack.Rd
-* Replaced \dontrun by \donttest in troll.Rd, and stack.Rd
+* Replaced \dontrun by \donttest in troll.Rd
 
 I have not added a reference for the method because we are waiting for CRAN acceptance 
 before submitting it to Methods in Ecology and Evolution. 

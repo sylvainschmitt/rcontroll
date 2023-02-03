@@ -1,5 +1,9 @@
 # rcontroll 0.1.0.9062
 
+- fixes after CRAN 3rd submission (see cran-comments.md)
+
+# rcontroll 0.1.0.9062
+
 -   fixes after CRAN 2nd submission (see cran-comments.md)
 
 # rcontroll 0.1.0.9064

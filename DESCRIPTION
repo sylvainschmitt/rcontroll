@@ -1,6 +1,6 @@
 Package: rcontroll
 Type: Package
-Title: Individual-Based Forest Growth Simulator TROLL
+Title: Individual-Based Forest Growth Simulator 'TROLL'
 Version: 0.1.0
 Authors@R: c(
     person("Sylvain", "Schmitt", email="sylvain.m.schmitt@gmail.com", role=c("aut", "cre"), comment = c(ORCID = "0000-0001-7759-7106")),
@@ -13,13 +13,13 @@ Maintainer: Sylvain Schmitt <sylvain.m.schmitt@gmail.com>
 URL: https://github.com/sylvainschmitt/rcontroll,
     https://sylvainschmitt.github.io/rcontroll/
 BugReports: https://github.com/sylvainschmitt/rcontroll/issues
-Description: TROLL is coded in C++ and it typically simulates hundreds of
-    thousands of individuals over hundreds of years. The rcontroll R package 
-    is a wrapper of TROLL. rcontroll includes functions that generate inputs 
+Description: 'TROLL' is coded in C++ and it typically simulates hundreds of
+    thousands of individuals over hundreds of years. The 'rcontroll' R package 
+    is a wrapper of 'TROLL'. 'rcontroll' includes functions that generate inputs 
     for simulations and run simulations. Finally, it is possible to analyse 
-    the TROLL outputs through tables, figures, and maps taking advantage of 
-    other R visualisation packages. rcontroll also offers the possibility to 
-    generate a virtual LIDAR point cloud that corresponds to a snapshot of 
+    the 'TROLL' outputs through tables, figures, and maps taking advantage of 
+    other R visualisation packages. 'rcontroll' also offers the possibility to 
+    generate a virtual LiDAR point cloud that corresponds to a snapshot of 
     the simulated forest.
 License: GPL-3
 LazyData: TRUE
