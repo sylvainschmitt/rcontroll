@@ -3,6 +3,8 @@
 <!-- sticker("~/Téléchargements/TROLL.png", package="rcontroll", p_size=20, s_x=1, s_y = 0.85, s_width=.6, p_y = 1.6, filename="inst/figures/logo.png", h_color = "darkblue", h_fill = "white", p_color = "black") -->
 
 [![R-CMD-check](https://github.com/sylvainschmitt/rcontroll/workflows/R-CMD-check/badge.svg)](https://github.com/sylvainschmitt/rcontroll/actions)
+[![CRAN](https://www.r-pkg.org/badges/version/rcontroll)](https://CRAN.R-project.org/package=rcontroll)
+[![Downloads](http://cranlogs.r-pkg.org/badges/rcontroll?color=brightgreen)](http://www.r-pkg.org/pkg/rcontroll)
 [![codecov](https://codecov.io/gh/sylvainschmitt/rcontroll/branch/main/graph/badge.svg?token=CGZU65KGN7)](https://codecov.io/gh/sylvainschmitt/rcontroll)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
