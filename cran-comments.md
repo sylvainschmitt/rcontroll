@@ -17,6 +17,19 @@ and included everyone as authors.
 Indeed, J. Chave, I. Maréchaux and F. Fischer developed the C++ code in src,
 and S. Schmitt and G. Salzet developed the R code.
 
+\dontrun is only used for the trollCpp, load_output, load_stack and autogif functions 
+due to the use of external files or additional software.
+But we have used \donttest in the troll and stack functions 
+which are executable in more than 5 seconds.
+
+The functions in the examples and vignettes do not write to the users' folders 
+but only to the temporary directories.
+The last chunk of the climate vignette uses the write_tsv function 
+but is not evaluated and is only an example for a user who would like to save the resulting climate data.
+
+All examples and vignettes used only one core 
+except for the stack function example, and the lidar and workflow vignettes which use no more than two cores.
+
 ## Test environments 
 
 * local, Ubuntu 20.04.5 LTS, R 3.6.3
