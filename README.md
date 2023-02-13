@@ -7,6 +7,7 @@
 [![Downloads](http://cranlogs.r-pkg.org/badges/rcontroll?color=brightgreen)](http://www.r-pkg.org/pkg/rcontroll)
 [![codecov](https://codecov.io/gh/sylvainschmitt/rcontroll/branch/main/graph/badge.svg?token=CGZU65KGN7)](https://codecov.io/gh/sylvainschmitt/rcontroll)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![DOI](https://zenodo.org/badge/382141143.svg)](https://zenodo.org/badge/latestdoi/382141143)
 
 *rcontroll* integrates the individual-based  and spatially-explicit *TROLL* model to simulate forest ecosystem and species dynamics forward in time.
 *rcontroll* provides user-friendly functions to set up and analyse simulations with varying community compositions, ecological parameters, and climate conditions.
