@@ -1,6 +1,6 @@
 #' @include trollsim.R
 #' @importFrom readr read_tsv cols read_file
-#' @importFrom dplyr bind_rows n filter
+#' @importFrom dplyr bind_rows n filter left_join starts_with
 #' @importFrom reshape2 melt dcast
 #' @importFrom lidR readLAS LAS
 NULL
@@ -39,7 +39,8 @@ load_output <- function(name,
       global = "global",
       species = "species",
       climate = "climate",
-      daily = "daily"
+      daily = "daily",
+      pedology = "pedology"
     ),
     function(x) {
       read_tsv(file.path(path, paste0(name, paste0("_input_", x, ".txt"))),
@@ -47,17 +48,22 @@ load_output <- function(name,
       )
     }
   )
-  lidar_file <- file.path(path, paste0(name, paste0("_input_lidar.txt")))
-  inputs$lidar <- data.frame()
-  if (file.exists(lidar_file)) {
-    inputs$lidar <- read_tsv(lidar_file, col_types = cols())
-  }
   forest_file <- file.path(path, paste0(name, paste0("_input_forest.txt")))
   inputs$forest <- data.frame()
   if (file.exists(forest_file)) {
     inputs$forest <- read_tsv(forest_file, col_types = cols())
   }
-
+  soil_file <- file.path(path, paste0(name, paste0("_input_soil.txt")))
+  inputs$soil <- data.frame()
+  if (file.exists(soil_file)) {
+    inputs$soil <- read_tsv(soil_file, col_types = cols())
+  }
+  lidar_file <- file.path(path, paste0(name, paste0("_input_lidar.txt")))
+  inputs$lidar <- data.frame()
+  if (file.exists(lidar_file)) {
+    inputs$lidar <- read_tsv(lidar_file, col_types = cols())
+  }
+  
   # @parameters
   parameters <- inputs$global$value
   names(parameters) <- inputs$global$param
@@ -80,13 +86,43 @@ load_output <- function(name,
     forest <- final_pattern
   }
 
+  # @soil
+  soil_properties <- read_tsv(file.path(path,
+                                        paste0(name, "_0_", "soilproperties", ".txt")),
+                              col_types = cols()
+  )
+  swc <- read_tsv(file.path(path,
+                            paste0(name, "_0_", "final_SWC3D", ".txt")),
+                   col_names = c("dcell", 1:nrow(inputs$pedology)),
+                   col_types = cols()
+  ) %>% melt("dcell", variable.name = "layer", value.name = "swc") %>% 
+    mutate(layer = as.numeric(layer)-1)
+  soil <- left_join(swc, soil_properties, by = "layer")
+  
   # @ecosystem
   ecosystem <- read_tsv(file.path(path,
                                   paste0(name, "_0_", "sumstats", ".txt")),
-    col_types = cols()
+                        col_types = cols()
   )
+  lai <- read_tsv(file.path(path,
+                            paste0(name, "_0_", "LAIdynamics", ".txt")),
+                  col_types = cols()
+  )
+  ecosystem_full <- left_join(ecosystem, lai, by = "iter")
+  roots <- read_tsv(file.path(path,
+                              paste0(name, "_0_", "phi_root", ".txt")),
+                    col_types = cols()
+  )
+  ecosystem_full <- left_join(ecosystem_full, roots, by = "iter")
+  water <- read_tsv(file.path(path,
+                              paste0(name, "_0_", "water_balance", ".txt")),
+                    col_types = cols()
+  ) %>% select(-starts_with("SW"))
+  if(nrow(water) > 0) {
+    ecosystem_full <- left_join(ecosystem_full, water, by = "iter")
+  }
   if (!is.null(thin)) {
-    ecosystem <- ecosystem %>%
+    ecosystem_full <- ecosystem_full %>%
       filter(iter %in% thin)
   }
 
@@ -118,11 +154,13 @@ load_output <- function(name,
     trollsim(
       name = name,
       path = path,
+      mem = TRUE,
       parameters = parameters,
       inputs = inputs,
       log = log,
       forest = forest,
-      ecosystem = ecosystem,
+      soil = soil,
+      ecosystem = ecosystem_full,
       species = species,
       las = las
     )

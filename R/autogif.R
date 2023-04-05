@@ -56,6 +56,8 @@ autogif <- function(name = NULL,
                     verbose = TRUE,
                     overwrite = TRUE,
                     thin = NULL) {
+  stop("autogif is currently not available in TROLL V4.")
+  
   if (!all(variables %in% c("species", "height_ct",
                             "npp_gpp", "height", "lai"))) {
     stop("No valid autogif available for: ", variables,

@@ -7,8 +7,7 @@
 #' @param rows num. Number of rows.
 #' @param HEIGHT num. Vertical extent of simulation.
 #' @param length_dcell num. Linear size of a dcell.
-#' @param nbiter num. Total number of timesteps.
-#' @param iterperyear num. Number of iterations per year.
+#' @param nbiter num. Total number of timesteps (in days so X ans = X*365).
 #' @param NV num. Vertical number of cells (per m).
 #' @param NH num. Horizontal number of cells (per m).
 #' @param nbout num. Number of outputs.
@@ -22,6 +21,10 @@
 #' @param absorptance_leaves num. Absorptance of individual leaves.
 #' @param theta num. Parameter of the Farquhar model.
 #' @param g1 num. Parameter g1 of Medlyn et al stomatal conductance model.
+#' @param g0 num. Minimum leaf conductance (mol m-2 s-1).
+#' @param pheno_thresh num. Threshold for change in old leaf shedding rate, in
+#'   proportion of tugrog loss point (TLP)
+#' @param pheno_delta num. Amplitude of change in old leaf shedding rate.
 #' @param vC num. Variance of the flexion moment.
 #' @param DBH0 num. Initial diameter at breast height (m).
 #' @param H0 num. Initial height (m).
@@ -66,6 +69,11 @@
 #' @param m num. Minimal death rate.
 #' @param m1 num. Slope of death rate m1.
 #' @param Cair num. Atmospheric CO2 concentration in micromol/mol.
+#' @param PRESS num. Atmospheric pressure in kPa.
+#' @param SOIL_LAYER_WEIGHT num. Soil layer weights: relative biomass,
+#'   conductance, max transpiration (0,1, 2)
+#' @param WATER_RETENTION_CURVE num. Water retention curve (Brooks&Corey: 0; Van
+#'   Genuchten Mualem: 1)
 #' @param LL_parameterization num. Leaf lifespan parameterizations: Reich
 #'   empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2).
 #' @param LA_regulation num. Dynamic LA regulation: off, 1.0, 0.75, or 0.5
@@ -79,13 +87,14 @@
 #'   topmost value of PPFD and GPP, instead of looping within the crown (0,1).
 #' @param BASICTREEFALL num. If defined: treefall is a source of tree death
 #'   (0,1).
-#' @param SEEDTRADEOFF num. if defined: the number of seeds produced is
+#' @param SEEDTRADEOFF num. If defined: the number of seeds produced is
 #'   determined by NPP allocated to reproduction and seed mass, otherwise the
 #'   number of seeds is fixed (0,1).
 #' @param CROWN_MM num. Michaelis Menten allometry for crowns instead of power
 #'   law, parameters have to be changed in other input sheets accordingly (0,1).
-#' @param OUTPUT_extended num. extended set of ouput files (0,1).
-#' @param extent_visual num. extent for visualization output. Unactivated when
+#' @param OUTPUT_extended num. Extended set of ouput files (0,1).
+#' @param OUTPUT_inventory num. Inventory set of ouput files(0,1).
+#' @param extent_visual num. Extent for visualization output. Unactivated when
 #'   equal 0.
 #'
 #' @return A data frame of global parameters.
@@ -95,13 +104,12 @@
 #' @examples
 #'
 #' generate_parameters(nbiter = 12)
-#'
+#' 
 generate_parameters <- function(cols = 200,
                                 rows = 200,
                                 HEIGHT = 70,
                                 length_dcell = 25,
-                                nbiter,
-                                iterperyear = 12,
+                                nbiter = 365,
                                 NV = 1,
                                 NH = 1,
                                 nbout = 4,
@@ -113,6 +121,9 @@ generate_parameters <- function(cols = 200,
                                 absorptance_leaves = 0.9,
                                 theta = 0.7,
                                 g1 = 3.77,
+                                g0 = 5.0,
+                                pheno_thresh = 0.2,
+                                pheno_delta = 0.2,
                                 vC = 0.021,
                                 DBH0 = 0.005,
                                 H0 = 0.950,
@@ -128,18 +139,18 @@ generate_parameters <- function(cols = 200,
                                 falloccanopy = 0.25,
                                 Cseedrain = 50000,
                                 nbs0 = 10,
-                                sigma_height = 0,
-                                sigma_CR = 0,
-                                sigma_CD = 0,
-                                sigma_P = 0,
-                                sigma_N = 0,
-                                sigma_LMA = 0,
-                                sigma_wsg = 0,
-                                sigma_dbhmax = 0,
-                                corr_CR_height = 0,
-                                corr_N_P = 0,
-                                corr_N_LMA = 0,
-                                corr_P_LMA = 0,
+                                sigma_height = 0.19,
+                                sigma_CR = 0.29,
+                                sigma_CD = 0.0,
+                                sigma_P = 0.24,
+                                sigma_N = 0.12,
+                                sigma_LMA = 0.24,
+                                sigma_wsg = 0.06,
+                                sigma_dbhmax = 0.05,
+                                corr_CR_height = 0.0,
+                                corr_N_P = 0.65,
+                                corr_N_LMA = -0.43,
+                                corr_P_LMA = -0.39,
                                 leafdem_resolution = 30,
                                 p_tfsecondary = 1,
                                 hurt_decay = 0,
@@ -147,6 +158,9 @@ generate_parameters <- function(cols = 200,
                                 m = 0.013,
                                 m1 = 0.013,
                                 Cair = 400,
+                                PRESS = 101.0,
+                                SOIL_LAYER_WEIGHT = 2,
+                                WATER_RETENTION_CURVE = 1,
                                 LL_parameterization = 1,
                                 LA_regulation = 2,
                                 sapwood = 1,
@@ -156,23 +170,26 @@ generate_parameters <- function(cols = 200,
                                 BASICTREEFALL = 1,
                                 SEEDTRADEOFF = 0,
                                 CROWN_MM = 0,
-                                OUTPUT_extended = 1,
+                                OUTPUT_extended = 0,
+                                OUTPUT_inventory = 1,
                                 extent_visual = 0) {
   # check args
   if (!all(unlist(lapply(
     list(
-      cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
+      cols, rows, HEIGHT, length_dcell, nbiter,
       NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
-      absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min,
+      absorptance_leaves, theta, g1, g0, pheno_thresh, pheno_delta,
+      vC, DBH0, H0, CR_min,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
       sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
       corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
       leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction,
-      m, m1, Cair, LL_parameterization, LA_regulation,
+      m, m1, Cair, PRESS, SOIL_LAYER_WEIGHT, WATER_RETENTION_CURVE,
+      LL_parameterization, LA_regulation,
       sapwood, seedsadditional,
       NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-      CROWN_MM, OUTPUT_extended, extent_visual
+      CROWN_MM, OUTPUT_extended, OUTPUT_inventory, extent_visual
     ),
     class
   )) == "numeric")) {
@@ -188,9 +205,10 @@ generate_parameters <- function(cols = 200,
   
   data.frame(
     param = c("cols", "rows", "HEIGHT", "length_dcell",
-              "nbiter", "iterperyear", "NV", "NH", "nbout",
+              "nbiter", "NV", "NH", "nbout",
               "nbspp", "SWtoPPFD", "p_nonvert", "klight", "phi",
-              "absorptance_leaves", "theta", "g1", "vC", "DBH0",
+              "absorptance_leaves", "theta", "g1", "g0", 
+              "pheno_thresh", "pheno_delta", "vC", "DBH0",
               "H0", "CR_min", "CR_a", "CR_b", "CD_a", "CD_b",
               "CD0", "shape_crown", "dens", "fallocwood", 
               "falloccanopy", "Cseedrain", "nbs0", "sigma_height",
@@ -198,29 +216,32 @@ generate_parameters <- function(cols = 200,
               "sigma_LMA", "sigma_wsg", "sigma_dbhmax", "corr_CR_height", 
               "corr_N_P", "corr_N_LMA", "corr_P_LMA", "leafdem_resolution", 
               "p_tfsecondary", "hurt_decay", "crown_gap_fraction", 
-              "m", "m1", "Cair", "_LL_parameterization", 
+              "m", "m1", "Cair", "PRESS", "_SOIL_LAYER_WEIGHT", 
+              "_WATER_RETENTION_CURVE", "_LL_parameterization", 
               "_LA_regulation", "_sapwood", "_seedsadditional",
               "_NONRANDOM", "Rseed","_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
-              "_CROWN_MM", "_OUTPUT_extended", "extent_visual"),
-    value = c(cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
+              "_CROWN_MM", "_OUTPUT_extended", "_OUTPUT_inventory",
+              "extent_visual"),
+    value = c(cols, rows, HEIGHT, length_dcell, nbiter,
               NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
-              absorptance_leaves, theta, g1, vC, DBH0, H0, CR_min, 
+              absorptance_leaves, theta, g1, g0, 
+              pheno_thresh, pheno_delta, vC, DBH0, H0, CR_min, 
               CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
               falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
               sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
               corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
               leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
-              m, m1, Cair, LL_parameterization, LA_regulation, 
+              m, m1, Cair, PRESS, SOIL_LAYER_WEIGHT, WATER_RETENTION_CURVE,
+              LL_parameterization, LA_regulation, 
               sapwood, seedsadditional,
               NONRANDOM,Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-              CROWN_MM, OUTPUT_extended, extent_visual),
+              CROWN_MM, OUTPUT_extended, OUTPUT_inventory, extent_visual),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",
       "/* vertical extent of simulation */",
       "/* linear size of a dcell */",
       "/* total nb of timesteps */",
-      "/* number of iteration per year */",
       "/* vertical nb of cells (nb per m) */",
       "/* horizontal nb of cells (nb per m) */",
       "/* Number of outputs */",
@@ -228,10 +249,13 @@ generate_parameters <- function(cols = 200,
       "/* convert short wave irradiance to PAR photons (cf. code) */",
       "/* light incidence param (diff through turbid medium) */",
       "/* light attenuation in the canopy Beer-Lambert */",
-      "/*  quantum yield (in micromol C/micromol photon) */",
+      "/* quantum yield (in micromol C/micromol photon) */",
       "/* absorptance of individual leaves */",
       "/* parameter of the Farquhar model */",
       "/* parameter g1 of Medlyn et al s stomatal conductance model */",
+      "/* minimum leaf conductance (mol m-2 s-1) */",
+      "/* threshold for change in old leaf shedding rate, in proportion of TLP */",
+      "/* amplitude of change in old leaf shedding rate */",
       "/* variance of the flexion moment */",
       "/* initial dbh (m) */",
       "/* initial height (m) */",
@@ -266,6 +290,9 @@ generate_parameters <- function(cols = 200,
       "/* minimal death rate */",
       "/* m1 (slope of death rate) */",
       "/* atmospheric CO2 concentration in micromol/mol */",
+      "/* atmospheric pressure in kPa */",
+      "/* soil layer weights: relative biomass, conductance, max transpiration (0,1, 2) */",
+      "/* water retention curve (Brooks&Corey: 0; Van Genuchten Mualem: 1) */",
       "/* LL parameterizations: Reich empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */",
       "/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */",
       "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */",
@@ -277,6 +304,7 @@ generate_parameters <- function(cols = 200,
       "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */",
       "/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */",
       "/* extended set of ouput files */",
+      "/* inventory set of ouput files */",
       "/* extent for visualization output *"
     )
   )

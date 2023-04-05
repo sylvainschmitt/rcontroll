@@ -11,11 +11,15 @@ troll(
   species,
   climate,
   daily,
-  lidar = NULL,
+  pedology,
   forest = NULL,
+  soil = NULL,
+  lidar = NULL,
   verbose = TRUE,
+  load = TRUE,
   overwrite = TRUE,
-  thin = NULL
+  thin = NULL,
+  date = NULL
 )
 }
 \arguments{
@@ -32,19 +36,29 @@ corresponding to a simulation in memory without saved intermediary files.}
 
 \item{daily}{df. Daily variation parameters.}
 
-\item{lidar}{df. Lidar simulation parameters, if null no computed
-(default NULL).}
+\item{pedology}{df. Daily variation parameters.}
 
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
 
+\item{soil}{df. TROLL with soil input, if null starts from an empty grid
+(default NULL).}
+
+\item{lidar}{df. Lidar simulation parameters, if null no computed (default
+NULL).}
+
 \item{verbose}{bool. Show TROLL outputs in the console.}
+
+\item{load}{bool. TROLL outputs are loaded in R memory, if not only the path
+to the outputs is kept.}
 
 \item{overwrite}{bool. Overwrite previous outputs.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no
-thinning.}
+kept to reduce output size, default is NULL and corresponds to no thinning.}
+
+\item{date}{char. Starting date as YYYY/MM/DD, default NULL will result in
+non-dated outputs.}
 }
 \value{
 A trollsim object.
@@ -54,18 +68,21 @@ Run a TROLL simulation.
 }
 \examples{
 \donttest{
-data("TROLLv3_species")
-data("TROLLv3_climatedaytime12")
-data("TROLLv3_daytimevar")
-troll(
+data("TROLLv4_input")
+data("TROLLv4_species")
+data("TROLLv4_climate")
+data("TROLLv4_dailyvar")
+data("TROLLv4_pedology")
+sim <- troll(
   name = "test",
-  global = generate_parameters(
-    cols = 100, rows = 100,
-    iterperyear = 12, nbiter = 12 * 1
-  ),
-  species = TROLLv3_species,
-  climate = TROLLv3_climatedaytime12,
-  daily = TROLLv3_daytimevar
+  path = getwd(),
+  global = generate_parameters(nbiter = 10),
+  species = TROLLv4_species,
+  climate = TROLLv4_climate,
+  daily = TROLLv4_dailyvar,
+  pedology = TROLLv4_pedology,
+  load = TRUE,
+  date = "2004/01/01"
 )
 }
 

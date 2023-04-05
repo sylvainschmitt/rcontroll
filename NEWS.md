@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9001
+
+- TROLLv4 integration & memory optimization, stack to check, suspect an error in generate_parameters
+
 # rcontroll 0.1.0.9062
 
 - fixes after CRAN 3rd submission (see cran-comments.md)

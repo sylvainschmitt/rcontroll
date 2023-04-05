@@ -12,12 +12,16 @@ stack(
   species,
   climate,
   daily,
-  lidar = NULL,
+  pedology,
   forest = NULL,
+  soil = NULL,
+  lidar = NULL,
   verbose = TRUE,
+  load = TRUE,
   cores = NULL,
   overwrite = TRUE,
-  thin = NULL
+  thin = NULL,
+  date = NULL
 )
 }
 \arguments{
@@ -36,13 +40,21 @@ corresponding to a simulation in memory without saved intermediary files.}
 
 \item{daily}{df. Daily variation parameters.}
 
-\item{lidar}{df. Lidar simulation parameters, if null no computed
-(default NULL).}
+\item{pedology}{df. Daily variation parameters.}
 
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
 
+\item{soil}{df. TROLL with soil input, if null starts from an empty grid
+(default NULL).}
+
+\item{lidar}{df. Lidar simulation parameters, if null no computed (default
+NULL).}
+
 \item{verbose}{bool. Show TROLL outputs in the console.}
+
+\item{load}{bool. TROLL outputs are loaded in R memory, if not only the path
+to the outputs is kept.}
 
 \item{cores}{int. Number of cores for parallelization, if NULL available
 cores - 1 (default NULL).}
@@ -52,6 +64,9 @@ cores - 1 (default NULL).}
 \item{thin}{int. Vector of integers corresponding to the iterations to be
 kept to reduce output size, default is NULL and corresponds to no
 thinning.}
+
+\item{date}{char. Starting date as YYYY/MM/DD, default NULL will result in
+non-dated outputs.}
 }
 \value{
 A trollstack object.
@@ -61,27 +76,27 @@ Run a TROLL stack.
 }
 \examples{
 \dontrun{
-data("TROLLv3_species")
-data("TROLLv3_climatedaytime12")
-data("TROLLv3_daytimevar")
-data("TROLLv3_output")
-TROLLv3_input_stack <- generate_parameters(
-  cols = 100, rows = 100,
-  iterperyear = 12, nbiter = 12 * 1
-) \%>\%
+data("TROLLv4_input")
+data("TROLLv4_species")
+data("TROLLv4_climate")
+data("TROLLv4_dailyvar")
+data("TROLLv4_pedology")
+TROLLv4_input_stack <- generate_parameters(nbiter = 10) \%>\%
   mutate(simulation = list(c("seed50000", "seed500"))) \%>\%
   unnest(simulation)
-TROLLv3_input_stack[62, 2] <- 500 # Cseedrain
+TROLLv4_input_stack[65, 2] <- 500 # Cseedrain
 stack(
   name = "teststack",
   simulations = c("seed50000", "seed500"),
-  global = TROLLv3_input_stack,
-  species = TROLLv3_species,
-  climate = TROLLv3_climatedaytime12,
-  daily = TROLLv3_daytimevar,
-  verbose = F,
-  cores = 2,
-  thin = c(1, 5, 10)
+  path = getwd(),
+  global = TROLLv4_input_stack,
+  species = TROLLv4_species,
+  climate = TROLLv4_climate,
+  daily = TROLLv4_dailyvar,
+  pedology = TROLLv4_pedology,
+  load = TRUE,
+  date = "2004/01/01",
+  cores = 2
 )
 }
 

@@ -25,6 +25,7 @@ setMethod("print", "trollsim", function(x, ...) {
   cat("Object of class :", class(x)[1], "\n")
   cat("Name :", x@name, "\n")
   cat("Path :", x@path, "\n")
+  cat("In memory :", x@mem, "\n")
   if (inherits(x, "trollstack")) {
     cat("Number of simulations :",
         length(unique(x@inputs$global$simulation)), "\n")
@@ -42,8 +43,6 @@ setMethod("print", "trollsim", function(x, ...) {
     "x", x@parameters["rows"], "\n"
   )
   cat("Number of iterations : ", x@parameters["nbiter"], "\n")
-  cat("Duration of timestep : ",
-      1 / x@parameters["iterperyear"] * 365, "days \n")
   cat("Number of Species    : ",
       length(unique(x@inputs$species$s_name)), "\n\n")
 })

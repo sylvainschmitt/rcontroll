@@ -9,8 +9,7 @@ generate_parameters(
   rows = 200,
   HEIGHT = 70,
   length_dcell = 25,
-  nbiter,
-  iterperyear = 12,
+  nbiter = 365,
   NV = 1,
   NH = 1,
   nbout = 4,
@@ -22,6 +21,9 @@ generate_parameters(
   absorptance_leaves = 0.9,
   theta = 0.7,
   g1 = 3.77,
+  g0 = 5,
+  pheno_thresh = 0.2,
+  pheno_delta = 0.2,
   vC = 0.021,
   DBH0 = 0.005,
   H0 = 0.95,
@@ -37,18 +39,18 @@ generate_parameters(
   falloccanopy = 0.25,
   Cseedrain = 50000,
   nbs0 = 10,
-  sigma_height = 0,
-  sigma_CR = 0,
+  sigma_height = 0.19,
+  sigma_CR = 0.29,
   sigma_CD = 0,
-  sigma_P = 0,
-  sigma_N = 0,
-  sigma_LMA = 0,
-  sigma_wsg = 0,
-  sigma_dbhmax = 0,
+  sigma_P = 0.24,
+  sigma_N = 0.12,
+  sigma_LMA = 0.24,
+  sigma_wsg = 0.06,
+  sigma_dbhmax = 0.05,
   corr_CR_height = 0,
-  corr_N_P = 0,
-  corr_N_LMA = 0,
-  corr_P_LMA = 0,
+  corr_N_P = 0.65,
+  corr_N_LMA = -0.43,
+  corr_P_LMA = -0.39,
   leafdem_resolution = 30,
   p_tfsecondary = 1,
   hurt_decay = 0,
@@ -56,6 +58,9 @@ generate_parameters(
   m = 0.013,
   m1 = 0.013,
   Cair = 400,
+  PRESS = 101,
+  SOIL_LAYER_WEIGHT = 2,
+  WATER_RETENTION_CURVE = 1,
   LL_parameterization = 1,
   LA_regulation = 2,
   sapwood = 1,
@@ -65,7 +70,8 @@ generate_parameters(
   BASICTREEFALL = 1,
   SEEDTRADEOFF = 0,
   CROWN_MM = 0,
-  OUTPUT_extended = 1,
+  OUTPUT_extended = 0,
+  OUTPUT_inventory = 1,
   extent_visual = 0
 )
 }
@@ -78,9 +84,7 @@ generate_parameters(
 
 \item{length_dcell}{num. Linear size of a dcell.}
 
-\item{nbiter}{num. Total number of timesteps.}
-
-\item{iterperyear}{num. Number of iterations per year.}
+\item{nbiter}{num. Total number of timesteps (in days so X ans = X*365).}
 
 \item{NV}{num. Vertical number of cells (per m).}
 
@@ -105,6 +109,13 @@ law.}
 \item{theta}{num. Parameter of the Farquhar model.}
 
 \item{g1}{num. Parameter g1 of Medlyn et al stomatal conductance model.}
+
+\item{g0}{num. Minimum leaf conductance (mol m-2 s-1).}
+
+\item{pheno_thresh}{num. Threshold for change in old leaf shedding rate, in
+proportion of tugrog loss point (TLP)}
+
+\item{pheno_delta}{num. Amplitude of change in old leaf shedding rate.}
 
 \item{vC}{num. Variance of the flexion moment.}
 
@@ -184,6 +195,14 @@ leaf mass per area}
 
 \item{Cair}{num. Atmospheric CO2 concentration in micromol/mol.}
 
+\item{PRESS}{num. Atmospheric pressure in kPa.}
+
+\item{SOIL_LAYER_WEIGHT}{num. Soil layer weights: relative biomass,
+conductance, max transpiration (0,1, 2)}
+
+\item{WATER_RETENTION_CURVE}{num. Water retention curve (Brooks&Corey: 0; Van
+Genuchten Mualem: 1)}
+
 \item{LL_parameterization}{num. Leaf lifespan parameterizations: Reich
 empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2).}
 
@@ -204,16 +223,18 @@ topmost value of PPFD and GPP, instead of looping within the crown (0,1).}
 \item{BASICTREEFALL}{num. If defined: treefall is a source of tree death
 (0,1).}
 
-\item{SEEDTRADEOFF}{num. if defined: the number of seeds produced is
+\item{SEEDTRADEOFF}{num. If defined: the number of seeds produced is
 determined by NPP allocated to reproduction and seed mass, otherwise the
 number of seeds is fixed (0,1).}
 
 \item{CROWN_MM}{num. Michaelis Menten allometry for crowns instead of power
 law, parameters have to be changed in other input sheets accordingly (0,1).}
 
-\item{OUTPUT_extended}{num. extended set of ouput files (0,1).}
+\item{OUTPUT_extended}{num. Extended set of ouput files (0,1).}
 
-\item{extent_visual}{num. extent for visualization output. Unactivated when
+\item{OUTPUT_inventory}{num. Inventory set of ouput files(0,1).}
+
+\item{extent_visual}{num. Extent for visualization output. Unactivated when
 equal 0.}
 }
 \value{

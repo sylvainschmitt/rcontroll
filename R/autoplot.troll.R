@@ -60,6 +60,15 @@ setMethod("autoplot", "trollsim", function(object,
       "initial" = min(object@forest$iter)
     )
   }
+  
+  if(!("date" %in% names(object@ecosystem)) || 
+     !("date" %in% names(object@species))) {
+    object <- date_sim(object, "0000/01/01")
+  }
+  if(!inherits(object@ecosystem$date, "Date") || 
+     !inherits(object@species$date, "Date")) {
+    object <- date_sim(object, "0000/01/01")
+  } # initializing from year 0 is no date given
 
   # temporal
   if (what == "temporal") {
@@ -99,7 +108,7 @@ setMethod("autoplot", "trollsim", function(object,
       tab <- object@species
     }
     # iter
-    if (is.null(species)) {
+    if (is.null(iter)) {
       iters <- unique(object@ecosystem$iter)
     } else {
       iters <- unique(object@species$iter)
@@ -119,9 +128,9 @@ setMethod("autoplot", "trollsim", function(object,
       tab$simulation <- "sim"
     }
     if (is.null(species)) {
-      tab <- melt(tab, c("iter", "simulation"))
+      tab <- melt(tab, c("iter", "date", "simulation"))
     } else {
-      tab <- melt(tab, c("iter", "species", "simulation")) %>%
+      tab <- melt(tab, c("iter", "date", "species", "simulation")) %>%
         filter(species %in% spnames) %>%
         mutate(species = gsub("_", " ", species))
     }
@@ -129,9 +138,9 @@ setMethod("autoplot", "trollsim", function(object,
       mutate(variable = .get_units(as.character(variable)))
     # prep graph
     if (is.null(species)) {
-      g <- ggplot(tab, aes(x = iter, y = value))
+      g <- ggplot(tab, aes(x = date, y = value))
     } else {
-      g <- ggplot(tab, aes(x = iter, y = value, color = species))
+      g <- ggplot(tab, aes(x = date, y = value, color = species))
     }
     g <- g +
       geom_line() +

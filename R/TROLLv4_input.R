@@ -6,7 +6,7 @@
 #'   \item{param}{global parameter} \item{value}{value of the parameter}
 #'   \item{description}{description of the parameter} }
 #'
-"TROLLv3_input"
+"TROLLv4_input"
 
-# TROLLv3_input <- readr::read_tsv("inst/extdata/TROLLv3_input.txt")
-# usethis::use_data(TROLLv3_input, overwrite = T)
+# TROLLv4_input <- readr::read_tsv("inst/extdata/TROLLv4_input.txt")
+# usethis::use_data(TROLLv4_input, overwrite = T)

@@ -48,6 +48,8 @@ generate_climate <- function(x, y, tz,
                              era5land_month,
                              daytime_start = 7,
                              daytime_end = 19) {
+  stop("generate_climate is currenlty outdated with TROLL V4.")
+  
   # tidytrick
   . <- DayTimeVapourPressureDeficitVPDbasic <- DaytimeMeanIrradiance <- NULL
   DaytimeMeanTemperature <- DaytimeMeanVapourPressureDeficit <- NULL

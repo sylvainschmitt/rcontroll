@@ -6,7 +6,7 @@
 #'   \item{param}{global parameter} \item{value}{value of the parameter}
 #'   \item{description}{description of the parameter} }
 #'
-"TROLLv3_pointcloud"
+"TROLLv4_pointcloud"
 
-# TROLLv3_pointcloud <- readr::read_tsv("inst/extdata/TROLLv3_pointcloud.txt")
-# usethis::use_data(TROLLv3_pointcloud, overwrite = T)
+# TROLLv4_pointcloud <- readr::read_tsv("inst/extdata/TROLLv4_pointcloud.txt")
+# usethis::use_data(TROLLv4_pointcloud, overwrite = T)

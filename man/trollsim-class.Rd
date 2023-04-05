@@ -17,17 +17,22 @@ This is an S4 class to represent TROLL simulations.
 
 \item{\code{path}}{char. Path to the simulation.}
 
+\item{\code{mem}}{bool. Is the simulation in memory, see load_sim.}
+
 \item{\code{parameters}}{numeric. Parameters of the simulation (general inputs).}
 
-\item{\code{inputs}}{list. Simulation inputs (species, climate, daily, forest,lidar).}
+\item{\code{inputs}}{list. Simulation inputs (species, climate, daily, pedology,
+forest,lidar).}
 
 \item{\code{log}}{chr. Simulation log.}
 
 \item{\code{forest}}{df. Simulation initial and final forest.}
 
+\item{\code{soil}}{df. Soil metrics.}
+
 \item{\code{ecosystem}}{df. Ecosystem metrics.}
 
-\item{\code{species}}{df. Species metrics (with OUTPUT_extended option).}
+\item{\code{species}}{df. Species metrics.}
 
 \item{\code{las}}{list. List with one simulated point cloud in LAS from lidar
 parameters (with lidar option). The LAS format correspond to lidr::LAS.}

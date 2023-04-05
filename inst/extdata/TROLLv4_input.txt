@@ -3,19 +3,21 @@ cols	200	/* nb of columns */
 rows	200	/* nb of rows  */
 HEIGHT	70	/* vertical extent of simulation */
 length_dcell	25	/* linear size of a dcell */
-nbiter	1500	/* total nb of timesteps */
-iterperyear	365	/* number of iteration per year */
+nbiter	365	/* total nb of timesteps (in days so X ans = X*365) */
 NV	1	/* vertical nb of cells (nb per m) */
 NH	1	/* horizontal nb of cells (nb per m) */
 nbout	4	/* Number of outputs */ 
-nbspp	45	/* Number of species */
+nbspp	109	/* Number of species */
 SWtoPPFD	2.27	/* convert short wave irradiance to PAR photons (cf. code) */
 p_nonvert	0.05	/* light incidence param (diff through turbid medium) */
-klight	0.63	/* light attenuation in the canopy Beer-Lambert */
+klight	0.5	/* light attenuation in the canopy Beer-Lambert */
 phi	0.093	/*  quantum yield (in micromol C/micromol photon) */
-absorptance_leaves	0.9	/* absorptance of individual leaves */
+absorptance_leaves	0.83	/* absorptance of individual leaves */
 theta	0.7	/* parameter of the Farquhar model */
 g1	3.77	/* parameter g1 of Medlyn et al ’s stomatal conductance model */
+g0	5.0	/* minimum leaf conductance (mol m-2 s-1) */
+pheno_thres	0.2	/* threshold for change in old leaf shedding rate, in proportion of TLP */
+pheno_delta	0.2	/* amplitude of change in old leaf shedding rate */
 vC	0.021	/* variance of the flexion moment */
 DBH0	0.005	/* initial dbh (m) */
 H0	0.95	/* initial height (m) */
@@ -43,21 +45,24 @@ corr_CR_height	0.0	/* correlation coefficient between crown radius and tree heig
 corr_N_P	0.65	/* correlation coefficient between leaf nitrogen and leaf phosphorus */
 corr_N_LMA	-0.43	/* correlation coefficient between leaf nitrogen and LMA */
 corr_P_LMA	-0.39	/* correlation coefficient between leaf phosphorus and LMA */
-leafdem_resolution	30	/* resolution of leaf demography model */
+leafdem_resolution	1	/* resolution of leaf demography model */
 p_tfsecondary	1.0	/* probability of secondary treefall */
 hurt_decay	0	/*  parameter determining how tree damages are repaired */
 crown_gap_fraction	0.15	/* fraction of gaps in the crown */
-m	0.013	/* minimal death rate */
-m1	0.013	/* m1 (slope of death rate) */
-Cair	400	/* atmospheric CO2 concentration in micromol/mol */
-_LL_parameterization	1	/* LL parameterizations: empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */
+m	0.025	/* minimal death rate */
+m1	0.025	/* m1 (slope of death rate) */
+Cair	375	/* atmospheric CO2 concentration in micromol/mol */
+PRESS	101.0	/* atmospheric pressure in kPa
+_SOIL_LAYER_WEIGHT	2	/* soil layer weights: relative biomass, conductance, max transpiration (0,1, 2) */
+_WATER_RETENTION_CURVE	1	/* water retention curve (Brooks&Corey: 0; Van Genuchten Mualem: 1) */
+_LL_parameterization	0	/* LL parameterizations: empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */
 _LA_regulation	2	/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */
 _sapwood	1	/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */
 _seedsadditional	0	/* excess biomass into seeds after maturation (0,1) */
-_NONRANDOM	1	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */
+_NONRANDOM	0	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */
 _GPPcrown	0	/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */
 _BASICTREEFALL	1	/* if defined: treefall is a source of tree death */
 _SEEDTRADEOFF	0	/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */
 _CROWN_MM	0	/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */
-_OUTPUT_extended	1	/* extended set of ouput files */
-extent_visual	0	/* extent for visualization output */
+_OUTPUT_extended	1	/* extended set of output files */
+_OUTPUT_inventory	1	/* inventory set of ouput files */

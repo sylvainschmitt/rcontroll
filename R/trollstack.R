@@ -19,13 +19,15 @@ setClass(
 #'
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.
+#' @param mem bool. Is the simulation in memory, see load_sim.
 #' @param parameters numeric. Parameters of the simulation (general inputs).
 #' @param inputs list. Simulation inputs (species, climate, daily,
 #'   forest,lidar).
 #' @param log chr. Simulation log.
 #' @param forest df. Simulation initial and final forest.
+#' @param soil df. Soil metrics.
 #' @param ecosystem df. Ecosystem metrics.
-#' @param species df. Species metrics (with OUTPUT_extended option).
+#' @param species df. Species metrics.
 #' @param las list. list. List with simulated point cloud in LAS from lidar
 #'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
 #'
@@ -35,22 +37,26 @@ setClass(
 #' @rdname trollstack
 trollstack <- function(name = character(),
                        path = character(),
+                       mem = logical(),
                        parameters = numeric(),
                        inputs = list(),
                        log = character(),
                        forest = data.frame(),
+                       soil = data.frame(),
                        ecosystem = data.frame(),
                        species = data.frame(),
                        las = list()) {
   return(new("trollstack",
-    name = name,
-    path = path,
-    parameters = parameters,
-    inputs = inputs,
-    log = log,
-    forest = forest,
-    ecosystem = ecosystem,
-    species = species,
-    las = las
+             name = name,
+             path = path,
+             mem = mem,
+             parameters = parameters,
+             inputs = inputs,
+             log = log,
+             forest = forest,
+             soil = soil,
+             ecosystem = ecosystem,
+             species = species,
+             las = las
   ))
 }

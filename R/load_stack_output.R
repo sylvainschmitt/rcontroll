@@ -18,7 +18,7 @@ NULL
 #' load_stack("test", "./")
 #' }
 #'
-load_stack <- function(name,
+load_stack_output <- function(name,
                        path,
                        thin = NULL) {
   # Check inputs
@@ -37,6 +37,7 @@ load_stack <- function(name,
   stack_res <- trollstack(
     name = name,
     path = path,
+    mem = TRUE,
     parameters = stack_res[[1]]@parameters,
     inputs = list(
       global = lapply(stack_res, slot, "inputs") %>%
@@ -51,8 +52,14 @@ load_stack <- function(name,
       daily = lapply(stack_res, slot, "inputs") %>%
         lapply(`[[`, "daily") %>%
         bind_rows(.id = "simulation"),
+      pedology = lapply(stack_res, slot, "inputs") %>%
+        lapply(`[[`, "pedology") %>%
+        bind_rows(.id = "simulation"),
       forest = lapply(stack_res, slot, "inputs") %>%
         lapply(`[[`, "forest") %>%
+        bind_rows(.id = "simulation"),
+      soil = lapply(stack_res, slot, "inputs") %>%
+        lapply(`[[`, "soil") %>%
         bind_rows(.id = "simulation"),
       lidar = lapply(stack_res, slot, "inputs") %>%
         lapply(`[[`, "lidar") %>%
@@ -60,6 +67,8 @@ load_stack <- function(name,
     ),
     log = paste(lapply(stack_res, slot, "log")),
     forest = lapply(stack_res, slot, "forest") %>%
+      bind_rows(.id = "simulation"),
+    soil = lapply(stack_res, slot, "soil") %>%
       bind_rows(.id = "simulation"),
     ecosystem = lapply(stack_res, slot, "ecosystem") %>%
       bind_rows(.id = "simulation"),

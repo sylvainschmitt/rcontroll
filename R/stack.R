@@ -21,17 +21,24 @@ NULL
 #' @param species df. Species parameters.
 #' @param climate df. Climate parameters.
 #' @param daily df. Daily variation parameters.
-#' @param lidar df. Lidar simulation parameters, if null no computed
-#'   (default NULL).
+#' @param pedology df. Daily variation parameters.
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
 #'   (default NULL).
+#' @param soil df. TROLL with soil input, if null starts from an empty grid
+#'   (default NULL).
+#' @param lidar df. Lidar simulation parameters, if null no computed (default
+#'   NULL).
 #' @param verbose bool. Show TROLL outputs in the console.
+#' @param load bool. TROLL outputs are loaded in R memory, if not only the path
+#'   to the outputs is kept.
 #' @param cores int. Number of cores for parallelization, if NULL available
 #'   cores - 1 (default NULL).
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
+#' @param date char. Starting date as YYYY/MM/DD, default NULL will result in
+#'   non-dated outputs.
 #'
 #' @return A trollstack object.
 #'
@@ -39,27 +46,27 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' data("TROLLv3_species")
-#' data("TROLLv3_climatedaytime12")
-#' data("TROLLv3_daytimevar")
-#' data("TROLLv3_output")
-#' TROLLv3_input_stack <- generate_parameters(
-#'   cols = 100, rows = 100,
-#'   iterperyear = 12, nbiter = 12 * 1
-#' ) %>%
+#' data("TROLLv4_input")
+#' data("TROLLv4_species")
+#' data("TROLLv4_climate")
+#' data("TROLLv4_dailyvar")
+#' data("TROLLv4_pedology")
+#' TROLLv4_input_stack <- generate_parameters(nbiter = 10) %>%
 #'   mutate(simulation = list(c("seed50000", "seed500"))) %>%
 #'   unnest(simulation)
-#' TROLLv3_input_stack[62, 2] <- 500 # Cseedrain
+#' TROLLv4_input_stack[65, 2] <- 500 # Cseedrain
 #' stack(
 #'   name = "teststack",
 #'   simulations = c("seed50000", "seed500"),
-#'   global = TROLLv3_input_stack,
-#'   species = TROLLv3_species,
-#'   climate = TROLLv3_climatedaytime12,
-#'   daily = TROLLv3_daytimevar,
-#'   verbose = F,
-#'   cores = 2,
-#'   thin = c(1, 5, 10)
+#'   path = getwd(),
+#'   global = TROLLv4_input_stack,
+#'   species = TROLLv4_species,
+#'   climate = TROLLv4_climate,
+#'   daily = TROLLv4_dailyvar,
+#'   pedology = TROLLv4_pedology,
+#'   load = TRUE,
+#'   date = "2004/01/01",
+#'   cores = 2
 #' )
 #' }
 #'
@@ -70,12 +77,16 @@ stack <- function(name = NULL,
                   species,
                   climate,
                   daily,
-                  lidar = NULL,
+                  pedology,
                   forest = NULL,
+                  soil = NULL,
+                  lidar = NULL,
                   verbose = TRUE,
+                  load = TRUE,
                   cores = NULL,
                   overwrite = TRUE,
-                  thin = NULL) {
+                  thin = NULL,
+                  date = NULL) {
   # cores
   if (is.null(cores)) {
     cores <- detectCores()
@@ -111,6 +122,9 @@ stack <- function(name = NULL,
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
   }
+  if(tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.")
+  }
   if (name %in% list.dirs(path, full.names = FALSE)[-1]) {
     if (!overwrite) {
       stop("Outputs already exist, use overwrite = TRUE.")
@@ -127,13 +141,19 @@ stack <- function(name = NULL,
   species <- .prep_input(species, simulations)
   climate <- .prep_input(climate, simulations)
   daily <- .prep_input(daily, simulations)
+  pedology <- .prep_input(pedology, simulations)
   if (!is.null(forest)) {
     forest <- .prep_input(forest, simulations)
   } else {
     forest <- lapply(simulations, function(x) forest)
     names(forest) <- simulations
   }
-
+  if (!is.null(soil)) {
+    soil <- .prep_input(soil, simulations)
+  } else {
+    soil <- lapply(simulations, function(x) soil)
+    names(soil) <- simulations
+  }
   if (!is.null(lidar)) {
     lidar <- .prep_input(lidar, simulations)
   } else {
@@ -167,62 +187,29 @@ stack <- function(name = NULL,
       species = species[[sim]],
       climate = climate[[sim]],
       daily = daily[[sim]],
-      lidar = lidar[[sim]],
+      pedology = pedology[[sim]],
       forest = forest[[sim]],
+      soil = soil[[sim]],
+      lidar = lidar[[sim]],
       verbose = verbose,
+      load = load,
       overwrite = overwrite,
-      thin = thin
+      thin = thin,
+      date = date
     )
   }
   close(pb)
   stopCluster(cl)
+  stop("We should use load_stack to avoid repetition.")
   names(stack_res) <- simulations
   stack_res <- trollstack(
     name = stack_res[[1]]@name,
     path = path_o,
-    parameters = stack_res[[1]]@parameters,
-    inputs = list(
-      global = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "global") %>%
-        bind_rows(.id = "simulation"),
-      species = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "species") %>%
-        bind_rows(.id = "simulation"),
-      climate = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "climate") %>%
-        bind_rows(.id = "simulation"),
-      daily = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "daily") %>%
-        bind_rows(.id = "simulation"),
-      forest = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "forest") %>%
-        bind_rows(.id = "simulation"),
-      lidar = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "lidar") %>%
-        bind_rows(.id = "simulation")
-    ),
-    log = paste(lapply(stack_res, slot, "log")),
-    forest = lapply(stack_res, slot, "forest") %>%
-      bind_rows(.id = "simulation"),
-    ecosystem = lapply(stack_res, slot, "ecosystem") %>%
-      bind_rows(.id = "simulation"),
-    species = lapply(stack_res, slot, "species") %>%
-      bind_rows(.id = "simulation"),
-    las = lapply(stack_res, slot, "las")
+    mem = FALSE
   )
-
-  if (nrow(stack_res@inputs$lidar) == 0) {
-    stack_res@las <- list()
+  if(load){
+    stack_res <- load_sim(stack)
   }
-  if (nrow(stack_res@inputs$lidar) > 0) {
-    stack_res@las <- lapply(stack_res@las, `[[`, 1)
-  }
-
-  # unlink stack path with tmp
-  if (tmp) {
-    unlink(path_o)
-  }
-
   return(stack_res)
 }
 

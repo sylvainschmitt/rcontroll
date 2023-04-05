@@ -10,15 +10,15 @@ In case of a new TROLL version the following changes need to be made to the C++ 
 
 -   Removing all the exit()
 
--   Adding parenthesis to void the corresponding warning
+-   Replacing all cout by Rcout
+
+-   Adding parenthesis to avoid the corresponding warning
 
 Do not hesitate to add missing changes.
 
 ## Rcpp header
 
-    // [[Rcpp::depends(RcppGSL)]]
     #include <Rcpp.h>
-    #include <RcppGSL.h>
     using namespace Rcpp; 
 
 ## `main()` to `trollCpp()`
@@ -73,3 +73,10 @@ Do not hesitate to add missing changes.
       bufi_data = &forest_file[0] ;
       bufi_pointcloud = &lidar_file[0] ;
       buf = &output_file[0] ;
+      
+     _FromInventory = 0; // added v.3.1.7, was previously undefined when no inputfile was provided
+     _OUTPUT_pointcloud = 0;  // added v.3.1.7, was previously undefined when no inputfile was provided  
+     
+     if(strlen(bufi_data) != 0) _FromInventory = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
+     if(strlen(bufi_pointcloud) != 0) _OUTPUT_pointcloud = 1; // There is a more formal checking of the stream within ReadInputInventory, so this is only to check whether any kind of file/path has been provided, i.e. whether the attempt at initializing from data has been made. But maybe there is a better way of doing this? (and to check: What happens if the string provided in R is NA or NULL? Can we avoid this?)
+  

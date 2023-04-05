@@ -7,10 +7,12 @@
 trollsim(
   name = character(),
   path = character(),
+  mem = logical(),
   parameters = numeric(),
   inputs = list(),
   log = character(),
   forest = data.frame(),
+  soil = data.frame(),
   ecosystem = data.frame(),
   species = data.frame(),
   las = list()
@@ -21,6 +23,8 @@ trollsim(
 
 \item{path}{char. Path to the simulation.}
 
+\item{mem}{bool. Is the simulation in memory, see load_sim.}
+
 \item{parameters}{numeric. Parameters of the simulation (general inputs).}
 
 \item{inputs}{list. Simulation inputs (species, climate, daily,
@@ -30,9 +34,11 @@ forest,lidar).}
 
 \item{forest}{df. Simulation initial and final forest.}
 
+\item{soil}{df. Soil metrics.}
+
 \item{ecosystem}{df. Ecosystem metrics.}
 
-\item{species}{df. Species metrics (with OUTPUT_extended option).}
+\item{species}{df. Species metrics.}
 
 \item{las}{list. List with one simulated point cloud in LAS from lidar
 parameters (with lidar option). The LAS format correspond to lidr::LAS.}
