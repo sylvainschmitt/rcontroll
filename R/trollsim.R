@@ -17,6 +17,8 @@ NULL
 #' @slot las list. List with one simulated point cloud in LAS from lidar
 #'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
 #'
+#' @return An empty S4 \linkS4class{trollsim} class object.
+#' 
 #' @export
 setClass(
   "trollsim",
@@ -59,6 +61,8 @@ setClass(
 #' @param species df. Species metrics (with OUTPUT_extended option).
 #' @param las list. List with one simulated point cloud in LAS from lidar
 #'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
+#'   
+#' @return An empty S4 \linkS4class{trollsim} class object.
 #'
 #' @export
 #' @rdname trollsim

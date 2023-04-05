@@ -4,6 +4,9 @@
 \name{trollsim-class}
 \alias{trollsim-class}
 \title{An S4 class to represent TROLL simulations}
+\value{
+An empty S4 \linkS4class{trollsim} class object.
+}
 \description{
 This is an S4 class to represent TROLL simulations.
 }
