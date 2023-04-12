@@ -126,7 +126,7 @@ to convert the data to TROLL inputs.</p>
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span></span>
 <span>  comment <span class="op">=</span> <span class="st">"#&gt;"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># to read the netCDF files</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># to read the netCDF files</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span> <span class="co"># to deal with dates and times</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span> <span class="co"># to wrangle and tidy the data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span> <span class="co"># to wrangle and tidy the data</span></span>
@@ -370,20 +370,18 @@ but we show an example with known values below. You can use the
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">climate</span><span class="op">$</span><span class="va">climatedaytime12</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 12</span></span></span>
-<span><span class="co">#&gt;   Temperature DaytimeM…¹ Night…² Rainf…³ WindS…⁴ Dayti…⁵ MeanI…⁶ Satur…⁷ Vapou…⁸</span></span>
-<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        23.8       25.2    23.3    19.2   1.30     267.    145.    2.96    2.62</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        23.6       25.0    23.1    42.4   1.22     215.    117.    2.92    2.70</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>        24.0       25.4    23.5    36.3   1.38     259.    141.    2.99    2.71</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>        24.3       25.8    23.8    30.4   1.26     312.    169.    3.05    2.75</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>        24.3       25.8    23.8    45.8   0.983    319.    173.    3.05    2.78</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>        24.0       25.4    23.5    42.5   0.561    352.    191.    2.99    2.76</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: VaporPressureDeficit &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   DayTimeVapourPressureDeficitVPDbasic &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   DaytimeMeanVapourPressureDeficit &lt;dbl&gt;, and abbreviated variable names</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ¹​DaytimeMeanTemperature, ²​NightTemperature, ³​Rainfall, ⁴​WindSpeed,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ⁵​DaytimeMeanIrradiance, ⁶​MeanIrradiance, ⁷​SaturatedVapourPressure,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ⁸​VapourPressure</span></span></span></code></pre>
+<span><span class="co">#&gt;   Temperature DaytimeMeanTemperature NightTemperature Rainfall WindSpeed</span></span>
+<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        23.8                   25.2             23.3     19.2     1.30 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        23.6                   25.0             23.1     42.4     1.22 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>        24.0                   25.4             23.5     36.3     1.38 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>        24.3                   25.8             23.8     30.4     1.26 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>        24.3                   25.8             23.8     45.8     0.983</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>        24.0                   25.4             23.5     42.5     0.561</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 more variables: DaytimeMeanIrradiance &lt;dbl&gt;, MeanIrradiance &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   SaturatedVapourPressure &lt;dbl&gt;, VapourPressure &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   VaporPressureDeficit &lt;dbl&gt;, DayTimeVapourPressureDeficitVPDbasic &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   DaytimeMeanVapourPressureDeficit &lt;dbl&gt;</span></span></span></code></pre>
 <p>Finally, we can compare obtained climatic data from ERA5-land with
 included data in the package grom the Nouraflux eddy tower:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
