@@ -9,6 +9,7 @@
 #'
 "TROLLv3_output"
 
+# nolint start
 # data("TROLLv3_species")
 # data("TROLLv3_climatedaytime12")
 # data("TROLLv3_daytimevar")
@@ -30,3 +31,4 @@
 # forest <- TROLLv3_output@forest
 # autoplot(TROLLv3_output, "temporal")
 # usethis::use_data(TROLLv3_output, overwrite = T)
+# nolint end

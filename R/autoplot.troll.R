@@ -88,9 +88,11 @@ setMethod("autoplot", "trollsim", function(object, # nolint
       absent <- variables[!(variables %in% names(object@species))]
     }
     if (length(absent) > 0) {
-      warning(paste("The following variables are not 
+      warning(paste(
+        "The following variables are not
                     present in the selected outputs: ",
-                    paste(absent, sep = ", ")))
+        paste(absent, sep = ", ")
+      ))
     }
     # table
     if (is.null(species)) {
@@ -113,8 +115,9 @@ setMethod("autoplot", "trollsim", function(object, # nolint
     }
     # prep table
     tab <- mutate(tab,
-                  iter = as.numeric(iter /
-                                      object@parameters["iterperyear"]))
+      iter = as.numeric(iter /
+        object@parameters["iterperyear"])
+    )
     if (!("simulation" %in% names(tab))) {
       tab$simulation <- "sim"
     }
@@ -141,8 +144,10 @@ setMethod("autoplot", "trollsim", function(object, # nolint
     if (length(unique(tab$simulation)) == 1) {
       g <- g + facet_wrap(~variable, scales = "free_y", labeller = label_parsed)
     } else {
-      g <- g + facet_grid(variable ~ simulation, scales = "free_y",
-                          labeller = label_parsed)
+      g <- g + facet_grid(variable ~ simulation,
+        scales = "free_y",
+        labeller = label_parsed
+      )
     }
   }
 
@@ -227,9 +232,11 @@ setMethod("autoplot", "trollsim", function(object, # nolint
     }
     absent <- variables[!(variables %in% n_vars)]
     if (length(absent) > 0) {
-      warning(paste("The following variables are not
+      warning(paste(
+        "The following variables are not
                     present in the selected outputs: ",
-                    paste(absent, sep = ", ")))
+        paste(absent, sep = ", ")
+      ))
     }
     # species
     if ("all" %in% species) {
@@ -273,8 +280,10 @@ setMethod("autoplot", "trollsim", function(object, # nolint
     if (length(unique(forest$simulation)) == 1) {
       g <- g + facet_wrap(~variable, scales = "free", labeller = label_parsed)
     } else {
-      g <- g + facet_grid(variable ~ simulation, scales = "free",
-                          labeller = label_parsed)
+      g <- g + facet_grid(variable ~ simulation,
+        scales = "free",
+        labeller = label_parsed
+      )
     }
   }
 

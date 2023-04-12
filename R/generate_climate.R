@@ -61,24 +61,25 @@ generate_climate <- function(x, y, tz,
   data <- daytimevalue <- NULL
   ddeg <- endtime <- monthlyvalue <- psat <- random <- seasonal <- NULL
   sp <- sp_trans <- NULL
-  ssrd <- ssrd_trans <- starttime <- t2m <- tdeg <- NULL # nolint
+  ssrd <- ssrd_trans <- starttime <- t2m <- tdeg <- NULL
   timestep <- tp <- NULL # nolint
-  tp_trans <- NULL 
-  trend <- u10 <- v10 <- value <- vardaytime_T <- vardaytime_light <- NULL
+  tp_trans <- NULL
+  trend <- u10 <- v10 <- value <- NULL
+  vardaytime_T <- vardaytime_light <- NULL # nolint
   vardaytime_vpd <- NULL
-  variable <- vp <- vpd <- windspeed <- M <- NULL
+  variable <- vp <- vpd <- windspeed <- M <- NULL # nolint
 
   # hourly
   era5_hr_r <- suppressWarnings(rast(era5land_hour))
   era5_hr <- suppressWarnings(extract(era5_hr_r, cbind(x, y))) %>%
     gather("variable", "value") %>%
-    mutate(date = as_datetime(terra::time(era5_hr_r))) %>% 
+    mutate(date = as_datetime(terra::time(era5_hr_r))) %>%
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
     select(-t) %>%
     separate(variable, c("variable", "expver"), sep = "_expver=") %>%
-    group_by(date, variable) %>% 
-    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>% 
-    spread(variable, value) %>% 
+    group_by(date, variable) %>%
+    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+    spread(variable, value) %>%
     arrange(date)
   rm(era5_hr_r)
   t0 <- t1 <- era5_hr$date[1]
@@ -97,10 +98,13 @@ generate_climate <- function(x, y, tz,
     mutate(ssrd_trans = ssrd / 3600) %>% # joul to watt
     mutate(ssrd_trans = ssrd_trans - lag(ssrd_trans)) %>% # instateneous ssrd
     mutate(ssrd_trans = ifelse(ssrd_trans < 0,
-                               0, ssrd_trans)) %>%
+      0, ssrd_trans
+    )) %>%
     # negative after midnight to null
-    mutate(vpd = .DewtoVPD(Tdewpoint = d2m - 273.15,
-                           Temp = tdeg, Pa = sp / 1000) / 1000) %>%
+    mutate(vpd = .DewtoVPD(
+      Tdewpoint = d2m - 273.15,
+      Temp = tdeg, Pa = sp / 1000
+    ) / 1000) %>%
     # Pa to kPa
     mutate(sp_trans = sp / 1000) # Pa to kPa
   era5_hr <- suppressWarnings(
@@ -109,7 +113,8 @@ generate_climate <- function(x, y, tz,
       gather(variable, value) %>%
       group_by(variable) %>%
       do(decompose(ts(.$value, frequency = 24),
-                   type = "additive")[c("seasonal", "trend", "random")] %>%
+        type = "additive"
+      )[c("seasonal", "trend", "random")] %>%
         as.data.frame()) %>%
       group_by(variable) %>%
       mutate(M = mean(trend, na.rm = TRUE)) %>%
@@ -132,7 +137,7 @@ generate_climate <- function(x, y, tz,
         spline(seq((daytime_start - 1), (daytime_end + 1)),
           era5_hr$ssrd_trans[
             (daytime_start - 1 + tlag):(daytime_end + 1 + tlag)
-            ],
+          ],
           xout = seq((daytime_start - 1), daytime_end - 0.5, 0.5),
           method = "natural"
         ) %>%
@@ -149,14 +154,14 @@ generate_climate <- function(x, y, tz,
   era5_mt_r <- suppressWarnings(rast(era5land_month))
   era5_mt <- suppressWarnings(extract(era5_mt_r, cbind(x, y))) %>%
     gather("variable", "value") %>%
-    mutate(date = as_date(terra::time(era5_mt_r))) %>% 
+    mutate(date = as_date(terra::time(era5_mt_r))) %>%
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
     select(-t) %>%
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
-    group_by(date, variable) %>% 
-    summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
-    spread(variable, value) %>% 
-    arrange(date) %>% 
+    separate(variable, c("variable", "expver"), sep = "_expver=") %>%
+    group_by(date, variable) %>%
+    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+    spread(variable, value) %>%
+    arrange(date) %>%
     mutate(month = month(date)) %>%
     mutate(year = year(date)) %>%
     group_by(year) %>%
@@ -168,27 +173,35 @@ generate_climate <- function(x, y, tz,
     mutate(tdeg = t2m - 273.15) %>% # K to degree celcisus
     mutate(ssrd_trans = ssrd / 86400) %>% # joul to watt
     mutate(ssrd_trans = ifelse(ssrd_trans < 0,
-                               0, ssrd_trans)) %>%
+      0, ssrd_trans
+    )) %>%
     # negative after midnight to null
-    mutate(vpd = .DewtoVPD(Tdewpoint = d2m - 273.15,
-                           Temp = tdeg,
-                           Pa = sp / 1000) / 1000) %>% # Pa to kPa
+    mutate(vpd = .DewtoVPD(
+      Tdewpoint = d2m - 273.15,
+      Temp = tdeg,
+      Pa = sp / 1000
+    ) / 1000) %>% # Pa to kPa
     mutate(tp_trans = tp * 100 * days_in_month(date)) %>%
     # m to mm * nb days in the month
     mutate(windspeed = sqrt(u10^2 + v10^2)) %>%
-    mutate(vp = .esat(Temp = d2m - 273.15,
-                      Pa = sp / 1000) / 1000) %>% # Pa to kPa
+    mutate(vp = .esat(
+      Temp = d2m - 273.15,
+      Pa = sp / 1000
+    ) / 1000) %>% # Pa to kPa
     mutate(psat = .esat(Temp = t2m - 273.15) / 1000) %>% # Pa to kPa
     mutate(ddeg = d2m - 273.15) %>% # K to degree celcisus
     mutate(sp_trans = sp / 1000) # Pa to kPa
   era5_mt <- suppressWarnings(
     era5_mt %>%
-      select(tdeg, vpd, ssrd_trans, tp_trans, windspeed,
-             vp, psat, ddeg, sp_trans) %>%
+      select(
+        tdeg, vpd, ssrd_trans, tp_trans, windspeed,
+        vp, psat, ddeg, sp_trans
+      ) %>%
       gather(variable, value) %>%
       group_by(variable) %>%
       do(decompose(ts(.$value, frequency = 12),
-                   type = "additive")[c("seasonal", "trend", "random")] %>%
+        type = "additive"
+      )[c("seasonal", "trend", "random")] %>%
         as.data.frame()) %>%
       mutate(value = (seasonal + mean(trend + random, na.rm = TRUE))) %>%
       slice(1:12) %>%
@@ -205,8 +218,10 @@ generate_climate <- function(x, y, tz,
   )
   era5_mt_daynight <- suppressWarnings(
     era5_mt %>%
-      select(month, Temperature, MeanIrradiance, VaporPressureDeficit,
-             ddeg, sp_trans) %>%
+      select(
+        month, Temperature, MeanIrradiance, VaporPressureDeficit,
+        ddeg, sp_trans
+      ) %>%
       gather(variable, monthlyvalue, -month) %>%
       left_join(
         daytimevar %>%
@@ -219,7 +234,8 @@ generate_climate <- function(x, y, tz,
           )) %>%
           group_by(variable) %>%
           mutate(daytimevalue = ifelse(is.na(daytimevalue),
-                                       0, daytimevalue)) %>%
+            0, daytimevalue
+          )) %>%
           mutate(daytimevalue = daytimevalue / mean(daytimevalue)) %>%
           nest(),
         by = "variable"
@@ -228,19 +244,24 @@ generate_climate <- function(x, y, tz,
       mutate(value = monthlyvalue * daytimevalue) %>%
       select(-monthlyvalue, -daytimevalue) %>%
       spread(variable, value) %>%
-      mutate(VapourPressureDeficitVPDbasic =
-               .DewtoVPD(ddeg, Temperature, sp_trans) / 1000) %>%
+      mutate(
+        VapourPressureDeficitVPDbasic =
+          .DewtoVPD(ddeg, Temperature, sp_trans) / 1000
+      ) %>%
       select(-ddeg, -sp_trans) %>%
       gather(variable, value, -month, -starttime) %>%
       mutate(Timeperiod = ifelse(starttime %in% daytime_start:daytime_end,
-                                 "Daytime", "Night")) %>%
+        "Daytime", "Night"
+      )) %>%
       mutate(variable = paste0(variable, "_", Timeperiod)) %>%
       group_by(variable, month) %>%
-      summarise(value = mean(value), .groups = 'drop') %>%
+      summarise(value = mean(value), .groups = "drop") %>%
       spread(variable, value) %>%
-      select(month, Temperature_Daytime, Temperature_Night,
-             MeanIrradiance_Daytime, VaporPressureDeficit_Daytime,
-             VapourPressureDeficitVPDbasic_Daytime) %>%
+      select(
+        month, Temperature_Daytime, Temperature_Night,
+        MeanIrradiance_Daytime, VaporPressureDeficit_Daytime,
+        VapourPressureDeficitVPDbasic_Daytime
+      ) %>%
       rename(
         DaytimeMeanTemperature = Temperature_Daytime,
         NightTemperature = Temperature_Night,
@@ -262,14 +283,20 @@ generate_climate <- function(x, y, tz,
     )
 
   daytimevar <- suppressWarnings(daytimevar %>%
-    rename(vardaytime_light = ssrd_trans, vardaytime_vpd = vpd,
-           vardaytime_T = tdeg) %>%
-    select(starttime, endtime, vardaytime_light,
-           vardaytime_vpd, vardaytime_T) %>%
+    rename(
+      vardaytime_light = ssrd_trans, vardaytime_vpd = vpd,
+      vardaytime_T = tdeg
+    ) %>%
+    select(
+      starttime, endtime, vardaytime_light,
+      vardaytime_vpd, vardaytime_T
+    ) %>%
     filter(starttime %in% seq(daytime_start - 0.5, daytime_end - 1, 0.5)) %>%
     mutate_all(funs(ifelse(. < 0, 0, .))) %>%
-    mutate_at(c("vardaytime_light", "vardaytime_vpd", "vardaytime_T"),
-              funs(. / mean(.))))
+    mutate_at(
+      c("vardaytime_light", "vardaytime_vpd", "vardaytime_T"),
+      funs(. / mean(.))
+    ))
 
   return(list(
     daytimevar = daytimevar,
@@ -292,7 +319,8 @@ generate_climate <- function(x, y, tz,
 # @param Pa num.  Atmospheric pressure in Pa, default 1 atmosphere.
 #
 # @return estimated vapour pressure in Pa
-.esat <- function(Temp, Pa = 101325) {
+.esat <- function(Temp, # nolint
+                  Pa = 101325) { # nolint
   a <- 611.21
   b <- 18.678 - (Temp / 234.5)
   c <- 257.14
@@ -314,7 +342,9 @@ generate_climate <- function(x, y, tz,
 # @param Pa num.  Atmospheric pressure in Pa, default 1 atmosphere.
 #
 # @return estimated vapour pressure in Pa
-.DewtoVPD <- function(Tdewpoint, Temp, Pa = 101325) {
+.DewtoVPD <- function(Tdewpoint, # nolint
+                      Temp, # nolint
+                      Pa = 101325) { # nolint
   e <- .esat(Tdewpoint, Pa) # actual vapor pressure
   esatval <- .esat(Temp) # saturated:
   return((esatval - e)) # in Pa

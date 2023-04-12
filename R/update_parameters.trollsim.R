@@ -28,7 +28,7 @@ setGeneric("update_parameters", function(sim, ...) {
 #' @rdname update_parameters
 #' @export
 setMethod("update_parameters", "trollsim", function(sim, ...) {
-  V1 <- description <- newvalue <- oldvalue <- param <- value <- NULL
+  V1 <- description <- newvalue <- oldvalue <- param <- value <- NULL # nolint
   sim@inputs$global %>%
     rename(oldvalue = value) %>%
     left_join(list(...) %>%

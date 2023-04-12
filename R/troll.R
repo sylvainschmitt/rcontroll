@@ -26,7 +26,7 @@ NULL
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
 #'   thinning.
-#'   
+#'
 #'
 #' @return A trollsim object.
 #'
@@ -48,7 +48,7 @@ NULL
 #'   daily = TROLLv3_daytimevar
 #' )
 #' }
-#' 
+#'
 troll <- function(name = NULL,
                   path = NULL,
                   global,
@@ -61,7 +61,7 @@ troll <- function(name = NULL,
                   verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
-  i <- NULL
+  i <- NULL # nolint
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
   sim <- foreach(i = 1, .export = ".troll_child") %dopar% {
@@ -84,7 +84,7 @@ troll <- function(name = NULL,
   return(sim[[1]])
 }
 
-.troll_child <- function(name = NULL,
+.troll_child <- function(name = NULL, # nolint
                          path = NULL,
                          global,
                          species,
@@ -97,16 +97,22 @@ troll <- function(name = NULL,
                          overwrite = TRUE,
                          thin = NULL) {
   # check all inputs
-  if (!all(unlist(lapply(list(verbose, load, overwrite), 
-                         class)) == "logical")) {
+  if (!all(unlist(lapply(
+    list(verbose, load, overwrite),
+    class
+  )) == "logical")) {
     stop("verbose, load, and overwrite should be logical.")
   }
-  if (!all(unlist(lapply(list(name, path), class)) %in% c("character",
-                                                          "NULL"))) {
+  if (!all(unlist(lapply(list(name, path), class)) %in% c(
+    "character",
+    "NULL"
+  ))) {
     stop("name and path should be character or null.")
   }
-  if (!all(unlist(lapply(list(global, species, climate, daily),
-                         inherits, c("data.frame", "NULL"))))) {
+  if (!all(unlist(lapply(
+    list(global, species, climate, daily),
+    inherits, c("data.frame", "NULL")
+  )))) {
     stop("global, species, climate, and daily should be a data frame.")
   }
   if (!(class(forest) %in% c("data.frame", "NULL"))) {
@@ -140,8 +146,8 @@ troll <- function(name = NULL,
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
   }
-  if(tmp && !load) {
-    stop("You can not unactivate the load option if you have not defined a path for your files.")
+  if (tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.") # nolint
   }
   if (!is.null(path)) {
     path <- normalizePath(path)

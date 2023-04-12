@@ -43,7 +43,7 @@ load_output <- function(name,
     ),
     function(x) {
       read_tsv(file.path(path, paste0(name, paste0("_input_", x, ".txt"))),
-               col_types = cols()
+        col_types = cols()
       )
     }
   )
@@ -81,8 +81,11 @@ load_output <- function(name,
   }
 
   # @ecosystem
-  ecosystem <- read_tsv(file.path(path,
-                                  paste0(name, "_0_", "sumstats", ".txt")),
+  ecosystem <- read_tsv(
+    file.path(
+      path,
+      paste0(name, "_0_", "sumstats", ".txt")
+    ),
     col_types = cols()
   )
   if (!is.null(thin)) {
@@ -91,8 +94,10 @@ load_output <- function(name,
   }
 
   # @species
-  species_file <- file.path(path,
-                            paste0(name, "_0_", "sumstats_species", ".txt"))
+  species_file <- file.path(
+    path,
+    paste0(name, "_0_", "sumstats_species", ".txt")
+  )
   if (file.exists(species_file)) {
     species <- read_tsv(species_file,
       col_types = cols()
@@ -113,7 +118,7 @@ load_output <- function(name,
   } else {
     las <- list()
   }
-  
+
   return(
     trollsim(
       name = name,

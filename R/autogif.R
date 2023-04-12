@@ -46,8 +46,10 @@ NULL
 #' @export
 autogif <- function(name = NULL,
                     path = NULL,
-                    variables = c("species", "height_ct", "npp_gpp",
-                                  "height", "lai"),
+                    variables = c(
+                      "species", "height_ct", "npp_gpp",
+                      "height", "lai"
+                    ),
                     global,
                     species,
                     climate,
@@ -56,20 +58,24 @@ autogif <- function(name = NULL,
                     verbose = TRUE,
                     overwrite = TRUE,
                     thin = NULL) {
-  if (!all(variables %in% c("species", "height_ct",
-                            "npp_gpp", "height", "lai"))) {
-    stop("No valid autogif available for: ", variables,
-         ". Please use either 'species', 'height_ct', 
-         'npp_gpp', 'height', or 'lai'.")
+  if (!all(variables %in% c(
+    "species", "height_ct",
+    "npp_gpp", "height", "lai"
+  ))) {
+    stop(
+      "No valid autogif available for: ", variables,
+      ". Please use either 'species', 'height_ct',
+         'npp_gpp', 'height', or 'lai'."
+    )
   }
   if (global[which(global$param == "_OUTPUT_extended"), 2] == 0) {
-    stop("_OUTPUT_extended option should be activated in global 
-         parameters to produce gif from TROLL 
+    stop("_OUTPUT_extended option should be activated in global
+         parameters to produce gif from TROLL
          (generate_parameters(_OUTPUT_extended=1)).")
   }
   if (global[which(global$param == "extent_visual"), 2] == 0) {
-    stop("extent_visual option should be non null in global 
-         parameters to produce gif from TROLL 
+    stop("extent_visual option should be non null in global
+         parameters to produce gif from TROLL
          (e.g. generate_parameters(extent_visual=100)).")
   }
 
@@ -104,25 +110,37 @@ autogif <- function(name = NULL,
 }
 
 .troll_to_gif <- function(name,
-                       path,
-                       variables) {
+                          path,
+                          variables) {
   LAI <- height <- height_spikefree <- iter <- NULL # nolint
   ratio_NPP_GPP <- ratio_height_Ct <- sp_lab <- NULL # nolint
   results <- list()
-  slice <- vroom(file.path(path, name,
-                           paste0(name, "_0_visual_slice.txt")),
-                 col_types = cols()) %>%
+  slice <- vroom(
+    file.path(
+      path, name,
+      paste0(name, "_0_visual_slice.txt")
+    ),
+    col_types = cols()
+  ) %>%
     mutate(sp_lab = as.factor(round(sp_lab))) %>%
     mutate(height = height + 0.5)
-  field <- vroom(file.path(path, name,
-                           paste0(name, "_0_visual_field.txt")),
-                 col_types = cols()) %>%
+  field <- vroom(
+    file.path(
+      path, name,
+      paste0(name, "_0_visual_field.txt")
+    ),
+    col_types = cols()
+  ) %>%
     mutate(col = col + 0.5, row = row + 0.5)
 
   if ("species" %in% variables) {
-    results$species <- ggplot(slice,
-                              aes(x = col, y = height,
-                                  fill = sp_lab, alpha = row)) +
+    results$species <- ggplot(
+      slice,
+      aes(
+        x = col, y = height,
+        fill = sp_lab, alpha = row
+      )
+    ) +
       scale_x_continuous(expand = c(0, 0)) +
       scale_y_continuous(expand = c(0, 0)) +
       scale_fill_viridis_d(option = "magma") +
@@ -140,9 +158,13 @@ autogif <- function(name = NULL,
 
 
   if ("npp_gpp" %in% variables) {
-    results$npp_gpp <- ggplot(data = slice,
-                              aes(x = col, y = height,
-                                  fill = ratio_NPP_GPP, alpha = row)) +
+    results$npp_gpp <- ggplot(
+      data = slice,
+      aes(
+        x = col, y = height,
+        fill = ratio_NPP_GPP, alpha = row
+      )
+    ) +
       scale_fill_viridis_c(expression(frac(NPP, GPP)), direction = -1) +
       scale_alpha(range = c(0.5, 1.0), guide = "none") +
       xlab("X (m)") +
@@ -158,10 +180,14 @@ autogif <- function(name = NULL,
 
 
   if ("height_ct" %in% variables) {
-    results$height_ct <- ggplot(data = slice,
-                                aes(x = col, y = height,
-                                    fill = ratio_height_Ct,
-                                    alpha = row)) +
+    results$height_ct <- ggplot(
+      data = slice,
+      aes(
+        x = col, y = height,
+        fill = ratio_height_Ct,
+        alpha = row
+      )
+    ) +
       scale_fill_viridis_c(expression(frac(height, Ct))) +
       scale_alpha(range = c(0.5, 1.0), guide = "none") +
       xlab("X (m)") +
@@ -177,9 +203,13 @@ autogif <- function(name = NULL,
 
 
   if ("height" %in% variables) {
-    results$height <- ggplot(data = field,
-                             aes(x = col, y = row,
-                                 fill = height_spikefree)) +
+    results$height <- ggplot(
+      data = field,
+      aes(
+        x = col, y = row,
+        fill = height_spikefree
+      )
+    ) +
       scale_fill_viridis_c("height (m)") +
       xlab("X (m)") +
       ylab("Y (m)") +

@@ -8,5 +8,5 @@
 #'
 "TROLLv3_pointcloud"
 
-# TROLLv3_pointcloud <- readr::read_tsv("inst/extdata/TROLLv3_pointcloud.txt")
-# usethis::use_data(TROLLv3_pointcloud, overwrite = T)
+# TROLLv3_pointcloud <- readr::read_tsv("inst/extdata/TROLLv3_pointcloud.txt") # nolint
+# usethis::use_data(TROLLv3_pointcloud, overwrite = T) # nolint

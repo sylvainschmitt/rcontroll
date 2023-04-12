@@ -66,7 +66,7 @@ NULL
 #' )
 #' }
 #'
-stack <- function(name = NULL,
+stack <- function(name = NULL, # nolint
                   simulations,
                   path = NULL,
                   global,
@@ -88,7 +88,7 @@ stack <- function(name = NULL,
   if ((detectCores()) < cores) {
     cores <- detectCores()
     warning(paste(
-      "It seems you attributed more cores than your CPU has! 
+      "It seems you attributed more cores than your CPU has!
       Automatic reduction to",
       cores, "cores."
     ))
@@ -115,8 +115,8 @@ stack <- function(name = NULL,
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
   }
-  if(tmp && !load) {
-    stop("You can not unactivate the load option if you have not defined a path for your files.")
+  if (tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.") # nolint
   }
   if (name %in% list.dirs(path, full.names = FALSE)[-1]) {
     if (!overwrite) {
@@ -156,15 +156,15 @@ stack <- function(name = NULL,
   }
 
   # stack
-  batches <- split(simulations, ceiling(seq_along(simulations)/cores))
-  pb <- txtProgressBar(min = 0, max = length(batches), initial = 0, style = 3) 
+  batches <- split(simulations, ceiling(seq_along(simulations) / cores))
+  pb <- txtProgressBar(min = 0, max = length(batches), initial = 0, style = 3)
   stack_res <- list()
-  for(i in 1:length(batches)){
+  for (i in seq_along(batches)) {
     j <- NULL
     cl <- makeCluster(cores, outfile = "")
     registerDoSNOW(cl)
     stack_res_batch <- foreach(
-      j = 1:length(batches[[1]]), 
+      j = seq_along(batches[[1]]),
       .export = ".troll_child"
     ) %dopar% {
       sim <- batches[[1]][j]
@@ -186,11 +186,11 @@ stack <- function(name = NULL,
     stopCluster(cl)
     stack_res <- c(stack_res, stack_res_batch)
     setTxtProgressBar(pb, i)
-    cat('\n')
+    cat("\n")
   }
   close(pb)
-  
-  
+
+
   # loading outputs
   stack_res <- trollstack(name = name, path = path_o, mem = FALSE)
   if (load) {

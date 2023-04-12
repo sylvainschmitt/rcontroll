@@ -8,5 +8,5 @@
 #'
 "TROLLv3_input"
 
-# TROLLv3_input <- readr::read_tsv("inst/extdata/TROLLv3_input.txt")
-# usethis::use_data(TROLLv3_input, overwrite = T)
+# TROLLv3_input <- readr::read_tsv("inst/extdata/TROLLv3_input.txt") # nolint
+# usethis::use_data(TROLLv3_input, overwrite = T) # nolint

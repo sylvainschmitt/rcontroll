@@ -27,7 +27,7 @@ setGeneric("get_forest", function(sim, ...) {
 #' @rdname get_forest
 #' @export
 setMethod("get_forest", "trollsim", function(sim, ...) {
-  iter <- from_Data <- sp_lab <- site <- dbh_previous <- AGB <- NULL
+  iter <- from_Data <- sp_lab <- site <- dbh_previous <- AGB <- NULL # nolint
   filter(
     sim@forest,
     iter == max(sim@forest$iter)

@@ -31,7 +31,7 @@ setClass(
 #'   parameters (with lidar option). The LAS format correspond to lidr::LAS.
 #'
 #' @return An empty S4 \linkS4class{trollstack} class object.
-#' 
+#'
 #' @export
 #' @rdname trollstack
 trollstack <- function(name = character(),

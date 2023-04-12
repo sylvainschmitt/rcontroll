@@ -11,6 +11,6 @@ NULL
 #'
 #' @export
 #'
-TROLL.version <- function() {
+TROLL.version <- function() { # nolint
   getOption("rcontroll.troll")
 }

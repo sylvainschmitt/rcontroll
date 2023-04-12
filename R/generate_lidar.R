@@ -54,7 +54,11 @@ generate_lidar <- function(mean_beam_pc = 10,
       "/* mean pulse density (pulses per m2) */",
       "/* sd of pulse density (per m2) */",
       "/* the k constant (reflecting geometric properties of the canopy) */",
-      "/* percentage of pulses that continue through the canopy after a hit, multiply with klaser_pc to obtain an effective klaser */",
+      paste(
+        "/* percentage of pulses that continue through the canopy",
+        "after a hit, multiply with klaser_pc",
+        "to obtain an effective klaser */"
+      ),
       "/* iteration for point cloud generation */"
     )
   )

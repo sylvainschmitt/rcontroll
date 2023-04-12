@@ -6,6 +6,7 @@
 [![CRAN](https://www.r-pkg.org/badges/version/rcontroll)](https://CRAN.R-project.org/package=rcontroll)
 [![Downloads](http://cranlogs.r-pkg.org/badges/rcontroll?color=brightgreen)](http://www.r-pkg.org/pkg/rcontroll)
 [![codecov](https://codecov.io/gh/sylvainschmitt/rcontroll/branch/main/graph/badge.svg?token=CGZU65KGN7)](https://codecov.io/gh/sylvainschmitt/rcontroll)
+[![lint](https://github.com/sylvainschmitt/rcontroll/workflows/lint/badge.svg)](https://github.com/sylvainschmitt/rcontroll/actions?query=workflow%3Alint)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![DOI](https://zenodo.org/badge/382141143.svg)](https://zenodo.org/badge/latestdoi/382141143)
 

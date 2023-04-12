@@ -27,8 +27,10 @@ setMethod("print", "trollsim", function(x, ...) {
   cat("Path :", x@path, "\n")
   cat("In memory :", x@mem, "\n")
   if (inherits(x, "trollstack")) {
-    cat("Number of simulations :",
-        length(unique(x@inputs$global$simulation)), "\n")
+    cat(
+      "Number of simulations :",
+      length(unique(x@inputs$global$simulation)), "\n"
+    )
   }
   cat("Extended :", as.logical(x@parameters["_OUTPUT_extended"]), "\n")
   cat("From data :", nrow(filter(x@forest, iter == 0)) > 0, "\n")
@@ -43,10 +45,14 @@ setMethod("print", "trollsim", function(x, ...) {
     "x", x@parameters["rows"], "\n"
   )
   cat("Number of iterations : ", x@parameters["nbiter"], "\n")
-  cat("Duration of timestep : ",
-      1 / x@parameters["iterperyear"] * 365, "days \n")
-  cat("Number of Species    : ",
-      length(unique(x@inputs$species$s_name)), "\n\n")
+  cat(
+    "Duration of timestep : ",
+    1 / x@parameters["iterperyear"] * 365, "days \n"
+  )
+  cat(
+    "Number of Species    : ",
+    length(unique(x@inputs$species$s_name)), "\n\n"
+  )
 })
 
 #' @export
