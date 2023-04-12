@@ -221,6 +221,8 @@ troll <- function(name = NULL,
   })
 
   # loading outputs
+  rm(list = setdiff(ls(), c("name", "path", "thin", "tmp"))) 
+  invisible(gc())
   sim <- load_output(name, file.path(path, name), thin = thin)
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)

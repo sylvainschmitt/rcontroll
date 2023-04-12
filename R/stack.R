@@ -149,33 +149,38 @@ stack <- function(name = NULL,
   }
 
   # stack
-  i <- NULL
-  cl <- makeCluster(cores, outfile = "")
-  registerDoSNOW(cl)
-  pb <- txtProgressBar(max = length(simulations), style = 3)
-  progress <- function(n) setTxtProgressBar(pb, n)
-  opts <- list(progress = progress)
-  stack_res <- foreach(
-    i = 1:length(simulations), .export = ".troll_child",
-    .options.snow = opts
-  ) %dopar% {
-    sim <- simulations[i]
-    .troll_child(
-      name = sim,
-      path = sim_path[[sim]],
-      global = global[[sim]],
-      species = species[[sim]],
-      climate = climate[[sim]],
-      daily = daily[[sim]],
-      lidar = lidar[[sim]],
-      forest = forest[[sim]],
-      verbose = verbose,
-      overwrite = overwrite,
-      thin = thin
-    )
+  batches <- split(simulations, ceiling(seq_along(simulations)/cores))
+  pb <- txtProgressBar(min = 0, max = length(batches), initial = 0, style = 3) 
+  stack_res <- list()
+  for(i in 1:length(batches)){
+    j <- NULL
+    cl <- makeCluster(cores, outfile = "")
+    registerDoSNOW(cl)
+    stack_res_batch <- foreach(
+      j = 1:length(batches[[1]]), 
+      .export = ".troll_child"
+    ) %dopar% {
+      sim <- batches[[1]][j]
+      .troll_child(
+        name = sim,
+        path = sim_path[[sim]],
+        global = global[[sim]],
+        species = species[[sim]],
+        climate = climate[[sim]],
+        daily = daily[[sim]],
+        lidar = lidar[[sim]],
+        forest = forest[[sim]],
+        verbose = verbose,
+        overwrite = overwrite,
+        thin = thin
+      )
+    }
+    stopCluster(cl)
+    stack_res <- c(stack_res, stack_res_batch)
+    setTxtProgressBar(pb, i)
+    cat('\n')
   }
   close(pb)
-  stopCluster(cl)
   names(stack_res) <- simulations
   stack_res <- trollstack(
     name = stack_res[[1]]@name,
