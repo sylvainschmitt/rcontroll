@@ -73,10 +73,16 @@
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_forest.html</loc>
   </url>
   <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_log.html</loc>
+  </url>
+  <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/index.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/load_output.html</loc>
+  </url>
+  <url>
+    <loc>https://sylvainschmitt.github.io/rcontroll/reference/load_sim.html</loc>
   </url>
   <url>
     <loc>https://sylvainschmitt.github.io/rcontroll/reference/load_stack.html</loc>

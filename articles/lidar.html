@@ -145,6 +145,7 @@ simulation status:</p>
 <span><span class="co">#&gt; Object of class : trollsim </span></span>
 <span><span class="co">#&gt; Name : test </span></span>
 <span><span class="co">#&gt; Path :  </span></span>
+<span><span class="co">#&gt; In memory : TRUE </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
 <span><span class="co">#&gt; Lidar simulation : TRUE </span></span>
@@ -161,13 +162,13 @@ simulation status:</p>
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">@</span><span class="va">las</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
-<span><span class="co">#&gt; memory       : 4.9 Mb </span></span>
+<span><span class="co">#&gt; memory       : 5 Mb </span></span>
 <span><span class="co">#&gt; extent       : 0, 100, 0, 100 (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
-<span><span class="co">#&gt; area         : 10028 units²</span></span>
-<span><span class="co">#&gt; points       : 142.3 thousand points</span></span>
-<span><span class="co">#&gt; density      : 14.19 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span></code></pre></div>
+<span><span class="co">#&gt; area         : 10016 units²</span></span>
+<span><span class="co">#&gt; points       : 145.3 thousand points</span></span>
+<span><span class="co">#&gt; density      : 14.5 points/units²</span></span>
+<span><span class="co">#&gt; density      : 9.61 pulses/units²</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
@@ -186,8 +187,8 @@ extract the canopy height model from the point cloud as a raster:</p>
 <span><span class="co">#&gt; coord. ref. :  </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :      1.101667 </span></span>
-<span><span class="co">#&gt; max value   :     41.005556</span></span></code></pre></div>
+<span><span class="co">#&gt; min value   :       0.00000 </span></span>
+<span><span class="co">#&gt; max value   :      33.93667</span></span></code></pre></div>
 <p><code>rcontroll</code> includes in the <code>autoplot</code> method
 an automatic plot of the canopy height model when choosing
 <code>what = "lidar"</code> (if the lidar simulations as been activated
@@ -218,25 +219,32 @@ pulse density of 10 (<code>10pc</code>) and 20 (<code>20pc</code>):</p>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">daily =</span> TROLLv3_output<span class="sc">@</span>inputs<span class="sc">$</span>daily,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">forest =</span> <span class="fu">get_forest</span>(TROLLv3_output),</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lidar =</span> <span class="fu">list</span>(</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"10pc"</span> <span class="ot">=</span> <span class="fu">generate_lidar</span>(<span class="at">mean_beam_pc =</span> <span class="dv">10</span>, <span class="at">iter_pointcloud_generation =</span> <span class="dv">11</span>),</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"20pc"</span> <span class="ot">=</span> <span class="fu">generate_lidar</span>(<span class="at">mean_beam_pc =</span> <span class="dv">10</span>, <span class="at">iter_pointcloud_generation =</span> <span class="dv">11</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"simulation"</span>),</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span>,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                      <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="er">|======================================================================|</span> <span class="dv">100</span>%</span></code></pre></div>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"10pc"</span> <span class="ot">=</span> <span class="fu">generate_lidar</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_beam_pc =</span> <span class="dv">10</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_pointcloud_generation =</span> <span class="dv">11</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"20pc"</span> <span class="ot">=</span> <span class="fu">generate_lidar</span>(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_beam_pc =</span> <span class="dv">10</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_pointcloud_generation =</span> <span class="dv">11</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"simulation"</span>),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                      <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="er">|======================================================================|</span> <span class="dv">100</span>%</span></code></pre></div>
 <p>Printing the output <code>rcontroll</code> inform the lidar
 simulation status:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span></span>
 <span><span class="co">#&gt; Object of class : trollstack </span></span>
-<span><span class="co">#&gt; Name : 10pc </span></span>
-<span><span class="co">#&gt; Path : /tmp/RtmpHtgdX7/rcontroll/teststack </span></span>
+<span><span class="co">#&gt; Name : teststack </span></span>
+<span><span class="co">#&gt; Path :  </span></span>
+<span><span class="co">#&gt; In memory : TRUE </span></span>
 <span><span class="co">#&gt; Number of simulations : 2 </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
@@ -254,23 +262,23 @@ simulation status:</p>
 <code class="sourceCode R"><span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span></span>
 <span><span class="co">#&gt; $`10pc`</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
-<span><span class="co">#&gt; memory       : 4.9 Mb </span></span>
+<span><span class="co">#&gt; memory       : 5 Mb </span></span>
 <span><span class="co">#&gt; extent       : 0, 100, 0, 100 (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
-<span><span class="co">#&gt; area         : 10028 units²</span></span>
-<span><span class="co">#&gt; points       : 142.3 thousand points</span></span>
-<span><span class="co">#&gt; density      : 14.19 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span>
+<span><span class="co">#&gt; area         : 10016 units²</span></span>
+<span><span class="co">#&gt; points       : 145.3 thousand points</span></span>
+<span><span class="co">#&gt; density      : 14.5 points/units²</span></span>
+<span><span class="co">#&gt; density      : 9.61 pulses/units²</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`20pc`</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
-<span><span class="co">#&gt; memory       : 4.9 Mb </span></span>
+<span><span class="co">#&gt; memory       : 5 Mb </span></span>
 <span><span class="co">#&gt; extent       : 0, 100, 0, 100 (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
-<span><span class="co">#&gt; area         : 10028 units²</span></span>
-<span><span class="co">#&gt; points       : 142.3 thousand points</span></span>
-<span><span class="co">#&gt; density      : 14.19 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.55 pulses/units²</span></span></code></pre></div>
+<span><span class="co">#&gt; area         : 10016 units²</span></span>
+<span><span class="co">#&gt; points       : 145.3 thousand points</span></span>
+<span><span class="co">#&gt; density      : 14.5 points/units²</span></span>
+<span><span class="co">#&gt; density      : 9.61 pulses/units²</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><code>rcontroll</code> includes a <code>get_chm</code> method to
@@ -285,8 +293,8 @@ extract the canopy height model from the point clouds as a raster:</p>
 <span><span class="co">#&gt; coord. ref. :  </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :      1.101667 </span></span>
-<span><span class="co">#&gt; max value   :     41.005556 </span></span>
+<span><span class="co">#&gt; min value   :       0.00000 </span></span>
+<span><span class="co">#&gt; max value   :      33.93667 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`20pc`</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
@@ -296,8 +304,8 @@ extract the canopy height model from the point clouds as a raster:</p>
 <span><span class="co">#&gt; coord. ref. :  </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :      1.101667 </span></span>
-<span><span class="co">#&gt; max value   :     41.005556</span></span></code></pre></div>
+<span><span class="co">#&gt; min value   :       0.00000 </span></span>
+<span><span class="co">#&gt; max value   :      33.93667</span></span></code></pre></div>
 <p><code>rcontroll</code> includes in the <code>autoplot</code> method
 an automatic plot of the canopy height model when choosing
 <code>what = "lidar"</code> (if the lidar simulations as been activated

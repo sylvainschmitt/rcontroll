@@ -100,55 +100,55 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_output"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">get_forest</span><span class="op">(</span><span class="va">TROLLv3_output</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   col row CrownDisplacement      Pmass    Nmass     LMA     wsg   Rdark  Vcmax</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   3   0                 0 0.00196440 0.026170  48.104 0.56864 0.91224 38.854</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   4   0                 0 0.00054225 0.019986  54.391 0.70475 0.75948 24.101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   5   0                 0 0.00057050 0.020921 106.250 0.83815 1.00030 40.744</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   8   0                 0 0.00038086 0.015148  80.327 0.52244 0.80162 27.542</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   9   0                 0 0.00061987 0.013481 110.970 0.61545 0.97545 43.695</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  13   0                 0 0.00042652 0.026688  88.491 0.63866 0.91938 31.163</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Jmax leaflifespan lambda_young lambda_mature lambda_old dbhmature  dbhmax</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 64.047       3.6921            1       0.81255    0.68429  0.095693 0.19139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 40.105       8.2866            1       0.36203    0.22102  0.134760 0.26952</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 64.663       7.9546            1       0.37714    0.23239  0.138760 0.27752</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 44.755       6.4556            1       0.46471    0.30269  0.183690 0.36738</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 69.079      11.7130            1       0.25613    0.14687  0.267220 0.53443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 50.242       9.7483            1       0.30775    0.18186  0.300080 0.60017</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    hmax    ah     Ct LAImax fraction_filled mult_height mult_CR mult_CD  mult_P</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 41.86 0.274 23.830 4.7021         0.74128     1.19040 1.07080       1 1.07810</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 50.92 0.308 26.903 4.9951         0.31270     0.91647 1.64870       1 0.93458</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 27.27 0.110 18.010 4.5459         0.54990     0.78185 1.24330       1 1.30670</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 44.27 0.264 23.214 4.8975         0.39821     0.71868 1.46100       1 0.72036</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 50.92 0.308 35.737 4.6045         1.00000     0.97430 0.85714       1 0.90084</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 49.23 0.270 44.502 4.6533         0.38469     1.20890 1.48650       1 0.72685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    mult_N mult_LMA mult_dbhmax    dev_wsg     age      dbh sapwood_area  height</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.12800  0.78345     0.95693 -0.1233600 10.0830 0.015109   0.00015879  2.6040</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.03550  0.79881     0.96257  0.0457540 17.9170 0.025610   0.00032374  3.5824</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1.01560  1.03640     0.95697  0.0721480  8.0833 0.012530   0.00011828  2.1803</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.78489  0.88252     0.99293  0.0004373 18.6670 0.044716   0.00062385  4.6083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.71710  1.29350     1.02780 -0.0035464 18.6670 0.077267   0.00257090  9.9497</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.96695  1.02920     0.98388 -0.0563440 72.0830 0.115200   0.00348140 17.7980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        CD      CR      GPP      NPP    Rday   Rnight    Rstem   LAmax       LA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.52080 0.64221   16.726   6.1614  1.5532   3.3190  0.41053  1.7083  0.39049</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.71648 1.37880   41.056  16.6640  3.3240   7.0251  1.15150  4.8026  0.98544</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.43606 0.66271   19.957   8.1063  1.7145   3.6135  0.25604  1.9521  0.38802</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.92167 1.73580   65.447  27.3710  4.7624   9.9463  2.85440 10.4150  1.33280</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1.98990 1.43730  677.380 260.2600 56.8740 121.4500 25.39700 17.7670 13.36500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 3.55950 3.20560 1225.600 509.1200 86.5290 184.1200 61.51800 41.8450 21.36200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   youngLA matureLA    oldLA     LAI   litter carbon_storage carbon_biometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.10260  0.13059  0.15730 0.39049   5.1926     0.0000e+00      1.8480e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.12034  0.33936  0.52574 0.49272   6.2745     9.1759e-02      3.2437e+00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.04878  0.12934  0.20990 0.38802   5.1829     6.1993e-02      4.8642e-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.20646  0.44427  0.68208 0.33320  16.5840     2.8255e-03      2.1089e+00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1.14110  4.46710  7.75650 2.05940 126.3700     8.4880e-02      3.5626e+01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 2.21730  7.32130 11.82300 1.73920 189.3400     9.8896e-06      9.8344e+01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   multiplier_seed hurt NPPneg                s_name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1               1    0      0  Cupania_scrobiculata</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2               1    0      0 Protium_trifoliolatum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3               1    0      0     Licania_canescens</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4               1    0      0  Iryanthera_sagotiana</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5               1    0      0    Brosimum_rubescens</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6               1    0      0     Lecythis_poiteaui</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   col row CrownDisplacement     Pmass  Nmass    LMA   wsg   Rdark  Vcmax   Jmax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   0   0                 0 0.0005868 0.0276  85.98 0.695 0.95863 35.206 56.693</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1   0                 0 0.0005700 0.0232 110.38 0.576 1.03600 41.909 66.336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   2   0                 0 0.0006778 0.0171  98.67 0.752 0.96997 41.652 66.333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   9   0                 0 0.0005890 0.0188  84.33 0.553 0.89702 34.757 56.043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  10   0                 0 0.0005725 0.0289  53.03 0.757 0.79316 24.232 40.373</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  14   0                 0 0.0005054 0.0255  95.60 0.798 0.96750 35.643 57.057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   leaflifespan lambda_young lambda_mature lambda_old dbhmature dbhmax  hmax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       7.8757            1       0.38092    0.23527     0.305   0.61 49.23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      13.6170            1       0.22032    0.12380     0.330   0.66 50.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       7.8836            1       0.38054    0.23498     0.195   0.39 50.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       9.7229            1       0.30855    0.18242     0.140   0.28 41.38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       8.7529            1       0.34274    0.20681     0.275   0.55 50.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      15.8070            1       0.18979    0.10485     0.200   0.40 47.91</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      ah     Ct LAImax fraction_filled mult_height mult_CR mult_CD mult_P mult_N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.270 37.318 4.6045            0.85           1       1       1      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.308 38.216 4.4482            0.85           1       1       1      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.308 33.177 4.6045            0.85           1       1       1      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.211 27.277 4.7510            0.85           1       1       1      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.308 36.619 4.8975            0.85           1       1       1      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.251 33.606 4.6045            0.85           1       1       1      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mult_LMA mult_dbhmax dev_wsg     age      dbh sapwood_area  height      CD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        1           1       0 15.9170 0.023603   2.9222e-04  3.9576 0.79153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        1           1       0 34.5830 0.110470   3.8866e-03 13.4420 2.68830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        1           1       0 34.5830 0.023291   2.8731e-04  3.5798 0.71597</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        1           1       0  5.8333 0.010742   9.0195e-05  2.0046 0.40092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        1           1       0  6.1667 0.010871   9.2228e-05  1.7360 0.34721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        1           1       0 40.9170 0.025622   3.2392e-04  4.4376 0.88752</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        CR     GPP      NPP    Rday   Rnight    Rstem   LAmax       LA  youngLA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.79436  32.453  14.0500  2.3151   4.7915  1.14820  2.7107  0.53607 0.068091</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 2.10030 795.500 206.7200 87.4000 194.1900 51.87000 21.5950 20.13500 1.478700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.78772  22.646   7.8408  2.1129   4.4960  1.02120  1.7107  0.49786 0.060696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.48376  13.587   4.6740  1.4058   3.0210  0.17951  1.5072  0.36176 0.037207</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.48742  14.238   4.5419  1.5814   3.4260  0.15897  1.4036  0.46398 0.053009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.83651  36.687  12.0250  3.6938   7.8842  1.42720  2.1045  0.86295 0.056383</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   matureLA    oldLA     LAI   litter carbon_storage carbon_biometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.17978  0.28820 0.53607   5.8215     1.0865e-01      2.4316e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  6.71160 11.94500 1.69800 163.2200     5.1441e+02      0.0000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.16600  0.27117 0.49786   6.2906     2.1250e-07      1.8379e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.12059  0.20397 0.36176   3.1377     9.2530e-02      2.4891e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.15466  0.25631 0.46398   2.8111     1.0756e-01      3.2082e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.30418  0.50239 0.72014   5.0084     1.3041e-01      2.0532e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   multiplier_seed hurt NPPneg                  s_name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               1    0      0       Lecythis_poiteaui</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               1    0      0         Abarema_jupunba</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               1    0      0 Couepia_caryophylloides</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               1    0      0    Theobroma_subincanum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               1    0      0   Cyrillopsis_paraensis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               1    0      0       Bocoa_prouacensis</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

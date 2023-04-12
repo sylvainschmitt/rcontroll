@@ -81,6 +81,7 @@
 <span>  <span class="va">daily</span>,</span>
 <span>  lidar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  forest <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  thin <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -124,6 +125,11 @@ corresponding to a simulation in memory without saved intermediary files.</p></d
 (default NULL).</p></dd>
 
 
+<dt>load</dt>
+<dd><p>bool. TROLL outputs are loaded in R memory, if not only the path
+to the outputs is kept.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>bool. Show TROLL outputs in the console.</p></dd>
 
@@ -164,6 +170,7 @@ thinning.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Object of class : trollsim </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Name : test </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Path :  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> In memory : TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Extended : TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> From data : FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lidar simulation : FALSE </span>

@@ -82,8 +82,9 @@
 <span>  <span class="va">daily</span>,</span>
 <span>  lidar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  forest <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cores <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  thin <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -130,13 +131,18 @@ corresponding to a simulation in memory without saved intermediary files.</p></d
 (default NULL).</p></dd>
 
 
-<dt>verbose</dt>
-<dd><p>bool. Show TROLL outputs in the console.</p></dd>
+<dt>load</dt>
+<dd><p>bool. TROLL outputs are loaded in R memory, if not only the path
+to the outputs is kept.</p></dd>
 
 
 <dt>cores</dt>
 <dd><p>int. Number of cores for parallelization, if NULL available
 cores - 1 (default NULL).</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>bool. Show TROLL outputs in the console.</p></dd>
 
 
 <dt>overwrite</dt>
@@ -177,8 +183,9 @@ thinning.</p></dd>
 <span class="r-in"><span>  species <span class="op">=</span> <span class="va">TROLLv3_species</span>,</span></span>
 <span class="r-in"><span>  climate <span class="op">=</span> <span class="va">TROLLv3_climatedaytime12</span>,</span></span>
 <span class="r-in"><span>  daily <span class="op">=</span> <span class="va">TROLLv3_daytimevar</span>,</span></span>
-<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">F</span>,</span></span>
+<span class="r-in"><span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  cores <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

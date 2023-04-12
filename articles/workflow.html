@@ -221,6 +221,7 @@ to see the TROLL log directly in the console.</p>
 <span><span class="co">#&gt; Object of class : trollsim </span></span>
 <span><span class="co">#&gt; Name : test </span></span>
 <span><span class="co">#&gt; Path :  </span></span>
+<span><span class="co">#&gt; In memory : TRUE </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
 <span><span class="co">#&gt; Lidar simulation : FALSE </span></span>
@@ -275,8 +276,10 @@ change the legend position.</p>
 patterns using <code>autoplot</code> and <code>what</code> defined on
 <code>distribution</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"distribution"</span>,</span>
-<span>                    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dbh"</span>, <span class="st">"height"</span>, <span class="st">"LA"</span>, <span class="st">"LMA"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>,</span>
+<span>  what <span class="op">=</span> <span class="st">"distribution"</span>,</span>
+<span>  variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dbh"</span>, <span class="st">"height"</span>, <span class="st">"LA"</span>, <span class="st">"LMA"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre></div>
 <p><img src="workflow_files/figure-html/fullsimG3-1.png" width="576"></p>
 </div>
@@ -308,8 +311,9 @@ number of iterations to be kept to reduce the output size.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span></span>
 <span><span class="co">#&gt; Object of class : trollstack </span></span>
-<span><span class="co">#&gt; Name : seed50000 </span></span>
-<span><span class="co">#&gt; Path : /tmp/RtmpsxiPde/rcontroll/teststack </span></span>
+<span><span class="co">#&gt; Name : teststack </span></span>
+<span><span class="co">#&gt; Path :  </span></span>
+<span><span class="co">#&gt; In memory : TRUE </span></span>
 <span><span class="co">#&gt; Number of simulations : 2 </span></span>
 <span><span class="co">#&gt; Extended : TRUE </span></span>
 <span><span class="co">#&gt; From data : FALSE </span></span>
@@ -405,8 +409,9 @@ show aboveground biomass (agb) temporal trajectory:</p>
 <span>  name <span class="op">=</span> <span class="st">"dynamic"</span>,</span>
 <span>  variables <span class="op">=</span> <span class="st">"height_ct"</span>,</span>
 <span>  global <span class="op">=</span> <span class="fu"><a href="../reference/update_parameters.html">update_parameters</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>,</span>
-<span>                             nbiter <span class="op">=</span> <span class="fl">12</span> <span class="op">*</span> <span class="fl">100</span>,</span>
-<span>                             extent_visual <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    nbiter <span class="op">=</span> <span class="fl">12</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>    extent_visual <span class="op">=</span> <span class="fl">100</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  species <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">species</span>,</span>
 <span>  climate <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">climate</span>,</span>
 <span>  daily <span class="op">=</span> <span class="va">TROLLv3_output</span><span class="op">@</span><span class="va">inputs</span><span class="op">$</span><span class="va">daily</span>,</span>
