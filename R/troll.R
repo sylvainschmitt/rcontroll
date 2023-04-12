@@ -19,6 +19,8 @@ NULL
 #'   (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
 #'   (default NULL).
+#' @param load bool. TROLL outputs are loaded in R memory, if not only the path
+#'   to the outputs is kept.
 #' @param verbose bool. Show TROLL outputs in the console.
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
@@ -55,6 +57,7 @@ troll <- function(name = NULL,
                   daily,
                   lidar = NULL,
                   forest = NULL,
+                  load = TRUE,
                   verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
@@ -71,6 +74,7 @@ troll <- function(name = NULL,
       daily = daily,
       lidar = lidar,
       forest = forest,
+      load = load,
       verbose = verbose,
       overwrite = overwrite,
       thin = thin
@@ -88,12 +92,14 @@ troll <- function(name = NULL,
                          daily,
                          lidar = NULL,
                          forest = NULL,
+                         load = TRUE,
                          verbose = TRUE,
                          overwrite = TRUE,
                          thin = NULL) {
   # check all inputs
-  if (!all(unlist(lapply(list(overwrite), class)) == "logical")) {
-    stop("overwrite should be logical.")
+  if (!all(unlist(lapply(list(verbose, load, overwrite), 
+                         class)) == "logical")) {
+    stop("verbose, load, and overwrite should be logical.")
   }
   if (!all(unlist(lapply(list(name, path), class)) %in% c("character",
                                                           "NULL"))) {
@@ -133,6 +139,9 @@ troll <- function(name = NULL,
   if (is.null(path)) {
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
+  }
+  if(tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.")
   }
   if (!is.null(path)) {
     path <- normalizePath(path)
@@ -221,13 +230,14 @@ troll <- function(name = NULL,
   })
 
   # loading outputs
-  rm(list = setdiff(ls(), c("name", "path", "thin", "tmp"))) 
-  invisible(gc())
-  sim <- load_output(name, file.path(path, name), thin = thin)
+  sim <- trollsim(name = name, path = file.path(path, name), mem = FALSE)
+  if (load) {
+    sim <- load_sim(sim)
+  }
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()
   }
-  
+
   return(sim)
 }

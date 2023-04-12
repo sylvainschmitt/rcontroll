@@ -7,6 +7,7 @@
 trollsim(
   name = character(),
   path = character(),
+  mem = logical(),
   parameters = numeric(),
   inputs = list(),
   log = character(),
@@ -20,6 +21,8 @@ trollsim(
 \item{name}{char. Simulation name.}
 
 \item{path}{char. Path to the simulation.}
+
+\item{mem}{bool. Is the simulation in memory, see load_sim.}
 
 \item{parameters}{numeric. Parameters of the simulation (general inputs).}
 

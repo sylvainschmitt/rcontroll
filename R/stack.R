@@ -25,9 +25,11 @@ NULL
 #'   (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
 #'   (default NULL).
-#' @param verbose bool. Show TROLL outputs in the console.
+#' @param load bool. TROLL outputs are loaded in R memory, if not only the path
+#'   to the outputs is kept.
 #' @param cores int. Number of cores for parallelization, if NULL available
 #'   cores - 1 (default NULL).
+#' @param verbose bool. Show TROLL outputs in the console.
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no
@@ -57,8 +59,9 @@ NULL
 #'   species = TROLLv3_species,
 #'   climate = TROLLv3_climatedaytime12,
 #'   daily = TROLLv3_daytimevar,
-#'   verbose = F,
+#'   load = TRUE,
 #'   cores = 2,
+#'   verbose = FALSE,
 #'   thin = c(1, 5, 10)
 #' )
 #' }
@@ -72,8 +75,9 @@ stack <- function(name = NULL,
                   daily,
                   lidar = NULL,
                   forest = NULL,
-                  verbose = TRUE,
+                  load = TRUE,
                   cores = NULL,
+                  verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
   # cores
@@ -110,6 +114,9 @@ stack <- function(name = NULL,
   if (is.null(path)) {
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
+  }
+  if(tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.")
   }
   if (name %in% list.dirs(path, full.names = FALSE)[-1]) {
     if (!overwrite) {
@@ -170,6 +177,7 @@ stack <- function(name = NULL,
         daily = daily[[sim]],
         lidar = lidar[[sim]],
         forest = forest[[sim]],
+        load = load,
         verbose = verbose,
         overwrite = overwrite,
         thin = thin
@@ -181,51 +189,16 @@ stack <- function(name = NULL,
     cat('\n')
   }
   close(pb)
-  names(stack_res) <- simulations
-  stack_res <- trollstack(
-    name = stack_res[[1]]@name,
-    path = path_o,
-    parameters = stack_res[[1]]@parameters,
-    inputs = list(
-      global = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "global") %>%
-        bind_rows(.id = "simulation"),
-      species = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "species") %>%
-        bind_rows(.id = "simulation"),
-      climate = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "climate") %>%
-        bind_rows(.id = "simulation"),
-      daily = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "daily") %>%
-        bind_rows(.id = "simulation"),
-      forest = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "forest") %>%
-        bind_rows(.id = "simulation"),
-      lidar = lapply(stack_res, slot, "inputs") %>%
-        lapply(`[[`, "lidar") %>%
-        bind_rows(.id = "simulation")
-    ),
-    log = paste(lapply(stack_res, slot, "log")),
-    forest = lapply(stack_res, slot, "forest") %>%
-      bind_rows(.id = "simulation"),
-    ecosystem = lapply(stack_res, slot, "ecosystem") %>%
-      bind_rows(.id = "simulation"),
-    species = lapply(stack_res, slot, "species") %>%
-      bind_rows(.id = "simulation"),
-    las = lapply(stack_res, slot, "las")
-  )
-
-  if (nrow(stack_res@inputs$lidar) == 0) {
-    stack_res@las <- list()
+  
+  
+  # loading outputs
+  stack_res <- trollstack(name = name, path = path_o, mem = FALSE)
+  if (load) {
+    stack_res <- load_sim(stack_res)
   }
-  if (nrow(stack_res@inputs$lidar) > 0) {
-    stack_res@las <- lapply(stack_res@las, `[[`, 1)
-  }
-
-  # unlink stack path with tmp
   if (tmp) {
     unlink(path_o)
+    stack_res@path <- character()
   }
 
   return(stack_res)

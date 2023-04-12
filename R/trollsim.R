@@ -8,6 +8,7 @@ NULL
 #'
 #' @slot name char. Simulation name.
 #' @slot path char. Path to the simulation.
+#' @slot mem bool. Is the simulation in memory, see load_sim.
 #' @slot parameters numeric. Parameters of the simulation (general inputs).
 #' @slot inputs list. Simulation inputs (species, climate, daily, forest,lidar).
 #' @slot log chr. Simulation log.
@@ -25,6 +26,7 @@ setClass(
   representation(
     name = "character",
     path = "character",
+    mem = "logical",
     parameters = "numeric",
     inputs = "list",
     log = "character",
@@ -36,6 +38,7 @@ setClass(
   prototype(
     name = character(),
     path = character(),
+    mem = logical(),
     parameters = numeric(),
     inputs = list(),
     log = character(),
@@ -52,6 +55,7 @@ setClass(
 #'
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.
+#' @param mem bool. Is the simulation in memory, see load_sim.
 #' @param parameters numeric. Parameters of the simulation (general inputs).
 #' @param inputs list. Simulation inputs (species, climate, daily,
 #'   forest,lidar).
@@ -68,6 +72,7 @@ setClass(
 #' @rdname trollsim
 trollsim <- function(name = character(),
                      path = character(),
+                     mem = logical(),
                      parameters = numeric(),
                      inputs = list(),
                      log = character(),
@@ -78,6 +83,7 @@ trollsim <- function(name = character(),
   return(new("trollsim",
     name = name,
     path = path,
+    mem = mem,
     parameters = parameters,
     inputs = inputs,
     log = log,

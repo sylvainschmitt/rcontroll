@@ -14,8 +14,9 @@ stack(
   daily,
   lidar = NULL,
   forest = NULL,
-  verbose = TRUE,
+  load = TRUE,
   cores = NULL,
+  verbose = TRUE,
   overwrite = TRUE,
   thin = NULL
 )
@@ -42,10 +43,13 @@ corresponding to a simulation in memory without saved intermediary files.}
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
 
-\item{verbose}{bool. Show TROLL outputs in the console.}
+\item{load}{bool. TROLL outputs are loaded in R memory, if not only the path
+to the outputs is kept.}
 
 \item{cores}{int. Number of cores for parallelization, if NULL available
 cores - 1 (default NULL).}
+
+\item{verbose}{bool. Show TROLL outputs in the console.}
 
 \item{overwrite}{bool. Overwrite previous outputs.}
 
@@ -79,8 +83,9 @@ stack(
   species = TROLLv3_species,
   climate = TROLLv3_climatedaytime12,
   daily = TROLLv3_daytimevar,
-  verbose = F,
+  load = TRUE,
   cores = 2,
+  verbose = FALSE,
   thin = c(1, 5, 10)
 )
 }

@@ -13,6 +13,7 @@ troll(
   daily,
   lidar = NULL,
   forest = NULL,
+  load = TRUE,
   verbose = TRUE,
   overwrite = TRUE,
   thin = NULL
@@ -37,6 +38,9 @@ corresponding to a simulation in memory without saved intermediary files.}
 
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
 (default NULL).}
+
+\item{load}{bool. TROLL outputs are loaded in R memory, if not only the path
+to the outputs is kept.}
 
 \item{verbose}{bool. Show TROLL outputs in the console.}
 

@@ -26,10 +26,10 @@ load_stack <- function(name,
     stop("name and path should be character.")
   }
 
-  simulations <- list.files(path = file.path(path, name))
+  simulations <- list.files(path = file.path(path))
   stack_res <- lapply(simulations, function(sim) {
     load_output(sim,
-      file.path(path, name, sim),
+      file.path(path, sim),
       thin = thin
     )
   })
@@ -37,6 +37,7 @@ load_stack <- function(name,
   stack_res <- trollstack(
     name = name,
     path = path,
+    mem = TRUE,
     parameters = stack_res[[1]]@parameters,
     inputs = list(
       global = lapply(stack_res, slot, "inputs") %>%

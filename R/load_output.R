@@ -118,6 +118,7 @@ load_output <- function(name,
     trollsim(
       name = name,
       path = path,
+      mem = TRUE,
       parameters = parameters,
       inputs = inputs,
       log = log,

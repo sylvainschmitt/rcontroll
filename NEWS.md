@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9064
+
+- improving memory usage
+
 # rcontroll 0.1.0.9063
 
 - fixed stack with batch foreach 

@@ -19,6 +19,7 @@ setClass(
 #'
 #' @param name char. Simulation name.
 #' @param path char. Path to the simulation.
+#' @param mem bool. Is the simulation in memory, see load_sim.
 #' @param parameters numeric. Parameters of the simulation (general inputs).
 #' @param inputs list. Simulation inputs (species, climate, daily,
 #'   forest,lidar).
@@ -35,6 +36,7 @@ setClass(
 #' @rdname trollstack
 trollstack <- function(name = character(),
                        path = character(),
+                       mem = logical(),
                        parameters = numeric(),
                        inputs = list(),
                        log = character(),
@@ -45,6 +47,7 @@ trollstack <- function(name = character(),
   return(new("trollstack",
     name = name,
     path = path,
+    mem = mem,
     parameters = parameters,
     inputs = inputs,
     log = log,

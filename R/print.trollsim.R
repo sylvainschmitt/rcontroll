@@ -25,6 +25,7 @@ setMethod("print", "trollsim", function(x, ...) {
   cat("Object of class :", class(x)[1], "\n")
   cat("Name :", x@name, "\n")
   cat("Path :", x@path, "\n")
+  cat("In memory :", x@mem, "\n")
   if (inherits(x, "trollstack")) {
     cat("Number of simulations :",
         length(unique(x@inputs$global$simulation)), "\n")
