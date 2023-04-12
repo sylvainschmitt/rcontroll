@@ -49,18 +49,21 @@ generate_climate <- function(x, y, tz,
                              daytime_start = 7,
                              daytime_end = 19) {
   # tidytrick
-  . <- DayTimeVapourPressureDeficitVPDbasic <- DaytimeMeanIrradiance <- NULL
-  DaytimeMeanTemperature <- DaytimeMeanVapourPressureDeficit <- NULL
-  MeanIrradiance <- MeanIrradiance_Daytime <- NightTemperature <- Rainfall <- NULL
-  SaturatedVapourPressure <- Temperature <- Temperature_Daytime <- NULL
-  Temperature_Night <- Timeperiod <- VaporPressureDeficit <- NULL
-  VaporPressureDeficit_Daytime <- VapourPressure <- NULL
-  VapourPressureDeficitVPDbasic_Daytime <- WindSpeed <- d2m <- NULL
+  . <- DayTimeVapourPressureDeficitVPDbasic <- NULL # nolint
+  DaytimeMeanIrradiance <- NULL # nolint
+  DaytimeMeanTemperature <- DaytimeMeanVapourPressureDeficit <- NULL # nolint
+  MeanIrradiance <- MeanIrradiance_Daytime <- NULL # nolint
+  NightTemperature <- Rainfall <- NULL # nolint
+  SaturatedVapourPressure <- Temperature <- Temperature_Daytime <- NULL # nolint
+  Temperature_Night <- Timeperiod <- VaporPressureDeficit <- NULL # nolint
+  VaporPressureDeficit_Daytime <- VapourPressure <- NULL # nolint
+  VapourPressureDeficitVPDbasic_Daytime <- WindSpeed <- d2m <- NULL # nolint
   data <- daytimevalue <- NULL
   ddeg <- endtime <- monthlyvalue <- psat <- random <- seasonal <- NULL
   sp <- sp_trans <- NULL
-  ssrd <- ssrd_trans <- starttime <- t2m <- tdeg <- timestep <- tp <- NULL
-  tp_trans <- NULL
+  ssrd <- ssrd_trans <- starttime <- t2m <- tdeg <- NULL # nolint
+  timestep <- tp <- NULL # nolint
+  tp_trans <- NULL 
   trend <- u10 <- v10 <- value <- vardaytime_T <- vardaytime_light <- NULL
   vardaytime_vpd <- NULL
   variable <- vp <- vpd <- windspeed <- M <- NULL
@@ -71,10 +74,10 @@ generate_climate <- function(x, y, tz,
     gather("variable", "value") %>%
     mutate(date = as_datetime(terra::time(era5_hr_r))) %>% 
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    select(-t) %>% 
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
+    select(-t) %>%
+    separate(variable, c("variable", "expver"), sep = "_expver=") %>%
     group_by(date, variable) %>% 
-    summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
+    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>% 
     spread(variable, value) %>% 
     arrange(date)
   rm(era5_hr_r)

@@ -3790,7 +3790,6 @@ void trollCpp(
   
   CloseOutputs(); // new in v.3.1: Close and clear outputs, maybe not necessary as main function terminates shortly after, but maybe it ensures a cleaner communication with file system/within Rcpp
   FreeMem(); //Free dynamic memory  //! added in oct2013
-  Rcout << "Memory free." << endl ;
 #ifdef easyMPI
   MPI::Finalize();
 #endif

@@ -106,8 +106,8 @@ autogif <- function(name = NULL,
 .troll_to_gif <- function(name,
                        path,
                        variables) {
-  LAI <- height <- height_spikefree <- iter <- NULL
-  ratio_NPP_GPP <- ratio_height_Ct <- sp_lab <- NULL
+  LAI <- height <- height_spikefree <- iter <- NULL # nolint
+  ratio_NPP_GPP <- ratio_height_Ct <- sp_lab <- NULL # nolint
   results <- list()
   slice <- vroom(file.path(path, name,
                            paste0(name, "_0_visual_slice.txt")),

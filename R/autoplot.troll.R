@@ -41,7 +41,7 @@ NULL
 #' autoplot(TROLLv3_output)
 #'
 #' @export
-setMethod("autoplot", "trollsim", function(object,
+setMethod("autoplot", "trollsim", function(object, # nolint
                                            what = "temporal",
                                            variables = NULL,
                                            species = NULL,

@@ -13,7 +13,7 @@
 # data("TROLLv3_climatedaytime12")
 # data("TROLLv3_daytimevar")
 # TROLLv3_output <- troll(name = "test",
-#                         path = "/home/sylvain/Documents/ECOFOG/",
+#                         path = "/home/sschmitt/Documents/",
 #                         global = generate_parameters(
 #                           rows = 100,
 #                           cols = 100,

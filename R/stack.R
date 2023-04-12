@@ -148,7 +148,7 @@ stack <- function(name = NULL,
     names(lidar) <- simulations
   }
   if (tmp) {
-    sim_path <- lapply(simulations, function(x) NULL)
+    sim_path <- lapply(simulations, function(x) path_o)
     names(sim_path) <- simulations
   } else {
     sim_path <- lapply(simulations, function(x) path_o)
