@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rcontroll</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -76,7 +76,7 @@
       </tr><tr><td>
           <p><code><a href="generate_parameters.html">generate_parameters()</a></code> </p>
         </td>
-        <td><p>Generate parameters</p></td>
+        <td><p>Generate global parameters</p></td>
       </tr><tr><td>
           <p><code><a href="generate_lidar.html">generate_lidar()</a></code> </p>
         </td>
@@ -84,11 +84,11 @@
       </tr><tr><td>
           <p><code><a href="update_parameters.html">update_parameters()</a></code> </p>
         </td>
-        <td><p>Function to update parameters from a TROLL outputs for a next simulation.</p></td>
+        <td><p>Update global parameters</p></td>
       </tr><tr><td>
           <p><code><a href="get_forest.html">get_forest()</a></code> </p>
         </td>
-        <td><p>Function to get a forest inventory from TROLL outputs.</p></td>
+        <td><p>Extract forest inventory</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="run-simulations">Run simulations <a href="#run-simulations" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -96,11 +96,11 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="troll.html">troll()</a></code> </p>
         </td>
-        <td><p>troll</p></td>
+        <td><p>Run a <code>TROLL</code> simulation</p></td>
       </tr><tr><td>
           <p><code><a href="stack.html">stack()</a></code> </p>
         </td>
-        <td><p>Stack</p></td>
+        <td><p>Run a stack of <code>TROLL</code> simulations</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="analyze-simulations">Analyze simulations <a href="#analyze-simulations" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -108,23 +108,19 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="load_sim.html">load_sim()</a></code> </p>
         </td>
-        <td><p>Function to load in memory outputs from a TROLL simulation.</p></td>
+        <td><p>Load outputs from simulation or stack of simulations</p></td>
       </tr><tr><td>
           <p><code><a href="load_output.html">load_output()</a></code> </p>
         </td>
-        <td><p>Function to load outputs from a TROLL simulation.</p></td>
+        <td><p>Load outputs from simulation</p></td>
       </tr><tr><td>
           <p><code><a href="load_stack.html">load_stack()</a></code> </p>
         </td>
-        <td><p>Function to load a stack of outputs from TROLL simulations.</p></td>
+        <td><p>Load outputs from a stack of simulations</p></td>
       </tr><tr><td>
-          <p><code><a href="print.trollsim.html">print(<i>&lt;trollsim&gt;</i>)</a></code> <code><a href="print.trollsim.html">show(<i>&lt;trollsim&gt;</i>)</a></code> </p>
+          <p><code><a href="print.trollsim.html">print(<i>&lt;trollsim&gt;</i>)</a></code> <code><a href="print.trollsim.html">show(<i>&lt;trollsim&gt;</i>)</a></code> <code><a href="print.trollsim.html">summary(<i>&lt;trollsim&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Function to print or show TROLL outputs.</p></td>
-      </tr><tr><td>
-          <p><code><a href="summary.trollsim.html">summary(<i>&lt;trollsim&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Function to a summary of TROLL outputs.</p></td>
+        <td><p>Print a summary</p></td>
       </tr><tr><td>
           <p><code><a href="autoplot-trollsim-method.html">autoplot(<i>&lt;trollsim&gt;</i>)</a></code> </p>
         </td>
@@ -132,15 +128,15 @@
       </tr><tr><td>
           <p><code><a href="autogif.html">autogif()</a></code> </p>
         </td>
-        <td><p>Make a gif from a TROLL simulation</p></td>
+        <td><p>Create an animation from a TROLL simulation</p></td>
       </tr><tr><td>
           <p><code><a href="get_chm.html">get_chm()</a></code> </p>
         </td>
-        <td><p>Function to get a canopy height model from TROLL outputs with lidar option.</p></td>
+        <td><p>Extract canopy height model</p></td>
       </tr><tr><td>
           <p><code><a href="get_log.html">get_log()</a></code> </p>
         </td>
-        <td><p>Function to get the log from TROLL outputs.</p></td>
+        <td><p>Extract simulation log</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="data">Data <a href="#data" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -148,27 +144,27 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="TROLLv3_climatedaytime12.html">TROLLv3_climatedaytime12</a></code> </p>
         </td>
-        <td><p>TROLL climate parameters over months</p></td>
+        <td><p><code>TROLL</code> climate parameters over months</p></td>
       </tr><tr><td>
           <p><code><a href="TROLLv3_daytimevar.html">TROLLv3_daytimevar</a></code> </p>
         </td>
-        <td><p>TROLL daytime variation parameters</p></td>
+        <td><p><code>TROLL</code> daytime variation parameters</p></td>
       </tr><tr><td>
           <p><code><a href="TROLLv3_input.html">TROLLv3_input</a></code> </p>
         </td>
-        <td><p>TROLL global parameters</p></td>
+        <td><p><code>TROLL</code> global parameters</p></td>
       </tr><tr><td>
           <p><code><a href="TROLLv3_pointcloud.html">TROLLv3_pointcloud</a></code> </p>
         </td>
-        <td><p>TROLL lidar parameters</p></td>
+        <td><p><code>TROLL</code> lidar parameters</p></td>
       </tr><tr><td>
           <p><code><a href="TROLLv3_output.html">TROLLv3_output</a></code> </p>
         </td>
-        <td><p>TROLL output</p></td>
+        <td><p><code>TROLL</code> output</p></td>
       </tr><tr><td>
           <p><code><a href="TROLLv3_species.html">TROLLv3_species</a></code> </p>
         </td>
-        <td><p>TROLL species parameters</p></td>
+        <td><p><code>TROLL</code> species parameters</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="miscellaneous">Miscellaneous <a href="#miscellaneous" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -176,27 +172,27 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="rcontroll.html">rcontroll</a></code> </p>
         </td>
-        <td><p>rcontroll</p></td>
+        <td><p><code>rcontroll</code>: individual-based forest growth simulator TROLL</p></td>
       </tr><tr><td>
           <p><code><a href="TROLL.version.html">TROLL.version()</a></code> </p>
         </td>
-        <td><p>Function to print TROLL version.</p></td>
+        <td><p><code>TROLL</code> version</p></td>
       </tr><tr><td>
           <p><code><a href="trollsim.html">trollsim()</a></code> </p>
         </td>
-        <td><p>An S4 class to represent TROLL simulations</p></td>
+        <td><p>A <code>TROLL</code> simulations</p></td>
       </tr><tr><td>
           <p><code><a href="trollstack.html">trollstack()</a></code> </p>
         </td>
-        <td><p>An S4 class to represent TROLL stack</p></td>
+        <td><p>A stack of <code>TROLL</code> simulations</p></td>
       </tr><tr><td>
           <p><code><a href="trollsim-class.html">trollsim-class</a></code> </p>
         </td>
-        <td><p>An S4 class to represent TROLL simulations</p></td>
+        <td><p>A <code>TROLL</code> simulations</p></td>
       </tr><tr><td>
           <p><code><a href="trollstack-class.html">trollstack-class</a></code> </p>
         </td>
-        <td><p>An S4 class to represent TROLL stack</p></td>
+        <td><p>A stack of <code>TROLL</code> simulations</p></td>
       </tr><tr><td>
           <p><code><a href="trollCpp.html">trollCpp()</a></code> </p>
         </td>

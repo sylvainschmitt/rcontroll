@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rcontroll</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -62,13 +62,13 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>TROLL climate parameters over months</h1>
+    <h1><code>TROLL</code> climate parameters over months</h1>
     <small class="dont-index">Source: <a href="https://github.com/sylvainschmitt/rcontroll/blob/HEAD/R/TROLLv3_climatedaytime12.R" class="external-link"><code>R/TROLLv3_climatedaytime12.R</code></a></small>
     <div class="hidden name"><code>TROLLv3_climatedaytime12.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Climate parameters used by TROLL model over months.</p>
+    <p>Climate parameters used by <code>TROLL</code> model over months.</p>
     </div>
 
     <div id="ref-usage">
@@ -78,41 +78,50 @@
     <div id="format">
     <h2>Format</h2>
     <p>A data frame with 12 rows and 12 variables:</p><dl><dt>Temperature</dt>
-<dd><p>temperature (degree C)</p></dd>
+<dd><p>monthly average of temperature (degree C)</p></dd>
 
-  <dt>DaytimeMeanTemperature</dt>
-<dd><p>mean day temperature (degree C)</p></dd>
-
-  <dt>NightTemperature</dt>
-<dd><p>night temperature (degree C)</p></dd>
-
-  <dt>Rainfall</dt>
-<dd><p>rainfall (mm)</p></dd>
+<dt>DaytimeMeanTemperature</dt>
+<dd><p>the monthly average of daytime temperature
+(degree C, 7am-7pm)</p></dd>
+ <dt>NightTemperature</dt>
+<dd><p>the monthly average of
+temperature at night  (degree C, 8pm-6am)</p></dd>
+ <dt>Rainfall</dt>
+<dd><p>monthly average
+of cumulative rainfall (cm)</p></dd>
  <dt>WindSpeed</dt>
-<dd><p>wind speed (km/h)</p></dd>
+<dd><p>monthly average of wind speed
+(m/s)</p></dd>
+ <dt>DaytimeMeanIrradiance</dt>
+<dd><p>monthly average of cumulative solar
+irradiance averaged over one day (W/m2, 7am-7pm)</p></dd>
 
-  <dt>DaytimeMeanIrradiance</dt>
-<dd><p>daytime mean irradiance</p></dd>
+<dt>MeanIrradiance</dt>
+<dd><p>monthly average of cumulative solar irradiance over
+24 hours (W/m2)</p></dd>
+ <dt>SaturatedVapourPressure</dt>
+<dd><p>monthly average of
+saturation vapour pressure (hPa)</p></dd>
+ <dt>VapourPressure</dt>
+<dd><p>monthly average of
+vapour pressur (hPa)</p></dd>
+ <dt>VaporPressureDeficit</dt>
+<dd><p>monthly average of vapour
+pressure deficit (VPD, hPa)</p></dd>
 
-  <dt>MeanIrradiance</dt>
-<dd><p>mean irradiance</p></dd>
+<dt>DayTimeVapourPressureDeficitVPDbasic</dt>
+<dd><p>monthly average of daytime
+vapour pressure deficit (7am-7pm) according to basic formula (hPa)</p></dd>
 
-  <dt>SaturatedVapourPressure</dt>
-<dd><p>saturated vapour pressure (Pa)</p></dd>
-
-  <dt>VapourPressure</dt>
-<dd><p>vapour pressure (Pa)</p></dd>
-
-  <dt>VaporPressureDeficit</dt>
-<dd><p>vapour pressure deficit (VPD, Pa)</p></dd>
-
-  <dt>DayTimeVapourPressureDeficitVPDbasic</dt>
-<dd><p>daytime basic VPD (Pa)</p></dd>
-
-  <dt>DaytimeMeanVapourPressureDeficit</dt>
-<dd><p>daytime mean VPF (Pa)</p></dd>
+<dt>DaytimeMeanVapourPressureDeficit</dt>
+<dd><p>monthly average of daytime vapour
+pressure deficit (7am-7pm) according to advanced formula (hPa)</p></dd>
  
 </dl></div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="generate_climate.html">generate_climate()</a></code>, <a href="TROLLv3_daytimevar.html">TROLLv3_daytimevar</a></p></div>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
