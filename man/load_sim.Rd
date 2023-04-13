@@ -3,20 +3,25 @@
 \name{load_sim}
 \alias{load_sim}
 \alias{load_sim,trollsim-method}
-\title{Function to load in memory outputs from a TROLL simulation.}
+\title{Load outputs from simulation or stack of simulations}
 \usage{
 load_sim(sim, ...)
 
 \S4method{load_sim}{trollsim}(sim, ...)
 }
 \arguments{
-\item{sim}{trollsim.}
+\item{sim}{trollsim or trollstack.}
 
 \item{...}{unused argument.}
 }
 \value{
-An S4 \linkS4class{trollsim} class object.
+An S4 \code{\link[=trollsim]{trollsim()}} or \code{\link[=trollstack]{trollstack()}}  class object.
 }
 \description{
-Function to load in memory outputs from a TROLL simulation.
+\code{load_sim} is a method of \code{\link[=trollsim]{trollsim()}} or \code{\link[=trollstack]{trollstack()}} with wirtten files
+not in R memory to load them into R memory taking advantage of
+\code{\link[=load_output]{load_output()}} and \code{\link[=load_stack]{load_stack()}}.
+}
+\seealso{
+\code{\link[=trollsim]{trollsim()}}, \code{\link[=trollstack]{trollstack()}}, \code{\link[=load_sim]{load_sim()}}, \code{\link[=load_stack]{load_stack()}}
 }

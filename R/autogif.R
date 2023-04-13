@@ -5,25 +5,38 @@
 #' @importFrom vroom vroom
 NULL
 
-#' Make a gif from a TROLL simulation
+#' Create an animation from a TROLL simulation
+#'
+#' `autogif()` uses `ggplot2` and `gganimate` to render an animation from a
+#' TROLL simulation. The animation can include a vertical cut in the forest
+#' structure along the X-axis highlighting either tree species (`variables =
+#' 'species'`), either tree height relative to their maximum height (`variables
+#' = 'height_ct'`), or tree carbon acquisition with net over growth primary
+#' productivity (`variables = 'npp_gpp'`). The animation can also include a top
+#' view of the canopy representing either canopy trees height (`variables =
+#' 'height'`) or total leaf area index per pixel (`variables = 'lai'`).
 #'
 #' @param name char. Model name (if NULL timestamp).
 #' @param path char. Path to save the simulation outputs, the default is null
-#'   corresponding to a simulation in memory without saved intermediary files.
+#'   corresponding to a simulation in memory without saved intermediary files
+#'   (based on temporary files from [option.rcontroll]).
 #' @param variables char. Variables to build as a gif among 'species',
-#'   'height_ct', 'npp_gpp', 'height', or 'lai' (see details).
-#' @param global df. Global parameters.
-#' @param species df. Species parameters.
-#' @param climate df. Climate parameters.
-#' @param daily df. Daily variation parameters.
+#'   'height_ct', 'npp_gpp', 'height', or 'lai'.
+#' @param global df. Global parameters (e.g. [TROLLv3_input] or using
+#'   [generate_parameters()]).
+#' @param species df. Species parameters (e.g. [TROLLv3_species]).
+#' @param climate df. Climate parameters (e.g. [TROLLv3_climatedaytime12]).
+#' @param daily df. Daily variation parameters (e.g. [TROLLv3_daytimevar]).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
-#'   (default NULL).
+#'   (default NULL) (e.g. using [TROLLv3_output] with [get_forest()]).
 #' @param verbose bool. Show TROLL outputs in the console.
 #' @param overwrite bool. Overwrite previous outputs.
 #' @param thin int. Vector of integers corresponding to the iterations to be
 #'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
-#' @return A list of gganimate objects corresponding to chosen outputs.
+#' @return A list of `gganimate` objects corresponding to chosen outputs.
+#'
+#' @seealso [autoplot,trollsim-method]
 #'
 #' @examples
 #' \dontrun{

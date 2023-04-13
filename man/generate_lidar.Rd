@@ -26,12 +26,18 @@ the canopy after a hit.}
 generation.}
 }
 \value{
-A data frame of lidar simulation parameters.
+A [data.frame)] of lidar simulation parameters.
+
+[data.frame)]: R:data.frame)
 }
 \description{
-Function to generate the lidar parameters used in TROLL lidar
-  simulation. All parameters have a default value from literature.
+\code{generate_lidar} generate the lidar parameters used in \code{TROLL} lidar
+simulation. All parameters have a default value from literature.
 }
 \examples{
 generate_lidar(iter_pointcloud_generation = 3600)
+
+}
+\seealso{
+\code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}
 }

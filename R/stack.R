@@ -9,33 +9,45 @@
 #' @importFrom tidyr unnest
 NULL
 
-#' Stack
+#' Run a stack of `TROLL` simulations
 #'
-#' Run a TROLL stack.
+#' `stack()` run a stack of `TROLL` simulation. The minimal set of input files
+#' required for a `TROLL` run include (i) climate data for the focal location
+#' (`climate` and `daily`), (ii) functional traits for the list of species at
+#' the focal location (`species`), and (iii) global parameters (`global`), i.e.
+#' parameters that do not depend on species identity.
 #'
-#' @param name char. Stack name (if NULL timestamp).
-#' @param simulations char. Simulation names.
-#' @param path char. Path to save the simulation outputs, the default is null
-#'   corresponding to a simulation in memory without saved intermediary files.
-#' @param global df. Global parameters.
-#' @param species df. Species parameters.
-#' @param climate df. Climate parameters.
-#' @param daily df. Daily variation parameters.
-#' @param lidar df. Lidar simulation parameters, if null no computed
-#'   (default NULL).
+#' @param name char. Stack name (if NULL the timestamp will be used).
+#' @param simulations char. Simulation names (corrsponding to simulation indexes
+#'   in orresponding tables, see example below).
+#' @param path char. Path to save the stack of simulation outputs (parent
+#'   folder), the default is null corresponding to a simulation in memory
+#'   without saved intermediary files (based on temporary files from
+#'   [option.rcontroll]).
+#' @param global df. Global parameters (e.g. [TROLLv3_input] or using
+#'   [generate_parameters()]).
+#' @param species df. Species parameters (e.g. [TROLLv3_species]).
+#' @param climate df. Climate parameters (e.g. [TROLLv3_climatedaytime12]).
+#' @param daily df. Daily variation parameters (e.g. [TROLLv3_daytimevar]).
+#' @param lidar df. Lidar simulation parameters (e.g. using [generate_lidar()]),
+#'   if null not computed (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
-#'   (default NULL).
+#'   (default NULL) (e.g. using [TROLLv3_output] with [get_forest()]).
 #' @param load bool. TROLL outputs are loaded in R memory, if not only the path
-#'   to the outputs is kept.
+#'   and name of the stack of simulations is kept in the resulting
+#'   [trollstack()] object but the content can be accessed later using the
+#'   [load_sim()] method.
 #' @param cores int. Number of cores for parallelization, if NULL available
-#'   cores - 1 (default NULL).
-#' @param verbose bool. Show TROLL outputs in the console.
-#' @param overwrite bool. Overwrite previous outputs.
+#'   cores - 1 (default NULL). You can use [parallel::detectCores()] to know
+#'   available cores on your machine.
+#' @param verbose bool. Show TROLL log in the console.
+#' @param overwrite bool. Overwrite previous outputs folder and files.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
-#' @return A trollstack object.
+#' @return A [trollstack()] object.
+#'
+#' @seealso [troll()]
 #'
 #' @export
 #'

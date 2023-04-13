@@ -13,7 +13,8 @@
 )
 }
 \arguments{
-\item{object}{TROLL simulation or stack.}
+\item{object}{TROLL simulation or stack (see \code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}},
+\code{\link[=trollsim]{trollsim()}} and \code{\link[=trollstack]{trollstack()}}).}
 
 \item{what}{char. What to plot: "temporal", "spatial" "distribution", or
 "lidar". "temporal" is for temporal trajectories of the whole ecosystem or
@@ -32,12 +33,13 @@ specify which forest to plot. "initial" or "final" can be used. NULL is
 converted to "final".}
 }
 \value{
-A ggplot2 object.
+A \code{ggplot2} object.
 }
 \description{
-This is a method to plot TROLL simulations, including either temporal
-trajectories of whole ecosystem or species metrics, the initial or final
-pattern observed in the forest community, or lidar outputs. Metrics includes
+\code{autoplot()} is a method that takes advantage of \code{ggplot2} to plot TROLL
+simulations. \code{autoplot()} can plot either temporal trajectories of whole
+ecosystem or species metrics (\code{what = 'temporal'}), the initial or final
+pattern observed in the forest community (\code{what = 'spatial'} or \code{what = 'distribution'}), or lidar outputs (\code{what = 'lidar'}). Metrics includes
 abundances of individuals above 1cm (N), above 10cm (N10), and above 30cm
 (N30), aboveground biomass (AGB), basal area of individuals above 1cm (BA),
 and above 10cm (BA10), gross primary production (GPP), net primary production
@@ -49,4 +51,7 @@ litterfall.
 data("TROLLv3_output")
 autoplot(TROLLv3_output)
 
+}
+\seealso{
+\code{\link[=autogif]{autogif()}}, \link{summary,trollsim-method}
 }

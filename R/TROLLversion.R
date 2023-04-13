@@ -1,16 +1,19 @@
 #' @include zzz.R
 NULL
 
-#' Function to print TROLL version.
+#' `TROLL` version
 #'
-#' @return Print TROLL version in console.
+#' `TROLL.version()` prints `TROLL` version.
+#'
+#' @return `TROLL` version in console.
 #'
 #' @examples
 #'
 #' TROLL.version()
 #'
-#' @export
+#' @seealso [option.rcontroll]
 #'
+#' @export
 TROLL.version <- function() { # nolint
   getOption("rcontroll.troll")
 }

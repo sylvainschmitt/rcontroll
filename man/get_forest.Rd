@@ -3,26 +3,29 @@
 \name{get_forest}
 \alias{get_forest}
 \alias{get_forest,trollsim-method}
-\title{Function to get a forest inventory from TROLL outputs.}
+\title{Extract forest inventory}
 \usage{
 get_forest(sim, ...)
 
 \S4method{get_forest}{trollsim}(sim, ...)
 }
 \arguments{
-\item{sim}{trollsim.}
+\item{sim}{trollsim or trollstack.}
 
 \item{...}{unused argument.}
 }
 \value{
-data.frame
+\code{\link[=data.frame]{data.frame()}}
 }
 \description{
-Function to get a forest inventory from TROLL outputs.
+\code{get_forest()} extract the forest inventory from \code{TROLL} outputs.
 }
 \examples{
 
 data("TROLLv3_output")
 head(get_forest(TROLLv3_output))
 
+}
+\seealso{
+\code{\link[=trollsim]{trollsim()}}, \code{\link[=trollstack]{trollstack()}}, \code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}
 }

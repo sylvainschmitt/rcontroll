@@ -4,31 +4,38 @@
 #' @importFrom utils timestamp capture.output
 NULL
 
-#' troll
+#' Run a `TROLL` simulation
 #'
-#' Run a TROLL simulation.
+#' `troll()` run a `TROLL` simulation. The minimal set of input files required
+#' for a `TROLL` run include (i) climate data for the focal location (`climate`
+#' and `daily`), (ii) functional traits for the list of species at the focal
+#' location (`species`), and (iii) global parameters (`global`), i.e. parameters
+#' that do not depend on species identity.
 #'
-#' @param name char. Model name (if NULL timestamp).
+#' @param name char. Model name (if NULL the timestamp will be used).
 #' @param path char. Path to save the simulation outputs, the default is null
-#'   corresponding to a simulation in memory without saved intermediary files.
-#' @param global df. Global parameters.
-#' @param species df. Species parameters.
-#' @param climate df. Climate parameters.
-#' @param daily df. Daily variation parameters.
-#' @param lidar df. Lidar simulation parameters, if null no computed
-#'   (default NULL).
+#'   corresponding to a simulation in memory without saved intermediary files
+#'   (based on temporary files from [option.rcontroll]).
+#' @param global df. Global parameters (e.g. [TROLLv3_input] or using
+#'   [generate_parameters()]).
+#' @param species df. Species parameters (e.g. [TROLLv3_species]).
+#' @param climate df. Climate parameters (e.g. [TROLLv3_climatedaytime12]).
+#' @param daily df. Daily variation parameters (e.g. [TROLLv3_daytimevar]).
+#' @param lidar df. Lidar simulation parameters (e.g. using [generate_lidar()]),
+#'   if null not computed (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
-#'   (default NULL).
+#'   (default NULL) (e.g. using [TROLLv3_output] with [get_forest()]).
 #' @param load bool. TROLL outputs are loaded in R memory, if not only the path
-#'   to the outputs is kept.
-#' @param verbose bool. Show TROLL outputs in the console.
-#' @param overwrite bool. Overwrite previous outputs.
+#'   and name of the simulations is kept in the resulting [trollsim()] object
+#'   but the content can be accessed later using the [load_sim()] method.
+#' @param verbose bool. Show TROLL log in the console.
+#' @param overwrite bool. Overwrite previous outputs folder and files.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
+#' @return A [trollsim()] object.
 #'
-#' @return A trollsim object.
+#' @seealso [stack()]
 #'
 #' @export
 #'

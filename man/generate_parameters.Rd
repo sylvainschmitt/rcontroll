@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_parameters.R
 \name{generate_parameters}
 \alias{generate_parameters}
-\title{Generate parameters}
+\title{Generate global parameters}
 \usage{
 generate_parameters(
   cols = 200,
@@ -220,11 +220,15 @@ equal 0.}
 A data frame of global parameters.
 }
 \description{
-Function to generate the global parameters used in the TROLL simulation. All
-parameters have a default value used in French Guiana simulations.
+\code{generate_parameters()} generate the global parameters used in the \code{TROLL}
+simulation. All parameters have a default value used in French Guiana
+simulations.
 }
 \examples{
 
 generate_parameters(nbiter = 12)
 
+}
+\seealso{
+\code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}, \code{\link[=update_parameters]{update_parameters()}}
 }

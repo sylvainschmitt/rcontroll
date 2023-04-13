@@ -1,7 +1,8 @@
-#' Generate parameters
+#' Generate global parameters
 #'
-#' Function to generate the global parameters used in the TROLL simulation. All
-#' parameters have a default value used in French Guiana simulations.
+#' `generate_parameters()` generate the global parameters used in the `TROLL`
+#' simulation. All parameters have a default value used in French Guiana
+#' simulations.
 #'
 #' @param cols num. Number of columns.
 #' @param rows num. Number of rows.
@@ -90,12 +91,13 @@
 #'
 #' @return A data frame of global parameters.
 #'
-#' @export
+#' @seealso [troll()], [stack()], [update_parameters()]
 #'
 #' @examples
 #'
 #' generate_parameters(nbiter = 12)
 #'
+#' @export
 generate_parameters <- function(cols = 200,
                                 rows = 200,
                                 HEIGHT = 70, # nolint

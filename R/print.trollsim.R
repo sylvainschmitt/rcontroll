@@ -1,13 +1,18 @@
 #' @import methods
 NULL
 
-#' Function to print or show TROLL outputs.
+#' Print a summary
+#'
+#' `print()` prints a summary of TROLL simulation or stack of simulations
+#' outputs.
 #'
 #' @param x trollsim or trollstack.
 #' @param object trollsim  or trollstack.
 #' @param ... unused argument.
 #'
 #' @return Print or show in console.
+#'
+#' @seealso [troll()], [stack()], [trollsim()], [trollstack()]
 #'
 #' @examples
 #'
@@ -58,5 +63,11 @@ setMethod("print", "trollsim", function(x, ...) {
 #' @export
 #' @rdname print.trollsim
 setMethod("show", "trollsim", function(object) {
+  print(object)
+})
+
+#' @export
+#' @rdname print.trollsim
+setMethod("summary", "trollsim", function(object, ...) {
   print(object)
 })

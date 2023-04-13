@@ -1,7 +1,10 @@
+# rcontroll 0.1.1.9001
+
+- extended documentation following review
+
 # rcontroll 0.1.0.9065
 
 - new stack in tmp fix & TROLLV3_output update
-
 
 # rcontroll 0.1.0.9064
 

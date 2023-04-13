@@ -3,12 +3,16 @@
 #' @importFrom dplyr filter select
 NULL
 
-#' Function to get a forest inventory from TROLL outputs.
+#' Extract forest inventory
 #'
-#' @param sim trollsim.
+#' `get_forest()` extract the forest inventory from `TROLL` outputs.
+#'
+#' @param sim trollsim or trollstack.
 #' @param ... unused argument.
 #'
-#' @return data.frame
+#' @return [data.frame()]
+#'
+#' @seealso [trollsim()], [trollstack()], [troll()], [stack()]
 #'
 #' @examples
 #'

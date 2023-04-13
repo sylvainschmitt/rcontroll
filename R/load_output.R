@@ -5,23 +5,26 @@
 #' @importFrom lidR readLAS LAS
 NULL
 
-#' Function to load outputs from a TROLL simulation.
+#' Load outputs from simulation
+#'
+#' `load_output` load outputs from `TROLL` simulation files using `TROLL`
+#' simulation `name` and `path`.
 #'
 #' @param name char. Name given to the model output.
 #' @param path char. Path where the model is saved.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
-#' @return An S4 \linkS4class{trollsim} class object.
+#' @return An S4 [trollsim()] class object.
 #'
-#' @export
+#' @seealso [trollsim()], [trollstack()], [load_sim()], [load_stack()]
 #'
 #' @examples
 #' \dontrun{
 #' load_output("test", "./")
 #' }
 #'
+#' @export
 load_output <- function(name,
                         path,
                         thin = NULL) {

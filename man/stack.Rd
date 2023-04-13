@@ -2,7 +2,7 @@
 % Please edit documentation in R/stack.R
 \name{stack}
 \alias{stack}
-\title{Stack}
+\title{Run a stack of \code{TROLL} simulations}
 \usage{
 stack(
   name = NULL,
@@ -22,46 +22,56 @@ stack(
 )
 }
 \arguments{
-\item{name}{char. Stack name (if NULL timestamp).}
+\item{name}{char. Stack name (if NULL the timestamp will be used).}
 
-\item{simulations}{char. Simulation names.}
+\item{simulations}{char. Simulation names (corrsponding to simulation indexes
+in orresponding tables, see example below).}
 
-\item{path}{char. Path to save the simulation outputs, the default is null
-corresponding to a simulation in memory without saved intermediary files.}
+\item{path}{char. Path to save the stack of simulation outputs (parent
+folder), the default is null corresponding to a simulation in memory
+without saved intermediary files (based on temporary files from
+\link{option.rcontroll}).}
 
-\item{global}{df. Global parameters.}
+\item{global}{df. Global parameters (e.g. \link{TROLLv3_input} or using
+\code{\link[=generate_parameters]{generate_parameters()}}).}
 
-\item{species}{df. Species parameters.}
+\item{species}{df. Species parameters (e.g. \link{TROLLv3_species}).}
 
-\item{climate}{df. Climate parameters.}
+\item{climate}{df. Climate parameters (e.g. \link{TROLLv3_climatedaytime12}).}
 
-\item{daily}{df. Daily variation parameters.}
+\item{daily}{df. Daily variation parameters (e.g. \link{TROLLv3_daytimevar}).}
 
-\item{lidar}{df. Lidar simulation parameters, if null no computed
-(default NULL).}
+\item{lidar}{df. Lidar simulation parameters (e.g. using \code{\link[=generate_lidar]{generate_lidar()}}),
+if null not computed (default NULL).}
 
 \item{forest}{df. TROLL with forest input, if null starts from an empty grid
-(default NULL).}
+(default NULL) (e.g. using \link{TROLLv3_output} with \code{\link[=get_forest]{get_forest()}}).}
 
 \item{load}{bool. TROLL outputs are loaded in R memory, if not only the path
-to the outputs is kept.}
+and name of the stack of simulations is kept in the resulting
+\code{\link[=trollstack]{trollstack()}} object but the content can be accessed later using the
+\code{\link[=load_sim]{load_sim()}} method.}
 
 \item{cores}{int. Number of cores for parallelization, if NULL available
-cores - 1 (default NULL).}
+cores - 1 (default NULL). You can use \code{\link[parallel:detectCores]{parallel::detectCores()}} to know
+available cores on your machine.}
 
-\item{verbose}{bool. Show TROLL outputs in the console.}
+\item{verbose}{bool. Show TROLL log in the console.}
 
-\item{overwrite}{bool. Overwrite previous outputs.}
+\item{overwrite}{bool. Overwrite previous outputs folder and files.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no
-thinning.}
+kept to reduce output size, default is NULL and corresponds to no thinning.}
 }
 \value{
-A trollstack object.
+A \code{\link[=trollstack]{trollstack()}} object.
 }
 \description{
-Run a TROLL stack.
+\code{stack()} run a stack of \code{TROLL} simulation. The minimal set of input files
+required for a \code{TROLL} run include (i) climate data for the focal location
+(\code{climate} and \code{daily}), (ii) functional traits for the list of species at
+the focal location (\code{species}), and (iii) global parameters (\code{global}), i.e.
+parameters that do not depend on species identity.
 }
 \examples{
 \dontrun{
@@ -90,4 +100,7 @@ stack(
 )
 }
 
+}
+\seealso{
+\code{\link[=troll]{troll()}}
 }

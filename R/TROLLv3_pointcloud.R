@@ -1,10 +1,12 @@
-#' TROLL lidar parameters
+#' `TROLL` lidar parameters
 #'
-#' Lidar parameters definition used by TROLL model for lidar simulations.
+#' Lidar parameters definition used by `TROLL` for lidar simulations.
 #'
 #' @format A data frame with 5 rows and 3 variables: \describe{
-#'   \item{param}{global parameter} \item{value}{value of the parameter}
+#'   \item{param}{lidar parameter} \item{value}{value of the parameter}
 #'   \item{description}{description of the parameter} }
+#'
+#' @seealso [generate_lidar()]
 #'
 "TROLLv3_pointcloud"
 

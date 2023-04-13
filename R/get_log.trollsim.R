@@ -2,15 +2,20 @@
 #' @import methods
 NULL
 
-#' Function to get the log from TROLL outputs.
+#' Extract simulation log
 #'
-#' @param sim trollsim.
+#' `get_forest()` extract the simulation log `TROLL` outputs.
+#'
+#' @param sim trollsim or trollstack.
 #' @param ... unused argument.
 #'
 #' @return the log in the console
 #'
+#' @seealso [trollsim()], [trollstack()], [troll()], [stack()]
+#'
 #' @examples
 #'
+#' data("TROLLv3_output")
 #' get_log(TROLLv3_output)
 #'
 #' @name get_log

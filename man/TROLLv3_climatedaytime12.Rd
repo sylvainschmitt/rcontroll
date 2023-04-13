@@ -3,25 +3,33 @@
 \docType{data}
 \name{TROLLv3_climatedaytime12}
 \alias{TROLLv3_climatedaytime12}
-\title{TROLL climate parameters over months}
+\title{\code{TROLL} climate parameters over months}
 \format{
 A data frame with 12 rows and 12 variables: \describe{
-  \item{Temperature}{temperature (degree C)}
-  \item{DaytimeMeanTemperature}{mean day temperature (degree C)}
-  \item{NightTemperature}{night temperature (degree C)}
-  \item{Rainfall}{rainfall (mm)} \item{WindSpeed}{wind speed (km/h)}
-  \item{DaytimeMeanIrradiance}{daytime mean irradiance}
-  \item{MeanIrradiance}{mean irradiance}
-  \item{SaturatedVapourPressure}{saturated vapour pressure (Pa)}
-  \item{VapourPressure}{vapour pressure (Pa)}
-  \item{VaporPressureDeficit}{vapour pressure deficit (VPD, Pa)}
-  \item{DayTimeVapourPressureDeficitVPDbasic}{daytime basic VPD (Pa)}
-  \item{DaytimeMeanVapourPressureDeficit}{daytime mean VPF (Pa)} }
+\item{Temperature}{monthly average of temperature (degree C)}
+\item{DaytimeMeanTemperature}{the monthly average of daytime temperature
+(degree C, 7am-7pm)} \item{NightTemperature}{the monthly average of
+temperature at night  (degree C, 8pm-6am)} \item{Rainfall}{monthly average
+of cumulative rainfall (cm)} \item{WindSpeed}{monthly average of wind speed
+(m/s)} \item{DaytimeMeanIrradiance}{monthly average of cumulative solar
+irradiance averaged over one day (W/m2, 7am-7pm)}
+\item{MeanIrradiance}{monthly average of cumulative solar irradiance over
+24 hours (W/m2)} \item{SaturatedVapourPressure}{monthly average of
+saturation vapour pressure (hPa)} \item{VapourPressure}{monthly average of
+vapour pressur (hPa)} \item{VaporPressureDeficit}{monthly average of vapour
+pressure deficit (VPD, hPa)}
+\item{DayTimeVapourPressureDeficitVPDbasic}{monthly average of daytime
+vapour pressure deficit (7am-7pm) according to basic formula (hPa)}
+\item{DaytimeMeanVapourPressureDeficit}{monthly average of daytime vapour
+pressure deficit (7am-7pm) according to advanced formula (hPa)} }
 }
 \usage{
 TROLLv3_climatedaytime12
 }
 \description{
-Climate parameters used by TROLL model over months.
+Climate parameters used by \code{TROLL} model over months.
+}
+\seealso{
+\code{\link[=generate_climate]{generate_climate()}}, \link{TROLLv3_daytimevar}
 }
 \keyword{datasets}

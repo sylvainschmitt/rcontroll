@@ -3,17 +3,21 @@
 \docType{data}
 \name{TROLLv3_output}
 \alias{TROLLv3_output}
-\title{TROLL output}
+\title{\code{TROLL} output}
 \format{
-A trollsim object.
+A \code{\link[=trollsim]{trollsim()}} object.
 }
 \usage{
 TROLLv3_output
 }
 \description{
-TROLL outputs from a 100-year simulation on a 100x100 grid with the other
+\code{TROLL} outputs from a 100-year simulation on a 100x100 grid with the other
 default parameters and using TROLLv3_species, TROLLv3_climatedaytime12, and
 TROLLv3_daytimevar for use in tests and examples. Ecosystem level output has
 been thinned and species output has been removed to save disk space.
+}
+\seealso{
+\code{\link[=TROLLv3_species]{TROLLv3_species()}}, \code{\link[=TROLLv3_climatedaytime12]{TROLLv3_climatedaytime12()}},
+\code{\link[=TROLLv3_daytimevar]{TROLLv3_daytimevar()}}, \code{\link[=troll]{troll()}}
 }
 \keyword{datasets}

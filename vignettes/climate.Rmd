@@ -263,9 +263,11 @@ climate <- generate_climate(
   y = 4.060414,
   tz = "America/Cayenne",
   era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc",
-                              package = "rcontroll"),
+    package = "rcontroll"
+  ),
   era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc",
-                               package = "rcontroll")
+    package = "rcontroll"
+  )
 )
 ```
 

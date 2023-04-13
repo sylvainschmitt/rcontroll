@@ -4,11 +4,14 @@
 \alias{print.trollsim}
 \alias{print,trollsim-method}
 \alias{show,trollsim-method}
-\title{Function to print or show TROLL outputs.}
+\alias{summary,trollsim-method}
+\title{Print a summary}
 \usage{
 \S4method{print}{trollsim}(x, ...)
 
 \S4method{show}{trollsim}(object)
+
+\S4method{summary}{trollsim}(object, ...)
 }
 \arguments{
 \item{x}{trollsim or trollstack.}
@@ -21,11 +24,15 @@
 Print or show in console.
 }
 \description{
-Function to print or show TROLL outputs.
+\code{print()} prints a summary of TROLL simulation or stack of simulations
+outputs.
 }
 \examples{
 
 data("TROLLv3_output")
 print(TROLLv3_output)
 
+}
+\seealso{
+\code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}, \code{\link[=trollsim]{trollsim()}}, \code{\link[=trollstack]{trollstack()}}
 }
