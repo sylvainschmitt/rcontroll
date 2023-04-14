@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9003
+
+- TROLLv4 bug fix  & V3 news merge
+
 # rcontroll 0.2.0.9002
 
 - TROLLv4 bug fix pre-V3 news merge
@@ -5,6 +9,22 @@
 # rcontroll 0.2.0.9001
 
 - TROLLv4 integration & memory optimization, stack to check, suspect an error in generate_parameters
+
+# rcontroll 0.1.1.9001
+
+- extended documentation following review
+
+# rcontroll 0.1.0.9065
+
+- new stack in tmp fix & TROLLV3_output update
+
+# rcontroll 0.1.0.9064
+
+- improving memory usage
+
+# rcontroll 0.1.0.9063
+
+- fixed stack with batch foreach 
 
 # rcontroll 0.1.0.9062
 

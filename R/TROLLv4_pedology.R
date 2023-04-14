@@ -9,8 +9,8 @@
 #'   \item{proportion_Sand}{proportion of sand in percent} \item{SOC}{soil
 #'   organic content} \item{DBD}{soil dry bulk density} \item{pH}{soil pH}
 #'   \item{CEC}{soil cation exchange capacity}}
-#' 
+#'
 "TROLLv4_pedology"
 
-# TROLLv4_pedology <- readr::read_tsv("inst/extdata/TROLLv4_pedology.txt")
-# usethis::use_data(TROLLv4_pedology, overwrite = T)
+# TROLLv4_pedology <- readr::read_tsv("inst/extdata/TROLLv4_pedology.txt") # nolint
+# usethis::use_data(TROLLv4_pedology, overwrite = T) # nolint

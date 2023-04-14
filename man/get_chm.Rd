@@ -3,7 +3,7 @@
 \name{get_chm}
 \alias{get_chm}
 \alias{get_chm,trollsim-method}
-\title{Function to get a canopy height model from TROLL outputs with lidar option.}
+\title{Extract canopy height model}
 \usage{
 get_chm(sim, method = "smoothed", ...)
 
@@ -12,15 +12,19 @@ get_chm(sim, method = "smoothed", ...)
 \arguments{
 \item{sim}{trollsim.}
 
-\item{method}{char. method to extract the ccanopy hieght model from the point
+\item{method}{char. method to extract the canopy height model from the point
 cloud in las, either 'filled' (replacing NA by 0) or 'smoothed' (local
 means, default value).}
 
 \item{...}{unused argument.}
 }
 \value{
-data.frame
+\code{\link[=data.frame]{data.frame()}}
 }
 \description{
-Function to get a canopy height model from TROLL outputs with lidar option.
+\code{get_chm()} extract the canopy height model from \code{TROLL} outputs with lidar
+option.
+}
+\seealso{
+\code{\link[=trollsim]{trollsim()}}, \code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}
 }

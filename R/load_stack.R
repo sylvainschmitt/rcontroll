@@ -1,15 +1,19 @@
 #' @include load_output.R
 NULL
 
-#' Function to load a stack of outputs from TROLL simulations.
+#' Load outputs from a stack of simulations
+#'
+#' `load_stack` load outputs from a stack of `TROLL` simulation files using
+#' `TROLL` stack of simulation `name` and `path`.
 #'
 #' @param name char. Name given to the stack output.
 #' @param path char. Path where the stack is saved.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
-#' @return An S4 \linkS4class{trollsim} class object.
+#' @return An S4 [trollstack()] class object.
+#'
+#' @seealso [trollsim()], [trollstack()], [load_sim()], [load_stack()]
 #'
 #' @export
 #'
@@ -18,7 +22,7 @@ NULL
 #' load_stack("test", "./")
 #' }
 #'
-load_stack_output <- function(name,
+load_stack <- function(name,
                        path,
                        thin = NULL) {
   # Check inputs
@@ -26,10 +30,10 @@ load_stack_output <- function(name,
     stop("name and path should be character.")
   }
 
-  simulations <- list.files(path = file.path(path, name))
+  simulations <- list.files(path = file.path(path))
   stack_res <- lapply(simulations, function(sim) {
     load_output(sim,
-      file.path(path, name, sim),
+      file.path(path, sim),
       thin = thin
     )
   })

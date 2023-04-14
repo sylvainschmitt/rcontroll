@@ -7,8 +7,8 @@
 #'   \item{DayJulian}{Julian day since 2014/1/1} \item{time_numeric}{Time in
 #'   hour} \item{Temp}{Temperature} \item{Snet}{Absorbed short-wave radiation}
 #'   \item{VPD}{Vapour pressure deficit} \item{WS}{Windspeed}}
-#' 
+#'
 "TROLLv4_dailyvar"
 
-# TROLLv4_dailyvar <- readr::read_tsv("inst/extdata/TROLLv4_dailyvar.txt")
-# usethis::use_data(TROLLv4_dailyvar, overwrite = T)
+# TROLLv4_dailyvar <- readr::read_tsv("inst/extdata/TROLLv4_dailyvar.txt") # nolint
+# usethis::use_data(TROLLv4_dailyvar, overwrite = T) # nolint

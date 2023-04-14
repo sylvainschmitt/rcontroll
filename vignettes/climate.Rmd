@@ -25,10 +25,11 @@ library(rcontroll) # to generate TROLL climate inputs
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
-if(Sys.info()[['sysname']] == "Darwin")
+if (Sys.info()[["sysname"]] == "Darwin") {
   knitr::opts_chunk$set(
     eval = FALSE
   )
+}
 ```
 
 ```{r, eval=FALSE}
@@ -59,9 +60,19 @@ Beware, you will need the **ECMWF password** to connect to Copernicus services w
 Replace the user ID and API key in the following chunk and run it.
 
 ```{r, eval=FALSE}
-wf_set_key(user = "******",
-           key = "********-****-****-****-************",
-           service = "cds")
+wf_set_key(
+  user = "******",
+  key = "********-****-****-****-************",
+  service = "cds"
+)
+```
+
+```{r, include=FALSE}
+wf_set_key(
+  user = "152268",
+  key = "40942d56-a02c-467b-926d-1120be322979",
+  service = "cds"
+)
 ```
 
 You then define the location to retrieve climate data.
@@ -81,7 +92,8 @@ you can then convert the coordinates into the desired request format with `gsub`
 
 ```{r, eval=FALSE}
 (coords <- gsub(",", "/", getbb("French Guiana",
-                                format_out = "string", limit = 1)))
+  format_out = "string", limit = 1
+)))
 ```
 
 You need two types of product: (1) monthly averages by hour of day and (2) monthly averages at 00:00.
@@ -89,6 +101,33 @@ You need two types of product: (1) monthly averages by hour of day and (2) month
 Now you can use the coordinates to build the request corresponding to the first set of data (monthly averages by hour of day) needed.
 For this example, we will limit our query to the coordinates of the Nouragues station in 2022 for a reduced output.
 But we encourage users to use both a larger spatial extent and a larger temporal extent.
+
+**Needed variables:**
+
+*half-hourly*:
+
+* Temperature (T°C) = 2m temperature (2m_temperature)
+* Absorbed short-wave radiation (Snet W/m2) = 
+* Vapour pressure deficit (VPD Pa) =
+* Wind speed (WS m2/s) =
+
+*daily*:
+
+* Night temperature (T°C) =
+* Rainfall (mm) =
+
+*validation?*:
+
+* Evaporation from vegetation transpiration
+* 
+
+
+```{r}
+# variables
+
+
+```
+
 
 ```{r, eval=FALSE}
 request <- list(
@@ -186,17 +225,22 @@ You can have a look to the resulting ERA5 land data.
 For instance here we consolidate the data as a table using `dplyr`:
 
 ```{r }
-test_r <- suppressWarnings(rast(system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")))
+test_r <- suppressWarnings(rast(
+  system.file("extdata",
+    "ERA5land_mth_Nouragues_2021_2022.nc",
+    package = "rcontroll"
+  )
+))
 test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
-  gather("variable", "value", -x, -y) %>% 
-  group_by(x,y) %>% 
-  mutate(date = rep(as_date(terra::time(test_r)))) %>% 
+  gather("variable", "value", -x, -y) %>%
+  group_by(x, y) %>%
+  mutate(date = rep(as_date(terra::time(test_r)))) %>%
   separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-  select(-t) %>% 
-  separate(variable, c("variable", "expver"), sep = "_expver=") %>% 
-  group_by(x,y, date, variable) %>% 
-  summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>% 
-  spread(variable, value) %>% 
+  select(-t) %>%
+  separate(variable, c("variable", "expver"), sep = "_expver=") %>%
+  group_by(x, y, date, variable) %>%
+  summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+  spread(variable, value) %>%
   arrange(date)
 ```
 
@@ -207,7 +251,8 @@ ggplot(test, aes(date, tp)) +
   geom_point() +
   geom_smooth() +
   theme_bw() +
-  xlab("") + ylab("Total precipitation")
+  xlab("") +
+  ylab("Total precipitation")
 ```
 
 # Prepare TROLL inputs
@@ -220,8 +265,10 @@ For that `nominatimlite` provide a useful function called `geo_lite_sf` to easil
 geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
   leaflet() %>%
   addTiles() %>%
-  addPolygons(data = getbb("French Guiana", format_out = "sf_polygon",
-                           limit = 1)$multipolygon) %>%
+  addPolygons(data = getbb("French Guiana",
+    format_out = "sf_polygon",
+    limit = 1
+  )$multipolygon) %>%
   addCircleMarkers(col = "red")
 ```
 
@@ -229,15 +276,17 @@ You can extract corresponding coordinates using `st_coordinates` from `sf`:
 
 ```{r, eval=FALSE}
 (coords <- geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
-   st_coordinates())
+  st_coordinates())
 ```
 
 You will also need the corresponding time zone for time correction as ERA5-land is giving us time in UTC.
 For that you can use the `tz_lookup_coords` function from the package `lutz`:
 
 ```{r, eval=FALSE}
-(tz <- tz_lookup_coords(lon = coords[1],
-                              lat = coords[2], method = "accurate"))
+(tz <- tz_lookup_coords(
+  lon = coords[1],
+  lat = coords[2], method = "accurate"
+))
 ```
 
 We invite users to take advantage of `geo_lite_sf` and `tz_lookup_coords` to retrieve the coordinates and time zone, but we show an example with known values below.
@@ -245,11 +294,15 @@ You can use the `generate_cliamte` function inside TROLL to prepare `TROLL` clim
 
 ```{r }
 climate <- generate_climate(
-  x = -52.75468, 
+  x = -52.75468,
   y = 4.060414,
   tz = "America/Cayenne",
-  era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc", package = "rcontroll"), 
-  era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc", package = "rcontroll")
+  era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc",
+    package = "rcontroll"
+  ),
+  era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc",
+    package = "rcontroll"
+  )
 )
 ```
 
@@ -288,27 +341,36 @@ list(
 ) %>%
   bind_rows(.id = "origin") %>%
   group_by(origin) %>%
-  mutate(order = 1:12) %>% 
-  mutate(month = as.character(lubridate::month(1:12, label = T))) %>% 
+  mutate(order = 1:12) %>%
+  mutate(month = as.character(lubridate::month(1:12, label = TRUE))) %>%
   gather(variable, value, -origin, -month, -order) %>%
   mutate(variable = recode(variable,
-                           "Temperature" = "Temperature~(degree~C)",
-                           "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
-                           "NightTemperature" = "NightTemperature~(degree~C)",
-                           "Rainfall" = "Rainfall (cm)",
-                           "WindSpeed" = "WindSpeed (m~s^{-1})",
-                           "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
-                           "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
-                           "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
-                           "VapourPressure" = "VapourPressure (hPa)",
-                           "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
-                           "DayTimeVapourPressureDeficitVPDbasic" = "DayTimeVapourPressureDeficitVPDbasic (hPa)",
-                           "DaytimeMeanVapourPressureDeficit" = "DaytimeMeanVapourPressureDeficit (hPa)")) %>% 
-  ggplot(aes(x = reorder(month, order), y = value, col = origin, group = origin)) +
+    "Temperature" = "Temperature~(degree~C)",
+    "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
+    "NightTemperature" = "NightTemperature~(degree~C)",
+    "Rainfall" = "Rainfall (cm)",
+    "WindSpeed" = "WindSpeed (m~s^{-1})",
+    "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
+    "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
+    "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
+    "VapourPressure" = "VapourPressure (hPa)",
+    "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
+    "DayTimeVapourPressureDeficitVPDbasic" =
+      "DayTimeVapourPressureDeficitVPDbasic (hPa)",
+    "DaytimeMeanVapourPressureDeficit" =
+      "DaytimeMeanVapourPressureDeficit (hPa)"
+  )) %>%
+  ggplot(aes(
+    x = reorder(month, order), y = value,
+    col = origin, group = origin
+  )) +
   geom_line() +
   facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
   theme_bw() +
-  theme(axis.title = element_blank(), axis.text.x = element_text(angle = 90), legend.position = "bottom")
+  theme(
+    axis.title = element_blank(), axis.text.x = element_text(angle = 90),
+    legend.position = "bottom"
+  )
 ```
 
 This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:

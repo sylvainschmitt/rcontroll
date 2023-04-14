@@ -3,14 +3,14 @@
 \name{get_log}
 \alias{get_log}
 \alias{get_log,trollsim-method}
-\title{Function to get the log from TROLL outputs.}
+\title{Extract simulation log}
 \usage{
 get_log(sim, ...)
 
 \S4method{get_log}{trollsim}(sim, ...)
 }
 \arguments{
-\item{sim}{trollsim.}
+\item{sim}{trollsim or trollstack.}
 
 \item{...}{unused argument.}
 }
@@ -18,10 +18,14 @@ get_log(sim, ...)
 the log in the console
 }
 \description{
-Function to get the log from TROLL outputs.
+\code{get_forest()} extract the simulation log \code{TROLL} outputs.
 }
 \examples{
 
+data("TROLLv3_output")
 get_log(TROLLv3_output)
 
+}
+\seealso{
+\code{\link[=trollsim]{trollsim()}}, \code{\link[=trollstack]{trollstack()}}, \code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}
 }

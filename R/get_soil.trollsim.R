@@ -29,7 +29,7 @@ setGeneric("get_soil", function(sim, ...) {
 #' @export
 setMethod("get_soil", "trollsim", function(sim, ...) {
   dcell <- layer <- swc <- NULL
-  select(sim@soil, dcell, layer, swc) %>% 
+  select(sim@soil, dcell, layer, swc) %>%
     dcast(dcell ~ layer, value.var = "swc") %>%
     as.data.frame()
 })

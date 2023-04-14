@@ -1,7 +1,8 @@
-#' Generate parameters
+#' Generate global parameters
 #'
-#' Function to generate the global parameters used in the TROLL simulation. All
-#' parameters have a default value used in French Guiana simulations.
+#' `generate_parameters()` generate the global parameters used in the `TROLL`
+#' simulation. All parameters have a default value used in French Guiana
+#' simulations.
 #'
 #' @param cols num. Number of columns.
 #' @param rows num. Number of rows.
@@ -104,17 +105,17 @@
 #' @examples
 #'
 #' generate_parameters(nbiter = 12)
-#' 
+#'
 generate_parameters <- function(cols = 200,
                                 rows = 200,
-                                HEIGHT = 70,
+                                HEIGHT = 70, # nolint
                                 length_dcell = 25,
                                 nbiter = 365,
-                                NV = 1,
-                                NH = 1,
+                                NV = 1, # nolint
+                                NH = 1, # nolint
                                 nbout = 4,
                                 nbspp = 45,
-                                SWtoPPFD = 2.27,
+                                SWtoPPFD = 2.27, # nolint
                                 p_nonvert = 0.05,
                                 klight = 0.63,
                                 phi = 0.093,
@@ -124,54 +125,54 @@ generate_parameters <- function(cols = 200,
                                 g0 = 5.0,
                                 pheno_thresh = 0.2,
                                 pheno_delta = 0.2,
-                                vC = 0.021,
-                                DBH0 = 0.005,
-                                H0 = 0.950,
-                                CR_min = 0.3,
-                                CR_a = 2.13,
-                                CR_b = 0.63,
-                                CD_a = 0,
-                                CD_b = 0.2,
-                                CD0 = 0.3,
+                                vC = 0.021, # nolint
+                                DBH0 = 0.005, # nolint
+                                H0 = 0.950, # nolint
+                                CR_min = 0.3, # nolint
+                                CR_a = 2.13, # nolint
+                                CR_b = 0.63, # nolint
+                                CD_a = 0, # nolint
+                                CD_b = 0.2, # nolint
+                                CD0 = 0.3, # nolint
                                 shape_crown = 0.72,
                                 dens = 1,
                                 fallocwood = 0.35,
                                 falloccanopy = 0.25,
-                                Cseedrain = 50000,
-                                nbs0 = 10,
+                                Cseedrain = 50000, # nolint
+                                nbs0 = 10, # nolint
                                 sigma_height = 0.19,
-                                sigma_CR = 0.29,
-                                sigma_CD = 0.0,
-                                sigma_P = 0.24,
-                                sigma_N = 0.12,
-                                sigma_LMA = 0.24,
+                                sigma_CR = 0.29, # nolint
+                                sigma_CD = 0.0, # nolint
+                                sigma_P = 0.24, # nolint
+                                sigma_N = 0.12, # nolint
+                                sigma_LMA = 0.24, # nolint
                                 sigma_wsg = 0.06,
                                 sigma_dbhmax = 0.05,
-                                corr_CR_height = 0.0,
-                                corr_N_P = 0.65,
-                                corr_N_LMA = -0.43,
-                                corr_P_LMA = -0.39,
+                                corr_CR_height = 0.0, # nolint
+                                corr_N_P = 0.65, # nolint
+                                corr_N_LMA = -0.43, # nolint
+                                corr_P_LMA = -0.39, # nolint
                                 leafdem_resolution = 30,
                                 p_tfsecondary = 1,
                                 hurt_decay = 0,
                                 crown_gap_fraction = 0.15,
                                 m = 0.013,
                                 m1 = 0.013,
-                                Cair = 400,
-                                PRESS = 101.0,
-                                SOIL_LAYER_WEIGHT = 2,
-                                WATER_RETENTION_CURVE = 1,
-                                LL_parameterization = 1,
-                                LA_regulation = 2,
+                                Cair = 400, # nolint
+                                PRESS = 101.0, # nolint
+                                SOIL_LAYER_WEIGHT = 2, # nolint
+                                WATER_RETENTION_CURVE = 1, # nolint
+                                LL_parameterization = 1, # nolint
+                                LA_regulation = 2, # nolint
                                 sapwood = 1,
                                 seedsadditional = 0,
-                                NONRANDOM = 1,
-                                GPPcrown = 0,
-                                BASICTREEFALL = 1,
-                                SEEDTRADEOFF = 0,
-                                CROWN_MM = 0,
-                                OUTPUT_extended = 0,
-                                OUTPUT_inventory = 1,
+                                NONRANDOM = 1, # nolint
+                                GPPcrown = 0, # nolint
+                                BASICTREEFALL = 1, # nolint
+                                SEEDTRADEOFF = 0, # nolint
+                                CROWN_MM = 0, # nolint
+                                OUTPUT_extended = 0, # nolint
+                                OUTPUT_inventory = 1, # nolint
                                 extent_visual = 0) {
   # check args
   if (!all(unlist(lapply(
@@ -197,45 +198,49 @@ generate_parameters <- function(cols = 200,
   }
 
   if (NONRANDOM > 1) {
-    Rseed <- sample.int(.Machine$integer.max, 1)
-    NONRANDOM <- 1
-  }else{
-    Rseed <- 1
+    Rseed <- sample.int(.Machine$integer.max, 1) # nolint
+    NONRANDOM <- 1 # nolint
+  } else {
+    Rseed <- 1 # nolint
   }
-  
+
   data.frame(
-    param = c("cols", "rows", "HEIGHT", "length_dcell",
-              "nbiter", "NV", "NH", "nbout",
-              "nbspp", "SWtoPPFD", "p_nonvert", "klight", "phi",
-              "absorptance_leaves", "theta", "g1", "g0", 
-              "pheno_thresh", "pheno_delta", "vC", "DBH0",
-              "H0", "CR_min", "CR_a", "CR_b", "CD_a", "CD_b",
-              "CD0", "shape_crown", "dens", "fallocwood", 
-              "falloccanopy", "Cseedrain", "nbs0", "sigma_height",
-              "sigma_CR", "sigma_CD", "sigma_P", "sigma_N", 
-              "sigma_LMA", "sigma_wsg", "sigma_dbhmax", "corr_CR_height", 
-              "corr_N_P", "corr_N_LMA", "corr_P_LMA", "leafdem_resolution", 
-              "p_tfsecondary", "hurt_decay", "crown_gap_fraction", 
-              "m", "m1", "Cair", "PRESS", "_SOIL_LAYER_WEIGHT", 
-              "_WATER_RETENTION_CURVE", "_LL_parameterization", 
-              "_LA_regulation", "_sapwood", "_seedsadditional",
-              "_NONRANDOM", "Rseed","_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
-              "_CROWN_MM", "_OUTPUT_extended", "_OUTPUT_inventory",
-              "extent_visual"),
-    value = c(cols, rows, HEIGHT, length_dcell, nbiter,
-              NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi, 
-              absorptance_leaves, theta, g1, g0, 
-              pheno_thresh, pheno_delta, vC, DBH0, H0, CR_min, 
-              CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood, 
-              falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
-              sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
-              corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
-              leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction, 
-              m, m1, Cair, PRESS, SOIL_LAYER_WEIGHT, WATER_RETENTION_CURVE,
-              LL_parameterization, LA_regulation, 
-              sapwood, seedsadditional,
-              NONRANDOM,Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-              CROWN_MM, OUTPUT_extended, OUTPUT_inventory, extent_visual),
+    param = c(
+      "cols", "rows", "HEIGHT", "length_dcell",
+      "nbiter", "NV", "NH", "nbout",
+      "nbspp", "SWtoPPFD", "p_nonvert", "klight", "phi",
+      "absorptance_leaves", "theta", "g1", "g0",
+      "pheno_thresh", "pheno_delta", "vC", "DBH0",
+      "H0", "CR_min", "CR_a", "CR_b", "CD_a", "CD_b",
+      "CD0", "shape_crown", "dens", "fallocwood",
+      "falloccanopy", "Cseedrain", "nbs0", "sigma_height",
+      "sigma_CR", "sigma_CD", "sigma_P", "sigma_N",
+      "sigma_LMA", "sigma_wsg", "sigma_dbhmax", "corr_CR_height",
+      "corr_N_P", "corr_N_LMA", "corr_P_LMA", "leafdem_resolution",
+      "p_tfsecondary", "hurt_decay", "crown_gap_fraction",
+      "m", "m1", "Cair", "PRESS", "_SOIL_LAYER_WEIGHT",
+      "_WATER_RETENTION_CURVE", "_LL_parameterization",
+      "_LA_regulation", "_sapwood", "_seedsadditional",
+      "_NONRANDOM", "Rseed", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
+      "_CROWN_MM", "_OUTPUT_extended", "_OUTPUT_inventory",
+      "extent_visual"
+    ),
+    value = c(
+      cols, rows, HEIGHT, length_dcell, nbiter,
+      NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
+      absorptance_leaves, theta, g1, g0,
+      pheno_thresh, pheno_delta, vC, DBH0, H0, CR_min,
+      CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
+      falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
+      sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
+      corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
+      leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction,
+      m, m1, Cair, PRESS, SOIL_LAYER_WEIGHT, WATER_RETENTION_CURVE,
+      LL_parameterization, LA_regulation,
+      sapwood, seedsadditional,
+      NONRANDOM, Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
+      CROWN_MM, OUTPUT_extended, OUTPUT_inventory, extent_visual
+    ),
     description = c(
       "/* nb of columns */",
       "/* nb of rows  */",
@@ -254,7 +259,7 @@ generate_parameters <- function(cols = 200,
       "/* parameter of the Farquhar model */",
       "/* parameter g1 of Medlyn et al s stomatal conductance model */",
       "/* minimum leaf conductance (mol m-2 s-1) */",
-      "/* threshold for change in old leaf shedding rate, in proportion of TLP */",
+      "/* threshold for change in old leaf shedding rate, in proportion of TLP */", # nolint
       "/* amplitude of change in old leaf shedding rate */",
       "/* variance of the flexion moment */",
       "/* initial dbh (m) */",
@@ -267,10 +272,10 @@ generate_parameters <- function(cols = 200,
       "/* initial crown depth(in m) */",
       "/* crown shape parameter */",
       "/* initial leaf density (m^2/m^2) */",
-      "/* fraction of biomass allocated to above ground wood (branch turnover+stem) */",
-      "/* fraction of biomass allocated to canopy (leaves + reproductive organs + twigs) */",
-      "/* constant used to scale total seed rain per hectare across species (in next computation) */",
-      "/* nb of seeds produced and dispersed by each mature tree when SEEDTRADEOFF is not defined */",
+      "/* fraction of biomass allocated to above ground wood (branch turnover+stem) */", # nolint
+      "/* fraction of biomass allocated to canopy (leaves + reproductive organs + twigs) */", # nolint
+      "/* constant used to scale total seed rain per hectare across species (in next computation) */", # nolint
+      "/* nb of seeds produced and dispersed by each mature tree when SEEDTRADEOFF is not defined */", # nolint
       "/* intraspecific variation in tree height (lognormal) */",
       "/* intraspecific variation in crown radius (lognormal) */",
       "/* intraspecific variation in crown depth (lognormal) */",
@@ -291,18 +296,18 @@ generate_parameters <- function(cols = 200,
       "/* m1 (slope of death rate) */",
       "/* atmospheric CO2 concentration in micromol/mol */",
       "/* atmospheric pressure in kPa */",
-      "/* soil layer weights: relative biomass, conductance, max transpiration (0,1, 2) */",
+      "/* soil layer weights: relative biomass, conductance, max transpiration (0,1, 2) */", # nolint
       "/* water retention curve (Brooks&Corey: 0; Van Genuchten Mualem: 1) */",
-      "/* LL parameterizations: Reich empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */",
+      "/* LL parameterizations: Reich empirical, Kikuzawa model, and Kikuzawa model with leaf plasticity (0,1,2) */", # nolint
       "/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */",
-      "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */",
+      "/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */", # nolint
       "/* excess biomass into seeds after maturation (0,1) */",
-      "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */",
+      "/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */", # nolint
       "/* selected seed according to _NONRANDOM and R fixed seed */",
-      "/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */",
+      "/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */", # nolint
       "/* if defined: treefall is a source of tree death */",
-      "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */",
-      "/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */",
+      "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */", # nolint
+      "/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */", # nolint
       "/* extended set of ouput files */",
       "/* inventory set of ouput files */",
       "/* extent for visualization output *"

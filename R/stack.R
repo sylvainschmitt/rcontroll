@@ -9,38 +9,51 @@
 #' @importFrom tidyr unnest
 NULL
 
-#' Stack
+#' Run a stack of `TROLL` simulations
 #'
-#' Run a TROLL stack.
+#' `stack()` run a stack of `TROLL` simulation. The minimal set of input files
+#' required for a `TROLL` run include (i) climate data for the focal location
+#' (`climate` and `daily`), (ii) soil data for the focal location (`pedology`),
+#' (iii) functional traits for the list of species at the focal location
+#' (`species`), and (iv) global parameters (`global`), i.e. parameters that do
+#' not depend on species identity.
 #'
-#' @param name char. Stack name (if NULL timestamp).
-#' @param simulations char. Simulation names.
-#' @param path char. Path to save the simulation outputs, the default is null
-#'   corresponding to a simulation in memory without saved intermediary files.
-#' @param global df. Global parameters.
-#' @param species df. Species parameters.
-#' @param climate df. Climate parameters.
-#' @param daily df. Daily variation parameters.
-#' @param pedology df. Daily variation parameters.
+#' @param name char. Stack name (if NULL the timestamp will be used).
+#' @param simulations char. Simulation names (corrsponding to simulation indexes
+#'   in orresponding tables, see example below).
+#' @param path char. Path to save the stack of simulation outputs (parent
+#'   folder), the default is null corresponding to a simulation in memory
+#'   without saved intermediary files (based on temporary files from
+#'   [option.rcontroll]).
+#' @param global df. Global parameters (e.g. [TROLLv4_input] or using
+#'   [generate_parameters()]).
+#' @param species df. Species parameters (e.g. [TROLLv4_species]).
+#' @param climate df. Climate parameters (e.g. [TROLLv3_climate]).
+#' @param daily df. Daily variation parameters (e.g. [TROLLv4_dailyvar]).
+#' @param pedology df. pedology parameters (e.g. [TROLLv4_pedology]).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
-#'   (default NULL).
+#'   (default NULL) (e.g. using [TROLLv4_output] with [get_forest()]).
 #' @param soil df. TROLL with soil input, if null starts from an empty grid
-#'   (default NULL).
-#' @param lidar df. Lidar simulation parameters, if null no computed (default
-#'   NULL).
-#' @param verbose bool. Show TROLL outputs in the console.
+#'   (default NULL) (e.g. using [TROLLv4_output] with [get_soil()]).
+#' @param lidar df. Lidar simulation parameters (e.g. using [generate_lidar()]),
+#'   if null not computed (default NULL).
 #' @param load bool. TROLL outputs are loaded in R memory, if not only the path
-#'   to the outputs is kept.
+#'   and name of the stack of simulations is kept in the resulting
+#'   [trollstack()] object but the content can be accessed later using the
+#'   [load_sim()] method.
 #' @param cores int. Number of cores for parallelization, if NULL available
-#'   cores - 1 (default NULL).
-#' @param overwrite bool. Overwrite previous outputs.
+#'   cores - 1 (default NULL). You can use [parallel::detectCores()] to know
+#'   available cores on your machine.
+#' @param verbose bool. Show TROLL log in the console.
+#' @param overwrite bool. Overwrite previous outputs folder and files.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #' @param date char. Starting date as YYYY/MM/DD, default NULL will result in
 #'   non-dated outputs.
 #'
-#' @return A trollstack object.
+#' @return A [trollstack()] object.
+#'
+#' @seealso [troll()]
 #'
 #' @export
 #'
@@ -54,7 +67,6 @@ NULL
 #' TROLLv4_input_stack <- generate_parameters(nbiter = 10) %>%
 #'   mutate(simulation = list(c("seed50000", "seed500"))) %>%
 #'   unnest(simulation)
-#' TROLLv4_input_stack[65, 2] <- 500 # Cseedrain
 #' stack(
 #'   name = "teststack",
 #'   simulations = c("seed50000", "seed500"),
@@ -66,11 +78,13 @@ NULL
 #'   pedology = TROLLv4_pedology,
 #'   load = TRUE,
 #'   date = "2004/01/01",
-#'   cores = 2
+#'   cores = 2,
+#'   verbose = FALSE,
+#'   thin = c(1, 5, 10)
 #' )
 #' }
 #'
-stack <- function(name = NULL,
+stack <- function(name = NULL, # nolint
                   simulations,
                   path = NULL,
                   global,
@@ -95,7 +109,7 @@ stack <- function(name = NULL,
   if ((detectCores()) < cores) {
     cores <- detectCores()
     warning(paste(
-      "It seems you attributed more cores than your CPU has! 
+      "It seems you attributed more cores than your CPU has!
       Automatic reduction to",
       cores, "cores."
     ))
@@ -122,8 +136,8 @@ stack <- function(name = NULL,
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
   }
-  if(tmp && !load) {
-    stop("You can not unactivate the load option if you have not defined a path for your files.")
+  if (tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.") # nolint
   }
   if (name %in% list.dirs(path, full.names = FALSE)[-1]) {
     if (!overwrite) {
@@ -161,7 +175,7 @@ stack <- function(name = NULL,
     names(lidar) <- simulations
   }
   if (tmp) {
-    sim_path <- lapply(simulations, function(x) NULL)
+    sim_path <- lapply(simulations, function(x) path_o)
     names(sim_path) <- simulations
   } else {
     sim_path <- lapply(simulations, function(x) path_o)
@@ -169,47 +183,53 @@ stack <- function(name = NULL,
   }
 
   # stack
-  i <- NULL
-  cl <- makeCluster(cores, outfile = "")
-  registerDoSNOW(cl)
-  pb <- txtProgressBar(max = length(simulations), style = 3)
-  progress <- function(n) setTxtProgressBar(pb, n)
-  opts <- list(progress = progress)
-  stack_res <- foreach(
-    i = 1:length(simulations), .export = ".troll_child",
-    .options.snow = opts
-  ) %dopar% {
-    sim <- simulations[i]
-    .troll_child(
-      name = sim,
-      path = sim_path[[sim]],
-      global = global[[sim]],
-      species = species[[sim]],
-      climate = climate[[sim]],
-      daily = daily[[sim]],
-      pedology = pedology[[sim]],
-      forest = forest[[sim]],
-      soil = soil[[sim]],
-      lidar = lidar[[sim]],
-      verbose = verbose,
-      load = load,
-      overwrite = overwrite,
-      thin = thin,
-      date = date
-    )
+  batches <- split(simulations, ceiling(seq_along(simulations) / cores))
+  pb <- txtProgressBar(min = 0, max = length(batches), initial = 0, style = 3)
+  stack_res <- list()
+  for (i in seq_along(batches)) {
+    j <- NULL
+    cl <- makeCluster(cores, outfile = "")
+    registerDoSNOW(cl)
+    stack_res_batch <- foreach(
+      j = seq_along(batches[[1]]),
+      .export = ".troll_child"
+    ) %dopar% {
+      sim <- batches[[1]][j]
+      .troll_child(
+        name = sim,
+        path = sim_path[[sim]],
+        global = global[[sim]],
+        species = species[[sim]],
+        climate = climate[[sim]],
+        daily = daily[[sim]],
+        pedology = pedology[[sim]],
+        lidar = lidar[[sim]],
+        forest = forest[[sim]],
+        soil = soil[[sim]],
+        load = load,
+        verbose = verbose,
+        overwrite = overwrite,
+        thin = thin
+      )
+    }
+    stopCluster(cl)
+    stack_res <- c(stack_res, stack_res_batch)
+    setTxtProgressBar(pb, i)
+    cat("\n")
   }
   close(pb)
-  stopCluster(cl)
-  stop("We should use load_stack to avoid repetition.")
-  names(stack_res) <- simulations
-  stack_res <- trollstack(
-    name = stack_res[[1]]@name,
-    path = path_o,
-    mem = FALSE
-  )
-  if(load){
-    stack_res <- load_sim(stack)
+
+
+  # loading outputs
+  stack_res <- trollstack(name = name, path = path_o, mem = FALSE)
+  if (load) {
+    stack_res <- load_sim(stack_res)
   }
+  if (tmp) {
+    unlink(path_o)
+    stack_res@path <- character()
+  }
+
   return(stack_res)
 }
 

@@ -1,7 +1,7 @@
 Package: rcontroll
 Type: Package
 Title: Individual-Based Forest Growth Simulator 'TROLL'
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Sylvain", "Schmitt", email="sylvain.m.schmitt@gmail.com", role=c("aut", "cre"), comment = c(ORCID = "0000-0001-7759-7106")),
     person("Guillaume", "Salzet", email="guillaume.salzet@inrae.fr", role="aut", comment = c(ORCID = "0000-0003-4548-5673")),
@@ -52,21 +52,20 @@ Suggests:
     rmarkdown,
     testthat,
     covr
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate: 
     'RcppExports.R'
     'TROLLv4_climate.R'
     'TROLLv4_dailyvar.R'
     'TROLLv4_input.R'
+    'TROLLv4_output.R'
     'TROLLv4_pedology.R'
     'TROLLv4_pointcloud.R'
     'TROLLv4_species.R'
     'zzz.R'
     'TROLLversion.R'
     'trollsim.R'
-    'load_output.R'
-    'troll.R'
-    'autogif.R'
     'get_chm.trollsim.R'
     'trollstack.R'
     'autoplot.troll.R'
@@ -78,13 +77,14 @@ Collate:
     'get_forest.trollsim.R'
     'get_log.trollsim.R'
     'get_soil.trollsim.R'
-    'load_stack_output.R'
+    'load_output.R'
+    'load_stack.R'
     'load_sim.trollsim.R'
     'print.trollsim.R'
     'rcontroll-package.R'
     'rcontroll.R'
+    'troll.R'
     'stack.R'
-    'summary.trollsim.R'
     'update_parameters.trollsim.R'
 VignetteBuilder: knitr
 Depends: 

@@ -4,15 +4,20 @@
 #' @importFrom terra focal
 NULL
 
-#' Function to get a canopy height model from TROLL outputs with lidar option.
+#' Extract canopy height model
+#'
+#' `get_chm()` extract the canopy height model from `TROLL` outputs with lidar
+#' option.
 #'
 #' @param sim trollsim.
-#' @param method char. method to extract the ccanopy hieght model from the point
+#' @param method char. method to extract the canopy height model from the point
 #'   cloud in las, either 'filled' (replacing NA by 0) or 'smoothed' (local
 #'   means, default value).
 #' @param ... unused argument.
 #'
-#' @return data.frame
+#' @return [data.frame()]
+#'
+#' @seealso [trollsim()], [troll()], [stack()]
 #'
 #' @name get_chm
 NULL

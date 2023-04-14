@@ -6,9 +6,9 @@
 \title{TROLL daytime variation parameters}
 \format{
 A data frame with 24 rows and 5 variables: \describe{
-  \item{DayJulian}{Julian day since 2014/1/1} \item{time_numeric}{Time in
-  hour} \item{Temp}{Temperature} \item{Snet}{Absorbed short-wave radiation}
-  \item{VPD}{Vapour pressure deficit} \item{WS}{Windspeed}}
+\item{DayJulian}{Julian day since 2014/1/1} \item{time_numeric}{Time in
+hour} \item{Temp}{Temperature} \item{Snet}{Absorbed short-wave radiation}
+\item{VPD}{Vapour pressure deficit} \item{WS}{Windspeed}}
 }
 \usage{
 TROLLv4_dailyvar

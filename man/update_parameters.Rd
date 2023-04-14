@@ -3,7 +3,7 @@
 \name{update_parameters}
 \alias{update_parameters}
 \alias{update_parameters,trollsim-method}
-\title{Function to update parameters from a TROLL outputs for a next simulation.}
+\title{Update global parameters}
 \usage{
 update_parameters(sim, ...)
 
@@ -12,17 +12,23 @@ update_parameters(sim, ...)
 \arguments{
 \item{sim}{trollsim.}
 
-\item{...}{parameters to update and their values..}
+\item{...}{parameters to update and their values (see \code{\link[=generate_parameters]{generate_parameters()}}
+for a complete list).}
 }
 \value{
-data.frame
+a \code{\link[=data.frame]{data.frame()}}
 }
 \description{
-Function to update parameters from a TROLL outputs for a next simulation.
+\code{update_parameters()} update the global parameters used in the \code{TROLL}
+simulation from a TROLL outputs for a next simulation. All parameters have a
+default value used in French Guiana simulations.
 }
 \examples{
 
 data("TROLLv3_output")
 head(update_parameters(TROLLv3_output, iters = 10))
 
+}
+\seealso{
+\code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}, \code{\link[=generate_parameters]{generate_parameters()}}
 }

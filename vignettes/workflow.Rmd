@@ -17,10 +17,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
-if(Sys.info()[['sysname']] == "Darwin")
+if (Sys.info()[["sysname"]] == "Darwin") {
   knitr::opts_chunk$set(
-  eval = FALSE
-)
+    eval = FALSE
+  )
+}
 ```
 
 This vignette gives a quick example of a simple workflow to produce a single simulation, a stack of simulations, or start from an existing inventory or a previous simulation.
@@ -38,23 +39,20 @@ suppressMessages(library(rcontroll))
 
 # Data
 
-We load the species data available for French Guiana (`TROLLv3_species`), with associated climate data (`TROLLv3_climatedaytime12`) and day variation (`TROLLv3_daytimevar`).
-We also load a previous simulation (`TROLLv3_output`).
+We load the species data available for French Guiana (`TROLLv4_species`), with associated climate data (`TROLLv4_climatedaytime12`) and day variation (`TROLLv4_daytimevar`).
+We also load a previous simulation (`TROLLv4_output`).
 We generate parameters using `generate_parameters` for a simulation per month (`iterperyear` = 12) lasting one year (`nbiter` = 12) on a 100x100 grid (`cols` = 100 and `rows` = 100).
 We further duplicated parameters with a simulation index using `mutate` and `unnest` for a stack of simulations using a `seedrain` of 5000 (default) and 500 (default/10). 
 
 ```{r data}
-data("TROLLv3_species")
-data("TROLLv3_climatedaytime12")
-data("TROLLv3_daytimevar")
-data("TROLLv3_output")
-stack_parameters <- generate_parameters(
-  cols = 100, rows = 100,
-  iterperyear = 12, nbiter = 12 * 1
-) %>%
+data("TROLLv4_species")
+data("TROLLv4_climate")
+data("TROLLv4_dailyvar")
+data("TROLLv4_pedology")
+data("TROLLv4_output")
+stack_parameters <- generate_parameters(nbiter = 10) %>%
   mutate(simulation = list(c("seed50000", "seed500"))) %>%
   unnest(simulation)
-stack_parameters[62, 2] <- 500 # Cseedrain
 ```
 
 # Generate parameters
@@ -62,7 +60,7 @@ stack_parameters[62, 2] <- 500 # Cseedrain
 We can generate parameters and view them directly as a table with a description of its effect using `generate_parameters` and `kable`.
 
 ```{r genPar}
-generate_parameters(cols = 250, rows = 250, nbiter = 12 * 1) %>%
+generate_parameters(nbiter = 10) %>%
   head() %>%
   knitr::kable()
 ```
@@ -75,13 +73,11 @@ Set `verbose` to `TRUE` to see the TROLL log directly in the console.
 ```{r troll}
 sim <- troll(
   name = "test",
-  global = generate_parameters(
-    cols = 100, rows = 100,
-    iterperyear = 12, nbiter = 12 * 1
-  ),
-  species = TROLLv3_species,
-  climate = TROLLv3_climatedaytime12,
-  daily = TROLLv3_daytimevar,
+  global = generate_parameters(nbiter = 10),
+  species = TROLLv4_species,
+  climate = TROLLv4_climate,
+  daily = TROLLv4_dailyvar,
+  pedology = TROLLv4_pedology,
   verbose = TRUE
 )
 ```
@@ -124,8 +120,10 @@ rcontroll::autoplot(sim, what = "spatial")
 Finally, we can quickly plot variables distribution at forest final patterns using `autoplot` and `what` defined on `distribution`:
 
 ```{r fullsimG3}
-rcontroll::autoplot(sim, what = "distribution",
-                    variables = c("dbh", "height", "LA", "LMA"))
+rcontroll::autoplot(sim,
+  what = "distribution",
+  variables = c("dbh", "height", "LA", "LMA")
+)
 ```
 
 # Stack of simulations
@@ -140,9 +138,10 @@ sim_stack <- stack(
   name = "teststack",
   simulations = c("seed50000", "seed500"),
   global = stack_parameters,
-  species = TROLLv3_species,
-  climate = TROLLv3_climatedaytime12,
-  daily = TROLLv3_daytimevar,
+  species = TROLLv4_species,
+  climate = TROLLv4_climate,
+  daily = TROLLv4_dailyvar,
+  pedology = TROLLv4_pedology,
   verbose = FALSE,
   cores = 2,
   thin = c(1, 5, 10)
@@ -170,48 +169,50 @@ Similarly, we can quickly plot the forest final patterns using `autoplot` and `w
 rcontroll::autoplot(sim_stack, what = "spatial")
 ```
 
-# From a forest
+# From a previous simulation
 
 We can also run a simple simulation or a stack of simulations starting from an existing inventory or a previous simulation
 using the `troll` function with the `forest` parameter.
 
-We can first have a look to the ecosystem temporal trajectories of the `TROLLv3_output` simulation:
+We can first have a look to the ecosystem temporal trajectories of the `TROLLv4_output` simulation:
 
 ```{r}
-rcontroll::autoplot(TROLLv3_output, what = "temporal")
+rcontroll::autoplot(TROLLv4_output, what = "temporal")
 ```
 
-Similarly we can have a look to the the forest final pattern from `TROLLv3_output` that we will use to initiate the next simulation:
+Similarly we can have a look to the the forest final pattern from `TROLLv4_output` that we will use to initiate the next simulation:
 
 ```{r, eval=FALSE}
-rcontroll::autoplot(TROLLv3_output, what = "spatial", variables = "age")
+rcontroll::autoplot(TROLLv4_output, what = "spatial", variables = "age")
 ```
 
-To run the simulation we first extracted the forest from `TROLLv3_output`, in which we removed unused columns (not mandatory).
+To run the simulation we first extracted the forest from `TROLLv4_output`, in which we removed unused columns (not mandatory).
 Then we extracted the previous simulation parameters to run the new one in similar conditions, we only changed the time length to 12 iterations.
 And we finally used the same `troll` function adding the previous forest to initiate the simulation with the `forest` parameter.
 A forest inventory can also be used with at least coordinates and DBH.
 
 ```{r}
 sim <- troll(
-  name = "test",
-  global = update_parameters(TROLLv3_output, nbiter = 12 * 1),
-  species = TROLLv3_output@inputs$species,
-  climate = TROLLv3_output@inputs$climate,
-  daily = TROLLv3_output@inputs$daily,
-  forest = get_forest(TROLLv3_output),
-  verbose = FALSE
+  name = "test_reload",
+  global = update_parameters(TROLLv4_output, nbiter = 10),
+  species = TROLLv4_output@inputs$species,
+  climate = TROLLv4_output@inputs$climate,
+  daily = TROLLv4_output@inputs$daily,
+  pedology = TROLLv4_output@inputs$pedology,
+  forest = get_forest(TROLLv4_output),
+  soil = get_soil(TROLLv4_output),
+  verbose = TRUE
 )
 ```
 
-We can quickly plot temporal trajectories of both simulations to check that the initialization from `TROLLv3_output` worked. 
+We can quickly plot temporal trajectories of both simulations to check that the initialization from `TROLLv4_output` worked. 
 For that we updated the simulation iteration index by adding the number realised in the previous simulation.
 Then we simply joined ecosystem outputs with `bind_rows` before using `ggplot` to show aboveground biomass (agb) temporal trajectory: 
 
 ```{r}
-sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv3_output@ecosystem$iter)
+sim@ecosystem$iter <- sim@ecosystem$iter + max(TROLLv4_output@ecosystem$iter)
 list(
-  "TROLLv3_output" = TROLLv3_output@ecosystem,
+  "TROLLv4_output" = TROLLv4_output@ecosystem,
   "sim" = sim@ecosystem
 ) %>%
   bind_rows(.id = "simulation") %>%
@@ -224,22 +225,4 @@ list(
   })))
 ```
 
->Note how the simulation AGB starts at the end of `TROLLv3_output`'s temporal trajectory.
-
-# Dynamic visualisation
-
-```{r, eval=F}
-gifs <- autogif(
-  name = "dynamic",
-  variables = "height_ct",
-  global = update_parameters(TROLLv3_output,
-                             nbiter = 12 * 100,
-                             extent_visual = 100),
-  species = TROLLv3_output@inputs$species,
-  climate = TROLLv3_output@inputs$climate,
-  daily = TROLLv3_output@inputs$daily,
-  forest = get_forest(TROLLv3_output),
-  verbose = FALSE
-)
-gifs$height_ct
-```
+> Note how the simulation AGB starts at the end of `TROLLv4_output`'s temporal trajectory.

@@ -6,22 +6,21 @@ test_that("stack", {
   stack_parameters <- generate_parameters(nbiter = 10) %>%
     mutate(simulation = list(c("seed50000", "seed500"))) %>%
     tidyr::unnest(simulation)
-  # stack_parameters[which(stack_parameters$param == "Cseedrain")[1],2] <- 500
+  # stack_parameters[which(stack_parameters$param == "Cseedrain")[1],2] <- 500 # nolint
   sims <- stack(
     name = "teststack",
-    path = getwd(),
+    # path = getwd(), # nolint
     simulations = c("seed50000", "seed500"),
     global = stack_parameters,
     species = TROLLv4_species,
     climate = TROLLv4_climate,
     daily = TROLLv4_dailyvar,
     pedology = TROLLv4_pedology,
-    verbose = TRUE,
     cores = 2,
     load = TRUE,
+    verbose = TRUE,
     date = "2004/01/01"
   )
-  sims <- load_stack_output("teststack", path = getwd())
   expect_true(is.character(capture.output(show(sims))))
   expect_true(is.character(capture.output(print(sims))))
   expect_true(is.character(capture.output(summary(sims))))

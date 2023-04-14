@@ -2567,7 +2567,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
     dailyF.water_flux = dailylT; // in micromol H20 m-2 s-1
     
     if( isnan(dailyA) || isnan(dailylT)) {
-      Rcout << "Warning in dailyFluxesLeaf:" <<" dailyA=" << dailyA << ", dailylT=" << dailylT << ", PPFD=" << PPFD << endl ;
+      // Rcout << "Warning in dailyFluxesLeaf:" <<" dailyA=" << dailyA << ", dailylT=" << dailylT << ", PPFD=" << PPFD << endl ;
     }
     
     return dailyF;
@@ -4510,6 +4510,10 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
       else OutputSnapshot(output_basic[1], 1, 0.1);                                   // Initial Pattern, for trees > 0.1m DBH
       
       
+      if(_OUTPUT_pointcloud == 1 && iter_pointcloud_generation == 0){
+        ExportPointcloud(mean_beam_pc, sd_beam_pc, klaser_pc, transmittance_laser, output_pointcloud); // v.3.1.6
+      }
+      
       double start_time,stop_time, duration=0.0;           // for simulation duration
       stop_time = clock();
       for(iter=0;iter<nbiter;iter++) {
@@ -4524,9 +4528,9 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
           if(timeofyear == 0) OutputVisual();
         }
         
-        /*if(_OUTPUT_pointcloud > 0 && iter == iter_pointcloud_generation){
+        if(_OUTPUT_pointcloud > 0 && iter == iter_pointcloud_generation){
          ExportPointcloud(mean_beam_pc, sd_beam_pc, klaser_pc, transmittance_laser, output_pointcloud); // v.3.1.6
-        }*/
+        }
         
         
 #ifdef Output_ABC
@@ -8113,7 +8117,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
     //    val = dst.val;
     //}
     
-    /* void ExportPointcloudHeader(vector<int> &beams, fstream& output_pointcloud){
+    void ExportPointcloudHeader(vector<int> &beams, fstream& output_pointcloud){
      // las files are defined as little endian
      // for the moment, we assume a little endian system and that chars actually have 8 bits (1 byte)
      // all names are just LAS definition names with underscores
@@ -8367,7 +8371,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
  
      }
      }
-     } */
+     }
     
     
     

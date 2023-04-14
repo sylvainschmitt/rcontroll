@@ -12,8 +12,8 @@
         "args": [
           "--vanilla",
           "-e",
-          "devtools::test(filter = 'cpp')"
-       ],
+          "devtools::test(filter = 'lidar')"
+      ],
         "stopAtEntry": false,
         "envFile": "${workspaceFolder}/.vscode/.env",
         "cwd": "${workspaceFolder}",

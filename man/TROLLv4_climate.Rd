@@ -6,8 +6,8 @@
 \title{TROLL climate parameters over days}
 \format{
 A data frame with 730 rows and 12 variables: \describe{
-  \item{NightTemperature}{night temperature (degree C)}
-  \item{Rainfall}{rainfall (mm)}}
+\item{NightTemperature}{night temperature (degree C)}
+\item{Rainfall}{rainfall (mm)}}
 }
 \usage{
 TROLLv4_climate
