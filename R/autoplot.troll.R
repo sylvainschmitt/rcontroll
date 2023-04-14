@@ -60,12 +60,11 @@ setMethod("autoplot", "trollsim", function(object,
       "initial" = min(object@forest$iter)
     )
   }
-  
-  if(!("date" %in% names(object@ecosystem)) || 
+  if (!("date" %in% names(object@ecosystem)) ||
      !("date" %in% names(object@species))) {
     object <- date_sim(object, "0000/01/01")
   }
-  if(!inherits(object@ecosystem$date, "Date") || 
+  if (!inherits(object@ecosystem$date, "Date") ||
      !inherits(object@species$date, "Date")) {
     object <- date_sim(object, "0000/01/01")
   } # initializing from year 0 is no date given

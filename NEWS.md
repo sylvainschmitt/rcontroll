@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9002
+
+- TROLLv4 bug fix pre-V3 news merge
+
 # rcontroll 0.2.0.9001
 
 - TROLLv4 integration & memory optimization, stack to check, suspect an error in generate_parameters

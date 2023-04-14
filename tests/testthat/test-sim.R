@@ -1,17 +1,18 @@
 test_that("sim", {
-  data("TROLLv3_species")
-  data("TROLLv3_climatedaytime12")
-  data("TROLLv3_daytimevar")
+  data("TROLLv4_species")
+  data("TROLLv4_climate")
+  data("TROLLv4_dailyvar")
+  data("TROLLv4_pedology")
   sim <- troll(
     name = "test",
-    global = generate_parameters(
-      rows = 100, cols = 100,
-      iterperyear = 12, nbiter = 4
-    ),
-    species = TROLLv3_species,
-    climate = TROLLv3_climatedaytime12,
-    daily = TROLLv3_daytimevar,
-    verbose = FALSE
+    # path = getwd(),
+    global = generate_parameters(nbiter = 10),
+    species = TROLLv4_species,
+    climate = TROLLv4_climate,
+    daily = TROLLv4_dailyvar,
+    pedology = TROLLv4_pedology,
+    load = TRUE,
+    date = "2004/01/01"
   )
   expect_true(is.character(capture.output(show(sim))))
   expect_true(is.character(capture.output(print(sim))))

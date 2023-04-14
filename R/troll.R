@@ -73,7 +73,7 @@ troll <- function(name = NULL,
   i <- NULL
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
-  sim <- foreach(i = 1, .export = ".troll_child") %dopar% {
+  sim <- foreach(i = 1, .export = c(".troll_child")) %dopar% {
     .troll_child(
       name = name,
       path = path,
@@ -221,6 +221,30 @@ troll <- function(name = NULL,
     lidar_path <- ""
   }
 
+  # command
+  # command <- paste0(
+  #   "rcontroll:::trollCpp(global_file = '",
+  #   global_path,
+  #   "', climate_file = '",
+  #   climate_path,
+  #   "', species_file = '",
+  #   species_path,
+  #   "', day_file = '",
+  #   daily_path,
+  #   "', pedology_file = '",
+  #   pedology_path,
+  #   "', forest_file = '",
+  #   forest_path,
+  #   "', soil_file = '",
+  #   soil_path,
+  #   "', lidar_file = '",
+  #   lidar_path,
+  #   "', output_file = '",
+  #   file.path(path, name, name),
+  #   "')"
+  # )
+  # print(command)
+  
   # run
   log <- capture.output(
     trollCpp(

@@ -2204,7 +2204,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
     float GBHU = 0.003 * sqrt(WIND/t_wleaf) * CMOLAR; //Boundary layer conductance to heat transfer by forced convection (single sided) in mol m-2 s-1; Leuning et al (1995) PC&E 18:1183-1200 Eqn E1; Equation A2 in Medlyn et al. 2007
     //Rnetiso = absorptance_leaves*RSOL - LookUp_INLR[convTA][convVPDA]; // Calculation of isothermal net radiation (J m-2 s-1; Jones (2013) equation (5.4) p.100)
     Rnetiso = RSOL - LookUp_INLR[convTAtop][convVPDAtop]*ExtinctLW; // Calculation of isothermal net radiation (J m-2 s-1; Jones (2013) equation (5.4) p.100). No need of absorptance_leaves, since PPFD provided in argument is already the absorbed flux.
-    
+
     //if (ExtinctLW<0.2) {
     //   Rcout << "Rnetiso=" << Rnetiso << " RSOL=" << RSOL << " INLR=" << LookUp_INLR[convTA][convVPDA]  << " INLR_top=" << LookUp_INLR[convTAtop][convVPDAtop] << " //ExtinctLW=" << ExtinctLW <<  endl;
     //}
@@ -2286,7 +2286,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
         
       } // If Tleaf diff < 0.01°C, stop search // check whether this threshold value is optimal
       TLEAF = TLEAF1; // update TLEAF for next iteration // cf. Vezy et al. and discussion with Guerric Lemaire: suggest to make smaller steps at each iteration to ease convergence (TDIFF -> TDIFF/4)
-      
+
       if(isnan(DS) || isnan(ET) || isnan(ALEAF) || ET < 0.0  || TLEAF <=0.0  || TLEAF >50.0 || CS <0 || DS<0 || CS>100000) {
         Rcout << "Warning in FluxesLeaf: " << " ALEAF= " << ALEAF << ", ET= "<< ET <<", CS= " << CS << ", PPFD=" << PPFD << ", DS= " << DS << ", TLEAF= " << TLEAF << ", GSV=" << GSV << ", GV= " << GV << ", Rnetsiso=" << Rnetiso << "; lambdaET=" << lambdaET << "; HDIVT=" << HDIVT << "; TDIFF=" << TDIFF << "; Ta=" << Ta << "; Cair=" << Cair << "; GBH=" << GBH << "; Cair=" << Cair << "; GBHGBC=" << GBHGBC << "; t_site=" << t_site << "; t_sp_lab=" << t_sp_lab << "; ITER=" << ITER << endl ;
       }
@@ -3193,6 +3193,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
 #ifdef WATER
         float leafarea_toprounding=0.0; //newIM
         float MeanDCELLHeight=Canopy_height_DCELL[site_DCELL[t_site]];
+        if(MeanDCELLHeight<1) MeanDCELLHeight=1;
 #endif
         
         for(int h = crown_above_top; h >= h_stop ; h--) {
@@ -4412,6 +4413,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
       sprintf(inputfile_climate,"%s",bufi_climate);
       sprintf(inputfile_soil,"%s",bufi_soil);
       sprintf(inputfile_species,"%s",bufi_species);
+      Rcout << inputfile_climate << endl;
       
       if(_OUTPUT_pointcloud){
         sprintf(inputfile_pointcloud,"%s",bufi_pointcloud); // v.3.1.6
@@ -5721,6 +5723,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
         // for computation of isothermal net long-range radiation
         float ESAT =0.61121 * exp((18.678 - temper/234.5) * temper/(257.14 + temper)); // Saturation partial pressure of water vapour in kPa From Jones 2013, Eq (5.15) page 102 (in agreement with Cochard 2019 equ 2 -- Buck equation)
         //float INLR=SIGMA*EMLEAF*pow(temper-ABSZERO,4.0); // Longwave radiation Jones (2014) Eq. 5.5, p101. // as in Jerome's script, but does not provide sound values (pb with EMLEAF ==> to be checked in Jones)
+        LookUp_INLR[i][0]=0;
         for (int v=1; v<nbVPDbins; v++) {
           float vpd=float(v)*VPDaccuracy;
           //float ea=1000.0*(ESAT - vpd);
@@ -5741,9 +5744,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
         LookUp_SLOPE[i]=SLOPE;
         LookUp_GRADN[i]=GRADN;
 #endif
-      }
-      
-      
+      }      
       
 #ifdef WATER
       

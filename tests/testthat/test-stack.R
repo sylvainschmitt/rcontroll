@@ -1,26 +1,27 @@
 test_that("stack", {
-  data("TROLLv3_species")
-  data("TROLLv3_climatedaytime12")
-  data("TROLLv3_daytimevar")
-  stack_parameters <- generate_parameters(
-    rows = 100, cols = 100,
-    iterperyear = 12, nbiter = 4
-  ) %>%
+  data("TROLLv4_species")
+  data("TROLLv4_climate")
+  data("TROLLv4_dailyvar")
+  data("TROLLv4_pedology")
+  stack_parameters <- generate_parameters(nbiter = 10) %>%
     mutate(simulation = list(c("seed50000", "seed500"))) %>%
     tidyr::unnest(simulation)
-  stack_parameters[62, 2] <- 500
+  # stack_parameters[which(stack_parameters$param == "Cseedrain")[1],2] <- 500
   sims <- stack(
-    name = "test3",
+    name = "teststack",
     path = getwd(),
     simulations = c("seed50000", "seed500"),
     global = stack_parameters,
-    species = TROLLv3_species,
-    climate = TROLLv3_climatedaytime12,
-    daily = TROLLv3_daytimevar,
-    verbose = FALSE,
-    cores = 2
+    species = TROLLv4_species,
+    climate = TROLLv4_climate,
+    daily = TROLLv4_dailyvar,
+    pedology = TROLLv4_pedology,
+    verbose = TRUE,
+    cores = 2,
+    load = TRUE,
+    date = "2004/01/01"
   )
-  sims <- load_stack("test3", path = getwd())
+  sims <- load_stack_output("teststack", path = getwd())
   expect_true(is.character(capture.output(show(sims))))
   expect_true(is.character(capture.output(print(sims))))
   expect_true(is.character(capture.output(summary(sims))))
@@ -28,5 +29,5 @@ test_that("stack", {
   expect_s3_class(autoplot(sims, what = "spatial"), "ggplot")
   expect_s3_class(autoplot(sims, what = "temporal"), "ggplot")
   expect_s3_class(autoplot(sims, what = "distribution"), "ggplot")
-  unlink(file.path(getwd(), "test3"), recursive = TRUE)
+  unlink(file.path(getwd(), "teststack"), recursive = TRUE)
 })
