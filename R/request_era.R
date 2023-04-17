@@ -1,12 +1,7 @@
-#' @include utils-pipe.R
-#' @importFrom ecmwfr wf_request
-NULL
-
-#' Download ERA5 data for TROLL
+#' Request ERA5 data for TROLL
 #'
 #' Description.
 #'
-#' @param user
 #' @param variables
 #' @param years
 #' @param months
@@ -16,33 +11,22 @@ NULL
 #' @param area
 #' @param format
 #' @param request
-#' @param transfer
-#' @param path
-#' @param verbose
-#' @param time_out
 #'
-#' @return Write files in the defined path or output the request as a list if
-#'   `request=FALSE`.
+#' @return ERA request for `ecmwfr` as a list of attributes.
 #'
 #' @export
 #'
-download_era <- function(user,
-                         variables = c(
-                           "u10", "v10", "d2m", "t2m",
-                           "ssr", "sp", "tp"
-                         ),
-                         years = 2020,
-                         months = 1,
-                         days = 1:31,
-                         hours = 0:23,
-                         target = NULL,
-                         area = c(5.77, -54.6, 2.11, -51.63),
-                         format = "netcdf",
-                         request = FALSE,
-                         transfer = TRUE,
-                         path = getwd(),
-                         verbose = FALSE,
-                         time_out = 60 * 60) {
+request_era <- function(variables = c(
+                          "u10", "v10", "d2m", "t2m",
+                          "ssr", "sp", "tp"
+                        ),
+                        years = 2020,
+                        months = 1,
+                        days = 1:31,
+                        hours = 0:23,
+                        target = NULL,
+                        area = c(5.77, -54.6, 2.11, -51.63), # paracou
+                        format = "netcdf") {
   warning("Need to add arguments check")
 
   if (is.null(target)) {
@@ -83,7 +67,7 @@ download_era <- function(user,
   )
   variables <- varlong[variables]
 
-  request_list <- list(
+  request <- list(
     "dataset_short_name" = "reanalysis-era5-land",
     "format" = format,
     "variable" = unname(variables),
@@ -95,16 +79,6 @@ download_era <- function(user,
     "area" = area,
     format = format
   )
-  if (!request) {
-    return(request_list)
-  } else {
-    ncfile <- wf_request( # nolint
-      user = user,
-      request = request_list,
-      transfer = transfer,
-      path = path,
-      verbose = verbose,
-      time_out = time_out
-    )
-  }
+
+  return(request)
 }

@@ -84,10 +84,14 @@ We recommend using a large entity as the request preparation time is often longe
 (see estimates below for French Guiana).
 
 ```{r, eval=FALSE}
-getbb("French Guiana", format_out = "sf_polygon", limit = 1)$multipolygon %>%
+geo_lite_sf("5.267241344232334, -52.92436802555797") %>%
   leaflet() %>%
   addTiles() %>%
-  addPolygons()
+  addPolygons(data = getbb("French Guiana",
+    format_out = "sf_polygon",
+    limit = 1
+  )$multipolygon) %>%
+  addCircleMarkers(col = "red")
 ```
 
 you can then convert the coordinates into the desired request format with `gsub`:
@@ -158,11 +162,16 @@ request <- list(
     "total_precipitation"
   ),
   "year" = as.character(2020),
-  "month" = sprintf("%02d", 1:2),
+  "month" = sprintf("%02d", 1),
   "day" = sprintf("%02d", 1:31),
   "time" = sprintf("%02d:00", 0:23),
-  "target" = "ERA5land_hr_FG.nc",
-  "area" = c(5.77, -54.6, 2.11, -51.63),
+  "target" = "ERA5land_Paracou_2020.nc",
+  "area" = c(
+    5.267241344232334,
+    -52.92436802555797,
+    5.267241344232334,
+    -52.92436802555797
+  ),
   format = "netcdf"
 )
 ```
@@ -176,7 +185,7 @@ Finally you can use `wf_request` to download locally the request with the regist
 **Download size:  22.4 MB**
 
 ```{r, eval=FALSE}
-ncfile <- wf_request(
+ncfile <- ecmwfr::wf_request(
   user = "152268",
   request = request,
   transfer = TRUE,
@@ -209,40 +218,18 @@ dynamic_request <- wf_archetype(
     "day" = sprintf("%02d", 1:31),
     "time" = sprintf("%02d:00", 0:23),
     "target" = "ERA5land_hr_FG.nc",
-    "area" = c(5.77, -54.6, 2.11, -51.63),
+    "area" = c(
+      5.267241344232334,
+      -52.92436802555797,
+      5.267241344232334,
+      -52.92436802555797
+    ),
     format = "netcdf"
   ),
   dynamic_fields = c("year", "month", "target")
 )
 ```
 
-```{r}
-lapply(
-  sprintf("%02d", 1:12),
-  function(month) {
-    dynamic_request(
-      year = "2020",
-      month = month,
-      target = paste0("ERA5land_hr_FG_2020", month, ".nc")
-    )
-  }
-)
-```
-
-```{r}
-wf_request_batch(
-  batch_request,
-  workers = 2,
-  user = user
-)
-```
-
-```{r}
-library(ncdf4)
-p1 <- nc_open("wrf_prec_8p5.2006.nc")
-p2 <- nc_open("wrf_prec_8p5.2007.nc")
-p <- merge(p6, p7, p8, all = TRUE)
-```
 
 # Have a look to the downloaded data
 
@@ -250,12 +237,6 @@ You can have a look to the resulting ERA5 land data.
 For instance here we consolidate the data as a table using `dplyr`:
 
 ```{r }
-# test_r <- suppressWarnings(rast(
-#   system.file("extdata",
-#     "ERA5land_mth_Nouragues_2021_2022.nc",
-#     package = "rcontroll"
-#   )
-# ))
 test_r <- suppressWarnings(rast(
   "~/Téléchargements/202101_FG.nc"
 ))

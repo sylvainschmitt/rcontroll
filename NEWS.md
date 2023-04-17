@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9005
+
+- download_era to request_era & request_era_batch
+
 # rcontroll 0.2.0.9004
 
 - download_era test
