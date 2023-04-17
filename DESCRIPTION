@@ -45,7 +45,8 @@ Imports:
     tibble (>= 3.0.0),
     lubridate (>= 1.6.0),
     terra (>= 1.5-16),
-    lidR (>= 4.0.1)
+    lidR (>= 4.0.1),
+    ecmwfr (>= 1.5.0)
 Suggests:
     markdown,
     knitr,
@@ -71,6 +72,7 @@ Collate:
     'autoplot.troll.R'
     'date_sim.R'
     'utils-pipe.R'
+    'download_era.R'
     'generate_climate.R'
     'generate_lidar.R'
     'generate_parameters.R'

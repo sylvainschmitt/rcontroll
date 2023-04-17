@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9004
+
+- download_era test
+
 # rcontroll 0.2.0.9003
 
 - TROLLv4 bug fix  & V3 news merge
