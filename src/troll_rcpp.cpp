@@ -2567,7 +2567,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
     dailyF.water_flux = dailylT; // in micromol H20 m-2 s-1
     
     if( isnan(dailyA) || isnan(dailylT)) {
-      // Rcout << "Warning in dailyFluxesLeaf:" <<" dailyA=" << dailyA << ", dailylT=" << dailylT << ", PPFD=" << PPFD << endl ;
+      Rcout << "Warning in dailyFluxesLeaf:" <<" dailyA=" << dailyA << ", dailylT=" << dailylT << ", PPFD=" << PPFD << endl ;
     }
     
     return dailyF;
@@ -5727,8 +5727,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
         // for computation of isothermal net long-range radiation
         float ESAT =0.61121 * exp((18.678 - temper/234.5) * temper/(257.14 + temper)); // Saturation partial pressure of water vapour in kPa From Jones 2013, Eq (5.15) page 102 (in agreement with Cochard 2019 equ 2 -- Buck equation)
         //float INLR=SIGMA*EMLEAF*pow(temper-ABSZERO,4.0); // Longwave radiation Jones (2014) Eq. 5.5, p101. // as in Jerome's script, but does not provide sound values (pb with EMLEAF ==> to be checked in Jones)
-        LookUp_INLR[i][0]=0;
-        for (int v=1; v<nbVPDbins; v++) {
+        for (int v=0; v<nbVPDbins; v++) {
           float vpd=float(v)*VPDaccuracy;
           //float ea=1000.0*(ESAT - vpd);
           //float emaB0=0.642*pow(ea/(temper-ABSZERO),0.1428571); // cf. equ. D4 in Leuning et al. 1995 (and in Duursma's R package code)
