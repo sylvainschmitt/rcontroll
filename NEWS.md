@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9006
+
+- request_era, request_era_batch, prepare_era, generate_climate, cliamte.Rmd updates
+
 # rcontroll 0.2.0.9005
 
 - download_era to request_era & request_era_batch

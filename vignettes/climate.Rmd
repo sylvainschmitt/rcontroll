@@ -13,7 +13,9 @@ This vignette requires numerous packages (12) to work. Some are not integrated t
 
 ```{r, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
-  comment = "#>"
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 6
 )
 library(terra) # to read the netCDF files
 library(lubridate) # to deal with dates and times
@@ -148,34 +150,6 @@ We encourage users to use both a larger spatial extent and a larger temporal ext
 * Volumetric soil water layer 3
 * Volumetric soil water layer 4
 
-```{r, eval=FALSE}
-request <- list(
-  "dataset_short_name" = "reanalysis-era5-land",
-  "format" = "netcdf",
-  "variable" = c(
-    "10m_u_component_of_wind",
-    "10m_v_component_of_wind",
-    "2m_dewpoint_temperature",
-    "2m_temperature",
-    "surface_net_solar_radiation",
-    "surface_pressure",
-    "total_precipitation"
-  ),
-  "year" = as.character(2020),
-  "month" = sprintf("%02d", 1),
-  "day" = sprintf("%02d", 1:31),
-  "time" = sprintf("%02d:00", 0:23),
-  "target" = "ERA5land_Paracou_2020.nc",
-  "area" = c(
-    5.267241344232334,
-    -52.92436802555797,
-    5.267241344232334,
-    -52.92436802555797
-  ),
-  format = "netcdf"
-)
-```
-
 > The names of product and variables can be found directly on the Copernicus website.
 
 Finally you can use `wf_request` to download locally the request with the registered user id (UID):
@@ -185,13 +159,12 @@ Finally you can use `wf_request` to download locally the request with the regist
 **Download size:  22.4 MB**
 
 ```{r, eval=FALSE}
-ncfile <- ecmwfr::wf_request(
+ncfile <- ecmwfr::wf_request_batch(
   user = "152268",
-  request = request,
-  transfer = TRUE,
-  path = ".",
-  verbose = FALSE,
-  time_out = 1
+  request = request_era(year = 2004, months = 1:12),
+  workers = 4,
+  path = "era5",
+  time_out = 60 * 60
 )
 ```
 
@@ -199,247 +172,124 @@ You can follow your request here : https://cds.climate.copernicus.eu/cdsapp#!/yo
 
 > As the resquest can be very long you can play with the `time_out` option in `wf_request`. By default it is set to 1 hour, but the request may take longer. We recommand either expanding the time out to expected request time, but you will block you R session (can be useful on cluster if you don't want manual intervention). Or on the oppposite setting a short time out. Then `wf_request` is only used to make the request. And you can download later when ready your request on the Copernicus website (can be useful on local session to avoid blocking the rsession).
 
-```{r}
-dynamic_request <- wf_archetype(
-  request = list(
-    "dataset_short_name" = "reanalysis-era5-land",
-    "format" = "netcdf",
-    "variable" = c(
-      "10m_u_component_of_wind",
-      "10m_v_component_of_wind",
-      "2m_dewpoint_temperature",
-      "2m_temperature",
-      "surface_net_solar_radiation",
-      "surface_pressure",
-      "total_precipitation"
-    ),
-    "year" = as.character(2020),
-    "month" = sprintf("%02d", 1:2),
-    "day" = sprintf("%02d", 1:31),
-    "time" = sprintf("%02d:00", 0:23),
-    "target" = "ERA5land_hr_FG.nc",
-    "area" = c(
-      5.267241344232334,
-      -52.92436802555797,
-      5.267241344232334,
-      -52.92436802555797
-    ),
-    format = "netcdf"
-  ),
-  dynamic_fields = c("year", "month", "target")
-)
-```
-
-
-# Have a look to the downloaded data
-
-You can have a look to the resulting ERA5 land data. 
-For instance here we consolidate the data as a table using `dplyr`:
-
-```{r }
-test_r <- suppressWarnings(rast(
-  "~/Téléchargements/202101_FG.nc"
+```{r, eval=FALSE}
+era5 <- prepare_era_batch(list.files("era5",
+  pattern = "2004",
+  full.names = TRUE
 ))
-test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
-  gather("variable", "value", -x, -y) %>%
-  group_by(x, y) %>%
-  mutate(date = rep(as_date(terra::time(test_r)))) %>%
-  separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-  select(-t) %>%
-  separate(variable, c("variable", "expver"), sep = "_expver=") %>%
-  group_by(x, y, date, variable) %>%
-  summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
-  spread(variable, value) %>%
-  arrange(date)
+readr::write_tsv(era5, "era5/ERA5land_Paracou_2004.tsv")
 ```
-
-You can then plot the result as a static figure for a chosen year and month using `ggplot`:
-
-```{r }
-test %>%
-  mutate(ws = sqrt(u10^2 + v10^2)) %>%
-  mutate(tp = tp * 10^3) %>%
-  mutate(t2m = t2m - 273.15) %>%
-  gather("variable", "value", -x, -y, -date) %>%
-  filter(variable %in% c("ssr", "ws", "t2m", "tp")) %>%
-  mutate(variable = recode(variable,
-    "ssr" = "Surface net solar radiation (J/m2)",
-    "ws" = "Wind speed (m/s)",
-    "t2m" = "2m temperature (°C)",
-    "tp" = "Total precipitation (mm)"
-  )) %>%
-  ggplot(aes(date, value)) +
-  geom_boxplot(fill = "lightblue", aes(group = date)) +
-  geom_smooth(col = "red") +
-  theme_bw() +
-  xlab("") +
-  facet_wrap(~variable, scales = "free")
-```
-
-```{r }
-ggplot(test, aes(x, y, fill = tp * 10^3)) +
-  geom_raster() +
-  theme_bw() +
-  facet_wrap(~ day(date)) +
-  coord_fixed() +
-  viridis::scale_fill_viridis("Total\nprecipitation\n(mm)", direction = -1)
-```
-
-```{r }
-ggplot(test, aes(x, y, fill = t2m - 273.15)) +
-  geom_raster() +
-  theme_bw() +
-  facet_wrap(~ day(date)) +
-  coord_fixed() +
-  viridis::scale_fill_viridis("2m\ntemperature\n(°C)", direction = 1)
-```
-
-```{r }
-ggplot(test, aes(x, y, fill = sqrt(u10^2 + v10^2))) +
-  geom_raster() +
-  theme_bw() +
-  facet_wrap(~ day(date)) +
-  coord_fixed() +
-  viridis::scale_fill_viridis("Wind\nspeed\n(m/s)", direction = 1)
-```
-
-```{r }
-ggplot(test, aes(x, y, fill = ssr)) +
-  geom_raster() +
-  theme_bw() +
-  facet_wrap(~ day(date)) +
-  coord_fixed() +
-  viridis::scale_fill_viridis("Surface\nnet\nsolar\nradiation\n(J/m2)",
-    direction = 1
-  )
-```
-
-# Cordex
-
-Simulations overview: https://cordex.org/data-access/regional-climate-change-simulations-for-cordex-domains/
-Download at ESGF for South-America (SAM): https://esgf-node.ipsl.upmc.fr/search/cordex-ipsl/
 
 # Prepare TROLL inputs
 
-Next you need coordinates of the location where you want to run your TROLL simulations to extract the data from downloaded ERA5-land data to TROLL climate data.
-We will use here the coordinates from the Reserve naturelle des Nouragues where the functional data have been partly collected from.
-For that `nominatimlite` provide a useful function called `geo_lite_sf` to easily geocode locations:
-
-```{r, eval=FALSE}
-geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
-  leaflet() %>%
-  addTiles() %>%
-  addPolygons(data = getbb("French Guiana",
-    format_out = "sf_polygon",
-    limit = 1
-  )$multipolygon) %>%
-  addCircleMarkers(col = "red")
-```
-
-You can extract corresponding coordinates using `st_coordinates` from `sf`:
-
-```{r, eval=FALSE}
-(coords <- geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
-  st_coordinates())
-```
-
-You will also need the corresponding time zone for time correction as ERA5-land is giving us time in UTC.
-For that you can use the `tz_lookup_coords` function from the package `lutz`:
-
-```{r, eval=FALSE}
-(tz <- tz_lookup_coords(
-  lon = coords[1],
-  lat = coords[2], method = "accurate"
-))
-```
-
-We invite users to take advantage of `geo_lite_sf` and `tz_lookup_coords` to retrieve the coordinates and time zone, but we show an example with known values below.
 You can use the `generate_cliamte` function inside TROLL to prepare `TROLL` climatic data:
 
-```{r, eval=FALSE }
-climate <- generate_climate(
-  x = -52.75468,
-  y = 4.060414,
-  tz = "America/Cayenne",
-  era5land_hour = system.file("extdata", "ERA5land_hr_Nouragues_2022.nc",
-    package = "rcontroll"
-  ),
-  era5land_month = system.file("extdata", "ERA5land_mth_Nouragues_2021_2022.nc",
-    package = "rcontroll"
-  )
+```{r }
+era5_file <- system.file("extdata",
+  "ERA5land_Paracou_2004.tsv",
+  package = "rcontroll"
 )
+climate <- generate_climate(hourly_data = vroom::vroom(era5_file))
 ```
 
 And as expected you obtain inputs ready to run models:
 
-```{r, eval=FALSE }
-climate$daytimevar %>% head()
+```{r }
+climate$dailyvar %>% head()
 ```
 
-```{r, eval=FALSE}
-climate$climatedaytime12 %>% head()
+```{r }
+climate$climate %>% head()
 ```
 
 Finally, we can compare obtained climatic data from ERA5-land with included data in the package grom the Nouraflux eddy tower:
 
-```{r, fig.width=6, fig.height=3, eval=FALSE}
-data("TROLLv3_daytimevar")
+```{r }
 list(
-  Nouraflux = TROLLv3_daytimevar,
-  ERA5 = climate$daytimevar
+  Guyaflux = TROLLv4_dailyvar,
+  ERA5 = rename(climate$dailyvar, Temp = Temperature)
 ) %>%
   bind_rows(.id = "origin") %>%
-  gather(variable, value, -starttime, -endtime, -origin) %>%
-  group_by(origin, variable) %>%
-  ggplot(aes(x = starttime, y = value, col = origin)) +
+  mutate(time = as_date("2004/01/01") + (DayJulian - 1)) %>%
+  mutate(time = as_datetime(time) + time_numeric * 60 * 60) %>%
+  filter(time < as_datetime("2005/01/01")) %>%
+  gather(variable, value, -DayJulian, -time_numeric, -origin, -time) %>%
+  ggplot(aes(x = time, y = value)) +
   geom_line() +
-  facet_wrap(~variable, scales = "free_y") +
-  theme_bw()
+  facet_grid(variable ~ origin, scales = "free") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  xlab("") +
+  ylab("") +
+  ggtitle("Hourly variation in 2004")
 ```
 
-```{r, fig.width=12, fig.height=6, eval=FALSE}
-data("TROLLv3_climatedaytime12")
+```{r }
 list(
-  Nouraflux = TROLLv3_climatedaytime12,
-  ERA5 = climate$climatedaytime12
+  Guyaflux = TROLLv4_dailyvar,
+  ERA5 = rename(climate$dailyvar, Temp = Temperature)
 ) %>%
   bind_rows(.id = "origin") %>%
-  group_by(origin) %>%
-  mutate(order = 1:12) %>%
-  mutate(month = as.character(lubridate::month(1:12, label = TRUE))) %>%
-  gather(variable, value, -origin, -month, -order) %>%
-  mutate(variable = recode(variable,
-    "Temperature" = "Temperature~(degree~C)",
-    "DaytimeMeanTemperature" = "DaytimeMeanTemperature~(degree~C)",
-    "NightTemperature" = "NightTemperature~(degree~C)",
-    "Rainfall" = "Rainfall (cm)",
-    "WindSpeed" = "WindSpeed (m~s^{-1})",
-    "DaytimeMeanIrradiance" = "DaytimeMeanIrradiance~(W~m^{-2})",
-    "MeanIrradiance" = "MeanIrradiance~(W~m^{-2})",
-    "SaturatedVapourPressure" = "SaturatedVapourPressure (hPa)",
-    "VapourPressure" = "VapourPressure (hPa)",
-    "VaporPressureDeficit" = "VaporPressureDeficit (hPa)",
-    "DayTimeVapourPressureDeficitVPDbasic" =
-      "DayTimeVapourPressureDeficitVPDbasic (hPa)",
-    "DaytimeMeanVapourPressureDeficit" =
-      "DaytimeMeanVapourPressureDeficit (hPa)"
-  )) %>%
-  ggplot(aes(
-    x = reorder(month, order), y = value,
-    col = origin, group = origin
-  )) +
-  geom_line() +
-  facet_wrap(~variable, scales = "free_y", labeller = label_parsed) +
+  mutate(time = as_date("2004/01/01") + (DayJulian - 1)) %>%
+  mutate(time = as_datetime(time) + time_numeric * 60 * 60) %>%
+  filter(time < as_datetime("2005/01/01")) %>%
+  gather(variable, value, -DayJulian, -time_numeric, -origin, -time) %>%
+  pivot_wider(names_from = origin, values_from = value) %>%
+  rowwise() %>%
+  mutate(difference = (ERA5 - Guyaflux)) %>%
+  filter(difference > -2) %>%
+  ggplot(aes(difference)) +
+  geom_histogram() +
+  facet_wrap(~variable, scales = "free") +
   theme_bw() +
-  theme(
-    axis.title = element_blank(), axis.text.x = element_text(angle = 90),
-    legend.position = "bottom"
-  )
+  xlab("") +
+  ylab("") +
+  ggtitle("Differences in hourly variations in 2004", "ERA5-Guyaflux")
+```
+
+```{r }
+list(
+  Guyaflux = mutate(TROLLv4_climate, DayJulian = seq_len(n())) %>%
+    filter(DayJulian < 366),
+  ERA5 = mutate(climate$climate, DayJulian = seq_len(n()))
+) %>%
+  bind_rows(.id = "origin") %>%
+  mutate(day = as_date("2004/01/01") + (DayJulian - 1)) %>%
+  gather(variable, value, -DayJulian, -day, -origin) %>%
+  ggplot(aes(x = day, y = value, col = origin)) +
+  geom_line() +
+  facet_wrap(~variable, scales = "free") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  xlab("") +
+  ylab("") +
+  ggtitle("Daily variation in 2004")
+```
+
+```{r }
+list(
+  Guyaflux = mutate(TROLLv4_climate, DayJulian = seq_len(n())) %>%
+    filter(DayJulian < 366),
+  ERA5 = mutate(climate$climate, DayJulian = seq_len(n()))
+) %>%
+  bind_rows(.id = "origin") %>%
+  mutate(day = as_date("2004/01/01") + (DayJulian - 1)) %>%
+  gather(variable, value, -DayJulian, -day, -origin) %>%
+  pivot_wider(names_from = origin, values_from = value) %>%
+  rowwise() %>%
+  mutate(difference = (ERA5 - Guyaflux)) %>%
+  ggplot(aes(difference)) +
+  geom_histogram() +
+  facet_wrap(~variable, scales = "free") +
+  theme_bw() +
+  xlab("") +
+  ylab("") +
+  ggtitle("Differences in daily variations in 2004", "ERA5-Guyaflux")
 ```
 
 This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:
 
 ```{r, eval=FALSE}
-write_tsv(climate$daytimevar, "ERA5land_daytimevar.txt")
-write_tsv(climate$climatedaytime12, "ERA5land_climatedaytime12.txt")
+write_tsv(climate$dailyvar, "ERA5land_dailyvar.txt")
+write_tsv(climate$climate, "ERA5land_climate.txt")
 ```

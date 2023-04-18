@@ -6,17 +6,34 @@
 \usage{
 request_era(
   variables = c("u10", "v10", "d2m", "t2m", "ssr", "sp", "tp"),
-  years = 2020,
-  months = 1,
+  year = 2004,
+  months = 1:12,
   days = 1:31,
   hours = 0:23,
-  target = NULL,
-  area = c(5.77, -54.6, 2.11, -51.63),
+  prefix = "ERA5land_Paracou",
+  xutm = 5.26724134423233,
+  yutm = -52.924368025558,
   format = "netcdf"
 )
 }
 \arguments{
-\item{request}{}
+\item{variables}{char. Description.}
+
+\item{year}{int. Description.}
+
+\item{months}{int. Description.}
+
+\item{days}{int. Description.}
+
+\item{hours}{int. Description.}
+
+\item{prefix}{char. Description.}
+
+\item{xutm}{int. Description.}
+
+\item{yutm}{int. Description.}
+
+\item{format}{char. Description.}
 }
 \value{
 ERA request for \code{ecmwfr} as a list of attributes.

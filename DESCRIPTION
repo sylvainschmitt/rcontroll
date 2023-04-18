@@ -45,7 +45,9 @@ Imports:
     tibble (>= 3.0.0),
     lubridate (>= 1.6.0),
     terra (>= 1.5-16),
-    lidR (>= 4.0.1)
+    lidR (>= 4.0.1),
+    ecmwfr (>= 1.5.0),
+    zoo (>= 1.8.11)
 Suggests:
     markdown,
     knitr,
@@ -80,11 +82,12 @@ Collate:
     'load_output.R'
     'load_stack.R'
     'load_sim.trollsim.R'
+    'prepare_era.R'
+    'prepare_era_batch.R'
     'print.trollsim.R'
     'rcontroll-package.R'
     'rcontroll.R'
     'request_era.R'
-    'request_era_batch.R'
     'troll.R'
     'stack.R'
     'update_parameters.trollsim.R'
