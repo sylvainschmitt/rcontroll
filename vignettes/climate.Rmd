@@ -7,9 +7,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-TROLL forest simulator relies on climate tables with half-hourly variations of a typical day and monthly variations of a typical year which are recycled through simulation days and years. Initially, TROLL climate tables were computed from the Nouraflux dataset. Variations in quantities of interests (temperatures, ...) were averaged to the target resolution (half-hour for daily variation or month for monthly variation). The purpose of climate generation functions is to compute equivalent climate tables from the ERA5 land reanalysis dataset. With these functions, rcontroll users only need inventories and associated functional traits to run TROLL simulations.
-
-This vignette requires numerous packages (12) to work. Some are not integrated to `rcontroll`. Consequently, the corresponding chunks are not compiled. But we strongly encourage users that want to generate their climate data for TROLL to install all the packages and run manually this vignette. All the packages role is detailed below. Some may be avoided, only `ecmwfr` is mandatory to download the ERA5 land data from Copernicus and obviously `rcontroll` to convert the data to TROLL inputs.
+TROLL forest simulator relies on climate tables with half-hourly variations 
+(temperature, vapour pressure deficit, wind speed and net shortwave radiations)
+and daily variations (night temperature and precipitations).
+Initially, TROLL climate tables were computed from the Guyaflux dataset.
+The purpose of climate generation functions is to compute equivalent climate 
+tables from the ERA5 land reanalysis dataset. 
+With these functions, rcontroll users only need inventories and associated 
+functional traits to run TROLL simulations.
 
 ```{r, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
@@ -17,37 +22,15 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 6
 )
-library(terra) # to read the netCDF files
-library(lubridate) # to deal with dates and times
-library(dplyr) # to wrangle and tidy the data
-library(tidyr) # to wrangle and tidy the data
-library(ggplot2) # to make statis maps
-library(gganimate) # to make a temporal gif of climate variation
+library(tidyverse)
 library(rcontroll) # to generate TROLL climate inputs
-```
-
-```{r message=TRUE, warning=TRUE, include=FALSE}
-if (Sys.info()[["sysname"]] == "Darwin") {
-  knitr::opts_chunk$set(
-    eval = FALSE
-  )
-}
-```
-
-```{r, eval=FALSE}
 library(ecmwfr) # to request data from Copernicus
-library(osmdata) # to get bounding box from the study area
-library(lutz) # to get time zone
-library(nominatimlite) # to get coordinates from the study area
-library(leaflet) # to make interactive maps
-library(sf) # to extract coordinates from spatial objects
 ```
 
 # Download ERA5-land data
 
-**Better ideas here: https://bluegreen-labs.github.io/ecmwfr/articles/cds_workflow_vignette.html**
-
-Before you will be able to download any data you need to get a free personal account and accept the licence to use both ECMWF and Copernicus data.
+Before you will be able to download any data you need to get a free personal 
+account and accept the licence to use both ECMWF and Copernicus data.
 
 First ECMWF:
 
@@ -71,19 +54,8 @@ wf_set_key(
 )
 ```
 
-```{r, include=FALSE, eval=F}
-wf_set_key(
-  user = "152268",
-  key = "40942d56-a02c-467b-926d-1120be322979",
-  service = "cds"
-)
-```
-
 You then define the location to retrieve climate data.
-Thanks to the function `getbb` from the package `osmdata` you can directly use the name of the entity, 
-for example here the French Guiana for which the default species data have been initialized.
-We recommend using a large entity as the request preparation time is often longer than the resulting object to download 
-(see estimates below for French Guiana).
+Thanks to the function `getbb` from the package `osmdata` you can directly use the name of the entity.
 
 ```{r, eval=FALSE}
 geo_lite_sf("5.267241344232334, -52.92436802555797") %>%
@@ -96,73 +68,20 @@ geo_lite_sf("5.267241344232334, -52.92436802555797") %>%
   addCircleMarkers(col = "red")
 ```
 
-you can then convert the coordinates into the desired request format with `gsub`:
-
-```{r, eval=FALSE}
-(coords <- gsub(",", "/", getbb("French Guiana",
-  format_out = "string", limit = 1
-)))
-```
-
-You need two types of product: (1) monthly averages by hour of day and (2) monthly averages at 00:00.
-
-Now you can use the coordinates to build the request corresponding to the first set of data (monthly averages by hour of day) needed.
-We encourage users to use both a larger spatial extent and a larger temporal extent.
-
-**Needed variables:**
-
-*half-hourly*:
-
-* Temperature (T°C) = 2m temperature (2m_temperature, K) - 273.15
-* Absorbed short-wave radiation (Snet W/m2) = Surface net solar radiation  (surface_solar_radiation_downwards, J/m2)
-* Vapour pressure deficit (VPD Pa) = f(2m_temperature, 2m_dewpoint_temperature, surface_pressure), see ?generate_climate
-    * 2m temperature (2m_temperature, K)
-    * 2m dewpoint temperature (2m_dewpoint_temperature, K)
-    * Surface pressure (surface_pressure, Pa)
-* Wind speed (WS m/s) = sqrt(10_m_u_component_of_wind^2+10_m_v_component_of_wind^2)
-    * 10m u-component of wind (10_m_u_component_of_wind, m/s)
-    * 10m v-component of wind (10_m_v_component_of_wind, m/s)
-
-*daily*:
-
-* Night temperature (T°C) = 2m temperature (2m_temperature)
-* Rainfall (mm) = Total precipitation (total_precipitation, m) / 10^3
-
-*summary*:
-
-* 2m temperature (2m_temperature, K)
-* 2m dewpoint temperature (2m_dewpoint_temperature, K)
-* Surface solar radiation downwards (surface_solar_radiation_downwards, J/m2)
-* Surface pressure (surface_pressure, Pa)
-* 10m u-component of wind (10_m_u_component_of_wind, m/s)
-* 10m v-component of wind (10_m_v_component_of_wind, m/s)
-* Total precipitation (total_precipitation, m) / 10^3
-
-*validation?*:
-
-* Evaporation from vegetation transpiration
-* Total evaporation
-* Leaf area index, high vegetation
-* Leaf area index, low vegetation
-* Potential evaporation
-* Volumetric soil water layer 1
-* Volumetric soil water layer 2
-* Volumetric soil water layer 3
-* Volumetric soil water layer 4
-
-> The names of product and variables can be found directly on the Copernicus website.
-
-Finally you can use `wf_request` to download locally the request with the registered user id (UID):
-
-**Request time: 0:26:07**
-
-**Download size:  22.4 MB**
+You can use the `rcontroll`function `request_era` to build your request
+with needed variable from ERA5-Land data. **Beware, the download limit of**
+**Copernicus is pretty small so you may need to download one month at a time.**
+Finally you can use `wf_request_batch` from `ecmwfr` to download locally 
+the requested data with the registered user id (UID):
 
 ```{r, eval=FALSE}
 ncfile <- ecmwfr::wf_request_batch(
-  user = "152268",
-  request = request_era(year = 2004, months = 1:12),
-  workers = 4,
+  user = "XXXXXX",
+  request = request_era(
+    years = 2004,
+    months = 1:12
+  ),
+  workers = 5,
   path = "era5",
   time_out = 60 * 60
 )
@@ -170,44 +89,51 @@ ncfile <- ecmwfr::wf_request_batch(
 
 You can follow your request here : https://cds.climate.copernicus.eu/cdsapp#!/yourrequests .
 
-> As the resquest can be very long you can play with the `time_out` option in `wf_request`. By default it is set to 1 hour, but the request may take longer. We recommand either expanding the time out to expected request time, but you will block you R session (can be useful on cluster if you don't want manual intervention). Or on the oppposite setting a short time out. Then `wf_request` is only used to make the request. And you can download later when ready your request on the Copernicus website (can be useful on local session to avoid blocking the rsession).
+Next you can take advantage from `prepare_era_batch` to format all the
+downloaded data for TROLL. We recommend saving the results in a table as
+shown in the example:
 
 ```{r, eval=FALSE}
 era5 <- prepare_era_batch(list.files("era5",
   pattern = "2004",
   full.names = TRUE
-))
-readr::write_tsv(era5, "era5/ERA5land_Paracou_2004.tsv")
+), cores = 1)
+readr::write_tsv(era5, "ERA5land_Paracou_2004.tsv")
 ```
 
 # Prepare TROLL inputs
 
-You can use the `generate_cliamte` function inside TROLL to prepare `TROLL` climatic data:
+An example of obtained data for year 2004 has been included in `rcontroll`:
 
-```{r }
-era5_file <- system.file("extdata",
+```{r erafile}
+era_file <- system.file("extdata",
   "ERA5land_Paracou_2004.tsv",
   package = "rcontroll"
 )
-climate <- generate_climate(hourly_data = vroom::vroom(era5_file))
+era <- vroom::vroom(era_file)
 ```
 
-And as expected you obtain inputs ready to run models:
+You can use the `generate_cliamte` function inside TROLL 
+to prepare `TROLL` climatic data:
 
 ```{r }
-climate$dailyvar %>% head()
+generate_climate(hourly_data = era) %>% head()
 ```
+
+You can use the `generate_dailyvar` function inside TROLL 
+to prepare `TROLL` dailyvar data:
 
 ```{r }
-climate$climate %>% head()
+generate_dailyvar(hourly_data = era) %>% head()
 ```
 
-Finally, we can compare obtained climatic data from ERA5-land with included data in the package grom the Nouraflux eddy tower:
+Finally, we can compare obtained climatic data from ERA5-land 
+with included data in the package from the Guyaflux eddy tower:
 
 ```{r }
 list(
   Guyaflux = TROLLv4_dailyvar,
-  ERA5 = rename(climate$dailyvar, Temp = Temperature)
+  ERA5 = generate_dailyvar(hourly_data = era)
 ) %>%
   bind_rows(.id = "origin") %>%
   mutate(time = as_date("2004/01/01") + (DayJulian - 1)) %>%
@@ -220,76 +146,34 @@ list(
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90)) +
   xlab("") +
-  ylab("") +
-  ggtitle("Hourly variation in 2004")
+  ylab("")
 ```
 
 ```{r }
 list(
-  Guyaflux = TROLLv4_dailyvar,
-  ERA5 = rename(climate$dailyvar, Temp = Temperature)
-) %>%
-  bind_rows(.id = "origin") %>%
-  mutate(time = as_date("2004/01/01") + (DayJulian - 1)) %>%
-  mutate(time = as_datetime(time) + time_numeric * 60 * 60) %>%
-  filter(time < as_datetime("2005/01/01")) %>%
-  gather(variable, value, -DayJulian, -time_numeric, -origin, -time) %>%
-  pivot_wider(names_from = origin, values_from = value) %>%
-  rowwise() %>%
-  mutate(difference = (ERA5 - Guyaflux)) %>%
-  filter(difference > -2) %>%
-  ggplot(aes(difference)) +
-  geom_histogram() +
-  facet_wrap(~variable, scales = "free") +
-  theme_bw() +
-  xlab("") +
-  ylab("") +
-  ggtitle("Differences in hourly variations in 2004", "ERA5-Guyaflux")
-```
-
-```{r }
-list(
-  Guyaflux = mutate(TROLLv4_climate, DayJulian = seq_len(n())) %>%
+  Guyaflux = mutate(TROLLv4_climate,
+    DayJulian = seq_len(n())
+  ) %>%
     filter(DayJulian < 366),
-  ERA5 = mutate(climate$climate, DayJulian = seq_len(n()))
+  ERA5 = mutate(generate_climate(hourly_data = era),
+    DayJulian = seq_len(n())
+  )
 ) %>%
   bind_rows(.id = "origin") %>%
   mutate(day = as_date("2004/01/01") + (DayJulian - 1)) %>%
   gather(variable, value, -DayJulian, -day, -origin) %>%
-  ggplot(aes(x = day, y = value, col = origin)) +
+  ggplot(aes(x = day, y = value)) +
   geom_line() +
-  facet_wrap(~variable, scales = "free") +
+  facet_grid(variable ~ origin, scales = "free") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90)) +
   xlab("") +
-  ylab("") +
-  ggtitle("Daily variation in 2004")
+  ylab("")
 ```
 
-```{r }
-list(
-  Guyaflux = mutate(TROLLv4_climate, DayJulian = seq_len(n())) %>%
-    filter(DayJulian < 366),
-  ERA5 = mutate(climate$climate, DayJulian = seq_len(n()))
-) %>%
-  bind_rows(.id = "origin") %>%
-  mutate(day = as_date("2004/01/01") + (DayJulian - 1)) %>%
-  gather(variable, value, -DayJulian, -day, -origin) %>%
-  pivot_wider(names_from = origin, values_from = value) %>%
-  rowwise() %>%
-  mutate(difference = (ERA5 - Guyaflux)) %>%
-  ggplot(aes(difference)) +
-  geom_histogram() +
-  facet_wrap(~variable, scales = "free") +
-  theme_bw() +
-  xlab("") +
-  ylab("") +
-  ggtitle("Differences in daily variations in 2004", "ERA5-Guyaflux")
-```
+# Download CORDEX data
 
-This is only R objects. `generate_climate` is running fast. But in case you want to run multiple simulations at the same location we recommend saving the corresponding files for later:
-
-```{r, eval=FALSE}
-write_tsv(climate$dailyvar, "ERA5land_dailyvar.txt")
-write_tsv(climate$climate, "ERA5land_climate.txt")
-```
+If you want to simulate climate forcing, you can take advantage of 
+CORDEX data (Coordinated Regional Climate Downscaling Experiment) with 
+the `snakemake` and `singularity` workflow
+[`getCordex`](https://github.com/sylvainschmitt/getCordex).

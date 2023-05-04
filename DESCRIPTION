@@ -47,7 +47,8 @@ Imports:
     terra (>= 1.5-16),
     lidR (>= 4.0.1),
     ecmwfr (>= 1.5.0),
-    zoo (>= 1.8.11)
+    zoo (>= 1.8.11),
+    iterators (>= 1.0.14)
 Suggests:
     markdown,
     knitr,
@@ -67,13 +68,18 @@ Collate:
     'TROLLv4_species.R'
     'zzz.R'
     'TROLLversion.R'
+    'adjust_time.R'
     'trollsim.R'
     'get_chm.trollsim.R'
     'trollstack.R'
     'autoplot.troll.R'
+    'climate-misc.R'
     'date_sim.R'
     'utils-pipe.R'
+    'extract_era.R'
+    'format_era.R'
     'generate_climate.R'
+    'generate_dailyvar.R'
     'generate_lidar.R'
     'generate_parameters.R'
     'get_forest.trollsim.R'
@@ -83,7 +89,6 @@ Collate:
     'load_stack.R'
     'load_sim.trollsim.R'
     'prepare_era.R'
-    'prepare_era_batch.R'
     'print.trollsim.R'
     'rcontroll-package.R'
     'rcontroll.R'

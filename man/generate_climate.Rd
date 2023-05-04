@@ -7,7 +7,7 @@
 generate_climate(hourly_data, daytime_start = 7, daytime_end = 19)
 }
 \arguments{
-\item{hourly_data}{data.frame. Description.}
+\item{hourly_data}{data.frame. Half-hourly climatic data formatted for TROLL.}
 
 \item{daytime_start}{int. Daytime starting hour to compute nigh and day
 variables (default 7).}
@@ -16,11 +16,9 @@ variables (default 7).}
 (default 19).}
 }
 \value{
-A list with two \code{\link[=data.frame]{data.frame()}}: dailyvar and climate.
+A \code{\link[=data.frame]{data.frame()}} with climatic day variation (night temperature and
+rainfall).
 }
 \description{
 Description
-}
-\details{
-Details.
 }

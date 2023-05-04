@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9007
+
+- full ERA5 data request to TROL data functional and documented
+
 # rcontroll 0.2.0.9006
 
 - request_era, request_era_batch, prepare_era, generate_climate, cliamte.Rmd updates

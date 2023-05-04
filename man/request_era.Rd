@@ -6,7 +6,7 @@
 \usage{
 request_era(
   variables = c("u10", "v10", "d2m", "t2m", "ssr", "sp", "tp"),
-  year = 2004,
+  years = 2004:2005,
   months = 1:12,
   days = 1:31,
   hours = 0:23,
@@ -17,23 +17,24 @@ request_era(
 )
 }
 \arguments{
-\item{variables}{char. Description.}
+\item{variables}{char. Requested variable among "u10", "v10", "d2m", "t2m",
+"ssr", "sp", and "tp".}
 
-\item{year}{int. Description.}
+\item{years}{int. Requested years between 1950 and today.}
 
-\item{months}{int. Description.}
+\item{months}{int. Requested months between 1 and 12.}
 
-\item{days}{int. Description.}
+\item{days}{int. Requested months between 1 and 31.}
 
-\item{hours}{int. Description.}
+\item{hours}{int. Requested hours between 0 and 23.}
 
-\item{prefix}{char. Description.}
+\item{prefix}{char. Prefix used to name the file.}
 
-\item{xutm}{int. Description.}
+\item{xutm}{int. Requested site longitude in UTM.}
 
-\item{yutm}{int. Description.}
+\item{yutm}{int. Requested site latitude in UTM.}
 
-\item{format}{char. Description.}
+\item{format}{char. Requested format, default netcdf.}
 }
 \value{
 ERA request for \code{ecmwfr} as a list of attributes.
