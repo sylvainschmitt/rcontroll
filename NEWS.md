@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9008
+
+- added cpp line for theta_w = 0
+
 # rcontroll 0.2.0.9007
 
 - full ERA5 data request to TROL data functional and documented

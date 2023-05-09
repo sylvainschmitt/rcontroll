@@ -1926,7 +1926,7 @@ void Tree::Water_availability() {
   
   if (t_WSF < 0.0 || t_WSF_A < 0.0 || t_WSF>1.0 || t_WSF_A >1.0 ||t_phi_root >0.0 || isnan(t_WSF) || isnan(t_WSF_A) || isnan(t_phi_root)) {
     Rcout << "incorrect value in one of WSF, WSF_A, t_phi_root " << endl;
-    Rcout <<t_WSF << "\t" << t_phi_root << "\t" << S[t_sp_lab].s_tlp  << "\t" << t_dbh << "\t" << t_height << "\t" << t_age << "\t" << S[t_sp_lab].s_phi_lethal << "\t" << sumG;
+    Rcout << t_WSF << "\t" << t_phi_root << "\t" << S[t_sp_lab].s_tlp  << "\t" << t_dbh << "\t" << t_height << "\t" << t_age << "\t" << S[t_sp_lab].s_phi_lethal << "\t" << sumG;
     Rcout <<endl;
   }
   //}
@@ -2221,7 +2221,6 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
       if(CS<0 || DS<0 || CS>100000 ) {
         Rcout << "Warning in FluxesLeaf ! DS=" << DS << "; CS=" << CS << "; PPFD=" << PPFD << "; TLEAF=" << TLEAF << endl;
       }
-      
       
       ps=Photosyn(PPFD,TLEAF,CS,DS);    // Compute CO2 assimilation rate and stomatal conductance at TLEAF, CS and DS
       ALEAF=ps.carbon_flux; // in micromolCO2 m-2 s-1
@@ -7169,13 +7168,14 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
           float theta_w=(SWC3D[l][d]-Min_SWC[l])/(Max_SWC[l]-Min_SWC[l]);
           
           if (_WATER_RETENTION_CURVE==1) {
+            if(theta_w==0)
+              theta_w=0.001; // SS addition for limit value, which near zero precision should be used?
             soil_phi3D[l][d]=a_vgm[l]*pow((pow(theta_w,-b_vgm[l])-1), c_vgm[l]); // this is the van Genuchten-Mualem model (as in Table 1 in Marthews et al. 2014)
             float inter= 1-pow((1-pow(theta_w, b_vgm[l])),m_vgm[l]);
             Ks[l][d]=Ksat[l]*pow(theta_w, 0.5)*inter*inter; // this is the van Genuchten-Mualem model (as in Table 1 in Marthews et al. 2014)
             
             if (isnan(soil_phi3D[l][d]) || isnan(Ks[l][d]) ||  (SWC3D[l][d]-Min_SWC[l])<0) //|| KsPhi[l][d]==0.0 || Ks[l][d]==0.0 || soil_phi3D[l][d]==0.0)
               Rcout << "In bucket model, layer " << l << " dcell " << d << " theta_w=" << theta_w << " SWC3D[l][d]-Min_SWC[l]=" << (SWC3D[l][d]-Min_SWC[l]) << " soil_phi3D[l][d]=" << soil_phi3D[l][d] << " Ksat=" << Ksat[l] << " Ks[l][d]=" << Ks[l][d] << endl ;
-            
             
           } else if (_WATER_RETENTION_CURVE==0) {
             soil_phi3D[l][d]=phi_e[l]*pow(theta_w, -b[l]); // this is the soil water characteristic of Brooks & Corey-Mualem (as in Table 1 in Marthews et al. 2014)
@@ -7184,6 +7184,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             
             if (isnan(soil_phi3D[l][d]) || isnan(Ks[l][d]) ||  isnan(KsPhi[l][d]) || (SWC3D[l][d]-Min_SWC[l])<0) //|| KsPhi[l][d]==0.0 || Ks[l][d]==0.0 || soil_phi3D[l][d]==0.0)
               Rcout << "In bucket model, layer " << l << " dcell " << d << " theta_w=" << theta_w << " SWC3D[l][d]-Min_SWC[l]=" << (SWC3D[l][d]-Min_SWC[l]) << " soil_phi3D[l][d]=" << soil_phi3D[l][d] << " Ksat=" << Ksat[l] << " phi_e=" << phi_e[l] <<" b[l]=" << b[l] << " KsPhi[l][d]=" << KsPhi[l][d] << " Ks[l][d]=" << Ks[l][d] << endl ;
+
             //KsPhi2[l][d]=Ksat[l]*phi_e[l]*pow(theta_w, 2.5);
             // we may want to shift to the van Genuchten-Mualem expressions of soil_phi3D and Ks, as the van genuchten-Mualem model is currently defacto the more standard soil hydraulic model (see ref in Table 1 in Marthews et al. 2014). To do so, see if we have data of soil pH, cation exchange capacity, organic carbon content, to explicitly compute the parameters with Hodnett & Tomasella 2002 (as recommended by Marthews et al. 2014 -- Table 2; or instead directly use the parameter provided by the map in Marthews et al. 2014.
             
