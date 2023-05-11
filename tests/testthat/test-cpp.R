@@ -5,13 +5,16 @@ test_that("cpp", {
   library(tidyverse)
   setwd("~/Documents/rcontroll_v4/tests/testthat/")
   filein <- "sim/MPI-M-MPI-ESM-MR_ICTP-RegCM4-7_sampled.tsv"
+  n_years <- 1
   data("TROLLv4_species")
   data("TROLLv4_pedology")
   data <- vroom::vroom(filein,
                 col_types = list(rainfall = "numeric"))
+  data <- data %>% 
+    filter(year(time) %in% (1:n_years + 1000))
   clim <- generate_climate(data)
   day <- generate_dailyvar(data)
-  n <- round(10*365)
+  n <- round(n_years*365)
   sim <- rcontroll:::.troll_child(
     name = "testcpp",
     path = getwd(),
@@ -24,15 +27,14 @@ test_that("cpp", {
     verbose = TRUE,
     overwrite = TRUE
   )
-  # test <- load_output(name = "testcpp", path = "testcpp")
-  # autoplot(test)
-  
+  test <- load_output(name = "testcpp", path = "testcpp")
+  autoplot(test)
   
   # avoid fake parrallelisation for vscode debugger
   # global_pars <- generate_parameters(nbiter = 10)
   # data("TROLLv4_species")
   # data("TROLLv4_climate")
-  data("TROLLv4_dailyvar")
+  # data("TROLLv4_dailyvar")
   # data("TROLLv4_pedology")
   # data("TROLLv4_output")
   # sim <- rcontroll:::.troll_child(
@@ -48,7 +50,7 @@ test_that("cpp", {
     # load = TRUE,
     # verbose = TRUE
     # date = "2004/01/01"
-  # )
-  # expect_s4_class(sim, "trollsim")
+  # )
+  expect_s4_class(sim, "trollsim")
   # unlink(file.path(getwd(), "testcpp"), recursive = TRUE)
 })

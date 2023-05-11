@@ -3885,7 +3885,10 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
     float quad=0.0;
     float discriminant=B*B-4.0*A*C;
     // ROOT=-1: smaller root; ROOT=1: larger root
-    if(discriminant < 0){cerr << "IMAGINARY ROOTS IN QUADRATIC" << endl;quad=0.0;}
+    if(discriminant < 0){
+      Rcerr << "IMAGINARY ROOTS IN QUADRATIC" << endl;
+      quad=0.0;
+    }
     if(A==0.0){if(B==0.0) quad=0.0; else quad=-C/B;}
     else quad=(- B + ROOT*sqrt(discriminant))/(2.0*A);
     return quad;
@@ -5693,7 +5696,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
       nbVPDbins=600;
       float VPDaccuracy=0.01;
       iVPDaccuracy=1.0/VPDaccuracy;
-      Rcout << endl << "Built-in maximal VPD: " << float(nbVPDbins)*VPDaccuracy <<endl;
+      Rcout << "Built-in maximal VPD: " << float(nbVPDbins)*VPDaccuracy <<endl;
       if(NULL==(LookUp_INLR=new float*[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_INLR" << endl;
       for (int i=1;i<nbTbins;i++) {
         if(NULL==(LookUp_INLR[i]=new float[nbVPDbins])) cerr<<"!!! Mem_Alloc LookUp_INLR" << endl;
@@ -6985,12 +6988,15 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
         }
         
 #ifdef FULL_CLIMATE
+        if (Canopy_height_DCELL[d]==0) {
+          Canopy_height_DCELL[d]=0.1; // moving up to 10 cm
+        }
         if (Canopy_height_DCELL[d]<=MeteoStation_Height) {
           TopWindSpeed_DCELL[d]=1.204/log(16.67*((MeteoStation_Height/Canopy_height_DCELL[d])-0.8)); // WS is the timestep windspeed at a height=MeteoStation_Height, and TopWindSpeed_DCELL is the wind speed computed at a height=Canopy_height_DCELL[d], according to the model of Monteith & Unsworth 2008 (see Rau et al's TROLL manuscript), with d=0.8H and z0=0.06H; 16.67~1/0.06, 1.204=log(0.2/0.06).
         } else TopWindSpeed_DCELL[d]=exp(alphaInoue*(1-MeteoStation_Height/Canopy_height_DCELL[d]));
-        if (Canopy_height_DCELL[d]==0) {
-          Rcout << "in UpdateField: d=" << d << "; Canopyheight_DCELL[d]=" << Canopy_height_DCELL[d] << "; HSum_DCELL[d]=" << HSum_DCELL[d] << "; TopWindSpeed_DCELL[d]=" << TopWindSpeed_DCELL[d] << endl;
-        }
+        // if (Canopy_height_DCELL[d]==0) {
+        //   Rcout << "in UpdateField: d=" << d << "; Canopyheight_DCELL[d]=" << Canopy_height_DCELL[d] << "; HSum_DCELL[d]=" << HSum_DCELL[d] << "; TopWindSpeed_DCELL[d]=" << TopWindSpeed_DCELL[d] << endl;
+        // }
 #else
         if (Canopy_height_DCELL[d]<=MeteoStation_Height) {
           TopWindSpeed_DCELL[d]=WSDailyMean*1.204/log(16.67*((MeteoStation_Height/Canopy_height_DCELL[d])-0.8)); // WS is the timestep windspeed at a height=MeteoStation_Height, and TopWindSpeed_DCELL is the wind speed computed at a height=Canopy_height_DCELL[d], according to the model of Monteith & Unsworth 2008 (see Rau et al's TROLL manuscript), with d=0.8H and z0=0.06H; 16.67~1/0.06, 1.204=log(0.2/0.06).

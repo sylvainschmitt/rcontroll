@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9010
+
+- Canopy height dcell minimum to 10 cm
+
 # rcontroll 0.2.0.9009
 
 - Extended VPD max to 6 in TROLL for CORDEX simulations
