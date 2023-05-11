@@ -5690,9 +5690,10 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
       if(NULL==(LookUp_Rstem=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_Rstem" << endl;
       //if(NULL==(LookUp_Rnight=new float[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_Rnight" << endl; //newIM: no redundancy anymore between LookUp_Rday and LookUP_Rnight
 #ifdef WATER
-      nbVPDbins=200;
+      nbVPDbins=600;
       float VPDaccuracy=0.01;
       iVPDaccuracy=1.0/VPDaccuracy;
+      Rcout << endl << "Built-in maximal VPD: " << float(nbVPDbins)*VPDaccuracy <<endl;
       if(NULL==(LookUp_INLR=new float*[nbTbins])) cerr<<"!!! Mem_Alloc LookUp_INLR" << endl;
       for (int i=1;i<nbTbins;i++) {
         if(NULL==(LookUp_INLR[i]=new float[nbVPDbins])) cerr<<"!!! Mem_Alloc LookUp_INLR" << endl;

@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9009
+
+- Extended VPD max to 6 in TROLL for CORDEX simulations
+
 # rcontroll 0.2.0.9008
 
 - added cpp line for theta_w = 0
@@ -8,7 +12,7 @@
 
 # rcontroll 0.2.0.9006
 
-- request_era, request_era_batch, prepare_era, generate_climate, cliamte.Rmd updates
+- request_era, request_era_batch, prepare_era, generate_climate, climate.Rmd updates
 
 # rcontroll 0.2.0.9005
 

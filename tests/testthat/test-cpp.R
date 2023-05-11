@@ -4,17 +4,14 @@ test_that("cpp", {
   library(rcontroll)
   library(tidyverse)
   setwd("~/Documents/rcontroll_v4/tests/testthat/")
-  filein <- "sim/guyaflux_sampled.tsv"
+  filein <- "sim/MPI-M-MPI-ESM-MR_ICTP-RegCM4-7_sampled.tsv"
   data("TROLLv4_species")
   data("TROLLv4_pedology")
   data <- vroom::vroom(filein,
                 col_types = list(rainfall = "numeric"))
   clim <- generate_climate(data)
-  day <- generate_dailyvar(data) %>% 
-    mutate(Snet = ifelse(Snet < 0, 0, Snet)) %>% # weird
-    mutate(VPD = ifelse(VPD <= 0, 0.0005, VPD)) %>% 
-    mutate(WS = ifelse(WS <= 0, 0.0005, WS))
-  n <- round(0.1*365)
+  day <- generate_dailyvar(data)
+  n <- round(10*365)
   sim <- rcontroll:::.troll_child(
     name = "testcpp",
     path = getwd(),

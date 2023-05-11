@@ -145,7 +145,7 @@ troll <- function(name = NULL,
     stop("forest should be a data frame or null.")
   }
   if (!(class(soil) %in% c("data.frame", "NULL"))) {
-    stop("forest should be a data frame or null.")
+    stop("soil should be a data frame or null.")
   }
   if (!(class(lidar) %in% c("data.frame", "NULL"))) {
     stop("lidar should be a data frame or null.")
