@@ -4,7 +4,7 @@ test_that("cpp", {
   library(rcontroll)
   library(tidyverse)
   setwd("~/Documents/rcontroll_v4/tests/testthat/")
-  filein <- "sim/era_sampled.tsv"
+  filein <- "sim/MPI-M-MPI-ESM-MR_ICTP-RegCM4-7_sampled.tsv"
   n_years <- 2
   data("TROLLv4_species")
   data("TROLLv4_pedology")
@@ -18,7 +18,7 @@ test_that("cpp", {
   sim <- rcontroll:::.troll_child(
     name = "testcpp",
     path = getwd(),
-    global = generate_parameters(nbiter = 1095, NONRANDOM = 0),
+    global = generate_parameters(nbiter = 365*n_years, NONRANDOM = 0),
     species = TROLLv4_species,
     climate = clim,
     daily = day,
@@ -43,7 +43,7 @@ test_that("cpp", {
   # Working > testcppref
   
   library(patchwork)
-  n <- 2
+  n <- 3
   list(bnew = vroom::vroom("testcpp/testcpp_0_sumstats.txt"),
        aold = vroom::vroom("~/Documents/alt/troll/test/test_0_sumstats.txt") %>%
          filter(iter < 365*n)) %>%

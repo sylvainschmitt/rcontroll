@@ -5685,7 +5685,7 @@ if (_WATER_RETENTION_CURVE==1) {
             if(NULL==(LookUp_Rstem=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_Rstem" << endl;
             //if(NULL==(LookUp_Rnight=new float[nbTbins])) Rcerr<<"!!! Mem_Alloc LookUp_Rnight" << endl; //newIM: no redundancy anymore between LookUp_Rday and LookUP_Rnight
 #ifdef WATER
-            nbVPDbins=300;
+            nbVPDbins=600;
             float VPDaccuracy=0.01;
             iVPDaccuracy=1.0/VPDaccuracy;
             Rcout << "Built-in maximal VPD: " << float(nbVPDbins)*VPDaccuracy <<endl;
