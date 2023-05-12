@@ -4,21 +4,21 @@ test_that("cpp", {
   library(rcontroll)
   library(tidyverse)
   setwd("~/Documents/rcontroll_v4/tests/testthat/")
-  filein <- "sim/MPI-M-MPI-ESM-MR_ICTP-RegCM4-7_sampled.tsv"
-  n_years <- 1
+  filein <- "sim/era_sampled.tsv"
+  n_years <- 2
   data("TROLLv4_species")
   data("TROLLv4_pedology")
   data <- vroom::vroom(filein,
                 col_types = list(rainfall = "numeric"))
-  data <- data %>% 
+  data <- data %>%
     filter(year(time) %in% (1:n_years + 1000))
   clim <- generate_climate(data)
   day <- generate_dailyvar(data)
-  n <- round(n_years*365)
+  
   sim <- rcontroll:::.troll_child(
     name = "testcpp",
     path = getwd(),
-    global = generate_parameters(nbiter = n),
+    global = generate_parameters(nbiter = 1095, NONRANDOM = 0),
     species = TROLLv4_species,
     climate = clim,
     daily = day,
@@ -27,8 +27,39 @@ test_that("cpp", {
     verbose = TRUE,
     overwrite = TRUE
   )
-  test <- load_output(name = "testcpp", path = "testcpp")
-  autoplot(test)
+  
+  # sim <- rcontroll:::.troll_child(
+  #   name = "testcpp",
+  #   path = getwd(),
+  #   global = generate_parameters(nbiter = 1095, NONRANDOM = 0),
+  #   species = TROLLv4_species,
+  #   climate = TROLLv4_climate,
+  #   daily = TROLLv4_dailyvar,
+  #   pedology = TROLLv4_pedology,
+  #   load = FALSE,
+  #   verbose = TRUE,
+  #   overwrite = TRUE
+  # )
+  # Working > testcppref
+  
+  library(patchwork)
+  n <- 2
+  list(bnew = vroom::vroom("testcpp/testcpp_0_sumstats.txt"),
+       aold = vroom::vroom("~/Documents/alt/troll/test/test_0_sumstats.txt") %>%
+         filter(iter < 365*n)) %>%
+    bind_rows(.id = "sim") %>%
+    ggplot(aes(iter, agb, col = sim)) +
+    geom_line() +
+    theme_bw() +
+    xlim(0, 365*n) +
+    list(bnew = vroom::vroom("testcpp/testcpp_0_sumstats.txt"),
+         aold = vroom::vroom("~/Documents/alt/troll/test/test_0_sumstats.txt") %>%
+           filter(iter < 365*n)) %>%
+    bind_rows(.id = "sim") %>%
+    ggplot(aes(iter, sum1, col = sim)) +
+    geom_line() +
+    theme_bw() +
+    xlim(0, 365*n)
   
   # avoid fake parrallelisation for vscode debugger
   # global_pars <- generate_parameters(nbiter = 10)
@@ -51,6 +82,10 @@ test_that("cpp", {
     # verbose = TRUE
     # date = "2004/01/01"
   # )
+  
+  # test <- load_output(name = "testcpp", path = "testcpp")
+  # rcontroll::autoplot(test, variables = "agb")
+  
   expect_s4_class(sim, "trollsim")
   # unlink(file.path(getwd(), "testcpp"), recursive = TRUE)
 })

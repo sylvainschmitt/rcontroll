@@ -13,16 +13,16 @@ generate_parameters(
   NV = 1,
   NH = 1,
   nbout = 4,
-  nbspp = 45,
+  nbspp = 109,
   SWtoPPFD = 2.27,
   p_nonvert = 0.05,
-  klight = 0.63,
+  klight = 0.5,
   phi = 0.093,
-  absorptance_leaves = 0.9,
+  absorptance_leaves = 0.83,
   theta = 0.7,
   g1 = 3.77,
   g0 = 5,
-  pheno_thresh = 0.2,
+  pheno_thres = 0.2,
   pheno_delta = 0.2,
   vC = 0.021,
   DBH0 = 0.005,
@@ -51,17 +51,17 @@ generate_parameters(
   corr_N_P = 0.65,
   corr_N_LMA = -0.43,
   corr_P_LMA = -0.39,
-  leafdem_resolution = 30,
+  leafdem_resolution = 1,
   p_tfsecondary = 1,
   hurt_decay = 0,
   crown_gap_fraction = 0.15,
-  m = 0.013,
-  m1 = 0.013,
-  Cair = 400,
+  m = 0.025,
+  m1 = 0.025,
+  Cair = 375,
   PRESS = 101,
   SOIL_LAYER_WEIGHT = 2,
   WATER_RETENTION_CURVE = 1,
-  LL_parameterization = 1,
+  LL_parameterization = 0,
   LA_regulation = 2,
   sapwood = 1,
   seedsadditional = 0,
@@ -70,7 +70,7 @@ generate_parameters(
   BASICTREEFALL = 1,
   SEEDTRADEOFF = 0,
   CROWN_MM = 0,
-  OUTPUT_extended = 0,
+  OUTPUT_extended = 1,
   OUTPUT_inventory = 1,
   extent_visual = 0
 )
@@ -112,7 +112,7 @@ law.}
 
 \item{g0}{num. Minimum leaf conductance (mol m-2 s-1).}
 
-\item{pheno_thresh}{num. Threshold for change in old leaf shedding rate, in
+\item{pheno_thres}{num. Threshold for change in old leaf shedding rate, in
 proportion of tugrog loss point (TLP)}
 
 \item{pheno_delta}{num. Amplitude of change in old leaf shedding rate.}

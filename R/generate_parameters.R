@@ -23,7 +23,7 @@
 #' @param theta num. Parameter of the Farquhar model.
 #' @param g1 num. Parameter g1 of Medlyn et al stomatal conductance model.
 #' @param g0 num. Minimum leaf conductance (mol m-2 s-1).
-#' @param pheno_thresh num. Threshold for change in old leaf shedding rate, in
+#' @param pheno_thres num. Threshold for change in old leaf shedding rate, in
 #'   proportion of tugrog loss point (TLP)
 #' @param pheno_delta num. Amplitude of change in old leaf shedding rate.
 #' @param vC num. Variance of the flexion moment.
@@ -114,16 +114,16 @@ generate_parameters <- function(cols = 200,
                                 NV = 1, # nolint
                                 NH = 1, # nolint
                                 nbout = 4,
-                                nbspp = 45,
+                                nbspp = 109,
                                 SWtoPPFD = 2.27, # nolint
                                 p_nonvert = 0.05,
-                                klight = 0.63,
+                                klight = 0.5,
                                 phi = 0.093,
-                                absorptance_leaves = 0.9,
+                                absorptance_leaves = 0.83,
                                 theta = 0.7,
                                 g1 = 3.77,
                                 g0 = 5.0,
-                                pheno_thresh = 0.2,
+                                pheno_thres = 0.2,
                                 pheno_delta = 0.2,
                                 vC = 0.021, # nolint
                                 DBH0 = 0.005, # nolint
@@ -152,17 +152,17 @@ generate_parameters <- function(cols = 200,
                                 corr_N_P = 0.65, # nolint
                                 corr_N_LMA = -0.43, # nolint
                                 corr_P_LMA = -0.39, # nolint
-                                leafdem_resolution = 30,
+                                leafdem_resolution = 1,
                                 p_tfsecondary = 1,
                                 hurt_decay = 0,
                                 crown_gap_fraction = 0.15,
-                                m = 0.013,
-                                m1 = 0.013,
-                                Cair = 400, # nolint
+                                m = 0.025,
+                                m1 = 0.025,
+                                Cair = 375, # nolint
                                 PRESS = 101.0, # nolint
                                 SOIL_LAYER_WEIGHT = 2, # nolint
                                 WATER_RETENTION_CURVE = 1, # nolint
-                                LL_parameterization = 1, # nolint
+                                LL_parameterization = 0, # nolint
                                 LA_regulation = 2, # nolint
                                 sapwood = 1,
                                 seedsadditional = 0,
@@ -171,7 +171,7 @@ generate_parameters <- function(cols = 200,
                                 BASICTREEFALL = 1, # nolint
                                 SEEDTRADEOFF = 0, # nolint
                                 CROWN_MM = 0, # nolint
-                                OUTPUT_extended = 0, # nolint
+                                OUTPUT_extended = 1, # nolint
                                 OUTPUT_inventory = 1, # nolint
                                 extent_visual = 0) {
   # check args
@@ -179,7 +179,7 @@ generate_parameters <- function(cols = 200,
     list(
       cols, rows, HEIGHT, length_dcell, nbiter,
       NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
-      absorptance_leaves, theta, g1, g0, pheno_thresh, pheno_delta,
+      absorptance_leaves, theta, g1, g0, pheno_thres, pheno_delta,
       vC, DBH0, H0, CR_min,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
@@ -210,7 +210,7 @@ generate_parameters <- function(cols = 200,
       "nbiter", "NV", "NH", "nbout",
       "nbspp", "SWtoPPFD", "p_nonvert", "klight", "phi",
       "absorptance_leaves", "theta", "g1", "g0",
-      "pheno_thresh", "pheno_delta", "vC", "DBH0",
+      "pheno_thres", "pheno_delta", "vC", "DBH0",
       "H0", "CR_min", "CR_a", "CR_b", "CD_a", "CD_b",
       "CD0", "shape_crown", "dens", "fallocwood",
       "falloccanopy", "Cseedrain", "nbs0", "sigma_height",
@@ -229,7 +229,7 @@ generate_parameters <- function(cols = 200,
       cols, rows, HEIGHT, length_dcell, nbiter,
       NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
       absorptance_leaves, theta, g1, g0,
-      pheno_thresh, pheno_delta, vC, DBH0, H0, CR_min,
+      pheno_thres, pheno_delta, vC, DBH0, H0, CR_min,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
       sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
@@ -246,7 +246,7 @@ generate_parameters <- function(cols = 200,
       "/* nb of rows  */",
       "/* vertical extent of simulation */",
       "/* linear size of a dcell */",
-      "/* total nb of timesteps */",
+      "/* total nb of timesteps (in days so X ans = X*365) */",
       "/* vertical nb of cells (nb per m) */",
       "/* horizontal nb of cells (nb per m) */",
       "/* Number of outputs */",

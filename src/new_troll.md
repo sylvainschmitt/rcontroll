@@ -10,7 +10,7 @@ In case of a new TROLL version the following changes need to be made to the C++ 
 
 -   Removing all the exit()
 
--   Replacing all cout by Rcout
+-   Replacing all cout by Rcout, cerr by Rcerr
 
 -   Adding parenthesis to avoid the corresponding warning
 

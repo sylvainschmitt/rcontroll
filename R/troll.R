@@ -217,7 +217,9 @@ troll <- function(name = NULL,
   write_tsv(global, file = global_path)
   write_tsv(species, file = species_path)
   write_tsv(climate, file = climate_path)
-  write_tsv(daily, file = daily_path)
+  write.table(x = daily, 
+              file = daily_path, sep = "\t", 
+              quote = FALSE, row.names = FALSE)
   write_tsv(pedology, file = pedology_path)
   if (!is.null(forest)) {
     write_tsv(forest, file = forest_path)
