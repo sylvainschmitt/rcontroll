@@ -5226,8 +5226,9 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
                     nbdays++;
                 }
                 
-                if (nbdays%365==0) iterperyear=365; //check if this guarantees iterperyear is correctly infered
-                else iterperyear=12;
+                iterperyear=365; // SS change because it will be always 365 iter per year 
+                // if (nbdays%365==0) iterperyear=365; //check if this guarantees iterperyear is correctly infered
+                // else iterperyear=12; 
                 
                 timestep=1.0/float(iterperyear);
                 Rcout << "Read in climate data for " << nbdays << " days, with" << iterperyear << " iterations per year." << endl;
@@ -7166,6 +7167,10 @@ if (_WATER_RETENTION_CURVE==1) {
                     float theta_w=(SWC3D[l][d]-Min_SWC[l])/(Max_SWC[l]-Min_SWC[l]);
                     
 if (_WATER_RETENTION_CURVE==1) {
+                    if(theta_w==0) {
+                        theta_w=0.001; // SS addition for limit value
+                        Rcout << "Warning theta_w = 0 " << endl ;
+                    }
                     soil_phi3D[l][d]=a_vgm[l]*pow((pow(theta_w,-b_vgm[l])-1), c_vgm[l]); // this is the van Genuchten-Mualem model (as in Table 1 in Marthews et al. 2014)
                     float inter= 1-pow((1-pow(theta_w, b_vgm[l])),m_vgm[l]);
                     Ks[l][d]=Ksat[l]*pow(theta_w, 0.5)*inter*inter; // this is the van Genuchten-Mualem model (as in Table 1 in Marthews et al. 2014)

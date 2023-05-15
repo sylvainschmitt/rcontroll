@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9012
+
+- adding a theta_w=0 case in cpp and force iterperyear=365 causing bug in simulations with incomplete years
+
 # rcontroll 0.2.0.9011
 
 - cpp init back from Isabelle version & TROLL debug, issue from using predLeafLifespanKikuzawa
