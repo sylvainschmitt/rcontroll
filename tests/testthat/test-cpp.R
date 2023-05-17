@@ -4,23 +4,37 @@ test_that("cpp", {
   library(rcontroll)
   library(tidyverse)
   setwd("~/Documents/rcontroll_v4/tests/testthat/")
-  filein <- "sim/guyaflux_sampled.tsv"
-  n_years <- 2
+  filein <- "sim/soil.tsv"
+  n_years <- 1
   data("TROLLv4_species")
-  data("TROLLv4_pedology")
-  data <- vroom::vroom(filein,
-                col_types = list(rainfall = "numeric"))
-  # data <- data %>%
-  # filter(year(time) %in% (1:n_years + 1000)) # could be added in troll()
-
+  data("TROLLv4_climate")
+  data("TROLLv4_dailyvar")
+  data <- vroom::vroom(filein)
+  pedo <- data %>% 
+    filter(address == "Piste de Paracou") %>% 
+    filter(depth == "0-5cm") %>% 
+    select(-address, -depth) %>% 
+    pivot_wider(names_from = variable, values_from = value) %>% 
+    mutate(layer_thickness = list(c(0.1, 0.23, 0.4, 0.8, 0.97))) %>% 
+    unnest() %>% 
+    rename(proportion_Silt = silt, 
+           proportion_Clay = clay, 
+           proportion_Sand = sand, 
+           SOC = soc, 
+           DBD = bdod,
+           pH =phh2o,
+           CEC = cec) %>% 
+    select(layer_thickness, proportion_Silt, 
+           proportion_Clay, proportion_Sand, SOC, DBD, pH, CEC)
+  
   sim <- rcontroll:::.troll_child(
     name = "testcpp",
     path = getwd(),
     global = generate_parameters(nbiter = 365*n_years, NONRANDOM = 0),
     species = TROLLv4_species,
-    climate = generate_climate(data),
-    daily =  generate_dailyvar(data),
-    pedology = TROLLv4_pedology,
+    climate = TROLLv4_climate,
+    daily = TROLLv4_dailyvar,
+    pedology = pedo,
     load = FALSE,
     verbose = TRUE,
     overwrite = TRUE
@@ -39,28 +53,32 @@ test_that("cpp", {
   #   overwrite = TRUE
   # )
   
-  library(patchwork)
-  comp_sims <- function(sims, years) {
-    g <- sims %>%
-      bind_rows(.id = "sim") %>%
-      filter(iter < 365*years) %>%
-      ggplot(aes(iter, agb, col = sim)) +
-      geom_line() +
-      theme_bw() +
-      xlim(0, 365*years) +
-      sims %>%
-      bind_rows(.id = "sim") %>%
-      filter(iter < 365*years) %>%
-      ggplot(aes(iter, sum1, col = sim)) +
-      geom_line() +
-      theme_bw() +
-      xlim(0, 365*years)
-    return(g)
-  }
-  list(
-    bguyaflux = vroom::vroom("testcpp/testcpp_0_sumstats.txt"),
-    aref = vroom::vroom("testcppref/testcpp_0_sumstats.txt")
-  ) %>% comp_sims(2)
+  # library(rcontroll)
+  # library(tidyverse)
+  # library(patchwork)
+  # setwd("~/Documents/rcontroll_v4/tests/testthat/")
+  # comp_sims <- function(sims, years, vars = c("agb", "sum1")) {
+  #   sims %>%
+  #     bind_rows(.id = "sim") %>%
+  #     filter(iter < 365*years) %>%
+  #     mutate(date = as_date("0000-01-01") + iter) %>%
+  #     gather(variable, value, -sim, -iter, -date) %>%
+  #     filter(variable %in% vars) %>%
+  #     ggplot(aes(date, value, col = sim)) +
+  #     geom_line(alpha = 0.3) +
+  #     geom_smooth() +
+  #     theme_bw() +
+  #     facet_wrap(~ variable, scales = "free_y")
+  # }
+  # # vroom::vroom("sftp://genologin1.toulouse.inrae.fr/home/sschmitt/work/trollExp/results/simulations/current/10-years/guyaflux/warmup/R1/R1_input_global.txt")
+  # list(
+  #   cordex = vroom::vroom("sim/cordex.txt"),
+  #   cordex_full  = vroom::vroom("sim/cordex_full.txt"),
+  #   era = vroom::vroom("sim/era.txt"),
+  #   guyaflux = vroom::vroom("sim/guyaflux.txt"),
+  #   # ref = vroom::vroom("testcppref/testcpp_0_sumstats.txt")
+  #   ref = vroom::vroom("~/Documents/alt/troll/historical_700y/test_0_sumstats.txt")
+  # ) %>% comp_sims(600)
   
   # vroom::vroom("testcpp/testcpp_input_daily.txt") %>% 
   #   filter(DayJulian < 365*2) %>% 

@@ -4597,7 +4597,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
 #ifdef easyMPI
             MPI::Finalize();
 #endif
-            exit(0);
+            // exit(0);
         }
         
         //##########################################
@@ -6596,11 +6596,11 @@ if (_WATER_RETENTION_CURVE==1) {
                 if(RMAX>rows){
                     // Consistency tests
                     Rcerr << "Error : RMAX > rows \n";
-                    exit(-1);
+                    // exit(-1);
                 }
                 if(HEIGHT > rows){
                     Rcerr << "Error : HEIGHT > rows \n";
-                    exit(-1);
+                    // exit(-1);
                 }
             }
             

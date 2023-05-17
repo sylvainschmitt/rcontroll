@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9013
+
+- removing remaining exit
+
 # rcontroll 0.2.0.9012
 
 - adding a theta_w=0 case in cpp and force iterperyear=365 causing bug in simulations with incomplete years
