@@ -1531,14 +1531,39 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         //*##############################*/
         // these parameters can be set to 0, as they are recomputed each timestep in the actual light environment
         // will be computed for initial configuration after allocation of leaves to voxel field
-        t_GPP = t_NPP = t_Rday = t_Rnight = t_Rstem = 0.0;
+        
+        // t_GPP = t_NPP = t_Rday = t_Rnight = t_Rstem = 0.0;
+
+        parameter_name = "GPP";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_GPP, 0.0f, 1000.0f, 0.0f, quiet);
+
+        parameter_name = "NPP";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_NPP, 0.0f, 1000.0f, 0.0f, quiet);
+
+        parameter_name = "Rday";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Rday, 0.0f, 1000.0f, 0.0f, quiet);
+
+        parameter_name = "Rnight";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Rnight, 0.0f, 1000.0f, 0.0f, quiet);
+
+        parameter_name = "Rstem";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Rstem, 0.0f, 1000.0f, 0.0f, quiet);
         
 #ifdef WATER
         //*###########*/
         //*## water ##*/
         //*###########*/
         
-        t_transpiration = 0.0;
+        // t_transpiration = 0.0;
+
+        parameter_name = "transpiration";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_transpiration, 0.0f, 0.1f, 0.0f, quiet);
 
         parameter_name = "root_depth";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
@@ -6317,7 +6342,19 @@ if (_WATER_RETENTION_CURVE==1) {
                 //        int nb_parameters = int(parameter_names.size()); // only works from C++11 onwards
                 
 #ifdef WATER
-                string parameter_names_hardcoded[63] = { "col","row","s_name","CrownDisplacement","Pmass","Nmass","LMA","wsg","Rdark","Vcmax","Jmax","leaflifespan","lambda_young","lambda_mature","lambda_old","dbhmature","dbhmax","hmax","ah","Ct","LAImax","fraction_filled","mult_height","mult_CR","mult_CD","mult_P","mult_N","mult_LMA","mult_dbhmax","dev_wsg","age","dbh","sapwood_area","height","CD","CR","GPP","NPP","Rday","Rnight","Rstem","LAmax","LA","youngLA","matureLA","oldLA","LAI","litter","carbon_storage","carbon_biometry","multiplier_seed","hurt","NPPneg", "root_depth", "phi_root", "WSF", "WSF_A", "transpiration", "g1_0", "g1", "Ndays_dry", "Ndays_wet", "pheno_factor"};
+                string parameter_names_hardcoded[63] = { "col", "row", "s_name", "CrownDisplacement", 
+                                                         "Pmass", "Nmass", "LMA", "wsg",
+                                                         "Rdark", "Vcmax", "Jmax", "leaflifespan",
+                                                         "lambda_young", "lambda_mature", "lambda_old",
+                                                         "dbhmature", "dbhmax", "hmax", "ah", "Ct",
+                                                         "LAImax", "fraction_filled",
+                                                         "mult_height", "mult_CR", "mult_CD", "mult_P", "mult_N", "mult_LMA",
+                                                         "mult_dbhmax", "dev_wsg", "age", "dbh", "sapwood_area", "height", "CD", "CR",
+                                                         "GPP", "NPP", "Rday", "Rnight", "Rstem", 
+                                                         "LAmax", "LA", "youngLA", "matureLA", "oldLA", "LAI", "litter",
+                                                         "carbon_storage", "carbon_biometry", "multiplier_seed", "hurt", "NPPneg", 
+                                                         "root_depth", "phi_root", "WSF", "WSF_A", "transpiration", "g1_0", "g1", 
+                                                         "Ndays_dry", "Ndays_wet", "pheno_factor"};
                 
                 int nb_parameters = 63;
                 
@@ -6798,7 +6835,7 @@ if (_WATER_RETENTION_CURVE==1) {
         
             // Update trees
             Average();                          //! Compute averages for outputs
-            if(_OUTPUT_extended) OutputField(); //! Output the statistics
+            // if(_OUTPUT_extended) OutputField(); //! Output the statistics
         }
         
         

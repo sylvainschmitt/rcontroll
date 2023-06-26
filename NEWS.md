@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9014
+
+- commenting outputfield (overlapping outputs) & adding more inits from data
+
 # rcontroll 0.2.0.9013
 
 - removing remaining exit
