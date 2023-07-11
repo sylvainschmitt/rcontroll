@@ -1276,7 +1276,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_Pmass = S[t_sp_lab].s_Pmass * t_mult_P;
         } else {
             // infer multiplier trait and check against supplied values if available
-            t_mult_P = t_Pmass/S[t_sp_lab].s_Pmass;
+            // t_mult_P = t_Pmass/S[t_sp_lab].s_Pmass;
+            parameter_name = "mult_P";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_P, 0.0f, 2.0f, 1.0f, quiet);
             // example for how parameters could be checked
             //        string parameter_name_emp = "mult_P";
             //        CompareParameters(t_mult_P, 0.0f, 10.0f, 0.0f, parameter_name_emp, parameter_names, parameter_values, quiet);
@@ -1292,7 +1295,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_Nmass = S[t_sp_lab].s_Nmass * t_mult_N;
         } else {
             // infer multiplier trait and check against supplied values if available
-            t_mult_N = t_Nmass/S[t_sp_lab].s_Nmass;
+            // t_mult_N = t_Nmass/S[t_sp_lab].s_Nmass;
+            parameter_name = "mult_N";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_N, 0.0f, 2.0f, 1.0f, quiet);
         }
         
         parameter_name = "LMA";
@@ -1305,7 +1311,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_LMA = S[t_sp_lab].s_LMA * t_mult_LMA;
         } else {
             // infer multiplier trait and check against supplied values if available
-            t_mult_LMA = t_LMA/S[t_sp_lab].s_LMA;
+            // t_mult_LMA = t_LMA/S[t_sp_lab].s_LMA;
+            parameter_name = "mult_LMA";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_LMA, 0.0f, 2.0f, 1.0f, quiet);
         }
         
         parameter_name = "wsg";
@@ -1318,7 +1327,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_wsg = fmaxf(S[t_sp_lab].s_wsg + t_dev_wsg,0.05);
         } else {
             // infer deviation trait and check against supplied values if available
-            t_dev_wsg = t_wsg - S[t_sp_lab].s_wsg;
+            // t_dev_wsg = t_wsg - S[t_sp_lab].s_wsg;
+            parameter_name = "dev_wsg";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_dev_wsg, -1.0f, 1.0f, 0.0f, quiet);  // hard upper limit of 1.5 based on density of woody substance
         }
         
         parameter_name = "dbhmax";
@@ -1335,10 +1347,16 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             }
         } else {
             // infer multiplier trait and check against supplied values if available
-            t_mult_dbhmax = t_dbhmax/S[t_sp_lab].s_dbhmax;
+            // t_mult_dbhmax = t_dbhmax/S[t_sp_lab].s_dbhmax;
+            parameter_name = "mult_dbhmax";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_dbhmax, 0.0f, 2.0f, 1.0f, quiet);
         }
         
-        t_dbhmature = t_dbhmax * 0.5; // this correponds to the mean thresholds of tree size to maturity, according to Visser et al. 2016 Functional Ecology (suited to both understory short-statured species, and top canopy large-statured species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
+        // t_dbhmature = t_dbhmax * 0.5; // this correponds to the mean thresholds of tree size to maturity, according to Visser et al. 2016 Functional Ecology (suited to both understory short-statured species, and top canopy large-statured species). NOTE that if we decide to keep it as a fixed species-specific value, this could be defined as a Species calss variable, and computed once in Species::Init. -- v230
+        parameter_name = "dbhmature";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_dbhmature, 0.0f, 15.0f, 0.0f, quiet);  // maximum value of 15m (Baobabs, Sequoias and Taxodium mucronatum can reach somewhere around 10m)
         
         //*##############################*/
         //*## Calculate derived traits ##*/
@@ -1346,7 +1364,15 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         // LAImax and fraction_filled, although constant throughout tree's life will be calculated further down
         
         t_Vcmax =  CalcVcmaxm(t_LMA, t_Nmass, t_Pmass) * t_LMA;
-        t_Jmax = CalcJmaxm() * t_LMA;
+        parameter_name = "Vcmax";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Vcmax, 0.0f, 200.0f, 50.0f, quiet);
+
+        // t_Jmax = CalcJmaxm() * t_LMA;
+        parameter_name = "Jmax";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Jmax, 0.0f, 200.0f, 50.0f, quiet);
+
         t_Rdark = CalcRdark(t_LMA, t_Nmass, t_Pmass, t_Vcmax);
 #ifdef WATER
         t_wleaf=sqrt(S[t_sp_lab].s_leafarea*0.0001);
@@ -1366,7 +1392,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         
         parameter_name = "leaflifespan";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_leaflifespan, 3.0f,1000.0f, 0.0f, quiet);
+        SetParameter(parameter_name, parameter_value, t_leaflifespan, 3.0f, 4000.0f, 0.0f, quiet);
         
         parameter_name = "lambda_young";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
@@ -1380,7 +1406,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_lambda_old, 0.0f,1.0f, 0.0f, quiet);
         
-        if((t_leaflifespan == 0.0) | (t_lambda_young == 0.0) | (t_lambda_mature == 0.0) | (t_lambda_old == 0.0)) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
+        // if((t_leaflifespan == 0.0) | (t_lambda_young == 0.0) | (t_lambda_mature == 0.0) | (t_lambda_old == 0.0)) CalcLeafLifespan(); // if the Kikuzawa model is used, the leaflifespan will be modified by a random error term, which may considerably affect tree performance if the value is recomputed
         
         //*#######################################*/
         //*## Traits that vary during tree life ##*/
@@ -1400,7 +1426,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_mult_height = d_intraspecific_height[dev_rand];
             UpdateHeight();
         } else {
-            t_mult_height = t_height/CalcHeightBaseline(t_ah, t_hmax, t_dbh);
+            // t_mult_height = t_height/CalcHeightBaseline(t_ah, t_hmax, t_dbh);
+            parameter_name = "mult_height";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_height, 0.0f, 2.0f, 1.0f, quiet);
         }
         
         parameter_name = "CD";
@@ -1412,7 +1441,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_mult_CD = d_intraspecific_CD[dev_rand];
             UpdateCD();
         } else {
-            t_mult_CD = t_CD/CalcCDBaseline(t_height);
+            // t_mult_CD = t_CD/CalcCDBaseline(t_height);
+            parameter_name = "mult_CD";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_CD, 0.0f, 2.0f, 1.0f, quiet);
         }
         
         parameter_name = "CR";
@@ -1424,7 +1456,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             t_mult_CR = d_intraspecific_CR[dev_rand];
             UpdateCR();
         } else {
-            t_mult_CR = t_CR/CalcCRBaseline(t_dbh);
+            // t_mult_CR = t_CR/CalcCRBaseline(t_dbh);
+            parameter_name = "mult_CR";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_CR, 0.0f, 2.0f, 1.0f, quiet);
         }
         
         //*##############################*/
@@ -1438,8 +1473,11 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             if(t_Ct == 0.0) t_Ct = CalcCt();
         }
         
-        float fraction_filled_general = 1.0 - crown_gap_fraction;
-        t_fraction_filled = fminf(fraction_filled_general/(t_mult_CR * t_mult_CR),1.0);
+        // float fraction_filled_general = 1.0 - crown_gap_fraction;
+        // t_fraction_filled = fminf(fraction_filled_general/(t_mult_CR * t_mult_CR),1.0);
+        parameter_name = "fraction_filled";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_fraction_filled, 0.0f, 1.0f, 1.0f, quiet);
         
         //*######################################*/
         //*## Further photosynthetic variables ##*/
@@ -1464,6 +1502,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_oldLA, 0.0f, 100000.0f, -1.0f, quiet);
         
+        parameter_name = "LAI";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_LAI, 0.0f, 10.0f, 0.5f, quiet);
+
         parameter_name = "litter";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_litter, 0.0f, 100000.0f, -1.0f, quiet);
@@ -1471,30 +1513,30 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         float crown_area = PI*t_CR*t_CR;
         float crown_area_nogaps = GetCrownAreaFilled(crown_area);
         
-        if(t_LAmax >= 0.0 && t_LA >= 0.0 && t_youngLA >= 0.0 && t_matureLA >= 0.0 && t_oldLA >= 0.0 && t_litter >= 0.0){
-            // there could be more consistency checks here (e.g. t_youngLA + t_matureLA + t_oldLA should be approximately t_LA)
-            t_LAI = t_LA/crown_area_nogaps;
-        } else {
-            if(_LA_regulation > 0){
-                float LAIexperienced_eff;
-                CalcLAmax(LAIexperienced_eff, t_LAmax);     // !!!: problematic calculation if only classic inventory data is provided (i.e. x/y/dbh/s_name): we calculate the maximum leaf area for an empty canopy, thus grossly overestimating it for trees in the understory --> first improvement would be implementing calculation of this variable from highest tree to smallest tree and successively allocating leaves. Cf. the currently not used CalcLAinitial(). Interestingly, when trying this, the effects were not very large, probably because they are overshadowed by the impact of random allometric deviations and crown overlap.
-                t_LA = t_LAmax;   // assume half the maximum leaf area?
-                t_LAI = t_LA/crown_area_nogaps;
-            } else {
-#ifdef CROWN_UMBRELLA
-                t_LAI = dens * fminf(t_CD, 3.0);
-#else
-                t_LAI = dens * t_CD;
-#endif
-                t_LA = t_LAI * crown_area_nogaps;
-            }
-            InitialiseLeafPools();
-        }
+//         if(t_LAmax >= 0.0 && t_LA >= 0.0 && t_youngLA >= 0.0 && t_matureLA >= 0.0 && t_oldLA >= 0.0 && t_litter >= 0.0){
+//             // there could be more consistency checks here (e.g. t_youngLA + t_matureLA + t_oldLA should be approximately t_LA)
+//             t_LAI = t_LA/crown_area_nogaps;
+//         } else {
+//             if(_LA_regulation > 0){
+//                 float LAIexperienced_eff;
+//                 CalcLAmax(LAIexperienced_eff, t_LAmax);     // !!!: problematic calculation if only classic inventory data is provided (i.e. x/y/dbh/s_name): we calculate the maximum leaf area for an empty canopy, thus grossly overestimating it for trees in the understory --> first improvement would be implementing calculation of this variable from highest tree to smallest tree and successively allocating leaves. Cf. the currently not used CalcLAinitial(). Interestingly, when trying this, the effects were not very large, probably because they are overshadowed by the impact of random allometric deviations and crown overlap.
+//                 t_LA = t_LAmax;   // assume half the maximum leaf area?
+//                 t_LAI = t_LA/crown_area_nogaps;
+//             } else {
+// #ifdef CROWN_UMBRELLA
+//                 t_LAI = dens * fminf(t_CD, 3.0);
+// #else
+//                 t_LAI = dens * t_CD;
+// #endif
+//                 t_LA = t_LAI * crown_area_nogaps;
+//             }
+//             InitialiseLeafPools();
+//         }
         
         parameter_name = "sapwood_area";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        float ba = t_dbh * t_dbh * 0.25 * PI;
-        SetParameter(parameter_name, parameter_value, t_sapwood_area, 0.0f, ba, 0.0f, quiet);
+        // float ba = t_dbh * t_dbh * 0.25 * PI;
+        SetParameter(parameter_name, parameter_value, t_sapwood_area, 0.0f, 1.0f, 0.0f, quiet);
         
         if(t_sapwood_area == 0.0){
             float ddbh = fminf(t_dbh, 0.04f);   // limit the approximate sapwood thickness to 5cm
@@ -1502,15 +1544,15 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         }
         
         if(_LA_regulation > 0){
-            float carbon_storage_max = CalcCarbonStorageMax();
+            // float carbon_storage_max = CalcCarbonStorageMax();
             parameter_name = "carbon_storage";
             parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-            SetParameter(parameter_name, parameter_value, t_carbon_storage, 0.0f, carbon_storage_max, -1.0f, quiet);
-            if(t_carbon_storage == -1.0) t_carbon_storage = carbon_storage_max * 0.5; // We here initialize trees with half their maximum storage
+            SetParameter(parameter_name, parameter_value, t_carbon_storage, 0.0f, 1000000.0f, -1.0f, quiet);
+            // if(t_carbon_storage == -1.0) t_carbon_storage = carbon_storage_max * 0.5; // We here initialize trees with half their maximum storage
             
             parameter_name = "carbon_biometry";
             parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-            SetParameter(parameter_name, parameter_value, t_carbon_biometry, 0.0f, carbon_storage_max * 10.0f, 0.0f, quiet);
+            SetParameter(parameter_name, parameter_value, t_carbon_biometry, 0.0f, 1000000.0f * 10.0f, 0.0f, quiet);
         }
         
         parameter_name = "hurt";
@@ -1536,7 +1578,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
 
         parameter_name = "GPP";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_GPP, 0.0f, 1000.0f, 0.0f, quiet);
+        SetParameter(parameter_name, parameter_value, t_GPP, -10.0f, 5000.0f, 0.0f, quiet);
 
         parameter_name = "NPP";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
@@ -1553,6 +1595,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         parameter_name = "Rstem";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_Rstem, 0.0f, 1000.0f, 0.0f, quiet);
+
+        parameter_name = "Rdark";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_Rdark, 0.0f, 1000.0f, 0.0f, quiet);
         
 #ifdef WATER
         //*###########*/
@@ -1563,7 +1609,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
 
         parameter_name = "transpiration";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_transpiration, 0.0f, 0.1f, 0.0f, quiet);
+        SetParameter(parameter_name, parameter_value, t_transpiration, 0.0f, 1.0f, 0.0f, quiet);
 
         parameter_name = "root_depth";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
@@ -1579,7 +1625,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             string par_name_s = par_name;
             parameter_name = par_name_s;
             parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-            SetParameter(parameter_name, parameter_value, t_root_biomass[l], 0.0f, 10000.0f, 1.0f, quiet);
+            SetParameter(parameter_name, parameter_value, t_root_biomass[l], 0.0f, 100000.0f, 1.0f, quiet);
         }
         
         
@@ -1595,13 +1641,16 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         
         parameter_name = "g1_0"; // not necessarily needed currently, since computable from other traits, but this can be changed given the low confindence in these relationships (and should at least be recomputed here anyway)
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_g1_0, 0.0f, 1.0f, 1.0f, quiet);
+        SetParameter(parameter_name, parameter_value, t_g1_0, 0.0f, 10.0f, 3.77f, quiet);
         
         parameter_name = "WSF";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_WSF, 0.0f, 1.0f, 1.0f, quiet);
         
-        t_g1=t_g1_0*t_WSF;
+        // t_g1=t_g1_0*t_WSF;
+        parameter_name = "g1"; // not necessarily needed currently, since computable from g1_0 and WSF
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_g1, 0.0f, 10.0f, 3.77f, quiet);
         
         parameter_name = "WSF_A";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
@@ -1613,7 +1662,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
         
         parameter_name = "Ndays_wet";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
-        SetParameter(parameter_name, parameter_value, t_Ndays_wet, 0, 1000, 1, quiet);
+        SetParameter(parameter_name, parameter_value, t_Ndays_wet, 0, INT_MAX, 1, quiet);
         
         parameter_name = "pheno_factor";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
@@ -4413,7 +4462,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             //         }
             //     }
             // }
-            bufi = &global_file[0] ;
+      bufi = &global_file[0] ;
       bufi_climate = &climate_file[0] ;
       bufi_species = &species_file[0] ;
       bufi_daytimevar = &day_file[0] ;
@@ -4528,7 +4577,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             }
             
             // initial pattern, should be empty, unless an inventory has been provided
-            if(_OUTPUT_extended) OutputSnapshot(output_basic[1], 1, 0.01);                  // Initial Pattern, for trees > 0.01m DBH
+            if(_OUTPUT_extended & !_OUTPUT_inventory) OutputSnapshot(output_basic[1], 1, 0.01);                  // Initial Pattern, for trees > 0.01m DBH
             else if (_OUTPUT_inventory) OutputSnapshot(output_basic[1], 1, 0.001);
             else OutputSnapshot(output_basic[1], 1, 0.1);                                   // Initial Pattern, for trees > 0.1m DBH
 
@@ -4575,7 +4624,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             Rcout << "Simulation ends with " << nblivetrees << " trees." << endl;
             
             // final pattern (maybe use a switch later)
-            if(_OUTPUT_extended){
+            if(_OUTPUT_extended & !_OUTPUT_inventory){
                 OutputSnapshot(output_basic[2], 1, 0.01);                 // Final Pattern, for trees > 0.01m DBH
             } else if (_OUTPUT_inventory){
                 OutputSnapshot(output_basic[2], 1, 0.001);   
@@ -5118,6 +5167,9 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
                 nbhours_covered = 12.0; // quick fixed, but I should provide both endtime and startime for each half-hour iteration.
                 
                 float day_current, starttime_current,varday_light_current, varday_vpd_current, varday_T_current, varday_WS_current;
+                bool varday_vpd_warn = FALSE ;
+                bool varday_light_warn = FALSE ;
+                bool varday_WS_warn = FALSE ;
                 
                 string line;
                 while(getline(InDaily, line)){
@@ -5131,17 +5183,17 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
                     
                     if (varday_vpd_current <=0.01) {
                         varday_vpd_current = 0.01;
-                        Rcout << "Warning, VPD is <=0, on day " << day_current << " at " << starttime_current << "h." << endl;
+                        varday_vpd_warn = TRUE;
                     }
                     
                     if (varday_light_current <=1) {
                         varday_light_current = 1;
-                        Rcout << "Warning, light is <=0, on day " << day_current << " at " << starttime_current << "h." << endl;
+                        varday_light_warn = TRUE ;
                     }
                     
                     if (varday_WS_current <=0.1) {
                         varday_WS_current = 0.1;
-                        Rcout << "Warning, wind is <=0, on day " << day_current << " at " << starttime_current << "h." << endl;
+                        varday_WS_warn = TRUE ;
                     }
                     
                     //nbhours_covered += nbhours_current;
@@ -5152,6 +5204,10 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
                     //Rcout << "at: " << starttime_current << " vardaytime_light: " << varday_light[nbsteps_varday] << " vardaytime_vpd: " << varday_vpd[nbsteps_varday] << " vardaytime_T: "<< varday_T[nbsteps_varday] << " vardaytime_WS: "<< varday_WS[nbsteps_varday] << endl;
                     nbsteps_varday++;
                 }
+
+                if(varday_vpd_warn) Rcout << "Warning, VPD is <=0.01 and will be set to 0.01 in climate data." << endl;
+                if(varday_light_warn) Rcout << "Warning, light is <=1 and will be set to 1 in climate data." << endl;
+                if(varday_WS_warn) Rcout << "Warning, wind is <=0.1 and will be set to 0.1 in climate data." << endl;
                 
                 nbsteps_varday /= nbdays;
                 
@@ -5173,7 +5229,6 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             }
             
             WDailyMean_year = 0.0;
-
             
             for (int i=0; i<nbdays; i++) {
                 
@@ -6564,7 +6619,42 @@ if (_WATER_RETENTION_CURVE==1) {
             
             InSWC.close();
             
-            
+            // compute soil_phi3D for RecruitTree function
+            for (int d=0; d<nbdcells; d++) {
+                for (int l=0; l<nblayers_soil; l++) {
+                    float theta_w=(SWC3D[l][d]-Min_SWC[l])/(Max_SWC[l]-Min_SWC[l]);
+                if (_WATER_RETENTION_CURVE==1) {
+                    if(theta_w==0) {
+                        theta_w=0.001; // SS addition for limit value
+                        Rcout << "Warning theta_w = 0 " << endl ;
+                    }
+                    soil_phi3D[l][d]=a_vgm[l]*pow((pow(theta_w,-b_vgm[l])-1), c_vgm[l]); // this is the van Genuchten-Mualem model (as in Table 1 in Marthews et al. 2014)
+                    float inter= 1-pow((1-pow(theta_w, b_vgm[l])),m_vgm[l]);
+                    Ks[l][d]=Ksat[l]*pow(theta_w, 0.5)*inter*inter; // this is the van Genuchten-Mualem model (as in Table 1 in Marthews et al. 2014)
+                    if (isnan(soil_phi3D[l][d]) || isnan(Ks[l][d]) ||  (SWC3D[l][d]-Min_SWC[l])<0) //|| KsPhi[l][d]==0.0 || Ks[l][d]==0.0 || soil_phi3D[l][d]==0.0)
+                        Rcout << "In bucket model, layer " << l << " dcell " << d << " theta_w=" << theta_w << " SWC3D[l][d]-Min_SWC[l]=" << (SWC3D[l][d]-Min_SWC[l]) << " soil_phi3D[l][d]=" << soil_phi3D[l][d] << " Ksat=" << Ksat[l] << " Ks[l][d]=" << Ks[l][d] << endl ;
+                } else if (_WATER_RETENTION_CURVE==0) {
+                    soil_phi3D[l][d]=phi_e[l]*pow(theta_w, -b[l]); // this is the soil water characteristic of Brooks & Corey-Mualem (as in Table 1 in Marthews et al. 2014)
+                    Ks[l][d]=Ksat[l]*pow(theta_w, 2.5+2*b[l]); // this is the hydraulic conductivity curve of Brooks & Corey-Mualem (as in Table 1 in Marthews et al. 2014)
+                    KsPhi[l][d]=Ksat[l]*phi_e[l]*pow(theta_w, 2.5+b[l]); //Ks times soil_phi3D, computed directly as the exact power of theta.
+                    if (isnan(soil_phi3D[l][d]) || isnan(Ks[l][d]) ||  isnan(KsPhi[l][d]) || (SWC3D[l][d]-Min_SWC[l])<0) //|| KsPhi[l][d]==0.0 || Ks[l][d]==0.0 || soil_phi3D[l][d]==0.0)
+                        Rcout << "In bucket model, layer " << l << " dcell " << d << " theta_w=" << theta_w << " SWC3D[l][d]-Min_SWC[l]=" << (SWC3D[l][d]-Min_SWC[l]) << " soil_phi3D[l][d]=" << soil_phi3D[l][d] << " Ksat=" << Ksat[l] << " phi_e=" << phi_e[l] <<" b[l]=" << b[l] << " KsPhi[l][d]=" << KsPhi[l][d] << " Ks[l][d]=" << Ks[l][d] << endl ;
+                 }
+                }
+            }
+
+            // compute LAID for RecruitTree function
+            for(int h=0;h<(HEIGHT+1);h++)
+                for(int sbsite=0;sbsite<sites+2*SBORD;sbsite++)
+                    LAI3D[h][sbsite] = 0.0;
+            for(int site=0;site<sites;site++) T[site].CalcLAI(); // Each tree contribues to LAI3D
+            for(int h=HEIGHT;h>0;h--){ // LAI is computed by summing LAI from the canopy top to the ground
+                for(int site=0;site<sites;site++){
+                    int sbsite=site+SBORD;
+                    LAI3D[h-1][sbsite] += LAI3D[h][sbsite];
+                }
+            }
+
             // added in v.3.1 to reduce transient behavior of forest on reinitialization when leaf parameters and tree dimensions are not known, but not used yet: does not massively improve the initial configuration of trees, as the main problem is in overlapping crowns and not how they allocate their leaf area; could be solved by a preceding Canopy Constructor reshuffle (Fischer et al. 2020, RSE), or by
             //*#################################################################*/
             //*### Update Leaf Area for more realistic initial configuration ###*/
@@ -7825,7 +7915,11 @@ if (_WATER_RETENTION_CURVE==1) {
             }
             
             //output.setf(ios::fixed,ios::floatfield);
-            output.precision(5);
+            if(_OUTPUT_inventory) {
+                output.precision(10); // needed for correct restart
+            } else {
+                output.precision(5);
+            }
             for(int row=0;row<rows;row++){
                 for(int col=0;col<cols;col++){
                     int site = col + cols*row;
@@ -7838,7 +7932,7 @@ if (_WATER_RETENTION_CURVE==1) {
                         output << iter << "\t" << col << "\t" << row << "\t" << T[site].t_from_Data << "\t" << T[site].t_sp_lab << "\t" << site << "\t" << T[site].t_CrownDisplacement << "\t" << T[site].t_Pmass << "\t" << T[site].t_Nmass << "\t" << T[site].t_LMA << "\t" << T[site].t_wsg << "\t" << T[site].t_Rdark << "\t" << T[site].t_Vcmax << "\t" << T[site].t_Jmax << "\t" << T[site].t_leaflifespan << "\t" << T[site].t_lambda_young << "\t" << T[site].t_lambda_mature << "\t" << T[site].t_lambda_old << "\t" << T[site].t_dbhmature << "\t" << T[site].t_dbhmax << "\t" << T[site].t_hmax << "\t" << T[site].t_ah << "\t" << T[site].t_Ct << "\t" << T[site].t_LAImax << "\t" << T[site].t_fraction_filled << "\t" << T[site].t_mult_height << "\t" << T[site].t_mult_CR << "\t" << T[site].t_mult_CD << "\t" << T[site].t_mult_P << "\t" << T[site].t_mult_N << "\t" << T[site].t_mult_LMA << "\t" << T[site].t_mult_dbhmax << "\t" << T[site].t_dev_wsg << "\t" << T[site].t_age << "\t" << T[site].t_dbh << "\t" << T[site].t_sapwood_area << "\t" << T[site].t_height << "\t" << T[site].t_CD << "\t" << T[site].t_CR << "\t" << T[site].t_GPP << "\t" << T[site].t_NPP << "\t" << T[site].t_Rday << "\t" << T[site].t_Rnight << "\t" << T[site].t_Rstem << "\t" << T[site].t_LAmax << "\t" << T[site].t_LA << "\t" << T[site].t_youngLA << "\t" << T[site].t_matureLA << "\t" << T[site].t_oldLA << "\t" << T[site].t_LAI << "\t" << T[site].t_litter << "\t" << T[site].t_carbon_storage << "\t" << T[site].t_carbon_biometry << "\t" << T[site].t_multiplier_seed << "\t" << T[site].t_hurt << "\t" << T[site].t_NPPneg;
                         
                         #ifdef WATER
-                                        output << "\t" << T[site].t_root_depth << "\t" << T[site].t_phi_root << "\t" << T[site].t_WSF << "\t" << T[site].t_WSF_A << "\t" << T[site].t_transpiration << "\t" << T[site].t_g1 << "\t" << T[site].t_g1_0;
+                                        output << "\t" << T[site].t_root_depth << "\t" << T[site].t_phi_root << "\t" << T[site].t_WSF << "\t" << T[site].t_WSF_A << "\t" << T[site].t_transpiration << "\t" << T[site].t_g1_0 << "\t" <<  T[site].t_g1 ;
                         #ifdef PHENO_DROUGHT
                                         output << "\t" << T[site].t_Ndays_dry << "\t" << T[site].t_Ndays_wet << "\t" << T[site].t_pheno_factor;
 
