@@ -18,3 +18,4 @@ config.status
 simulations
 supplementary.html
 inst/gsl
+*.las

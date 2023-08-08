@@ -1,3 +1,7 @@
+# rcontroll 0.1.1.9002
+
+- lidr fig
+
 # rcontroll 0.1.1.9001
 
 - extended documentation following review
