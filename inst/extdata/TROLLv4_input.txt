@@ -41,6 +41,8 @@ sigma_N	0.12	/* intraspecific variation in leaf nitrogen (lognormal) */
 sigma_LMA	0.24	/* intraspecific variation in LMA (lognormal) */
 sigma_wsg	0.06	/* intraspecific variation in wood specific gravity */
 sigma_dbhmax	0.05	/* intraspecific variation in maximum diameter */
+sigma_leafarea	0.48	/* intraspecific variation in leaf area (lognormal) */
+sigma_tlp	0.10	/* intraspecific variation in tlp (lognormal) */
 corr_CR_height	0.0	/* correlation coefficient between crown radius and tree height */
 corr_N_P	0.65	/* correlation coefficient between leaf nitrogen and leaf phosphorus */
 corr_N_LMA	-0.43	/* correlation coefficient between leaf nitrogen and LMA */

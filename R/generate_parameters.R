@@ -55,6 +55,8 @@
 #'   (lognormal).
 #' @param sigma_wsg num. Intraspecific variation in wood specific gravity.
 #' @param sigma_dbhmax num. Intraspecific variation in maximum diameter.
+#' @param sigma_leafarea num. Intraspecific variation in leaf area.
+#' @param sigma_tlp num. Intraspecific variation in turgor loss point.
 #' @param corr_CR_height num. Correlation coefficient between crown radius and
 #'   tree height.
 #' @param corr_N_P num. Correlation coefficient between leaf nitrogen and leaf
@@ -148,6 +150,8 @@ generate_parameters <- function(cols = 200,
                                 sigma_LMA = 0.24, # nolint
                                 sigma_wsg = 0.06,
                                 sigma_dbhmax = 0.05,
+                                sigma_leafarea = 0.48,
+                                sigma_tlp = 0.10,
                                 corr_CR_height = 0.0, # nolint
                                 corr_N_P = 0.65, # nolint
                                 corr_N_LMA = -0.43, # nolint
@@ -184,6 +188,7 @@ generate_parameters <- function(cols = 200,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
       sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
+      sigma_leafarea, sigma_tlp,
       corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
       leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction,
       m, m1, Cair, PRESS, SOIL_LAYER_WEIGHT, WATER_RETENTION_CURVE,
@@ -215,7 +220,9 @@ generate_parameters <- function(cols = 200,
       "CD0", "shape_crown", "dens", "fallocwood",
       "falloccanopy", "Cseedrain", "nbs0", "sigma_height",
       "sigma_CR", "sigma_CD", "sigma_P", "sigma_N",
-      "sigma_LMA", "sigma_wsg", "sigma_dbhmax", "corr_CR_height",
+      "sigma_LMA", "sigma_wsg", "sigma_dbhmax",
+      "sigma_leafarea", "sigma_tlp",
+      "corr_CR_height",
       "corr_N_P", "corr_N_LMA", "corr_P_LMA", "leafdem_resolution",
       "p_tfsecondary", "hurt_decay", "crown_gap_fraction",
       "m", "m1", "Cair", "PRESS", "_SOIL_LAYER_WEIGHT",
@@ -233,6 +240,7 @@ generate_parameters <- function(cols = 200,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
       sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
+      sigma_leafarea, sigma_tlp,
       corr_CR_height, corr_N_P, corr_N_LMA, corr_P_LMA,
       leafdem_resolution, p_tfsecondary, hurt_decay, crown_gap_fraction,
       m, m1, Cair, PRESS, SOIL_LAYER_WEIGHT, WATER_RETENTION_CURVE,
@@ -284,6 +292,8 @@ generate_parameters <- function(cols = 200,
       "/* intraspecific variation in LMA (lognormal) */",
       "/* intraspecific variation in wood specific gravity */",
       "/* intraspecific variation in maximum diameter */",
+      "/* intraspecific variation in leaf area (lognormal) */",
+      "/* intraspecific variation in tlp (lognormal) */",
       "/* correlation coefficient between crown radius and tree height */",
       "/* correlation coefficient between leaf nitrogen and leaf phosphorus */",
       "/* correlation coefficient between leaf nitrogen and LMA */",

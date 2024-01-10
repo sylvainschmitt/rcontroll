@@ -349,6 +349,8 @@ float sigma_N; //!< Global variable: standard deviation of intraspecific variati
 float sigma_LMA; //!< Global variable: standard deviation of intraspecific variation in leaf mass per area (LMA)
 float sigma_wsg; //!< Global variable: standard deviation of intraspecific variation in wood specific gravity (wsg)
 float sigma_dbhmax; //!< Global variable: standard deviation of intraspecific variation in maximal trunk diameter
+float sigma_leafarea; //!< Global variable: standard deviation of intraspecific variation in leaf area (LA)
+float sigma_tlp; //!< Global variable: standard deviation of intraspecific variation in turgor loss point (TLP)
 float corr_CR_height; //!< Global variable: intraspecific correlation between crown radius and maximal height
 float corr_N_P; //!< Global variable: intraspecific correlation between leaf nitrogen and leaf phosphorus
 float corr_N_LMA; //!< Global variable: intraspecific correlation between leaf nitrogen and LMA
@@ -366,6 +368,8 @@ float d_intraspecific_N[10000]; //!< Global vector: distribution of intraspecifi
 float d_intraspecific_LMA[10000]; //!< Global vector: distribution of intraspecific values for leaf mass per area (LMA)
 float d_intraspecific_wsg[10000]; //!< Global vector: distribution of intraspecific values for wood density (wsg)
 float d_intraspecific_dbhmax[10000];//!< Global vector: distribution of intraspecific values for maximal trunk diameter
+float d_intraspecific_leafarea[10000];//!< Global vector: distribution of intraspecific values for leaf area (LA)
+float d_intraspecific_tlp[10000];//!< Global vector: distribution of intraspecific values for turgor loss point (TLP)
 
 #ifdef LCP_alternative
 vector<float> LookUpLAImax; // new v.3.1.5: array to save the LAImax per species and intraspecific deviation
@@ -669,9 +673,9 @@ public:
 #ifdef WATER // Some of these parameters may include intraspecific variability, as in v.2.4.1.
     //float s_g1;                  // parameter of stomatal conductance model. I went back to a species-specific value of g1 using Lin et al. 2015 relationship or Wu et al. 2019 GCB. It seems needed to well simulate functional shift through a regeneration. Different values of g1 across PFT are also used by Xu et al. 2016 New Phytologist using ED2+SPA on tropical dry forest. See also Domingues, Martinelli, & Ehleringer (2014) and Franks et al. (2018) for values of g1 for an Amazonian forest or potential alternative parameterization of g1 respectively
     //float s_dWSF;               // this is the denominator of WSF, when WSF is a linear normalization of phi_root (ie. s_dWSF= phi_sc - s_tlp, where phi_sc corresponds to the onset of water stress (inducing stomatal and non-stomatal responses), ie. leaf predawn water potential at which WSF starts decreasing <1)
-    float s_phi_lethal,           //!< plant water potential at drought-induced death (MPa)
-    s_itlp,         //!< inverse of s_tlp
-    s_b;            //!< parameter used to compute the water stress factor (WSF) for stomatal limitation
+    // float s_phi_lethal,           //!< plant water potential at drought-induced death (MPa)
+    // s_itlp,         //!< inverse of s_tlp
+    // s_b;            //!< parameter used to compute the water stress factor (WSF) for stomatal limitation
 #endif
     
 #ifdef Output_ABC
@@ -729,9 +733,9 @@ void Species::Init() {
 #ifdef WATER
     //s_g1=-3.97*s_wsg+6.53;                      // from Lin et al. 2015 Nature Climate Change
     //s_dWSF=1.0/(-0.00395145-0.3626778*s_tlp);         // this is the denominator of WSF= phi_sc - s_tlp, where phi_sc (for 'stomatal closure') corresponds to the onset of water stress, derived from the relationship between leaf phi at 50%loss of stomatal closure (ie. WSF~0.5 considering only stomatal responses to water stress) and turgor loss point (drawn from Bartlett et al. 2016 PNAS), and given the shape of WSF factor here assumed
-    s_phi_lethal= -0.9842 + 3.1795*s_tlp;       // Inferred from data provided in Bartlett et al. 2016 PNAS
-    s_itlp=1/s_tlp;
-    s_b=-2.23*s_itlp; // this results from the following assumption: (i) phi(TLP)=0.97*phi(gs90), from Martin-StPaul et al. 2017 Ecology letters; (ii) WSF=0.1 at phi(gs90)
+    // s_phi_lethal= -0.9842 + 3.1795*s_tlp;       // Inferred from data provided in Bartlett et al. 2016 PNAS
+    // s_itlp=1/s_tlp;
+    // s_b=-2.23*s_itlp; // this results from the following assumption: (i) phi(TLP)=0.97*phi(gs90), from Martin-StPaul et al. 2017 Ecology letters; (ii) WSF=0.1 at phi(gs90)
 #endif
 }
 
@@ -793,8 +797,13 @@ public:
     float t_Pmass;        //!< Leaf phosphorus content, defined at tree scale (g/g)
     float t_Nmass;        //!< Leaf nitrogen content, defined at tree scale (g/g))
     float t_LMA;          //!< Leaf mass per area (LMA), defined at tree scale (g/m^2)
+    float t_leafarea;     //!< Leaf area (LA), defined at tree scale
+    float t_tlp;          //!< Leaf turgor loss point (TLP), defined at tree scale
 #ifdef WATER
     float t_wleaf;        //!< Leaf width (in m)
+    float t_phi_lethal;   //!< plant water potential at drought-induced death (MPa) 
+    float t_itlp;         //!< inverse of t_tlp
+    float t_b;            //!< parameter used to compute the water stress factor (WSF) for stomatal limitation
 #endif
     float t_wsg;          //!< Wood specific gravity, defined at tree scale (g/cm^3)
     float t_Rdark;        //!< Dark respiration rate at PPFD = 0 (micromol C/m^2/s)
@@ -818,7 +827,9 @@ public:
     float t_mult_LMA;     //!< Intraspecific multiplier for leaf mass per area (due to intraspp lognormal variation); v.2.4.0, renamed v.3.1 for convenience
     float t_mult_dbhmax;  //!< Intraspecific multiplier for dbh maximum (due to intraspp lognormal variation); v.2.4.0, renamed v.3.1 for convenience
     float t_dev_wsg;      //!< Intraspecific absolution deviation for wood specific gravity (due to intraspp normal variation); v.2.4.0, renamed v.3.1 for convenience
-    
+    float t_mult_leafarea;//!< Intraspecific multiplier for leaf area (due to intraspp lognormal variation)
+    float t_mult_tlp;     //!< Intraspecific multiplier for turgor loss point (due to intraspp lognormal variation)
+
     float t_LAImax;           //!< Maximal LAI; Dynamic adjustment of leaf allocation, based on light environment !!!UPDATE
     float t_LAmax;           //!< Maximal leaf area; Dynamic adjustment of leaf allocation, based on light environment  !!!UPDATE, renamed in v.3.1 for convenience
     float t_carbon_storage;   //!< Persistent C storage pool. If leaf area is optimal, surplus carbon is allocated to a storage pool
@@ -1029,16 +1040,23 @@ void Tree::Birth(int nume, int site0) {
         t_mult_CD = d_intraspecific_CD[dev_rand];
         t_dev_wsg = d_intraspecific_wsg[dev_rand];
         t_mult_dbhmax = d_intraspecific_dbhmax[dev_rand];
-        
+        t_mult_leafarea = d_intraspecific_leafarea[dev_rand];
+        t_mult_tlp = d_intraspecific_tlp[dev_rand];
+
         //#####################
         //# leaf/wood traits ##
         //#####################
         t_Pmass = S[t_sp_lab].s_Pmass * t_mult_P;
         t_Nmass = S[t_sp_lab].s_Nmass * t_mult_N;
         t_LMA = S[t_sp_lab].s_LMA * t_mult_LMA;
+        t_leafarea = S[t_sp_lab].s_leafarea * t_mult_leafarea;
+        t_tlp = S[t_sp_lab].s_tlp  * t_mult_tlp;
         t_wsg = fmaxf(S[t_sp_lab].s_wsg + t_dev_wsg, 0.05); // updated in v.3.1: Lower cutoff for normal distribution set to 0.05 instead of 0.1 (some wsg measurements in Global Wood Density Database go below 0.1)
 #ifdef WATER
-        t_wleaf=sqrt(S[t_sp_lab].s_leafarea*0.0001);
+        t_wleaf=sqrt(t_leafarea*0.0001);
+        t_phi_lethal= -0.9842 + 3.1795*t_tlp;       // Inferred from data provided in Bartlett et al. 2016 PNAS
+        t_itlp=1/t_tlp;
+        t_b=-2.23*t_itlp; // this results from the following assumption: (i) phi(TLP)=0.97*phi(gs90), from Martin-StPaul et al. 2017 Ecology letters; (ii) WSF=0.1 at phi(gs90)
 #endif
         
         t_Vcmax =  CalcVcmaxm(t_LMA, t_Nmass, t_Pmass) * t_LMA; // in micromolC m-2 s-1
@@ -1316,7 +1334,33 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
             parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
             SetParameter(parameter_name, parameter_value, t_mult_LMA, 0.0f, 2.0f, 1.0f, quiet);
         }
+
+        parameter_name = "leafarea";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_leafarea, 0.0f, 1000.0f, 0.0f, quiet); // maximum value of 1000 is based on assumption that some trees may reach LMA as high as 500 (gymnosperms, some palm trees, etc.)
         
+        if(t_leafarea == 0.0){
+            t_mult_leafarea = d_intraspecific_leafarea[dev_rand];
+            t_leafarea = S[t_sp_lab].s_leafarea * t_mult_leafarea;
+        } else {
+            parameter_name = "mult_leafarea";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_leafarea, 0.0f, 2.0f, 1.0f, quiet);
+        }
+
+        parameter_name = "tlp";
+        parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+        SetParameter(parameter_name, parameter_value, t_tlp, -10.0f, 0.0f, 0.0f, quiet); // maximum value of 1000 is based on assumption that some trees may reach LMA as high as 500 (gymnosperms, some palm trees, etc.)
+        
+        if(t_leafarea == 0.0){
+            t_mult_tlp = d_intraspecific_tlp[dev_rand];
+            t_tlp = S[t_sp_lab].s_tlp * t_mult_tlp;
+        } else {
+            parameter_name = "mult_tlp";
+            parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
+            SetParameter(parameter_name, parameter_value, t_mult_tlp, 0.0f, 2.0f, 1.0f, quiet);
+        }
+
         parameter_name = "wsg";
         parameter_value = GetParameter(parameter_name, parameter_names, parameter_values);
         SetParameter(parameter_name, parameter_value, t_wsg, 0.0f, 1.5f, 0.0f, quiet);  // hard upper limit of 1.5 based on density of woody substance
@@ -1375,7 +1419,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
 
         t_Rdark = CalcRdark(t_LMA, t_Nmass, t_Pmass, t_Vcmax);
 #ifdef WATER
-        t_wleaf=sqrt(S[t_sp_lab].s_leafarea*0.0001);
+        t_wleaf=sqrt(t_leafarea*0.0001);
+        t_phi_lethal= -0.9842 + 3.1795*t_tlp;       // Inferred from data provided in Bartlett et al. 2016 PNAS
+        t_itlp=1/t_tlp;
+        t_b=-2.23*t_itlp; // this results from the following assumption: (i) phi(TLP)=0.97*phi(gs90), from Martin-StPaul et al. 2017 Ecology letters; (ii) WSF=0.1 at phi(gs90)
 #endif
         
         // height allometry
@@ -1986,7 +2033,7 @@ if (_WATER_RETENTION_CURVE==1) {
     //t_WSF=fminf(1.0, fmaxf(0.0, ((SWC3D[0][site_DCELL[t_site]]-Min_SWC[0])/(Max_SWC[0]-Min_SWC[0])))); // this is the simple linear WSF, with SWC as independent varible, used in lots of model (see Powell et al. 2013 New Phytol, De Kauwe et al. 2015 Biogeosciences, Laio et al. 2001 Advances in Water resources, Egea et al. 2011 AFM....)
     //t_WSF=fminf(1.0, fmaxf(0.0, (t_phi_root-(t_s->s_tlp))*(t_s->s_dWSF))); // this is the linear WSF, with wtare potential as independent variable, used in CLM model (see Powell et al. 2013 New Phytologist, Verhoef & Egea 2011 AFM)
     //t_WSF=exp((log(0.05)/t_s->s_tlp)*t_phi_root); // this is the WSF, to simulate stomatal limitation (ie. hinder g1), drawn from Zhou et al. 2013 AFM, and de Kauwe et al. 2015 Biogeosciences. If this version of WSF is finally adopted, the parameter b=log(0.05)/t_s->s_tlp, should be declare as species variable (instead of s_dWSF).
-    t_WSF=exp(S[t_sp_lab].s_b*t_phi_root); // this is the WSF shape used to simulate stomatal limitation (ie. hinder g1), drawn from Zhou et al. 2013 AFM, and de Kauwe et al. 2015 Biogeosciences, but with a different parameterization for the parameter b (using the relationship between phi_gs90 and tlp from Martin-StPaul et al. 2017 Ecology letters, and assuming the WSF=0.9 at phi_gs90).
+    t_WSF=exp(t_b*t_phi_root); // this is the WSF shape used to simulate stomatal limitation (ie. hinder g1), drawn from Zhou et al. 2013 AFM, and de Kauwe et al. 2015 Biogeosciences, but with a different parameterization for the parameter b (using the relationship between phi_gs90 and tlp from Martin-StPaul et al. 2017 Ecology letters, and assuming the WSF=0.9 at phi_gs90).
     //float par=t_s->s_tlp+1;
     //t_WSF_A=(1.0+exp(6.0*par))/(1.0+exp(6.0*(par-t_phi_root))); // this is the WSF, to simulate non-stomatal limitation (ie. hinder Vcmax and Jmax), drawn from Zhou et al. 2013 AFM, and de Kauwe et al. 2015 Biogeosciences
     //t_WSF_A=(1.0+exp(3.0*par))/(1.0+exp(3.0*(par-t_phi_root))); // this is the WSF, to simulate non-stomatal limitation (ie. hinder Vcmax and Jmax), drawn from Zhou et al. 2013 AFM, and de Kauwe et al. 2015 Biogeosciences
@@ -1995,12 +2042,12 @@ if (_WATER_RETENTION_CURVE==1) {
     t_g1 = t_g1_0*t_WSF; // with the water stress factor added
 #endif
     
-    t_WSF_A=1/(1+pow(t_phi_root*S[t_sp_lab].s_itlp, 6)); // this is the WSF used to hinder Vcmax and Jmax in Xu et al. 2016 (equ. S5) (ED2-hydro).
+    t_WSF_A=1/(1+pow(t_phi_root*t_itlp, 6)); // this is the WSF used to hinder Vcmax and Jmax in Xu et al. 2016 (equ. S5) (ED2-hydro).
     
     
     if (t_WSF < 0.0 || t_WSF_A < 0.0 || t_WSF>1.0 || t_WSF_A >1.0 ||t_phi_root >0.0 || isnan(t_WSF) || isnan(t_WSF_A) || isnan(t_phi_root)) {
         Rcout << "incorrect value in one of WSF, WSF_A, t_phi_root " << endl;
-        Rcout <<t_WSF << "\t" << t_phi_root << "\t" << S[t_sp_lab].s_tlp  << "\t" << t_dbh << "\t" << t_height << "\t" << t_age << "\t" << S[t_sp_lab].s_phi_lethal << "\t" << sumG;
+        Rcout <<t_WSF << "\t" << t_phi_root << "\t" << t_tlp  << "\t" << t_dbh << "\t" << t_height << "\t" << t_age << "\t" << t_phi_lethal << "\t" << sumG;
         Rcout <<endl;
     }
     //}
@@ -2203,7 +2250,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             if (carbon_starv <= 0.0 && t_NPP <= 0.0) dr+=1.0/timestep; // newIM 2021: carbon starvation occurs when the carbon stocks has been completly depleted, and carbon_starv represents t_carbon_storage (while it represents t_NPPneg when _LA_regulation==0)
         }
         // if the water availabiliy in the root zone is below the lethal level, the tree dies, !!!: not that deterministic, right?
-        if (phi_root < (S[t_sp_lab].s_phi_lethal)) dr+=1.0/timestep;
+        if (phi_root < t_phi_lethal) dr+=1.0/timestep;
         if (iter == int(nbiter-1)) output[26]<< t_wsg << "\t" << basal << "\t"  << dbh << "\t"  << dr   <<  "\n";
         
         /*if (iter>=622 && dr*timestep>=0.8) {
@@ -3449,7 +3496,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             
             /* version where the multiplier modifies lambda_old, ie residence time in old leaf pool, more similar to Chen et al. 2020, and could be supported by a less negative TLP of old leaves than younger leaves. */
             // but still using an approach similar to Xu et al. 2016, ie. counting number of "dry days" to trigger an increase of old leaf fall
-            float Thres = fminf(pheno_thres*S[t_sp_lab].s_tlp, -0.01*t_height-0.02);
+            float Thres = fminf(pheno_thres*t_tlp, -0.01*t_height-0.02);
             if (t_phi_root < Thres) t_Ndays_dry++;
             else t_Ndays_dry=0;
             if (t_phi_root > Thres) t_Ndays_wet++;
@@ -4814,6 +4861,10 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
                 SetParameter(parameter_name, parameter_value, sigma_wsg, 0.0f, 0.5f, 0.06f, quiet);
             } else if(parameter_name == "sigma_dbhmax"){
                 SetParameter(parameter_name, parameter_value, sigma_dbhmax, 0.0f, 1.0f, 0.05f, quiet);
+            } else if(parameter_name == "sigma_leafarea"){
+                SetParameter(parameter_name, parameter_value, sigma_leafarea, 0.0f, 1.0f, 0.05f, quiet);
+            } else if(parameter_name == "sigma_tlp"){
+                SetParameter(parameter_name, parameter_value, sigma_tlp, 0.0f, 1.0f, 0.05f, quiet);
             } else if(parameter_name == "corr_CR_height"){
                 SetParameter(parameter_name, parameter_value, corr_CR_height, -1.0f, 1.0f, 0.0f, quiet);
             } else if(parameter_name == "corr_N_P"){
@@ -4943,8 +4994,8 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             if(In){
 #ifdef WATER
 
-                string parameter_names[68] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","g0", "pheno_thres", "pheno_delta", "vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","PRESS","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_SOIL_LAYER_WEIGHT","_WATER_RETENTION_CURVE","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","_OUTPUT_inventory", "extent_visual"};
-                int nb_parameters = 68;
+                string parameter_names[70] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","g0", "pheno_thres", "pheno_delta", "vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","sigma_leafarea","sigma_tlp","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","PRESS","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_SOIL_LAYER_WEIGHT","_WATER_RETENTION_CURVE","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","_OUTPUT_inventory", "extent_visual"};
+                int nb_parameters = 70;
 
 #else
                 string parameter_names[61] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};
@@ -5620,9 +5671,11 @@ if (_WATER_RETENTION_CURVE==1) {
             max_intraspecific_N=0.0, min_intraspecific_N = 1000.0,
             max_intraspecific_LMA=0.0, min_intraspecific_LMA = 1000.0,
             max_intraspecific_wsg=0.0, min_intraspecific_wsg = 1000.0,
-            max_intraspecific_dbhmax=0.0, min_intraspecific_dbhmax = 1000.0;
-            
-            double variation_height=0.0, variation_CR=0.0, variation_CD=0.0, variation_P=0.0, variation_N=0.0, variation_LMA=0.0,variation_wsg=0.0,variation_dbhmax=0.0;
+            max_intraspecific_dbhmax=0.0, min_intraspecific_dbhmax = 1000.0,
+            max_intraspecific_leafarea=0.0, min_intraspecific_leafarea = 1000.0,
+            max_intraspecific_tlp=0.0, min_intraspecific_tlp = 1000.0;
+
+            double variation_height=0.0, variation_CR=0.0, variation_CD=0.0, variation_P=0.0, variation_N=0.0, variation_LMA=0.0,variation_wsg=0.0,variation_dbhmax=0.0,variation_leafarea=0.0,variation_tlp=0.0;
             for(int i=0;i<10000;i++){ // modified FF v.3.1.5 (reduced from 100000 to 10000)
                 if(covariance_status == 0){
                     variation_N = gsl_ran_gaussian(gslrand, sigma_N);
@@ -5640,6 +5693,8 @@ if (_WATER_RETENTION_CURVE==1) {
                 variation_CD = gsl_ran_gaussian(gslrand, sigma_CD);
                 variation_wsg = gsl_ran_gaussian(gslrand, sigma_wsg);
                 variation_dbhmax = gsl_ran_gaussian(gslrand, sigma_dbhmax);
+                variation_leafarea = gsl_ran_gaussian(gslrand, sigma_leafarea);
+                variation_tlp = gsl_ran_gaussian(gslrand, sigma_tlp);
                 
                 // limit extent of variation, some coarse biological limits for variation around allometries
                 if(variation_N > 0.5) variation_N = 0.5;
@@ -5652,9 +5707,11 @@ if (_WATER_RETENTION_CURVE==1) {
                 if(variation_CD < -0.5) variation_CD = -0.5;
                 if(variation_CR > 0.5) variation_CR = 0.5;
                 if(variation_CR < -0.5) variation_CR = -0.5;
-                if(variation_height > 0.5) variation_height = 0.5;
-                if(variation_height < -0.5) variation_height = -0.5;
-                
+                if(variation_leafarea > 0.5) variation_leafarea = 0.5;
+                if(variation_leafarea < -0.5) variation_leafarea = -0.5;
+                if(variation_tlp > 0.5) variation_tlp = 0.5;
+                if(variation_tlp < -0.5) variation_tlp = -0.5;
+
                 d_intraspecific_height[i] = float(exp(variation_height));
                 d_intraspecific_CR[i] = float(exp(variation_CR));
                 d_intraspecific_N[i] = float(exp(variation_N));
@@ -5663,6 +5720,9 @@ if (_WATER_RETENTION_CURVE==1) {
                 d_intraspecific_CD[i] = float(exp(variation_CD));
                 d_intraspecific_wsg[i] = float(variation_wsg);             // normal, not log-normal
                 d_intraspecific_dbhmax[i] = float(exp(variation_dbhmax));
+                d_intraspecific_leafarea[i] = float(exp(variation_leafarea));
+                d_intraspecific_tlp[i] = float(exp(variation_tlp));
+
                 // d_intraspecific_height[i] = exp(float(gsl_ran_gaussian(gslrand, sigma_height)));
                 max_intraspecific_height = fmaxf(max_intraspecific_height,d_intraspecific_height[i]);
                 min_intraspecific_height = fminf(min_intraspecific_height,d_intraspecific_height[i]);
@@ -5680,6 +5740,10 @@ if (_WATER_RETENTION_CURVE==1) {
                 min_intraspecific_wsg = fminf(min_intraspecific_wsg,d_intraspecific_wsg[i]);
                 max_intraspecific_dbhmax = fmaxf(max_intraspecific_dbhmax,d_intraspecific_dbhmax[i]);
                 min_intraspecific_dbhmax = fminf(min_intraspecific_dbhmax,d_intraspecific_dbhmax[i]);
+                max_intraspecific_leafarea = fmaxf(max_intraspecific_leafarea,d_intraspecific_leafarea[i]);
+                min_intraspecific_leafarea = fminf(min_intraspecific_leafarea,d_intraspecific_leafarea[i]);
+                max_intraspecific_tlp = fmaxf(max_intraspecific_tlp,d_intraspecific_tlp[i]);
+                min_intraspecific_tlp = fminf(min_intraspecific_tlp,d_intraspecific_tlp[i]);
             }
             Rcout << endl << "Intraspecific variation initialisation: " << endl;
             Rcout << "Max and min allometry deviation, lognormal (height): " << max_intraspecific_height << " | " << min_intraspecific_height << endl;
@@ -5690,6 +5754,8 @@ if (_WATER_RETENTION_CURVE==1) {
             Rcout << "Max and min allometry deviation, normal (crown depth): " << max_intraspecific_CD << " | " << min_intraspecific_CD << endl;
             Rcout << "Max and min trait deviation, normal (wsg): " << max_intraspecific_wsg << " | " << min_intraspecific_wsg << endl;
             Rcout << "Max and min trait deviation, lognormal (dmax): " << max_intraspecific_dbhmax << " | " << min_intraspecific_dbhmax << endl;
+            Rcout << "Max and min trait deviation, lognormal (leafarea): " << max_intraspecific_leafarea << " | " << min_intraspecific_leafarea << endl;
+            Rcout << "Max and min trait deviation, lognormal (tlp): " << max_intraspecific_tlp << " | " << min_intraspecific_tlp << endl;
         }
         
         
@@ -5715,10 +5781,11 @@ if (_WATER_RETENTION_CURVE==1) {
                     pseudotree.t_Pmass = S[spp].s_Pmass * d_intraspecific_P[dev];
                     pseudotree.t_Nmass = S[spp].s_Nmass * d_intraspecific_N[dev];
                     pseudotree.t_LMA = S[spp].s_LMA * d_intraspecific_LMA[dev];
+                    pseudotree.t_leafarea = S[spp].s_leafarea * d_intraspecific_leafarea[dev];
 
 #ifdef WATER
                     pseudotree.t_wsg = fmaxf(S[spp].s_wsg + d_intraspecific_wsg[dev], 0.05);
-                    pseudotree.t_wleaf=sqrt(S[spp].s_leafarea*0.0001);
+                    pseudotree.t_wleaf=sqrt(pseudotree.t_leafarea*0.0001);
                     pseudotree.t_WSF=1;
                     pseudotree.t_WSF_A=1;
                     pseudotree.t_g1=(-3.97 * pseudotree.t_wsg + 6.53); //this is the relationship provided by Lin et al. 2015
@@ -6397,21 +6464,22 @@ if (_WATER_RETENTION_CURVE==1) {
                 //        int nb_parameters = int(parameter_names.size()); // only works from C++11 onwards
                 
 #ifdef WATER
-                string parameter_names_hardcoded[63] = { "col", "row", "s_name", "CrownDisplacement", 
-                                                         "Pmass", "Nmass", "LMA", "wsg",
+                string parameter_names_hardcoded[67] = { "col", "row", "s_name", "CrownDisplacement", 
+                                                         "Pmass", "Nmass", "LMA", "leafarea", "tlp", "wsg",
                                                          "Rdark", "Vcmax", "Jmax", "leaflifespan",
                                                          "lambda_young", "lambda_mature", "lambda_old",
                                                          "dbhmature", "dbhmax", "hmax", "ah", "Ct",
                                                          "LAImax", "fraction_filled",
                                                          "mult_height", "mult_CR", "mult_CD", "mult_P", "mult_N", "mult_LMA",
-                                                         "mult_dbhmax", "dev_wsg", "age", "dbh", "sapwood_area", "height", "CD", "CR",
+                                                         "mult_dbhmax", "mult_leafarea", "mult_tlp",
+                                                         "dev_wsg", "age", "dbh", "sapwood_area", "height", "CD", "CR",
                                                          "GPP", "NPP", "Rday", "Rnight", "Rstem", 
                                                          "LAmax", "LA", "youngLA", "matureLA", "oldLA", "LAI", "litter",
                                                          "carbon_storage", "carbon_biometry", "multiplier_seed", "hurt", "NPPneg", 
                                                          "root_depth", "phi_root", "WSF", "WSF_A", "transpiration", "g1_0", "g1", 
                                                          "Ndays_dry", "Ndays_wet", "pheno_factor"};
                 
-                int nb_parameters = 63;
+                int nb_parameters = 67;
                 
 #else
                 
@@ -7874,7 +7942,7 @@ if (_WATER_RETENTION_CURVE==1) {
         void OutputSnapshot(fstream& output, bool header, float dbh_limit){
             Rcout << "Writing snapshot of forest to file." << endl;
             if(header == 1){
-                output << "iter\tcol\trow\tfrom_Data\tsp_lab\tsite\tCrownDisplacement\tPmass\tNmass\tLMA\twsg\tRdark\tVcmax\tJmax\tleaflifespan\tlambda_young\tlambda_mature\tlambda_old\tdbhmature\tdbhmax\thmax\tah\tCt\tLAImax\tfraction_filled\tmult_height\tmult_CR\tmult_CD\tmult_P\tmult_N\tmult_LMA\tmult_dbhmax\tdev_wsg\tage\tdbh\tsapwood_area\theight\tCD\tCR\tGPP\tNPP\tRday\tRnight\tRstem\tLAmax\tLA\tyoungLA\tmatureLA\toldLA\tLAI\tlitter\tcarbon_storage\tcarbon_biometry\tmultiplier_seed\thurt\tNPPneg";
+                output << "iter\tcol\trow\tfrom_Data\tsp_lab\tsite\tCrownDisplacement\tPmass\tNmass\tLMA\tleafarea\ttlp\twsg\tRdark\tVcmax\tJmax\tleaflifespan\tlambda_young\tlambda_mature\tlambda_old\tdbhmature\tdbhmax\thmax\tah\tCt\tLAImax\tfraction_filled\tmult_height\tmult_CR\tmult_CD\tmult_P\tmult_N\tmult_LMA\tmult_dbhmax\tmult_leafarea\tmult_tlp\tdev_wsg\tage\tdbh\tsapwood_area\theight\tCD\tCR\tGPP\tNPP\tRday\tRnight\tRstem\tLAmax\tLA\tyoungLA\tmatureLA\toldLA\tLAI\tlitter\tcarbon_storage\tcarbon_biometry\tmultiplier_seed\thurt\tNPPneg";
                 
                 #ifdef WATER
 
@@ -7929,7 +7997,7 @@ if (_WATER_RETENTION_CURVE==1) {
                         //T[site].CalcNPP();
                         // output all tree variables, this is potentially a very large file
                         // we currently do not output the t_NDDfield vector, as it is too large
-                        output << iter << "\t" << col << "\t" << row << "\t" << T[site].t_from_Data << "\t" << T[site].t_sp_lab << "\t" << site << "\t" << T[site].t_CrownDisplacement << "\t" << T[site].t_Pmass << "\t" << T[site].t_Nmass << "\t" << T[site].t_LMA << "\t" << T[site].t_wsg << "\t" << T[site].t_Rdark << "\t" << T[site].t_Vcmax << "\t" << T[site].t_Jmax << "\t" << T[site].t_leaflifespan << "\t" << T[site].t_lambda_young << "\t" << T[site].t_lambda_mature << "\t" << T[site].t_lambda_old << "\t" << T[site].t_dbhmature << "\t" << T[site].t_dbhmax << "\t" << T[site].t_hmax << "\t" << T[site].t_ah << "\t" << T[site].t_Ct << "\t" << T[site].t_LAImax << "\t" << T[site].t_fraction_filled << "\t" << T[site].t_mult_height << "\t" << T[site].t_mult_CR << "\t" << T[site].t_mult_CD << "\t" << T[site].t_mult_P << "\t" << T[site].t_mult_N << "\t" << T[site].t_mult_LMA << "\t" << T[site].t_mult_dbhmax << "\t" << T[site].t_dev_wsg << "\t" << T[site].t_age << "\t" << T[site].t_dbh << "\t" << T[site].t_sapwood_area << "\t" << T[site].t_height << "\t" << T[site].t_CD << "\t" << T[site].t_CR << "\t" << T[site].t_GPP << "\t" << T[site].t_NPP << "\t" << T[site].t_Rday << "\t" << T[site].t_Rnight << "\t" << T[site].t_Rstem << "\t" << T[site].t_LAmax << "\t" << T[site].t_LA << "\t" << T[site].t_youngLA << "\t" << T[site].t_matureLA << "\t" << T[site].t_oldLA << "\t" << T[site].t_LAI << "\t" << T[site].t_litter << "\t" << T[site].t_carbon_storage << "\t" << T[site].t_carbon_biometry << "\t" << T[site].t_multiplier_seed << "\t" << T[site].t_hurt << "\t" << T[site].t_NPPneg;
+                        output << iter << "\t" << col << "\t" << row << "\t" << T[site].t_from_Data << "\t" << T[site].t_sp_lab << "\t" << site << "\t" << T[site].t_CrownDisplacement << "\t" << T[site].t_Pmass << "\t" << T[site].t_Nmass << "\t" << T[site].t_LMA << "\t" << T[site].t_leafarea << "\t" << T[site].t_tlp << "\t" << T[site].t_wsg << "\t" << T[site].t_Rdark << "\t" << T[site].t_Vcmax << "\t" << T[site].t_Jmax << "\t" << T[site].t_leaflifespan << "\t" << T[site].t_lambda_young << "\t" << T[site].t_lambda_mature << "\t" << T[site].t_lambda_old << "\t" << T[site].t_dbhmature << "\t" << T[site].t_dbhmax << "\t" << T[site].t_hmax << "\t" << T[site].t_ah << "\t" << T[site].t_Ct << "\t" << T[site].t_LAImax << "\t" << T[site].t_fraction_filled << "\t" << T[site].t_mult_height << "\t" << T[site].t_mult_CR << "\t" << T[site].t_mult_CD << "\t" << T[site].t_mult_P << "\t" << T[site].t_mult_N << "\t" << T[site].t_mult_LMA << "\t" << T[site].t_mult_dbhmax << "\t" << T[site].t_mult_leafarea << "\t" << T[site].t_mult_tlp << "\t" << T[site].t_dev_wsg << "\t" << T[site].t_age << "\t" << T[site].t_dbh << "\t" << T[site].t_sapwood_area << "\t" << T[site].t_height << "\t" << T[site].t_CD << "\t" << T[site].t_CR << "\t" << T[site].t_GPP << "\t" << T[site].t_NPP << "\t" << T[site].t_Rday << "\t" << T[site].t_Rnight << "\t" << T[site].t_Rstem << "\t" << T[site].t_LAmax << "\t" << T[site].t_LA << "\t" << T[site].t_youngLA << "\t" << T[site].t_matureLA << "\t" << T[site].t_oldLA << "\t" << T[site].t_LAI << "\t" << T[site].t_litter << "\t" << T[site].t_carbon_storage << "\t" << T[site].t_carbon_biometry << "\t" << T[site].t_multiplier_seed << "\t" << T[site].t_hurt << "\t" << T[site].t_NPPneg;
                         
                         #ifdef WATER
                                         output << "\t" << T[site].t_root_depth << "\t" << T[site].t_phi_root << "\t" << T[site].t_WSF << "\t" << T[site].t_WSF_A << "\t" << T[site].t_transpiration << "\t" << T[site].t_g1_0 << "\t" <<  T[site].t_g1 ;

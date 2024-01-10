@@ -32,7 +32,7 @@ format_era <- function(era5,
                        tz = "America/Cayenne") {
   # checks
   if (!inherits(era5, "data.frame")) {
-    stop("hourly_data shoudl inherit from a data frame.")
+    stop("era5 shoudl inherit from a data frame.")
   }
   if (!is.character(tz)) {
     stop("tz should be a string.")
@@ -43,7 +43,7 @@ format_era <- function(era5,
   }
 
   # tidytrick
-  hourly_data <- . <- snet <- temperature <- vpd <- ws <- rainfall <- NULL
+  . <- snet <- temperature <- vpd <- ws <- rainfall <- NULL
   variable <- value <- u10 <- v10 <- tp <- t2m <- Snet <- NULL # nolint
   d2m <- sp <- Temperature <- VPD <- WS <- Rainfall <- ssr <- NULL # nolint
 

@@ -20,18 +20,19 @@ NULL
 #'
 #' @export
 #'
-request_era <- function(variables = c(
-                          "u10", "v10", "d2m", "t2m",
-                          "ssr", "sp", "tp"
-                        ),
-                        years = 2004:2005,
-                        months = 1:12,
-                        days = 1:31,
-                        hours = 0:23,
-                        prefix = "ERA5land_Paracou",
-                        xutm = 5.267241344232334, # paracou
-                        yutm = -52.92436802555797, # paracou
-                        format = "netcdf") {
+request_era <- function(
+    variables = c(
+      "u10", "v10", "d2m", "t2m",
+      "ssr", "sp", "tp"
+    ),
+    years = 2004:2005,
+    months = 1:12,
+    days = 1:31,
+    hours = 0:23,
+    prefix = "ERA5land_Paracou",
+    xutm = 5.267241344232334, # paracou
+    yutm = -52.92436802555797, # paracou
+    format = "netcdf") {
   varlong <- c(
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",

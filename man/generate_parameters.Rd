@@ -47,6 +47,8 @@ generate_parameters(
   sigma_LMA = 0.24,
   sigma_wsg = 0.06,
   sigma_dbhmax = 0.05,
+  sigma_leafarea = 0.48,
+  sigma_tlp = 0.1,
   corr_CR_height = 0,
   corr_N_P = 0.65,
   corr_N_LMA = -0.43,
@@ -168,6 +170,10 @@ when SEEDTRADEOFF is not defined.}
 \item{sigma_wsg}{num. Intraspecific variation in wood specific gravity.}
 
 \item{sigma_dbhmax}{num. Intraspecific variation in maximum diameter.}
+
+\item{sigma_leafarea}{num. Intraspecific variation in leaf area.}
+
+\item{sigma_tlp}{num. Intraspecific variation in turgor loss point.}
 
 \item{corr_CR_height}{num. Correlation coefficient between crown radius and
 tree height.}
