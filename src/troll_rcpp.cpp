@@ -319,8 +319,9 @@ float g1; //!< Global variable: g1 parameter of Medlyn et al's model of stomatal
 float g0;   //!< Global variable: minimum leaf conductance, in mmolH20 m-2 s-1, parameter of stomatal conductance model. Defined as a global parameter shared by species, in absence of a clear variation with other traits (see Duursma et al. 2018 New Phytologist, Slot et al. 2021 New Phytologist, METRADICA data)
 #endif
 #ifdef PHENO_DROUGHT
-float pheno_thres;  //!< Global variable: threshold beyond which a change in t_pheno_factor (that controls old leaves shedding) is triggered, in proportion of leaf TLP
-float pheno_delta;  //!< Global variable: amplitude of change in t_pheno_factor per timestep beyond pheno_thres
+float pheno_a0;  //!< Global variable: threshold beyond which a change in t_pheno_factor (that controls old leaves shedding) is triggered, in proportion of leaf TLP
+float pheno_b0;  //!< Global variable: threshold beyond which a change in t_pheno_factor (that controls old leaves shedding) is triggered, in proportion of tree height
+float pheno_delta;  //!< Global variable: amplitude of change in t_pheno_factor per timestep
 #endif
 float alpha; //!< Global variable: apparent quantum yield to electron transport in mol e-/mol photons, equal to the true quantum yield multiplied by leaf absorbance
 float vC; //!< Global variable: variance of treefall threshold
@@ -3496,7 +3497,7 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             
             /* version where the multiplier modifies lambda_old, ie residence time in old leaf pool, more similar to Chen et al. 2020, and could be supported by a less negative TLP of old leaves than younger leaves. */
             // but still using an approach similar to Xu et al. 2016, ie. counting number of "dry days" to trigger an increase of old leaf fall
-            float Thres = fminf(pheno_thres*t_tlp, -0.01*t_height-0.02);
+            float Thres = fminf(pheno_a0*t_tlp, -0.01*t_height-pheno_b0);
             if (t_phi_root < Thres) t_Ndays_dry++;
             else t_Ndays_dry=0;
             if (t_phi_root > Thres) t_Ndays_wet++;
@@ -4809,8 +4810,10 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             }
 #endif
 #ifdef PHENO_DROUGHT
-              else if(parameter_name == "pheno_thres"){
-                  SetParameter(parameter_name, parameter_value, pheno_thres, 0.0f, 1.0f, 0.5f, quiet);
+              else if(parameter_name == "pheno_a0"){
+                  SetParameter(parameter_name, parameter_value, pheno_a0, 0.0f, 1.0f, 0.5f, quiet);
+              } else if(parameter_name == "pheno_b0"){
+                  SetParameter(parameter_name, parameter_value, pheno_b0, 0.0f, 1.0f, 0.5f, quiet);
               } else if(parameter_name == "pheno_delta"){
                   SetParameter(parameter_name, parameter_value, pheno_delta, 0.0f, 1.0f, 0.1f, quiet);
               }
@@ -4994,8 +4997,8 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             if(In){
 #ifdef WATER
 
-                string parameter_names[70] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","g0", "pheno_thres", "pheno_delta", "vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","sigma_leafarea","sigma_tlp","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","PRESS","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_SOIL_LAYER_WEIGHT","_WATER_RETENTION_CURVE","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","_OUTPUT_inventory", "extent_visual"};
-                int nb_parameters = 70;
+                string parameter_names[71] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","g0", "pheno_a0", "pheno_b0", "pheno_delta", "vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","sigma_leafarea","sigma_tlp","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","PRESS","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_SOIL_LAYER_WEIGHT","_WATER_RETENTION_CURVE","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","_OUTPUT_inventory", "extent_visual"};
+                int nb_parameters = 71;
 
 #else
                 string parameter_names[61] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};

@@ -22,7 +22,8 @@ generate_parameters(
   theta = 0.7,
   g1 = 3.77,
   g0 = 5,
-  pheno_thres = 0.2,
+  pheno_a0 = 0.2,
+  pheno_b0 = 0.02,
   pheno_delta = 0.2,
   vC = 0.021,
   DBH0 = 0.005,
@@ -114,8 +115,11 @@ law.}
 
 \item{g0}{num. Minimum leaf conductance (mol m-2 s-1).}
 
-\item{pheno_thres}{num. Threshold for change in old leaf shedding rate, in
+\item{pheno_a0}{num. Threshold for change in old leaf shedding rate, in
 proportion of tugrog loss point (TLP)}
+
+\item{pheno_b0}{num. Threshold for change in old leaf shedding rate, in
+proportion of tree height}
 
 \item{pheno_delta}{num. Amplitude of change in old leaf shedding rate.}
 

@@ -23,8 +23,10 @@
 #' @param theta num. Parameter of the Farquhar model.
 #' @param g1 num. Parameter g1 of Medlyn et al stomatal conductance model.
 #' @param g0 num. Minimum leaf conductance (mol m-2 s-1).
-#' @param pheno_thres num. Threshold for change in old leaf shedding rate, in
+#' @param pheno_a0 num. Threshold for change in old leaf shedding rate, in
 #'   proportion of tugrog loss point (TLP)
+#' @param pheno_b0 num. Threshold for change in old leaf shedding rate, in
+#'   proportion of tree height
 #' @param pheno_delta num. Amplitude of change in old leaf shedding rate.
 #' @param vC num. Variance of the flexion moment.
 #' @param DBH0 num. Initial diameter at breast height (m).
@@ -125,7 +127,8 @@ generate_parameters <- function(cols = 200,
                                 theta = 0.7,
                                 g1 = 3.77,
                                 g0 = 5.0,
-                                pheno_thres = 0.2,
+                                pheno_a0 = 0.2,
+                                pheno_b0 = 0.02,
                                 pheno_delta = 0.2,
                                 vC = 0.021, # nolint
                                 DBH0 = 0.005, # nolint
@@ -183,7 +186,7 @@ generate_parameters <- function(cols = 200,
     list(
       cols, rows, HEIGHT, length_dcell, nbiter,
       NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
-      absorptance_leaves, theta, g1, g0, pheno_thres, pheno_delta,
+      absorptance_leaves, theta, g1, g0, pheno_a0, pheno_b0, pheno_delta,
       vC, DBH0, H0, CR_min,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
@@ -215,7 +218,8 @@ generate_parameters <- function(cols = 200,
       "nbiter", "NV", "NH", "nbout",
       "nbspp", "SWtoPPFD", "p_nonvert", "klight", "phi",
       "absorptance_leaves", "theta", "g1", "g0",
-      "pheno_thres", "pheno_delta", "vC", "DBH0",
+      "pheno_a0", "pheno_b0", "pheno_delta", 
+      "vC", "DBH0",
       "H0", "CR_min", "CR_a", "CR_b", "CD_a", "CD_b",
       "CD0", "shape_crown", "dens", "fallocwood",
       "falloccanopy", "Cseedrain", "nbs0", "sigma_height",
@@ -236,7 +240,8 @@ generate_parameters <- function(cols = 200,
       cols, rows, HEIGHT, length_dcell, nbiter,
       NV, NH, nbout, nbspp, SWtoPPFD, p_nonvert, klight, phi,
       absorptance_leaves, theta, g1, g0,
-      pheno_thres, pheno_delta, vC, DBH0, H0, CR_min,
+      pheno_a0, pheno_b0, pheno_delta, 
+      vC, DBH0, H0, CR_min,
       CR_a, CR_b, CD_a, CD_b, CD0, shape_crown, dens, fallocwood,
       falloccanopy, Cseedrain, nbs0, sigma_height, sigma_CR,
       sigma_CD, sigma_P, sigma_N, sigma_LMA, sigma_wsg, sigma_dbhmax,
@@ -268,6 +273,7 @@ generate_parameters <- function(cols = 200,
       "/* parameter g1 of Medlyn et al s stomatal conductance model */",
       "/* minimum leaf conductance (mol m-2 s-1) */",
       "/* threshold for change in old leaf shedding rate, in proportion of TLP */", # nolint
+      "/* threshold for change in old leaf shedding rate, in proportion of tree hieght */", # nolint
       "/* amplitude of change in old leaf shedding rate */",
       "/* variance of the flexion moment */",
       "/* initial dbh (m) */",
