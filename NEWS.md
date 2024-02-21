@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9019
+
+- CPP: adding back Rseed from V3 for random
+
 # rcontroll 0.2.0.9018
 
 - CPP: pheno_thres to pheno_a0 and opening pheno_b0

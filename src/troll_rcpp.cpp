@@ -174,6 +174,7 @@ int nbiter;     //!< Global variable: total number of timesteps
 int iter;       //!< Global variable: current timestep
 int nbout;      //!< Global variable: number of outputs
 int freqout;    //!< Global variable: frequency HDF outputs
+int Rseed;      //!< Global variable: selected R seed
 #ifdef FULL_CLIMATE
 int nbdays;     //!< Global variable: number of days with explicit daily climate variation provided in input
 #endif // FULL_CLIMATE
@@ -4560,7 +4561,12 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             unsigned long int t = (unsigned long int) time(NULL);
             unsigned long int seed = 3*t + 2*(easympi_rank+1)+1;
             
-            if(_NONRANDOM == 1) seed = 1;
+            if(_NONRANDOM > 0){
+              seed = Rseed;
+              _NONRANDOM = bool(1);
+            }else{
+              _NONRANDOM = bool(0);
+            }
             
             gsl_rng_set(gslrand, seed);
             
@@ -4908,6 +4914,8 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
                 SetParameter(parameter_name, parameter_value, _WATER_RETENTION_CURVE, 0, 1, 0, quiet);
             } else if(parameter_name == "_NONRANDOM"){
                 SetParameter(parameter_name, parameter_value, _NONRANDOM, bool(0), bool(1), bool(1), quiet);
+            } else if(parameter_name == "Rseed"){
+                SetParameter(parameter_name, parameter_value, Rseed, 0, 2147483647, 1, quiet);
             } else if(parameter_name == "_GPPcrown"){
                 SetParameter(parameter_name, parameter_value, _GPPcrown, bool(0), bool(1), bool(0), quiet);
             } else if(parameter_name == "_BASICTREEFALL"){
@@ -4997,12 +5005,12 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             if(In){
 #ifdef WATER
 
-                string parameter_names[71] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","g0", "pheno_a0", "pheno_b0", "pheno_delta", "vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","sigma_leafarea","sigma_tlp","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","PRESS","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_SOIL_LAYER_WEIGHT","_WATER_RETENTION_CURVE","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","_OUTPUT_inventory", "extent_visual"};
-                int nb_parameters = 71;
+                string parameter_names[72] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","g0", "pheno_a0", "pheno_b0", "pheno_delta", "vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","sigma_leafarea","sigma_tlp","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","PRESS","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_SOIL_LAYER_WEIGHT","_WATER_RETENTION_CURVE","_NONRANDOM", "Rseed", "_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","_OUTPUT_inventory", "extent_visual"};
+                int nb_parameters = 72;
 
 #else
-                string parameter_names[61] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM","_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};
-                int nb_parameters = 61;
+                string parameter_names[62] = {"cols","rows","HEIGHT","length_dcell","nbiter","NV","NH","nbout","p_nonvert","SWtoPPFD","klight","absorptance_leaves","theta","phi","g1","vC","DBH0","H0","CR_min","CR_a","CR_b","CD_a","CD_b","CD0","shape_crown","dens","fallocwood","falloccanopy","Cseedrain","nbs0","sigma_height","sigma_CR","sigma_CD","sigma_P","sigma_N","sigma_LMA","sigma_wsg","sigma_dbhmax","corr_CR_height","corr_N_P","corr_N_LMA","corr_P_LMA","leafdem_resolution","p_tfsecondary","hurt_decay","crown_gap_fraction","m","m1","Cair","_LL_parameterization","_LA_regulation","_sapwood","_seedsadditional","_NONRANDOM", "Rseed", "_GPPcrown","_BASICTREEFALL","_SEEDTRADEOFF","_NDD","_CROWN_MM","_OUTPUT_extended","extent_visual"};
+                int nb_parameters = 62;
 #endif
                 vector<string> parameter_values(nb_parameters,"");
                 
