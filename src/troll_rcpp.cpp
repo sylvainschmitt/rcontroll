@@ -2275,6 +2275,8 @@ void Tree::Fluxh(int h,float &PPFD, float &VPD, float &Tmp, float &leafarea_laye
             if (carbon_starv <= 0.0 && t_NPP <= 0.0) dr+=1.0/timestep; // newIM 2021: carbon starvation occurs when the carbon stocks has been completly depleted, and carbon_starv represents t_carbon_storage (while it represents t_NPPneg when _LA_regulation==0)
         }
 
+        return dr*timestep;
+
     }
 #endif
     
@@ -7484,7 +7486,7 @@ if (_WATER_RETENTION_CURVE==1) {
                     // _BASICTREEFALL: just dependent on height threshold + random uniform distribution
                     float angle = 0.0, c_forceflex = 0.0;
                     if(_BASICTREEFALL){
-                        c_forceflex = gsl_rng_uniform(gslrand)*T[site].t_height;     // probability of treefall = 1-t_Ct/t_height, compare to genrand2(): genrand2() < 1 - t_Ct/t_height, or: genrand2() > t_Ct/t_height
+                        c_forceflex =( 1- (1-gsl_rng_uniform(gslrand))/(12*timestep))*T[site].t_height ;    // probability of treefall = 1-t_Ct/t_height, compare to genrand2(): genrand2() < 1 - t_Ct/t_height, or: genrand2() > t_Ct/t_height
                         angle = float(twoPi*gsl_rng_uniform(gslrand));                    // random angle
                     }
                     // above a given stress threshold the tree falls
@@ -7528,7 +7530,7 @@ if (_WATER_RETENTION_CURVE==1) {
             for(int site=0;site<sites;site++){
                 if(T[site].t_age){
                     float height_threshold = T[site].t_height/T[site].t_mult_height;  // since 2.5: a tree's stability is defined by its species' average height, i.e. we divide by the intraspecific height multiplier to account for lower stability in quickly growing trees; otherwise slender, faster growing trees would be treated preferentially and experience less secondary treefall than more heavily built trees
-                    if(2.0*T[site].t_hurt*gsl_rng_uniform(gslrand) > height_threshold) {        // check whether tree dies: probability of death is 1.0-0.5*t_height/t_hurt, so gslrand <= 1.0 - 0.5 * t_height/t_hurt, or gslrand > 0.5 * t_height/t_hurt; modified in v.2.5: probability of death is 1.0 - 0.5*t_height/(t_mult_height * t_hurt), so the larger the height deviation (more slender), the higher the risk of being thrown by another tree
+                    if(2.0*T[site].t_hurt*(1-(1-gsl_rng_uniform(gslrand))/(12*timestep)) > height_threshold) {         // check whether tree dies: probability of death is 1.0-0.5*t_height/t_hurt, so gslrand <= 1.0 - 0.5 * t_height/t_hurt, or gslrand > 0.5 * t_height/t_hurt; modified in v.2.5: probability of death is 1.0 - 0.5*t_height/(t_mult_height * t_hurt), so the larger the height deviation (more slender), the higher the risk of being thrown by another tree
                         if(p_tfsecondary > gsl_rng_uniform(gslrand)){                              // check whether tree falls or dies otherwise
                             float angle = float(twoPi*gsl_rng_uniform(gslrand));                    // random angle
                             T[site].Treefall(angle);

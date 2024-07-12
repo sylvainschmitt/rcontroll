@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9020
+
+- CPP: TROLL version 4.0.1 following discussion with IM, updating treefall time normalisation
+
 # rcontroll 0.2.0.9019
 
 - CPP: adding back Rseed from V3 for random
