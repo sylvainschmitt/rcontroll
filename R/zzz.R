@@ -12,7 +12,7 @@ NULL
   dir.create(tmp_dir)
   options(list(
     rcontroll.tmp = tmp_dir,
-    rcontroll.troll = "TROLL version 3.1.7"
+    rcontroll.troll = "TROLL version 3.1.8"
   ))
   invisible()
 }
