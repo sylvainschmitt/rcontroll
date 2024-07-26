@@ -37,13 +37,13 @@ generate_dailyvar <- function(hourly_data,
   Snet <- VPD <- WS <- time_numeric <- Temp <- NULL # nolint
 
   # dailyvar
+  ndays <- length(unique(date(hourly_data$time)))
   hourly_data %>%
     rename(Temp = temperature, Snet = snet, VPD = vpd, WS = ws) %>%
     mutate(time_hour = hour(time)) %>%
     filter(time_hour >= daytime_start, time_hour < daytime_end) %>%
     select(-time_hour) %>%
     mutate(time_numeric = hour(time) + minute(time) / 60) %>%
-    mutate(DayJulian = date(time) - date(first(time)) + 1) %>%
-    mutate(DayJulian = as.numeric(DayJulian)) %>%
+    mutate(DayJulian = rep(1:ndays, each = 24)) %>% 
     select(DayJulian, time_numeric, Temp, Snet, VPD, WS)
 }

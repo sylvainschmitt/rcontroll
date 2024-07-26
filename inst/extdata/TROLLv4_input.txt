@@ -11,7 +11,7 @@ nbspp	109	/* Number of species */
 SWtoPPFD	2.27	/* convert short wave irradiance to PAR photons (cf. code) */
 p_nonvert	0.05	/* light incidence param (diff through turbid medium) */
 klight	0.5	/* light attenuation in the canopy Beer-Lambert */
-phi	0.093	/*  quantum yield (in micromol C/micromol photon) */
+phi	0.10625	/*  quantum yield (in micromol C/micromol photon) */
 absorptance_leaves	0.83	/* absorptance of individual leaves */
 theta	0.7	/* parameter of the Farquhar model */
 g1	3.77	/* parameter g1 of Medlyn et al ’s stomatal conductance model */
@@ -23,8 +23,8 @@ vC	0.021	/* variance of the flexion moment */
 DBH0	0.005	/* initial dbh (m) */
 H0	0.95	/* initial height (m) */
 CR_min 	0.3	/* minimum crown radius (in m) */
-CR_a	2.13	/* CR log intercept or Michaelis Menten initial growth */
-CR_b	0.63	/* CR log slope or Michaelis Menten asymptotic CR */
+CR_a	1.85	/* CR log intercept or Michaelis Menten initial growth */
+CR_b	0.4445	/* CR log slope or Michaelis Menten asymptotic CR */
 CD_a	0.0	/* CD intercept (absolute value) */
 CD_b	0.2	/* CD slope (as fraction of tree height) */
 CD0	0.3	/* initial crown depth(in m) */
@@ -52,8 +52,8 @@ leafdem_resolution	1	/* resolution of leaf demography model */
 p_tfsecondary	1.0	/* probability of secondary treefall */
 hurt_decay	0	/*  parameter determining how tree damages are repaired */
 crown_gap_fraction	0.15	/* fraction of gaps in the crown */
-m	0.025	/* minimal death rate */
-m1	0.025	/* m1 (slope of death rate) */
+m	0.045	/* minimal death rate */
+m1	0.045	/* m1 (slope of death rate) */
 Cair	375	/* atmospheric CO2 concentration in micromol/mol */
 PRESS	101.0	/* atmospheric pressure in kPa
 _SOIL_LAYER_WEIGHT	2	/* soil layer weights: relative biomass, conductance, max transpiration (0,1, 2) */
@@ -62,7 +62,7 @@ _LL_parameterization	0	/* LL parameterizations: empirical, Kikuzawa model, and K
 _LA_regulation	2	/* dynamic LA regulation: off, 1.0, 0.75, or 0.5 (0,1,2,3) */
 _sapwood	1	/* sapwood parameterizations: constant thickness (0.04), Fyllas percentage, Fyllas lower limit (0,1,2) */
 _seedsadditional	0	/* excess biomass into seeds after maturation (0,1) */
-_NONRANDOM	0	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */
+_NONRANDOM	1	/* If _NONRANDOM == 1, the seeds for the random number generators will be kept fixed at 1, default for bug fixing */
 _GPPcrown	0	/* This defines an option to compute only GPP from the topmost value of PPFD and GPP, instead of looping within the crown. */
 _BASICTREEFALL	1	/* if defined: treefall is a source of tree death */
 _SEEDTRADEOFF	0	/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */

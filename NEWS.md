@@ -1,3 +1,8 @@
+# rcontroll 0.2.0.9021
+
+- parameters: update TROLLv4_input.txt and generate_parameters according to the last discussion with IM
+- dailyvar: update dailyvar day index to avoid bissextile years extra days
+
 # rcontroll 0.2.0.9020
 
 - CPP: TROLL version 4.0.1 following discussion with IM, updating treefall time normalisation
