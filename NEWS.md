@@ -1,3 +1,7 @@
+# rcontroll 0.1.0.9003
+
+- TROLL version 3.1.8 following discussion with IM, updating treefall time normalisation and carbon starvation to match TROLL4, a clean merge with main and dev will be needed
+
 # rcontroll 0.1.1.9002
 
 - lidr fig

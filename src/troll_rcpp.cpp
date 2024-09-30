@@ -884,7 +884,8 @@ public:
   void OutputTreeStandard(); //!< Standard outputs during the simulation -- written to screen in real time
   // !!!UPDATE: question, why are these two functions needed? the first function with cout as an argument is the same as the second function, no? question2: why are these functions only available in WATER mode?
 #else
-  float DeathRate(float, int);  //!< Death rate function
+  // float DeathRate(float, int);  //!< Death rate function
+  float DeathRate(float, float);  //!< Death rate function
   float GPPleaf(float, float, float);    //!< Farquhar von Caemmerer Berry model -- computation of the light-limited leaf-level average C assimilation rate per m^2 (micromol/m^2/s) -- depends on daily variation in light (PPFD), vapor pressure deficit (VPD) and temperature (T)
   float dailyGPPleaf(float, float, float);    //!< Computation of average C assimilation rate per leaf area across daily variation in light (PPFD), vapor pressure deficit (VPD) and temperature (T)
   float dailyGPPcrown(float, float, float, float);  //!< Farquhar von Caemmerer Berry model -- proposition of reinsertion of fastdailyGPPleaf() as dailyGPPcrown(), main reason: despite sharing some code with dailyGPPleaf, structurally very different, updated in v.2.5, replaced dens * CD by LAI
@@ -1981,14 +1982,29 @@ float Tree::DeathRate(float dbh, int nppneg, float phi_root) {
   return dr*timestep;
 }
 #else
-float Tree::DeathRate(float dbh, int nppneg) {
-  float dr=0.0;
-  float basal=fmaxf(m-m1*t_wsg,0.0);
+// float Tree::DeathRate(float dbh, int nppneg) {
+//   float dr=0.0;
+//   float basal=fmaxf(m-m1*t_wsg,0.0);
   
-  dr=basal;
-  if (nppneg > t_leaflifespan) dr+=1.0/timestep;
-  if (iter == int(nbiter-1) && _OUTPUT_extended == 1) output_extended[4] << iter << "\t" << t_wsg << "\t"  << dbh << "\t" << basal << "\t" << dr   <<  "\n";
-  return dr*timestep;
+//   dr=basal;
+//   if (nppneg > t_leaflifespan) dr+=1.0/timestep;
+//   if (iter == int(nbiter-1) && _OUTPUT_extended == 1) output_extended[4] << iter << "\t" << t_wsg << "\t"  << dbh << "\t" << basal << "\t" << dr   <<  "\n";
+//   return dr*timestep;
+// }
+float Tree::DeathRate(float dbh, float carbon_starv) {
+    float dr=0.0;
+    float basal=fmaxf(m-m1*t_wsg,0.0);
+    
+    dr=basal;
+    if (_LA_regulation==0) {
+        if (carbon_starv > t_leaflifespan) dr+=1.0/timestep;
+    }
+    else {
+        if (carbon_starv <= 0.0 && t_NPP <= 0.0) dr+=1.0/timestep; // newIM 2021: carbon starvation occurs when the carbon stocks has been completly depleted, and carbon_starv represents t_carbon_storage (while it represents t_NPPneg when _LA_regulation==0)
+    }
+
+    return dr*timestep;
+
 }
 #endif
 
@@ -2964,6 +2980,8 @@ void Tree::Update() {
     if(t_dbh > 0.1) nbtrees_n10++;
     if(t_dbh > 0.3) nbtrees_n30++;
     
+float npp_neg = float(t_NPPneg);
+
 #ifdef WATER
     // !!!: changed by FF, t_PPFD has been removed in v.2.5 (along with t_VPD, t_T). It was never updated, because, although formally passed on to DeathRate(), it was never used in the DeathRate() function. Furthermore, these quantities were dangerous, because they were defined at the tree level, but could change throughout the crown. Now passed by reference only where they are needed. This makes checking whether they are actually needed easier as well. Whether this affects any procedures in WATER module, needs to be checked)
     //Start new in v3.0 IM
@@ -2978,7 +2996,9 @@ void Tree::Update() {
 #ifdef WATER  // note that I did not include a version with both drought-induced mortality and NDD effect on mortality, to be done if needed.
       death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, t_NPPneg, t_phi_root));
 #else
-    death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, t_NPPneg));
+    // death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, t_NPPneg));
+    if (_LA_regulation==0) death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, npp_neg));
+    else death = int(gsl_rng_uniform(gslrng)+DeathRate(t_dbh, t_carbon_storage)); // newIM 2021: directly use the t_carbon_storage variable instead of NPPneg
 #endif
     if(death) Death();
     else Growth();   // v.2.4: t_hurt is now updated in the TriggerTreefallSecondary() function
@@ -5695,7 +5715,8 @@ void TriggerTreefall(){
       // _BASICTREEFALL: just dependent on height threshold + random uniform distribution
       float angle = 0.0, c_forceflex = 0.0;
       if(_BASICTREEFALL){
-        c_forceflex = gsl_rng_uniform(gslrng)*T[site].t_height;     // probability of treefall = 1-t_Ct/t_height, compare to gsl_rng_uniform(gslrng): gsl_rng_uniform(gslrng) < 1 - t_Ct/t_height, or: gsl_rng_uniform(gslrng) > t_Ct/t_height
+        c_forceflex =( 1- (1-gsl_rng_uniform(gslrng))/(12*timestep))*T[site].t_height;  
+     // probability of treefall = 1-t_Ct/t_height, compare to gsl_rng_uniform(gslrng): gsl_rng_uniform(gslrng) < 1 - t_Ct/t_height, or: gsl_rng_uniform(gslrng) > t_Ct/t_height
         angle = float(twoPi*gsl_rng_uniform(gslrng));                    // random angle
       }
       // above a given stress threshold the tree falls
@@ -5739,7 +5760,8 @@ void TriggerTreefallSecondary(){
   for(int site=0;site<sites;site++){
     if(T[site].t_age){
       float height_threshold = T[site].t_height/T[site].t_mult_height;  // since 2.5: a tree's stability is defined by its species' average height, i.e. we divide by the intraspecific height multiplier to account for lower stability in quickly growing trees; otherwise slender, faster growing trees would be treated preferentially and experience less secondary treefall than more heavily built trees
-      if(2.0*T[site].t_hurt*gsl_rng_uniform(gslrng) > height_threshold) {        // check whether tree dies: probability of death is 1.0-0.5*t_height/t_hurt, so gslrng <= 1.0 - 0.5 * t_height/t_hurt, or gslrng > 0.5 * t_height/t_hurt; modified in v.2.5: probability of death is 1.0 - 0.5*t_height/(t_mult_height * t_hurt), so the larger the height deviation (more slender), the higher the risk of being thrown by another tree
+      if(2.0*T[site].t_hurt*(1-(1-gsl_rng_uniform(gslrng))/(12*timestep)) > height_threshold) { 
+          // check whether tree dies: probability of death is 1.0-0.5*t_height/t_hurt, so gslrng <= 1.0 - 0.5 * t_height/t_hurt, or gslrng > 0.5 * t_height/t_hurt; modified in v.2.5: probability of death is 1.0 - 0.5*t_height/(t_mult_height * t_hurt), so the larger the height deviation (more slender), the higher the risk of being thrown by another tree
         if(p_tfsecondary > gsl_rng_uniform(gslrng)){                              // check whether tree falls or dies otherwise
           float angle = float(twoPi*gsl_rng_uniform(gslrng));                    // random angle
           T[site].Treefall(angle);
