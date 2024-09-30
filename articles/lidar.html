@@ -163,10 +163,10 @@ simulation status:</p>
 <span><span class="co">#&gt; memory       : 5 Mb </span></span>
 <span><span class="co">#&gt; extent       : 0, 100, 0, 100 (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
-<span><span class="co">#&gt; area         : 10016 units²</span></span>
-<span><span class="co">#&gt; points       : 145.3 thousand points</span></span>
-<span><span class="co">#&gt; density      : 14.5 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.61 pulses/units²</span></span></code></pre></div>
+<span><span class="co">#&gt; area         : 10020 units²</span></span>
+<span><span class="co">#&gt; points       : 144.9 thousand points</span></span>
+<span><span class="co">#&gt; density      : 14.46 points/units²</span></span>
+<span><span class="co">#&gt; density      : 9.58 pulses/units²</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
@@ -185,8 +185,8 @@ extract the canopy height model from the point cloud as a raster:</p>
 <span><span class="co">#&gt; coord. ref. :  </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :       0.00000 </span></span>
-<span><span class="co">#&gt; max value   :      33.93667</span></span></code></pre></div>
+<span><span class="co">#&gt; min value   :       4.57000 </span></span>
+<span><span class="co">#&gt; max value   :      34.00222</span></span></code></pre></div>
 <p><code>rcontroll</code> includes in the <code>autoplot</code> method
 an automatic plot of the canopy height model when choosing
 <code>what = "lidar"</code> (if the lidar simulations as been activated
@@ -260,20 +260,20 @@ simulation status:</p>
 <span><span class="co">#&gt; memory       : 5 Mb </span></span>
 <span><span class="co">#&gt; extent       : 0, 100, 0, 100 (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
-<span><span class="co">#&gt; area         : 10016 units²</span></span>
-<span><span class="co">#&gt; points       : 145.3 thousand points</span></span>
-<span><span class="co">#&gt; density      : 14.5 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.61 pulses/units²</span></span>
+<span><span class="co">#&gt; area         : 10020 units²</span></span>
+<span><span class="co">#&gt; points       : 144.9 thousand points</span></span>
+<span><span class="co">#&gt; density      : 14.46 points/units²</span></span>
+<span><span class="co">#&gt; density      : 9.58 pulses/units²</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`20pc`</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
 <span><span class="co">#&gt; memory       : 5 Mb </span></span>
 <span><span class="co">#&gt; extent       : 0, 100, 0, 100 (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
-<span><span class="co">#&gt; area         : 10016 units²</span></span>
-<span><span class="co">#&gt; points       : 145.3 thousand points</span></span>
-<span><span class="co">#&gt; density      : 14.5 points/units²</span></span>
-<span><span class="co">#&gt; density      : 9.61 pulses/units²</span></span></code></pre></div>
+<span><span class="co">#&gt; area         : 10020 units²</span></span>
+<span><span class="co">#&gt; points       : 144.9 thousand points</span></span>
+<span><span class="co">#&gt; density      : 14.46 points/units²</span></span>
+<span><span class="co">#&gt; density      : 9.58 pulses/units²</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><code>rcontroll</code> includes a <code>get_chm</code> method to
@@ -288,8 +288,8 @@ extract the canopy height model from the point clouds as a raster:</p>
 <span><span class="co">#&gt; coord. ref. :  </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :       0.00000 </span></span>
-<span><span class="co">#&gt; max value   :      33.93667 </span></span>
+<span><span class="co">#&gt; min value   :       4.57000 </span></span>
+<span><span class="co">#&gt; max value   :      34.00222 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`20pc`</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
@@ -299,8 +299,8 @@ extract the canopy height model from the point clouds as a raster:</p>
 <span><span class="co">#&gt; coord. ref. :  </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :       0.00000 </span></span>
-<span><span class="co">#&gt; max value   :      33.93667</span></span></code></pre></div>
+<span><span class="co">#&gt; min value   :       4.57000 </span></span>
+<span><span class="co">#&gt; max value   :      34.00222</span></span></code></pre></div>
 <p><code>rcontroll</code> includes in the <code>autoplot</code> method
 an automatic plot of the canopy height model when choosing
 <code>what = "lidar"</code> (if the lidar simulations as been activated
