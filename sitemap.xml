@@ -1,126 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/404.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/articles/climate.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/articles/lidar.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/articles/troll.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/articles/workflow.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/index.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLL.version.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_climatedaytime12.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_daytimevar.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_input.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_output.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_pointcloud.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_species.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/autogif.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/autoplot-trollsim-method.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_climate.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_lidar.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_chm.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_forest.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/get_log.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/load_output.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/load_sim.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/load_stack.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/option.rcontroll.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/print.trollsim.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/rcontroll.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/stack.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/troll.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/trollCpp.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/trollsim-class.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/trollsim.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/trollstack-class.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/trollstack.html</loc>
-  </url>
-  <url>
-    <loc>https://sylvainschmitt.github.io/rcontroll/reference/update_parameters.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/404.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/LICENSE.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/articles/climate.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/articles/index.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/articles/lidar.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/articles/troll.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/articles/workflow.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/authors.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/index.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/news/index.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLL.version.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_climatedaytime12.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_daytimevar.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_input.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_output.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_pointcloud.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/TROLLv3_species.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/autogif.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/autoplot-trollsim-method.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_climate.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_lidar.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/generate_parameters.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/get_chm.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/get_forest.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/get_log.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/index.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/load_output.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/load_sim.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/load_stack.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/option.rcontroll.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/pipe.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/print.trollsim.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/rcontroll.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/stack.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/troll.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/trollCpp.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/trollsim-class.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/trollsim.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/trollstack-class.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/trollstack.html</loc></url>
+<url><loc>https://sylvainschmitt.github.io/rcontroll/reference/update_parameters.html</loc></url>
 </urlset>
+
