@@ -1,19 +1,23 @@
-#' TROLL output
+#' `TROLL` output
 #'
-#' TROLL outputs from a 100-year simulation on a 100x100 grid with the other
+#' `TROLL` outputs from a 100-year simulation on a 100x100 grid with the other
 #' default parameters and using TROLLv3_species, TROLLv3_climatedaytime12, and
 #' TROLLv3_daytimevar for use in tests and examples. Ecosystem level output has
 #' been thinned and species output has been removed to save disk space.
 #'
-#' @format A trollsim object.
+#' @format A [trollsim()] object.
+#'
+#' @seealso [TROLLv3_species()], [TROLLv3_climatedaytime12()],
+#'   [TROLLv3_daytimevar()], [troll()]
 #'
 "TROLLv3_output"
 
+# nolint start
 # data("TROLLv3_species")
 # data("TROLLv3_climatedaytime12")
 # data("TROLLv3_daytimevar")
 # TROLLv3_output <- troll(name = "test",
-#                         path = "/home/sylvain/Documents/ECOFOG/",
+#                         path = "/home/sschmitt/Documents/",
 #                         global = generate_parameters(
 #                           rows = 100,
 #                           cols = 100,
@@ -30,3 +34,4 @@
 # forest <- TROLLv3_output@forest
 # autoplot(TROLLv3_output, "temporal")
 # usethis::use_data(TROLLv3_output, overwrite = T)
+# nolint end

@@ -3,16 +3,19 @@
 \docType{data}
 \name{TROLLv3_input}
 \alias{TROLLv3_input}
-\title{TROLL global parameters}
+\title{\code{TROLL} global parameters}
 \format{
 A data frame with 61 rows and 3 variables: \describe{
-  \item{param}{global parameter} \item{value}{value of the parameter}
-  \item{description}{description of the parameter} }
+\item{param}{global parameter} \item{value}{value of the parameter}
+\item{description}{description of the parameter} }
 }
 \usage{
 TROLLv3_input
 }
 \description{
-Global parameters definition used by TROLL model.
+Global parameters definition used by \code{TROLL} model.
+}
+\seealso{
+\code{\link[=generate_parameters]{generate_parameters()}}
 }
 \keyword{datasets}

@@ -1,13 +1,18 @@
 #' @import methods
 NULL
 
-#' Function to print or show TROLL outputs.
+#' Print a summary
+#'
+#' `print()` prints a summary of TROLL simulation or stack of simulations
+#' outputs.
 #'
 #' @param x trollsim or trollstack.
 #' @param object trollsim  or trollstack.
 #' @param ... unused argument.
 #'
 #' @return Print or show in console.
+#'
+#' @seealso [troll()], [stack()], [trollsim()], [trollstack()]
 #'
 #' @examples
 #'
@@ -25,9 +30,12 @@ setMethod("print", "trollsim", function(x, ...) {
   cat("Object of class :", class(x)[1], "\n")
   cat("Name :", x@name, "\n")
   cat("Path :", x@path, "\n")
+  cat("In memory :", x@mem, "\n")
   if (inherits(x, "trollstack")) {
-    cat("Number of simulations :",
-        length(unique(x@inputs$global$simulation)), "\n")
+    cat(
+      "Number of simulations :",
+      length(unique(x@inputs$global$simulation)), "\n"
+    )
   }
   cat("Extended :", as.logical(x@parameters["_OUTPUT_extended"]), "\n")
   cat("From data :", nrow(filter(x@forest, iter == 0)) > 0, "\n")
@@ -42,14 +50,24 @@ setMethod("print", "trollsim", function(x, ...) {
     "x", x@parameters["rows"], "\n"
   )
   cat("Number of iterations : ", x@parameters["nbiter"], "\n")
-  cat("Duration of timestep : ",
-      1 / x@parameters["iterperyear"] * 365, "days \n")
-  cat("Number of Species    : ",
-      length(unique(x@inputs$species$s_name)), "\n\n")
+  cat(
+    "Duration of timestep : ",
+    1 / x@parameters["iterperyear"] * 365, "days \n"
+  )
+  cat(
+    "Number of Species    : ",
+    length(unique(x@inputs$species$s_name)), "\n\n"
+  )
 })
 
 #' @export
 #' @rdname print.trollsim
 setMethod("show", "trollsim", function(object) {
+  print(object)
+})
+
+#' @export
+#' @rdname print.trollsim
+setMethod("summary", "trollsim", function(object, ...) {
   print(object)
 })

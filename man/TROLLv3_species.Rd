@@ -3,20 +3,23 @@
 \docType{data}
 \name{TROLLv3_species}
 \alias{TROLLv3_species}
-\title{TROLL species parameters}
+\title{\code{TROLL} species parameters}
 \format{
 A data frame with 45 rows and 12 variables: \describe{
-  \item{s_name}{Species name genus_species} \item{s_LMA}{leaf mass per area}
-  \item{s_Nmass}{leaf nitrogen mass} \item{s_Pmass}{leaf phosphorus mass}
-  \item{s_wsg}{wood specific gravity} \item{s_dbhmax}{maximum diameter}
-  \item{s_hmax}{maximum height} \item{s_ah}{height-diameter allometry
-  coefficient} \item{s_regionalfreq}{regional frequency} \item{s_tlp}{Turgor
-  loss point} \item{s_drymass}{leaf dry mass} \item{s_seedmass}{seed mass} }
+\item{s_name}{Species name genus_species} \item{s_LMA}{leaf mass per area}
+\item{s_Nmass}{leaf nitrogen mass} \item{s_Pmass}{leaf phosphorus mass}
+\item{s_wsg}{wood specific gravity} \item{s_dbhmax}{maximum diameter}
+\item{s_hmax}{maximum height} \item{s_ah}{height-diameter allometry
+coefficient} \item{s_regionalfreq}{regional frequency} \item{s_tlp}{Turgor
+loss point} \item{s_drymass}{leaf dry mass} \item{s_seedmass}{seed mass} }
 }
 \usage{
 TROLLv3_species
 }
 \description{
-Functional traits used by TROLL model for 45 species in French Guiana.
+Functional traits used by \code{TROLL} model for 45 species in French Guiana.
+}
+\seealso{
+\code{\link[=troll]{troll()}}, \code{\link[=stack]{stack()}}
 }
 \keyword{datasets}

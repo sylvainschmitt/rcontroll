@@ -1,17 +1,14 @@
-VERSION = 2.7
-CRT=-ucrt
-RWINLIB = ../windows/gsl-$(VERSION)
-
-PKG_CPPFLAGS = -I $(RWINLIB)/include \
 	
-PKG_LIBS =  -L $(RWINLIB)/lib$(R_ARCH)${CRT} -lgsl -lgslcblas
 
-all: clean winlibs
+ifeq (,$(shell pkg-config --version 2>/dev/null))
+    PKG_LIBS = -lgsl -lgslcblas -lm
+else
+    PKG_LIBS = $(shell pkg-config --libs gsl)
+endif
 
-winlibs:
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
+all: clean
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)
 
-.PHONY: all winlibs clean
+.PHONY: all clean

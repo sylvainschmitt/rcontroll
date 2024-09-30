@@ -23,3 +23,5 @@ inst/figures/lidr_fig.R
 inst/gsl
 LICENSE.md
 .covrignore
+.vscode
+.lintr

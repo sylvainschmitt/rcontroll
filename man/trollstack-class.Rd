@@ -3,7 +3,17 @@
 \docType{class}
 \name{trollstack-class}
 \alias{trollstack-class}
-\title{An S4 class to represent TROLL stack}
+\title{A stack of \code{TROLL} simulations}
 \description{
-This is an S4 class to represent TROLL stack.
+\code{trollstack()} is an S4 class to represent a stack of \code{TROLL} simulation.
+\code{trollstack} values can be accessed using object attributes in the form of
+simple R objects (with \code{@}). They consist of eight simulation attributes: (1)
+name, (2) path to saved files, (3) parameters, (4) inputs, (5) log, (6)
+initial and final state, (7) ecosystem output metrics, and (8) species output
+metrics. The initial and final states are represented by a table with the
+spatial position, size and other relevant traits of all trees at the start
+and end of the simulation. The ecosystem and species metrics are summaries of
+ecosystem processes and states, such as net primary production and
+aboveground biomass, and they are documented at species level and aggregated
+over the entire stand.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_stack.R
 \name{load_stack}
 \alias{load_stack}
-\title{Function to load a stack of outputs from TROLL simulations.}
+\title{Load outputs from a stack of simulations}
 \usage{
 load_stack(name, path, thin = NULL)
 }
@@ -12,18 +12,21 @@ load_stack(name, path, thin = NULL)
 \item{path}{char. Path where the stack is saved.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no
-thinning.}
+kept to reduce output size, default is NULL and corresponds to no thinning.}
 }
 \value{
-An S4 \linkS4class{trollsim} class object.
+An S4 \code{\link[=trollstack]{trollstack()}} class object.
 }
 \description{
-Function to load a stack of outputs from TROLL simulations.
+\code{load_stack} load outputs from a stack of \code{TROLL} simulation files using
+\code{TROLL} stack of simulation \code{name} and \code{path}.
 }
 \examples{
 \dontrun{
 load_stack("test", "./")
 }
 
+}
+\seealso{
+\code{\link[=trollsim]{trollsim()}}, \code{\link[=trollstack]{trollstack()}}, \code{\link[=load_sim]{load_sim()}}, \code{\link[=load_stack]{load_stack()}}
 }

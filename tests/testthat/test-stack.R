@@ -20,7 +20,6 @@ test_that("stack", {
     verbose = FALSE,
     cores = 2
   )
-  sims <- load_stack("test3", path = getwd())
   expect_true(is.character(capture.output(show(sims))))
   expect_true(is.character(capture.output(print(sims))))
   expect_true(is.character(capture.output(summary(sims))))

@@ -1,6 +1,26 @@
-# rcontroll 0.1.0.9063
+# rcontroll 0.1.0.9003
 
 - TROLL version 3.1.8 following discussion with IM, updating treefall time normalisation and carbon starvation to match TROLL4, a clean merge with main and dev will be needed
+
+# rcontroll 0.1.1.9002
+
+- lidr fig
+
+# rcontroll 0.1.1.9001
+
+- extended documentation following review
+
+# rcontroll 0.1.0.9065
+
+- new stack in tmp fix & TROLLV3_output update
+
+# rcontroll 0.1.0.9064
+
+- improving memory usage
+
+# rcontroll 0.1.0.9063
+
+- fixed stack with batch foreach 
 
 # rcontroll 0.1.0.9062
 

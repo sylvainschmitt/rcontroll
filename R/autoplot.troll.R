@@ -10,16 +10,19 @@ NULL
 
 #' Plot TROLL simulation or stack
 #'
-#' This is a method to plot TROLL simulations, including either temporal
-#' trajectories of whole ecosystem or species metrics, the initial or final
-#' pattern observed in the forest community, or lidar outputs. Metrics includes
+#' `autoplot()` is a method that takes advantage of `ggplot2` to plot TROLL
+#' simulations. `autoplot()` can plot either temporal trajectories of whole
+#' ecosystem or species metrics (`what = 'temporal'`), the initial or final
+#' pattern observed in the forest community (`what = 'spatial'` or `what =
+#' 'distribution'`), or lidar outputs (`what = 'lidar'`). Metrics includes
 #' abundances of individuals above 1cm (N), above 10cm (N10), and above 30cm
 #' (N30), aboveground biomass (AGB), basal area of individuals above 1cm (BA),
 #' and above 10cm (BA10), gross primary production (GPP), net primary production
 #' (NPP), respiration of day (Rday), night (Rnight) and stem (Rstem), and
 #' litterfall.
 #'
-#' @param object TROLL simulation or stack.
+#' @param object TROLL simulation or stack (see [troll()], [stack()],
+#'   [trollsim()] and [trollstack()]).
 #' @param what char. What to plot: "temporal", "spatial" "distribution", or
 #'   "lidar". "temporal" is for temporal trajectories of the whole ecosystem or
 #'   defined species. "spatial" is for spatial patterns in the initial or final
@@ -33,7 +36,9 @@ NULL
 #'   specify which forest to plot. "initial" or "final" can be used. NULL is
 #'   converted to "final".
 #'
-#' @return A ggplot2 object.
+#' @return A `ggplot2` object.
+#'
+#' @seealso [autogif()], [summary,trollsim-method]
 #'
 #' @examples
 #'
@@ -41,7 +46,7 @@ NULL
 #' autoplot(TROLLv3_output)
 #'
 #' @export
-setMethod("autoplot", "trollsim", function(object,
+setMethod("autoplot", "trollsim", function(object, # nolint
                                            what = "temporal",
                                            variables = NULL,
                                            species = NULL,
@@ -88,9 +93,11 @@ setMethod("autoplot", "trollsim", function(object,
       absent <- variables[!(variables %in% names(object@species))]
     }
     if (length(absent) > 0) {
-      warning(paste("The following variables are not 
+      warning(paste(
+        "The following variables are not
                     present in the selected outputs: ",
-                    paste(absent, sep = ", ")))
+        paste(absent, sep = ", ")
+      ))
     }
     # table
     if (is.null(species)) {
@@ -113,8 +120,9 @@ setMethod("autoplot", "trollsim", function(object,
     }
     # prep table
     tab <- mutate(tab,
-                  iter = as.numeric(iter /
-                                      object@parameters["iterperyear"]))
+      iter = as.numeric(iter /
+        object@parameters["iterperyear"])
+    )
     if (!("simulation" %in% names(tab))) {
       tab$simulation <- "sim"
     }
@@ -141,8 +149,10 @@ setMethod("autoplot", "trollsim", function(object,
     if (length(unique(tab$simulation)) == 1) {
       g <- g + facet_wrap(~variable, scales = "free_y", labeller = label_parsed)
     } else {
-      g <- g + facet_grid(variable ~ simulation, scales = "free_y",
-                          labeller = label_parsed)
+      g <- g + facet_grid(variable ~ simulation,
+        scales = "free_y",
+        labeller = label_parsed
+      )
     }
   }
 
@@ -227,9 +237,11 @@ setMethod("autoplot", "trollsim", function(object,
     }
     absent <- variables[!(variables %in% n_vars)]
     if (length(absent) > 0) {
-      warning(paste("The following variables are not
+      warning(paste(
+        "The following variables are not
                     present in the selected outputs: ",
-                    paste(absent, sep = ", ")))
+        paste(absent, sep = ", ")
+      ))
     }
     # species
     if ("all" %in% species) {
@@ -273,8 +285,10 @@ setMethod("autoplot", "trollsim", function(object,
     if (length(unique(forest$simulation)) == 1) {
       g <- g + facet_wrap(~variable, scales = "free", labeller = label_parsed)
     } else {
-      g <- g + facet_grid(variable ~ simulation, scales = "free",
-                          labeller = label_parsed)
+      g <- g + facet_grid(variable ~ simulation,
+        scales = "free",
+        labeller = label_parsed
+      )
     }
   }
 

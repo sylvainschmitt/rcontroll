@@ -3,16 +3,19 @@
 \docType{data}
 \name{TROLLv3_pointcloud}
 \alias{TROLLv3_pointcloud}
-\title{TROLL lidar parameters}
+\title{\code{TROLL} lidar parameters}
 \format{
 A data frame with 5 rows and 3 variables: \describe{
-  \item{param}{global parameter} \item{value}{value of the parameter}
-  \item{description}{description of the parameter} }
+\item{param}{lidar parameter} \item{value}{value of the parameter}
+\item{description}{description of the parameter} }
 }
 \usage{
 TROLLv3_pointcloud
 }
 \description{
-Lidar parameters definition used by TROLL model for lidar simulations.
+Lidar parameters definition used by \code{TROLL} for lidar simulations.
+}
+\seealso{
+\code{\link[=generate_lidar]{generate_lidar()}}
 }
 \keyword{datasets}
