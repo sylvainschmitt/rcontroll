@@ -185,8 +185,7 @@ French Guiana).</p>
 with <code>gsub</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">","</span>, <span class="st">"/"</span>, <span class="fu">getbb</span><span class="op">(</span><span class="st">"French Guiana"</span>,</span>
-<span>  format_out <span class="op">=</span> <span class="st">"string"</span>, limit <span class="op">=</span> <span class="fl">1</span></span>
-<span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                                format_out <span class="op">=</span> <span class="st">"string"</span>, limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You need two types of product: (1) monthly averages by hour of day
 and (2) monthly averages at 00:00.</p>
 <p>Now you can use the coordinates to build the request corresponding to
@@ -337,15 +336,14 @@ locations:</p>
 <span>  <span class="fu">leaflet</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">addTiles</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">addPolygons</span><span class="op">(</span>data <span class="op">=</span> <span class="fu">getbb</span><span class="op">(</span><span class="st">"French Guiana"</span>,</span>
-<span>    format_out <span class="op">=</span> <span class="st">"sf_polygon"</span>,</span>
-<span>    limit <span class="op">=</span> <span class="fl">1</span></span>
-<span>  <span class="op">)</span><span class="op">$</span><span class="va">multipolygon</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>                           format_out <span class="op">=</span> <span class="st">"sf_polygon"</span>,</span>
+<span>                           limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">multipolygon</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">addCircleMarkers</span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
 <p>You can extract corresponding coordinates using
 <code>st_coordinates</code> from <code>sf</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">geo_lite_sf</span><span class="op">(</span><span class="st">"Réserve naturelle des nouragues, 97301, Régina"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You will also need the corresponding time zone for time correction as
 ERA5-land is giving us time in UTC. For that you can use the
 <code>tz_lookup_coords</code> function from the package
