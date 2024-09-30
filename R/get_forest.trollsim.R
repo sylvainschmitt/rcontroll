@@ -3,12 +3,16 @@
 #' @importFrom dplyr filter select
 NULL
 
-#' Function to get a forest inventory from TROLL outputs.
+#' Extract forest inventory
 #'
-#' @param sim trollsim.
+#' `get_forest()` extract the forest inventory from `TROLL` outputs.
+#'
+#' @param sim trollsim or trollstack.
 #' @param ... unused argument.
 #'
-#' @return data.frame
+#' @return [data.frame()]
+#'
+#' @seealso [trollsim()], [trollstack()], [troll()], [stack()]
 #'
 #' @examples
 #'
@@ -27,7 +31,7 @@ setGeneric("get_forest", function(sim, ...) {
 #' @rdname get_forest
 #' @export
 setMethod("get_forest", "trollsim", function(sim, ...) {
-  iter <- from_Data <- sp_lab <- site <- dbh_previous <- AGB <- NULL
+  iter <- from_Data <- sp_lab <- site <- dbh_previous <- AGB <- NULL # nolint
   filter(
     sim@forest,
     iter == max(sim@forest$iter)

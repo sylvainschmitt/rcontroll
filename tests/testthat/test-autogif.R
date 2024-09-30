@@ -3,8 +3,9 @@ test_that("autogif", {
   gifs <- autogif(
     name = "dynamic",
     global = update_parameters(TROLLv3_output,
-                               nbiter = 12 * 10,
-                               extent_visual = 10),
+      nbiter = 12 * 10,
+      extent_visual = 10
+    ),
     species = TROLLv3_output@inputs$species,
     climate = TROLLv3_output@inputs$climate,
     daily = TROLLv3_output@inputs$daily,

@@ -4,29 +4,38 @@
 #' @importFrom utils timestamp capture.output
 NULL
 
-#' troll
+#' Run a `TROLL` simulation
 #'
-#' Run a TROLL simulation.
+#' `troll()` run a `TROLL` simulation. The minimal set of input files required
+#' for a `TROLL` run include (i) climate data for the focal location (`climate`
+#' and `daily`), (ii) functional traits for the list of species at the focal
+#' location (`species`), and (iii) global parameters (`global`), i.e. parameters
+#' that do not depend on species identity.
 #'
-#' @param name char. Model name (if NULL timestamp).
+#' @param name char. Model name (if NULL the timestamp will be used).
 #' @param path char. Path to save the simulation outputs, the default is null
-#'   corresponding to a simulation in memory without saved intermediary files.
-#' @param global df. Global parameters.
-#' @param species df. Species parameters.
-#' @param climate df. Climate parameters.
-#' @param daily df. Daily variation parameters.
-#' @param lidar df. Lidar simulation parameters, if null no computed
-#'   (default NULL).
+#'   corresponding to a simulation in memory without saved intermediary files
+#'   (based on temporary files from [option.rcontroll]).
+#' @param global df. Global parameters (e.g. [TROLLv3_input] or using
+#'   [generate_parameters()]).
+#' @param species df. Species parameters (e.g. [TROLLv3_species]).
+#' @param climate df. Climate parameters (e.g. [TROLLv3_climatedaytime12]).
+#' @param daily df. Daily variation parameters (e.g. [TROLLv3_daytimevar]).
+#' @param lidar df. Lidar simulation parameters (e.g. using [generate_lidar()]),
+#'   if null not computed (default NULL).
 #' @param forest df. TROLL with forest input, if null starts from an empty grid
-#'   (default NULL).
-#' @param verbose bool. Show TROLL outputs in the console.
-#' @param overwrite bool. Overwrite previous outputs.
+#'   (default NULL) (e.g. using [TROLLv3_output] with [get_forest()]).
+#' @param load bool. TROLL outputs are loaded in R memory, if not only the path
+#'   and name of the simulations is kept in the resulting [trollsim()] object
+#'   but the content can be accessed later using the [load_sim()] method.
+#' @param verbose bool. Show TROLL log in the console.
+#' @param overwrite bool. Overwrite previous outputs folder and files.
 #' @param thin int. Vector of integers corresponding to the iterations to be
-#'   kept to reduce output size, default is NULL and corresponds to no
-#'   thinning.
-#'   
+#'   kept to reduce output size, default is NULL and corresponds to no thinning.
 #'
-#' @return A trollsim object.
+#' @return A [trollsim()] object.
+#'
+#' @seealso [stack()]
 #'
 #' @export
 #'
@@ -46,7 +55,7 @@ NULL
 #'   daily = TROLLv3_daytimevar
 #' )
 #' }
-#' 
+#'
 troll <- function(name = NULL,
                   path = NULL,
                   global,
@@ -55,10 +64,11 @@ troll <- function(name = NULL,
                   daily,
                   lidar = NULL,
                   forest = NULL,
+                  load = TRUE,
                   verbose = TRUE,
                   overwrite = TRUE,
                   thin = NULL) {
-  i <- NULL
+  i <- NULL # nolint
   cl <- makeCluster(1, outfile = "")
   registerDoSNOW(cl)
   sim <- foreach(i = 1, .export = ".troll_child") %dopar% {
@@ -71,6 +81,7 @@ troll <- function(name = NULL,
       daily = daily,
       lidar = lidar,
       forest = forest,
+      load = load,
       verbose = verbose,
       overwrite = overwrite,
       thin = thin
@@ -80,7 +91,7 @@ troll <- function(name = NULL,
   return(sim[[1]])
 }
 
-.troll_child <- function(name = NULL,
+.troll_child <- function(name = NULL, # nolint
                          path = NULL,
                          global,
                          species,
@@ -88,19 +99,27 @@ troll <- function(name = NULL,
                          daily,
                          lidar = NULL,
                          forest = NULL,
+                         load = TRUE,
                          verbose = TRUE,
                          overwrite = TRUE,
                          thin = NULL) {
   # check all inputs
-  if (!all(unlist(lapply(list(overwrite), class)) == "logical")) {
-    stop("overwrite should be logical.")
+  if (!all(unlist(lapply(
+    list(verbose, load, overwrite),
+    class
+  )) == "logical")) {
+    stop("verbose, load, and overwrite should be logical.")
   }
-  if (!all(unlist(lapply(list(name, path), class)) %in% c("character",
-                                                          "NULL"))) {
+  if (!all(unlist(lapply(list(name, path), class)) %in% c(
+    "character",
+    "NULL"
+  ))) {
     stop("name and path should be character or null.")
   }
-  if (!all(unlist(lapply(list(global, species, climate, daily),
-                         inherits, c("data.frame", "NULL"))))) {
+  if (!all(unlist(lapply(
+    list(global, species, climate, daily),
+    inherits, c("data.frame", "NULL")
+  )))) {
     stop("global, species, climate, and daily should be a data frame.")
   }
   if (!(class(forest) %in% c("data.frame", "NULL"))) {
@@ -133,6 +152,9 @@ troll <- function(name = NULL,
   if (is.null(path)) {
     path <- getOption("rcontroll.tmp")
     tmp <- TRUE
+  }
+  if (tmp && !load) {
+    stop("You can not unactivate the load option if you have not defined a path for your files.") # nolint
   }
   if (!is.null(path)) {
     path <- normalizePath(path)
@@ -209,9 +231,9 @@ troll <- function(name = NULL,
     "abc_transmittance",
     "abc_transmittanceALS",
     "CHM",
-    "death",
-    "deathrate",
-    "death_snapshots",
+    # "death",
+    # "deathrate",
+    # "death_snapshots",
     "LAI",
     "ppfd0",
     "sdd",
@@ -221,11 +243,14 @@ troll <- function(name = NULL,
   })
 
   # loading outputs
-  sim <- load_output(name, file.path(path, name), thin = thin)
+  sim <- trollsim(name = name, path = file.path(path, name), mem = FALSE)
+  if (load) {
+    sim <- load_sim(sim)
+  }
   if (tmp) {
     unlink(file.path(path, name), recursive = TRUE, force = TRUE)
     sim@path <- character()
   }
-  
+
   return(sim)
 }

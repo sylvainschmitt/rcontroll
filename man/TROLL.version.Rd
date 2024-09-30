@@ -2,18 +2,21 @@
 % Please edit documentation in R/TROLLversion.R
 \name{TROLL.version}
 \alias{TROLL.version}
-\title{Function to print TROLL version.}
+\title{\code{TROLL} version}
 \usage{
 TROLL.version()
 }
 \value{
-Print TROLL version in console.
+\code{TROLL} version in console.
 }
 \description{
-Function to print TROLL version.
+\code{TROLL.version()} prints \code{TROLL} version.
 }
 \examples{
 
 TROLL.version()
 
+}
+\seealso{
+\link{option.rcontroll}
 }

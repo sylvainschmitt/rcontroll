@@ -93,8 +93,14 @@ sim_stack <- stack(
   daily = TROLLv3_output@inputs$daily,
   forest = get_forest(TROLLv3_output),
   lidar = list(
-    "10pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11),
-    "20pc" = generate_lidar(mean_beam_pc = 10, iter_pointcloud_generation = 11)
+    "10pc" = generate_lidar(
+      mean_beam_pc = 10,
+      iter_pointcloud_generation = 11
+    ),
+    "20pc" = generate_lidar(
+      mean_beam_pc = 10,
+      iter_pointcloud_generation = 11
+    )
   ) %>% dplyr::bind_rows(.id = "simulation"),
   verbose = FALSE,
   cores = 2,

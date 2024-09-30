@@ -1,7 +1,7 @@
 Package: rcontroll
 Type: Package
 Title: Individual-Based Forest Growth Simulator 'TROLL'
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Sylvain", "Schmitt", email="sylvain.m.schmitt@gmail.com", role=c("aut", "cre"), comment = c(ORCID = "0000-0001-7759-7106")),
     person("Guillaume", "Salzet", email="guillaume.salzet@inrae.fr", role="aut", comment = c(ORCID = "0000-0003-4548-5673")),
@@ -52,6 +52,7 @@ Suggests:
     rmarkdown,
     testthat,
     covr
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate: 
     'RcppExports.R'
@@ -75,12 +76,13 @@ Collate:
     'generate_lidar.R'
     'generate_parameters.R'
     'get_forest.trollsim.R'
+    'get_log.trollsim.R'
     'load_stack.R'
+    'load_sim.trollsim.R'
     'print.trollsim.R'
     'rcontroll-package.R'
     'rcontroll.R'
     'stack.R'
-    'summary.trollsim.R'
     'update_parameters.trollsim.R'
 VignetteBuilder: knitr
 Depends: 

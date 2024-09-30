@@ -3,18 +3,22 @@
 \docType{data}
 \name{TROLLv3_daytimevar}
 \alias{TROLLv3_daytimevar}
-\title{TROLL daytime variation parameters}
+\title{\code{TROLL} daytime variation parameters}
 \format{
 A data frame with 24 rows and 5 variables: \describe{
-  \item{starttime}{starting time} \item{endtime}{ending time}
-  \item{vardaytime_light}{daytime variation in light}
-  \item{vardaytime_vpd}{daytime variation in vapour pressure deficit}
-  \item{vardaytime_T}{daytime variation in temperature}}
+\item{starttime}{starting time} \item{endtime}{ending time}
+\item{vardaytime_light}{daily variation in irradiance relative to the mean
+value of the day} \item{vardaytime_vpd}{daily variation in vapour pressure
+deficit relative to the mean value of the day} \item{vardaytime_T}{daily
+variation in temperature relative to the mean value of the day}}
 }
 \usage{
 TROLLv3_daytimevar
 }
 \description{
-Daytime variation parameters used by TROLL models.
+Daytime variation parameters used by \code{TROLL}s models.
+}
+\seealso{
+\code{\link[=generate_climate]{generate_climate()}}, \link{TROLLv3_climatedaytime12}
 }
 \keyword{datasets}

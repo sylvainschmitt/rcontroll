@@ -29,7 +29,6 @@ jobs:
       matrix:
         config:
           - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: '3.6'}
           - {os: macos-latest,   r: 'release'}
 
     env:

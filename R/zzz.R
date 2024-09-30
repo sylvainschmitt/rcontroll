@@ -1,8 +1,12 @@
 #' Options
 #'
-#' rcontroll package global options.
+#' `rcontroll` package global options including temporary files location and
+#' `TROLL version.
 #'
-#' @param rcontroll.tmp char. Path to temporary files folder.
+#' @param rcontroll.tmp char. Path to temporary files folder used by [troll()]
+#'   and [stack()].
+#' @param rcontroll.troll char. `TROLL`version number accessible with
+#'   [TROLL.version()].
 #'
 #' @name option.rcontroll
 NULL
@@ -12,7 +16,7 @@ NULL
   dir.create(tmp_dir)
   options(list(
     rcontroll.tmp = tmp_dir,
-    rcontroll.troll = "TROLL version 3.1.7"
+    rcontroll.troll = "TROLL version 3.1.8"
   ))
   invisible()
 }

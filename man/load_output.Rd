@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_output.R
 \name{load_output}
 \alias{load_output}
-\title{Function to load outputs from a TROLL simulation.}
+\title{Load outputs from simulation}
 \usage{
 load_output(name, path, thin = NULL)
 }
@@ -12,18 +12,21 @@ load_output(name, path, thin = NULL)
 \item{path}{char. Path where the model is saved.}
 
 \item{thin}{int. Vector of integers corresponding to the iterations to be
-kept to reduce output size, default is NULL and corresponds to no
-thinning.}
+kept to reduce output size, default is NULL and corresponds to no thinning.}
 }
 \value{
-An S4 \linkS4class{trollsim} class object.
+An S4 \code{\link[=trollsim]{trollsim()}} class object.
 }
 \description{
-Function to load outputs from a TROLL simulation.
+\code{load_output} load outputs from \code{TROLL} simulation files using \code{TROLL}
+simulation \code{name} and \code{path}.
 }
 \examples{
 \dontrun{
 load_output("test", "./")
 }
 
+}
+\seealso{
+\code{\link[=trollsim]{trollsim()}}, \code{\link[=trollstack]{trollstack()}}, \code{\link[=load_sim]{load_sim()}}, \code{\link[=load_stack]{load_stack()}}
 }

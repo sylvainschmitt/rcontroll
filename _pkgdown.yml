@@ -13,6 +13,7 @@ reference:
   - stack
 - title: Analyze simulations
   contents:
+  - load_sim
   - load_output
   - load_stack
   - starts_with("show")
@@ -21,6 +22,7 @@ reference:
   - starts_with("autoplot")
   - autogif
   - get_chm
+  - get_log
 - title: Data
   contents:
   - TROLLv3_climatedaytime12

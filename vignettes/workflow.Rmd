@@ -17,10 +17,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
-if(Sys.info()[['sysname']] == "Darwin")
+if (Sys.info()[["sysname"]] == "Darwin") {
   knitr::opts_chunk$set(
-  eval = FALSE
-)
+    eval = FALSE
+  )
+}
 ```
 
 This vignette gives a quick example of a simple workflow to produce a single simulation, a stack of simulations, or start from an existing inventory or a previous simulation.
@@ -124,8 +125,10 @@ rcontroll::autoplot(sim, what = "spatial")
 Finally, we can quickly plot variables distribution at forest final patterns using `autoplot` and `what` defined on `distribution`:
 
 ```{r fullsimG3}
-rcontroll::autoplot(sim, what = "distribution",
-                    variables = c("dbh", "height", "LA", "LMA"))
+rcontroll::autoplot(sim,
+  what = "distribution",
+  variables = c("dbh", "height", "LA", "LMA")
+)
 ```
 
 # Stack of simulations
@@ -233,8 +236,9 @@ gifs <- autogif(
   name = "dynamic",
   variables = "height_ct",
   global = update_parameters(TROLLv3_output,
-                             nbiter = 12 * 100,
-                             extent_visual = 100),
+    nbiter = 12 * 100,
+    extent_visual = 100
+  ),
   species = TROLLv3_output@inputs$species,
   climate = TROLLv3_output@inputs$climate,
   daily = TROLLv3_output@inputs$daily,

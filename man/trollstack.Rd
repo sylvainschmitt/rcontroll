@@ -2,11 +2,12 @@
 % Please edit documentation in R/trollstack.R
 \name{trollstack}
 \alias{trollstack}
-\title{An S4 class to represent TROLL stack}
+\title{A stack of \code{TROLL} simulations}
 \usage{
 trollstack(
   name = character(),
   path = character(),
+  mem = logical(),
   parameters = numeric(),
   inputs = list(),
   log = character(),
@@ -19,27 +20,44 @@ trollstack(
 \arguments{
 \item{name}{char. Simulation name.}
 
-\item{path}{char. Path to the simulation.}
+\item{path}{char. File path to the stack of simulation (parent folder).}
+
+\item{mem}{bool. Is the simulation in memory, see \code{\link[=load_sim]{load_sim()}}.}
 
 \item{parameters}{numeric. Parameters of the simulation (general inputs).}
 
-\item{inputs}{list. Simulation inputs (species, climate, daily,
-forest,lidar).}
+\item{inputs}{list. Simulation inputs (species, climate, daily, forest,
+lidar, see \code{\link[=stack]{stack()}}).}
 
-\item{log}{chr. Simulation log.}
+\item{log}{chr. Simulation log, see \code{\link[=get_log]{get_log()}}.}
 
-\item{forest}{df. Simulation initial and final forest.}
+\item{forest}{df. Simulation initial and final forest, see \code{\link[=get_forest]{get_forest()}}.}
 
 \item{ecosystem}{df. Ecosystem metrics.}
 
-\item{species}{df. Species metrics (with OUTPUT_extended option).}
+\item{species}{df. Species metrics (with OUTPUT_extended option, see
+\code{\link[=generate_parameters]{generate_parameters()}}).}
 
-\item{las}{list. list. List with simulated point cloud in LAS from lidar
-parameters (with lidar option). The LAS format correspond to lidr::LAS.}
+\item{las}{list. List with simulated point cloud in LAS from lidar parameters
+(with lidar option, see \code{\link[=generate_lidar]{generate_lidar()}}). The LAS format correspond to
+\code{\link[lidR:LAS-class]{lidR::LAS()}}.}
 }
 \value{
-An empty S4 \linkS4class{trollstack} class object.
+An empty S4 \code{\link[=trollstack]{trollstack()}} class object.
 }
 \description{
-This is an S4 class to represent TROLL stack.
+\code{trollstack()} is an S4 class to represent a stack of \code{TROLL} simulation.
+\code{trollstack} values can be accessed using object attributes in the form of
+simple R objects (with \code{@}). They consist of eight simulation attributes: (1)
+name, (2) path to saved files, (3) parameters, (4) inputs, (5) log, (6)
+initial and final state, (7) ecosystem output metrics, and (8) species output
+metrics. The initial and final states are represented by a table with the
+spatial position, size and other relevant traits of all trees at the start
+and end of the simulation. The ecosystem and species metrics are summaries of
+ecosystem processes and states, such as net primary production and
+aboveground biomass, and they are documented at species level and aggregated
+over the entire stand.
+}
+\seealso{
+\code{\link[=stack]{stack()}}, \code{\link[=load_stack]{load_stack()}}, \code{\link[=trollsim]{trollsim()}}
 }
