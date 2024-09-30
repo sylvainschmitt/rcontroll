@@ -293,9 +293,8 @@ generate_climate <- function(x, y, tz,
       gather(variable, value) %>%
       group_by(variable) %>%
       do(decompose(ts(.$value, frequency = 24),
-        type = "additive"
-      )[c("seasonal", "trend", "random")] %>%
-        as.data.frame()) %>%
+                   type = "additive")[c("seasonal", "trend", "random")] %>%
+           as.data.frame()) %>%
       group_by(variable) %>%
       mutate(M = mean(trend, na.rm = TRUE)) %>%
       slice(1:24) %>%
@@ -380,9 +379,8 @@ generate_climate <- function(x, y, tz,
       gather(variable, value) %>%
       group_by(variable) %>%
       do(decompose(ts(.$value, frequency = 12),
-        type = "additive"
-      )[c("seasonal", "trend", "random")] %>%
-        as.data.frame()) %>%
+                   type = "additive")[c("seasonal", "trend", "random")] %>%
+           as.data.frame()) %>%
       mutate(value = (seasonal + mean(trend + random, na.rm = TRUE))) %>%
       slice(1:12) %>%
       select(-seasonal, -trend, -random) %>%

@@ -120,8 +120,7 @@ setMethod("autoplot", "trollsim", function(object, # nolint
     }
     # prep table
     tab <- mutate(tab,
-      iter = as.numeric(iter /
-        object@parameters["iterperyear"])
+      iter = as.numeric(iter / object@parameters["iterperyear"])
     )
     if (!("simulation" %in% names(tab))) {
       tab$simulation <- "sim"

@@ -84,8 +84,7 @@ you can then convert the coordinates into the desired request format with `gsub`
 
 ```{r, eval=FALSE}
 (coords <- gsub(",", "/", getbb("French Guiana",
-  format_out = "string", limit = 1
-)))
+                                format_out = "string", limit = 1)))
 ```
 
 You need two types of product: (1) monthly averages by hour of day and (2) monthly averages at 00:00.
@@ -231,9 +230,8 @@ geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
   leaflet() %>%
   addTiles() %>%
   addPolygons(data = getbb("French Guiana",
-    format_out = "sf_polygon",
-    limit = 1
-  )$multipolygon) %>%
+                           format_out = "sf_polygon",
+                           limit = 1)$multipolygon) %>%
   addCircleMarkers(col = "red")
 ```
 
@@ -241,7 +239,7 @@ You can extract corresponding coordinates using `st_coordinates` from `sf`:
 
 ```{r, eval=FALSE}
 (coords <- geo_lite_sf("Réserve naturelle des nouragues, 97301, Régina") %>%
-  st_coordinates())
+   st_coordinates())
 ```
 
 You will also need the corresponding time zone for time correction as ERA5-land is giving us time in UTC.
