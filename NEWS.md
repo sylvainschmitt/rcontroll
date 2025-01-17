@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9001
+
+- Fixing climate generation for new CDS API but bug with nc extract of hourly monthly means, needs first grib dl and cdo convert to nc, should be replaced by GEE in future
+
 # rcontroll 0.1.0.9003
 
 - TROLL version 3.1.8 following discussion with IM, updating treefall time normalisation and carbon starvation to match TROLL4, a clean merge with main and dev will be needed

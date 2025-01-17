@@ -251,16 +251,14 @@ generate_climate <- function(x, y, tz,
 
   # hourly
   era5_hr_r <- suppressWarnings(rast(era5land_hour))
-  era5_hr <- suppressWarnings(extract(era5_hr_r, cbind(x, y))) %>%
+  era5_hr <-   era5_hr <- suppressWarnings(extract(era5_hr_r, cbind(x, y))) %>%
     gather("variable", "value") %>%
     mutate(date = as_datetime(terra::time(era5_hr_r))) %>%
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    select(-t) %>%
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>%
-    group_by(date, variable) %>%
-    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+    select(-t) %>% 
     spread(variable, value) %>%
-    arrange(date)
+    arrange(date) %>% 
+    rename(t2m = "2t", d2m = "2d")
   rm(era5_hr_r)
   t0 <- t1 <- era5_hr$date[1]
   t1 <- force_tz(t1, tz)
@@ -333,13 +331,10 @@ generate_climate <- function(x, y, tz,
   # monthly
   era5_mt_r <- suppressWarnings(rast(era5land_month))
   era5_mt <- suppressWarnings(extract(era5_mt_r, cbind(x, y))) %>%
-    gather("variable", "value") %>%
-    mutate(date = as_date(terra::time(era5_mt_r))) %>%
-    separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    select(-t) %>%
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>%
-    group_by(date, variable) %>%
-    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+    gather("variable", "value") %>% 
+    separate(variable, c("variable", "date"), 
+             sep = "_valid_time=", convert = TRUE) %>% 
+    mutate(date = ymd_hms("1970-01-01 00:00:00") + date) %>% 
     spread(variable, value) %>%
     arrange(date) %>%
     mutate(month = month(date)) %>%

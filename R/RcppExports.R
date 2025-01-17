@@ -20,20 +20,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' trollCpp(
-#'   global_file = "test/test_input_global.txt",
-#'   climate_file = "test/test_input_climate.txt",
-#'   species_file = "test/test_input_species.txt",
-#'   day_file = "test/test_input_daily.txt",
-#'   lidar_file = "",
-#'   forest_file = "",
-#'   output_file = "test"
-#' )
+#' trollCpp(global_file = "test/test_input_global.txt",
+#'          climate_file = "test/test_input_climate.txt",
+#'          species_file = "test/test_input_species.txt",
+#'          day_file = "test/test_input_daily.txt",
+#'          lidar_file = "",
+#'          forest_file = "",
+#'          output_file = "test")
 #' }
 #'
 #' @export
-trollCpp <- function(global_file, climate_file, species_file, #nolint
-                     day_file, lidar_file, forest_file, output_file) {
-  invisible(.Call(`_rcontroll_trollCpp`, global_file, climate_file,
-                  species_file, day_file, lidar_file, forest_file, output_file))
+trollCpp <- function(global_file, climate_file, species_file, day_file, lidar_file, forest_file, output_file) {
+    invisible(.Call(`_rcontroll_trollCpp`, global_file, climate_file, species_file, day_file, lidar_file, forest_file, output_file))
 }
+
