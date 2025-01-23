@@ -3,7 +3,7 @@
 #' @importFrom tidyr gather separate spread nest unnest
 #' @importFrom dplyr mutate select arrange lag group_by do slice mutate_at funs
 #'   ungroup bind_rows rename n recode left_join mutate_all summarise
-#' @importFrom lubridate as_datetime force_tz hms year month hour as_date
+#' @importFrom lubridate as_datetime force_tz hms year month hour as_date ymd_hms
 #'   days_in_month
 #' @importFrom stats decompose ts spline
 #' @importFrom utils data
@@ -332,9 +332,8 @@ generate_climate <- function(x, y, tz,
   era5_mt_r <- suppressWarnings(rast(era5land_month))
   era5_mt <- suppressWarnings(extract(era5_mt_r, cbind(x, y))) %>%
     gather("variable", "value") %>% 
-    separate(variable, c("variable", "date"), 
-             sep = "_valid_time=", convert = TRUE) %>% 
-    mutate(date = ymd_hms("1970-01-01 00:00:00") + date) %>% 
+    mutate(date = as_datetime(terra::time(era5_mt_r))) %>%
+    separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
     spread(variable, value) %>%
     arrange(date) %>%
     mutate(month = month(date)) %>%
@@ -342,7 +341,8 @@ generate_climate <- function(x, y, tz,
     group_by(year) %>%
     filter(n() == 12) %>%
     ungroup() %>%
-    arrange(year, month)
+    arrange(year, month) %>% 
+    rename(t2m = "2t", d2m = "2d", u10 = "10u", v10 = "10v")
   rm(era5_mt_r)
   era5_mt <- era5_mt %>%
     mutate(tdeg = t2m - 273.15) %>% # K to degree celcisus

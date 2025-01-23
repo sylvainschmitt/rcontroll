@@ -2,6 +2,7 @@
 % Please edit documentation in R/rcontroll.R
 \docType{package}
 \name{rcontroll}
+\alias{rcontroll-package}
 \alias{rcontroll}
 \title{\code{rcontroll}: individual-based forest growth simulator TROLL}
 \description{
@@ -84,3 +85,24 @@ animated figure (\code{autogif} function).
 version 3.1.6
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/sylvainschmitt/rcontroll}
+  \item \url{https://sylvainschmitt.github.io/rcontroll/}
+  \item Report bugs at \url{https://github.com/sylvainschmitt/rcontroll/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Sylvain Schmitt \email{sylvain.m.schmitt@gmail.com} (\href{https://orcid.org/0000-0001-7759-7106}{ORCID})
+
+Authors:
+\itemize{
+  \item Guillaume Salzet \email{guillaume.salzet@inrae.fr} (\href{https://orcid.org/0000-0003-4548-5673}{ORCID})
+  \item Fabian Fischer \email{fabian.fischer@univ-tlse3.fr} (\href{https://orcid.org/0000-0003-2325-9886}{ORCID})
+  \item Isabelle Maréchaux \email{isabelle.mj.marechaux@gmail.com} (\href{https://orcid.org/0000-0002-5401-0197}{ORCID})
+  \item Jérôme Chave \email{jerome.chave@univ-tlse3.fr} (\href{https://orcid.org/0000-0002-7766-1347}{ORCID})
+}
+
+}

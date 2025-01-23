@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9002
+
+- Adding GRIB fix for era5_land_month, dirty fix for Nick to be cleaned.
+
 # rcontroll 0.2.0.9001
 
 - Fixing climate generation for new CDS API but bug with nc extract of hourly monthly means, needs first grib dl and cdo convert to nc, should be replaced by GEE in future
