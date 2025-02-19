@@ -513,8 +513,8 @@ void ExportPointcloud(float mean_beam, float sd_beam, float klaser, float transm
 // HELPER FUNCTIONS
 int GetTimeofyear();    //!< Helper function, new in v.3.1: converts current iteration into time of year, also works backwards (negative iterations)
 float CalcHeightBaseline(float &ah, float &hmax, float &dbh);   //!< Helper function: calculates mean predicted height from allometry
-float CalcCDBaseline(float &height);    //!< Helper function, new in v.3.1: calculates mean predicted crown radius from allometry
-float CalcCRBaseline(float &dbh);   //!< Helper function new in v.3.1: calculates mean predicted crown diameter from allometry
+float CalcCDBaseline(float &height, float &CD_a, float &CD_b);    //!< Helper function, new in v.3.1: calculates mean predicted crown radius from allometry
+float CalcCRBaseline(float &dbh, float &CR_a, float &CR_b);   //!< Helper function new in v.3.1: calculates mean predicted crown diameter from allometry
 int CalcIntabsorb(float absorb_prev, float absorb_delta); //!< Helper function: returns index for LookUpTables of absorbed flux (considering leaves above and within voxel)
 int CalcIntabsorb(float absorb_prev); //!< Helper function: returns index for LookUpTables of absorbed flux (only considering leaves above voxel)
 
@@ -577,6 +577,10 @@ public:
   float s_Pmass;          //!< Leaf phosphorous concentration (g/g) v.2.01
   float s_wsg;            //!< Wood specific gravity (g/cm^3)
   float s_ah;             //!< Parameter for allometric height-dbh equation
+  float s_CD_a;           //!< Parameter for allometric crown depth equation - intercept
+  float s_CD_b;           //!< Parameter for allometric crown depth equation - slope
+  float s_CR_a;           //!< Parameter for allometric crown radius equation - intercept
+  float s_CR_b;           //!< Parameter for allometric crown radius equation - slope
   float s_regionalfreq;   //!< Regional frequency; v.3.0 !!!UPDATE
   float s_drymass;        //!< Drymass; v.3.0  !!!UPDATE
   float s_seedmass;       //!< Seed mass (g); See Baraloto & Forget 2007 dataset v.2.3; deprecated in v.2.2, but still necessary for SEEDTRADEOFF
@@ -686,6 +690,10 @@ public:
   float t_age;         //!< Tree age, also indicates whether tree is alive (live trees are such that t_age > 0.0)
   float t_hmax;        //!< Allometric parameter, not real maximum
   float t_ah;          //!< Allometric parameter, for consistency with t_hmax also an individual parameter; v.2.4
+  float t_CD_a;           //!< Parameter for allometric crown depth equation - intercept
+  float t_CD_b;           //!< Parameter for allometric crown depth equation - slope
+  float t_CR_a;           //!< Parameter for allometric crown radius equation - intercept
+  float t_CR_b;           //!< Parameter for allometric crown radius equation - slope
   float t_dbh;         //!< Diameter at breast height (m) beware: this scales with NH, the horizontal size of voxels
   float t_dbhmature;   //!< Reproductive size threshold; v.2.3
   float t_dbhmax;      //!< Maximum diameter at breast height (dbh), as estimated from field data
@@ -960,6 +968,10 @@ void Tree::Birth(int nume, int site0) {
     
     t_hmax = S[t_sp_lab].s_hmax;
     t_ah = S[t_sp_lab].s_ah;
+    t_CD_a = S[t_sp_lab].s_CD_a;
+    t_CD_b = S[t_sp_lab].s_CD_b;
+    t_CR_a = S[t_sp_lab].s_CR_a;
+    t_CR_b = S[t_sp_lab].s_CR_b;
     
     t_dbh = DBH0;
     t_dbhmax = S[t_sp_lab].s_dbhmax;
@@ -1392,7 +1404,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
       t_mult_CD = d_intraspecific_CD[dev_rand];
       UpdateCD();
     } else {
-      t_mult_CD = t_CD/CalcCDBaseline(t_height);
+      t_mult_CD = t_CD/CalcCDBaseline(t_height, t_CD_a, t_CD_b);
     }
     
     parameter_name = "CR";
@@ -1404,7 +1416,7 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
       t_mult_CR = d_intraspecific_CR[dev_rand];
       UpdateCR();
     } else {
-      t_mult_CR = t_CR/CalcCRBaseline(t_dbh);
+      t_mult_CR = t_CR/CalcCRBaseline(t_dbh, t_CR_a, t_CR_b);
     }
     
     //*##############################*/
@@ -2318,14 +2330,14 @@ void Tree::UpdateHeight(){
 
 // Updates t_CR, based on t_dbh
 void Tree::UpdateCR(){
-  t_CR = CalcCRBaseline(t_dbh) * t_mult_CR;
+  t_CR = CalcCRBaseline(t_dbh, t_CR_a, t_CR_b) * t_mult_CR;
   t_CR = fmaxf(CR_min, t_CR);
 }
 
 // Updates t_CD based on t_height
 void Tree::UpdateCD(){
   //Since v.2.5, simplification of the computation of the crown depth, in accordance with the Canopy Constructor algorithm
-  t_CD = CalcCDBaseline(t_height) * t_mult_CD;
+  t_CD = CalcCDBaseline(t_height, t_CD_a, t_CD_b) * t_mult_CD;
   t_CD = fminf(t_CD, 0.5*t_height);
 }
 
@@ -4162,8 +4174,8 @@ void ReadInputSpecies(){
   if(InSpecies){
     // possible parameters to initialise vector<string> parameter_names{"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_seedmass","s_regionalfreq","s_tlp","s_drymass"};
     //        int nb_parameters = int(parameter_names.size()); only works from C++11 onwards
-    string parameter_names[12] = {"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_seedmass","s_regionalfreq","s_tlp","s_drymass"};
-    int nb_parameters = 12;
+    string parameter_names[13] = {"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_CD_a","s_CD_b","s_CR_a","s_CR_b","s_regionalfreq"};
+    int nb_parameters = 13;
     
     // first get parameter names
     string line;
@@ -5794,7 +5806,7 @@ float CalcHeightBaseline(float &ah, float &hmax, float &dbh){
   return(height);
 }
 
-float CalcCRBaseline(float &dbh){
+float CalcCRBaseline(float &dbh, float &CR_a, float &CR_b){
   // crown radius allometry
   float CR;
   if(!_CROWN_MM) CR = exp(CR_a + CR_b*log(dbh));            // power law, the default
@@ -5805,7 +5817,7 @@ float CalcCRBaseline(float &dbh){
   return(CR)
     ;}
 
-float CalcCDBaseline(float &height){
+float CalcCDBaseline(float &height, float &CD_a, float &CD_b){
   // crown depth allometry
   // since v.2.5, simplification of the computation of the crown depth, in accordance with the Canopy Constructor algorithm
   float CD = (CD_a + CD_b * height);

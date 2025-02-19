@@ -1,3 +1,8 @@
+# rcontroll nrusso 0.2.1.9001
+
+- tree CD_a, CD_b, CR_a, CR_b seems to work at first try :sparkles: !
+- todo: start&stop with final outputs and BirthFromData...
+
 # rcontroll nrusso 0.2.1.9000
 
 - init with new species file

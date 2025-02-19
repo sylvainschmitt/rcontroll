@@ -21,5 +21,6 @@
 #   select(-`...1`, -sample_size) %>% # nolint
 #   na.omit() %>% # nolint
 #   rename_at(c("CD_a", "CD_b", "CR_a", "CR_b"), ~ paste0("s_", .)) %>% # nolint
-#   mutate(s_regionalfreq = 1/n()) # nolint
+#   mutate(s_regionalfreq = 1/n()) %>% # nolint
+#   mutate(s_name = gsub(" ", "_", s_name))
 # usethis::use_data(TROLLv3_species, overwrite = T) # nolint
