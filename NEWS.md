@@ -1,3 +1,7 @@
+# rcontroll nrusso 0.2.1.9000
+
+- init with new species file
+
 # rcontroll 0.2.0.9002
 
 - Adding GRIB fix for era5_land_month, dirty fix for Nick to be cleaned.
