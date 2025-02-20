@@ -15,12 +15,12 @@
 #' @seealso [troll()], [stack()]
 #' 
 "TROLLv3_species"
-
-# library(tidyverse) # nolint
-# TROLLv3_species <- read_csv("inst/extdata/TROLL_75sp_18Feb2025.csv") %>% # nolint
-#   select(-`...1`, -sample_size) %>% # nolint
-#   na.omit() %>% # nolint
-#   rename_at(c("CD_a", "CD_b", "CR_a", "CR_b"), ~ paste0("s_", .)) %>% # nolint
-#   mutate(s_regionalfreq = 1/n()) %>% # nolint
-#   mutate(s_name = gsub(" ", "_", s_name))
+# 
+# library(tidyverse)
+# TROLLv3_species <- read_tsv("https://raw.githubusercontent.com/sylvainschmitt/rcontroll/refs/heads/dev/inst/extdata/TROLLv3_species.txt") %>%
+#   mutate(s_CD_a = 0,
+#          s_CD_b = 0.2,
+#          s_CR_a = 2.13,
+#          s_CR_b = 0.63)
 # usethis::use_data(TROLLv3_species, overwrite = T) # nolint
+

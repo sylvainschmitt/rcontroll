@@ -1352,6 +1352,10 @@ int Tree::BirthFromInventory(int site, vector<string> &parameter_names, vector<s
     // height allometry
     t_hmax = S[t_sp_lab].s_hmax;
     t_ah = S[t_sp_lab].s_ah;
+    t_CD_a = S[t_sp_lab].s_CD_a;
+    t_CD_b = S[t_sp_lab].s_CD_b;
+    t_CR_a = S[t_sp_lab].s_CR_a;
+    t_CR_b = S[t_sp_lab].s_CR_b;
     
     // leaf related traits
     if(_LA_regulation > 0) CalcLAImax();
@@ -4043,6 +4047,14 @@ void AssignValueSpecies(Species &S, string parameter_name, string parameter_valu
     SetParameter(parameter_name, parameter_value, S.s_tlp, -10.0f, 0.0f, -2.0f, quiet);
   } else if(parameter_name == "s_drymass"){
     SetParameter(parameter_name, parameter_value, S.s_drymass, 0.0f, 100.0f, 0.5f, quiet);
+  } else if(parameter_name == "s_CD_a"){
+    SetParameter(parameter_name, parameter_value, S.s_CD_a, 0.0f, 10.0f, 0.0f, quiet);
+  } else if(parameter_name == "s_CD_b"){
+    SetParameter(parameter_name, parameter_value, S.s_CD_b, 0.0f, 10.0f, 0.2f, quiet);
+  } else if(parameter_name == "s_CR_a"){
+    SetParameter(parameter_name, parameter_value, S.s_CR_a, -10.0f, 10.0f, 2.13f, quiet);
+  } else if(parameter_name == "s_CR_b"){
+    SetParameter(parameter_name, parameter_value, S.s_CR_b, 0.0f, 10.0f, 0.63f, quiet);
   }
 }
 
@@ -4174,8 +4186,8 @@ void ReadInputSpecies(){
   if(InSpecies){
     // possible parameters to initialise vector<string> parameter_names{"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_seedmass","s_regionalfreq","s_tlp","s_drymass"};
     //        int nb_parameters = int(parameter_names.size()); only works from C++11 onwards
-    string parameter_names[13] = {"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_CD_a","s_CD_b","s_CR_a","s_CR_b","s_regionalfreq"};
-    int nb_parameters = 13;
+    string parameter_names[16] = {"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_seedmass","s_regionalfreq","s_tlp","s_drymass", "s_CD_a","s_CD_b","s_CR_a","s_CR_b"};
+    int nb_parameters = 16;
     
     // first get parameter names
     string line;

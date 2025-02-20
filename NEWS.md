@@ -1,3 +1,8 @@
+# rcontroll nrusso 0.2.1.9002
+
+- AssignValues update, bring back seedmass et al., and BirthFromInventory update
+- change species with previous data adding new columns with plot values
+
 # rcontroll nrusso 0.2.1.9001
 
 - tree CD_a, CD_b, CR_a, CR_b seems to work at first try :sparkles: !
