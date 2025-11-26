@@ -1,6 +1,6 @@
 #' @include trollsim.R
 #' @importFrom readr read_tsv cols read_file
-#' @importFrom dplyr bind_rows n filter
+#' @importFrom dplyr bind_rows n filter join_by
 #' @importFrom reshape2 melt dcast
 #' @importFrom lidR readLAS LAS
 NULL
@@ -91,6 +91,14 @@ load_output <- function(name,
     ),
     col_types = cols()
   )
+  death_file <- file.path(path, paste0(name, "_0_", "death", ".txt"))
+  if (file.exists(death_file)) {
+    death <- read_tsv(
+      death_file,
+      col_types = cols()
+    )
+    ecosystem <- left_join(ecosystem, death, by = join_by(iter))
+  }
   if (!is.null(thin)) {
     ecosystem <- ecosystem %>%
       filter(iter %in% thin)

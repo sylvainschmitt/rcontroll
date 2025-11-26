@@ -1,3 +1,7 @@
+# rcontroll nrusso 0.2.1.9003
+
+- Add death outputs in ecosystem
+
 # rcontroll nrusso 0.2.1.9002
 
 - AssignValues update, bring back seedmass et al., and BirthFromInventory update
