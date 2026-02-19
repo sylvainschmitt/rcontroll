@@ -12,7 +12,7 @@ test_that("cpp", {
     species = TROLLv3_species,
     climate = TROLLv3_climatedaytime12,
     daily = TROLLv3_daytimevar,
-    verbose = FALSE
+    verbose = TRUE
   )
   expect_s4_class(sim, "trollsim")
 })
