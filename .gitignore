@@ -19,3 +19,7 @@ simulations
 supplementary.html
 inst/gsl
 *.las
+stack_*
+sim_*
+Out/
+*.png

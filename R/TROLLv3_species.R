@@ -8,8 +8,12 @@
 #'   \item{s_wsg}{wood specific gravity} \item{s_dbhmax}{maximum diameter}
 #'   \item{s_hmax}{maximum height} \item{s_ah}{height-diameter allometry
 #'   coefficient} \item{s_regionalfreq}{regional frequency} \item{s_tlp}{Turgor
-#'   loss point} \item{s_drymass}{leaf dry mass} \item{s_seedmass}{seed mass} }
+#'   loss point} \item{s_drymass}{leaf dry mass} \item{s_seedmass}{seed mass} } 
 #'
 #' @seealso [troll()], [stack()]
 #'
 "TROLLv3_species"
+
+# TROLLv3_species <- readr::read_tsv("inst/extdata/input_species_bruno.txt") # nolint
+# TROLLv3_species$s_seedmass=10
+# usethis::use_data(TROLLv3_species, overwrite = T) # nolint

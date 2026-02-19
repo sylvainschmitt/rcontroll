@@ -36,7 +36,7 @@ generate_parameters(
   fallocwood = 0.35,
   falloccanopy = 0.25,
   Cseedrain = 50000,
-  nbs0 = 10,
+  nbs0 = 2250,
   sigma_height = 0,
   sigma_CR = 0,
   sigma_CD = 0,
@@ -66,7 +66,13 @@ generate_parameters(
   SEEDTRADEOFF = 0,
   CROWN_MM = 0,
   OUTPUT_extended = 1,
-  extent_visual = 0
+  extent_visual = 0,
+  fecundity = 1,
+  Rrecruit = 1,
+  distdisperse = 1,
+  torus = 1,
+  MinLAImax = 1,
+  MaxLAImax = 1
 )
 }
 \arguments{
@@ -215,6 +221,18 @@ law, parameters have to be changed in other input sheets accordingly (0,1).}
 
 \item{extent_visual}{num. extent for visualization output. Unactivated when
 equal 0.}
+
+\item{fecundity}{num. active le module fecundity (0;1) simulating tree species fecundity following trait-based models (Visser et al. 2016) (developped in v3.1.5 by Bruno)}
+
+\item{Rrecruit}{num. active le module Rrecruit (0;1) simulating establishment rate following trait-based models (Visser et al. 2016) (developped in v3.1.5 by Bruno)}
+
+\item{distdisperse}{num. active le module distdisperse (0;1) simulating dispersal distance controlling the dispersion maximum by seed mass and tree height (Tamme et al. 2014) (developped in v3.1.5 by Bruno)}
+
+\item{torus}{num. active le module torus (0;1) implementing a torus}
+
+\item{MinLAImax}{num. active le module MinLAImax (0;1) le filtrage par la lumière se fait avant de tirer le graine, version la plus contraignante}
+
+\item{MaxLAImax}{num. active le module MaxLAImax (0;1) le filtrage par la lumière se fait avant de tirer le graine, version la moins contraignante}
 }
 \value{
 A data frame of global parameters.

@@ -88,6 +88,12 @@
 #' @param OUTPUT_extended num. extended set of ouput files (0,1).
 #' @param extent_visual num. extent for visualization output. Unactivated when
 #'   equal 0.
+#' @param fecundity num. active le module fecundity (0;1) simulating tree species fecundity following trait-based models (Visser et al. 2016) (developped in v3.1.5 by Bruno)
+#' @param Rrecruit num. active le module Rrecruit (0;1) simulating establishment rate following trait-based models (Visser et al. 2016) (developped in v3.1.5 by Bruno)
+#' @param distdisperse num. active le module distdisperse (0;1) simulating dispersal distance controlling the dispersion maximum by seed mass and tree height (Tamme et al. 2014) (developped in v3.1.5 by Bruno)
+#' @param torus num. active le module torus (0;1) implementing a torus
+#' @param MinLAImax num. active le module MinLAImax (0;1) le filtrage par la lumière se fait avant de tirer le graine, version la plus contraignante
+#' @param MaxLAImax num. active le module MaxLAImax (0;1) le filtrage par la lumière se fait avant de tirer le graine, version la moins contraignante
 #'
 #' @return A data frame of global parameters.
 #'
@@ -129,7 +135,7 @@ generate_parameters <- function(cols = 200,
                                 fallocwood = 0.35,
                                 falloccanopy = 0.25,
                                 Cseedrain = 50000, # nolint
-                                nbs0 = 10, # nolint
+                                nbs0 = 2250, # nolint
                                 sigma_height = 0,
                                 sigma_CR = 0, # nolint
                                 sigma_CD = 0, # nolint
@@ -159,7 +165,13 @@ generate_parameters <- function(cols = 200,
                                 SEEDTRADEOFF = 0, # nolint
                                 CROWN_MM = 0, # nolint
                                 OUTPUT_extended = 1, # nolint
-                                extent_visual = 0) {
+                                extent_visual = 0, 
+                                fecundity = 1, 
+                                Rrecruit = 1, 
+                                distdisperse = 1, 
+                                torus = 1,
+                                MinLAImax = 1, 
+                                MaxLAImax = 1) {
   # check args
   if (!all(unlist(lapply(
     list(
@@ -174,7 +186,8 @@ generate_parameters <- function(cols = 200,
       m, m1, Cair, LL_parameterization, LA_regulation,
       sapwood, seedsadditional,
       NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-      CROWN_MM, OUTPUT_extended, extent_visual
+      CROWN_MM, OUTPUT_extended, extent_visual, fecundity, Rrecruit, distdisperse, 
+      torus, MinLAImax, MaxLAImax
     ),
     class
   )) == "numeric")) {
@@ -204,7 +217,8 @@ generate_parameters <- function(cols = 200,
       "m", "m1", "Cair", "_LL_parameterization",
       "_LA_regulation", "_sapwood", "_seedsadditional",
       "_NONRANDOM", "Rseed", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
-      "_CROWN_MM", "_OUTPUT_extended", "extent_visual"
+      "_CROWN_MM", "_OUTPUT_extended", "extent_visual", 
+      "_fecundity", "_Rrecruit", "_distdisperse", "_torus", "_MinLAImax", "_MaxLAImax"
     ),
     value = c(
       cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
@@ -218,7 +232,8 @@ generate_parameters <- function(cols = 200,
       m, m1, Cair, LL_parameterization, LA_regulation,
       sapwood, seedsadditional,
       NONRANDOM, Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
-      CROWN_MM, OUTPUT_extended, extent_visual
+      CROWN_MM, OUTPUT_extended, extent_visual, fecundity, Rrecruit, distdisperse, torus, 
+      MinLAImax, MaxLAImax
     ),
     description = c(
       "/* nb of columns */",
@@ -283,7 +298,13 @@ generate_parameters <- function(cols = 200,
       "/* if defined: the number of seeds produced is determined by NPP allocated to reproduction and seed mass, otherwise the number of seeds is fixed */", # nolint
       "/* Michaelis Menten allometry for crowns instead of power law, parameters have to be changed in other input sheets accordingly */", # nolint
       "/* extended set of ouput files */",
-      "/* extent for visualization output *"
+      "/* extent for visualization output */",
+      "/* active le module fecundity (0;1) simulating tree species fecundity following trait-based models (Visser et al. 2016) (developped in v3.1.5 by Bruno)*/",
+      "/* active le module Rrecruit (0;1) simulating species establishment rate following trait-based models (Visser et al. 2016) (developped in v3.1.5 by Bruno)*/",
+      "/* active le module distdisperse (0;1) simulating dispersal distance following seed mass, dispersal syndrom and tree height (Visser et al. 2016) (developped in v3.1.5 by Bruno)*/", 
+      "/* active le module torus (0;1) implementing a torus */", 
+      "/* active le module MinLAImax (0;1) le filtrage pour la lumière se fait avant de tirer la graine, le + contraignant */",
+      "/* active le module MaxLAImax (0;1) le filtrage pour la lumière se fait avant de tirer la graine, le - contraignant */"
     )
   )
 }
