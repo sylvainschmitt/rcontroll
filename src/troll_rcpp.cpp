@@ -137,6 +137,9 @@ bool _distdisperse;        //!< User control: simulating dispersion distance by 
 bool _torus;               //!< User control: implementing a torus (no/yes = 0/1)
 bool _MinLAImax;           //!< User control: option restrictive pour le filtrage par la lumière (no/yes = 0/1)
 bool _MaxLAImax;           //!< User control: option peu restrictive pour le filtrage par la lumière (no/yes = 0/1)
+bool _CustomPhenology;     //!< User control: Allows custom parametrization for the phenology cycle (no/yes = 0/1)
+bool _MonthlySeedUpdate;   //!< User control: if defined: Seed bank is updated every month (no/yes = 0/1)
+bool _SeedBoosting;        //!< User control: Allow to favored some species seeds (no/yes = 0/1)
 
 int _LA_regulation;     //!< User control: updated v.3.1: potentially three ways of parameterising leaf dynamic allocation, but currently using only two ways: no regulation (0), never exceed LAImax, i.e. the maximum LAI under full sunlight (1), adjust LAI to the current light environment (2). To switch between option 1 and 2, only one line is necessary in CalcLAmax()
 int _OUTPUT_pointcloud; //!< User control: ATTENTION! At the moment assumes a little-endian system (most personal computers, but not necessarily server systems), because LAS fles are in little-endian! If == 1, creates a point cloud from a simplified ALS simulation;
@@ -599,6 +602,10 @@ public:
   float s_drymass;      //!< Drymass; v.3.0  !!!UPDATE
   float s_seedmass;     //!< Seed mass (g); See Baraloto & Forget 2007 dataset v.2.3; deprecated in v.2.2, but still necessary for SEEDTRADEOFF
   float s_iseedmass;    //!< Inverse of seed mass (1/g), v.2.3
+  int s_seedlingCycle;  //!< Time between two seedling events; v.3.1.8 Theo
+  int s_seedlingOffset; //!< Cycle custom offseting; v.3.1.8 Theo
+  int s_randomCycle;    //!< Randomizing Cycle using gaussian distribution 1=true/0=false; v.3.1.8 Theo
+  int s_randomOffset;   //!< Randomizing Offset using uniform distribution 1=true/0=false; v.3.1.8 Theo
   // float s_output_field[12];         // scalar output fields, deprecated since v.3.1, replaced by actual sumstats for readability/code accessibility
   float s_sum1, s_sum10, s_sum30, s_ba, s_ba10, s_agb, s_gpp, s_npp, s_rday, s_rnight, s_rstem, s_litterfall; // species level summary statistics, to be provided to output streams
 
@@ -751,27 +758,29 @@ public:
   int t_NPPneg;            //!< Diagnostic variable: number of consecutive timesteps with NPP<0; v.2.2
   int t_CrownDisplacement; //!< Displacement of the crown center with respect to the stem. Currently not used in TROLL, but required for initialization via the Canopy Constructor algorithm. Its rationale is the same as for t_site, i.e. t_Crown_Displacement = col_displacement + row_displacement * cols, so it can be added to t_site to obtain the geolocation of the crown center; v.2.5
 
-  float t_age;       //!< Tree age, also indicates whether tree is alive (live trees are such that t_age > 0.0)
-  float t_hmax;      //!< Allometric parameter, not real maximum
-  float t_ah;        //!< Allometric parameter, for consistency with t_hmax also an individual parameter; v.2.4
-  float t_dbh;       //!< Diameter at breast height (m) beware: this scales with NH, the horizontal size of voxels
-  float t_dbhmature; //!< Reproductive size threshold; v.2.3
-  float t_dbhmax;    //!< Maximum diameter at breast height (dbh), as estimated from field data
-  float t_height;    //!< Total tree height (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
-  float t_CD;        //!< crown depth (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
-  float t_CR;        //!< crown radius (m) beware: this scales with NH, the horizontal size of voxels, renamed v.3.1 for convenience
-  float t_Ct;        //!< flexural force threshold, _BASICTREEFALL
-  float t_GPP;       //!< Gross primary productivity of the tree (gC/timestep)
-  float t_NPP;       //!< Net primary productivity of the tree (gC/timestep)
-  float t_Rday;      //!< Daytime leaf respiration of the tree (gC/timestep)
-  float t_Rnight;    //!< Nighttime leaf respiration of the tree (gC/timestep)
-  float t_Rstem;     //!< Stem respiration (gC/timestep)
-  float t_LA;        //!< Total crown leaf area (m^2); v.2.2, renamed in v.3.1 for convenience
-  float t_youngLA;   //!< Total young leaf area (m^2); v.2.2
-  float t_matureLA;  //!< Total mature leaf area (m^2); v.2.2
-  float t_oldLA;     //!< Total old leaf area (m^2); v.2.2
-  float t_LAI;       //!< Total leaf area index (m^2/m^2), t_LAI replaces t_dens and average crown leaf density. LAI can be converted into densities; LAI is more relevant given the new dynamic leaf module, and also more informative as output variable; v.2.5
-  float t_litter;    //!< Tree litterfall at each timestep, in dry mass (g); v.2.2
+  float t_age;            //!< Tree age, also indicates whether tree is alive (live trees are such that t_age > 0.0)
+  float t_hmax;           //!< Allometric parameter, not real maximum
+  float t_ah;             //!< Allometric parameter, for consistency with t_hmax also an individual parameter; v.2.4
+  float t_dbh;            //!< Diameter at breast height (m) beware: this scales with NH, the horizontal size of voxels
+  float t_dbhmature;      //!< Reproductive size threshold; v.2.3
+  float t_dbhmax;         //!< Maximum diameter at breast height (dbh), as estimated from field data
+  float t_height;         //!< Total tree height (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
+  float t_CD;             //!< crown depth (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
+  float t_CR;             //!< crown radius (m) beware: this scales with NH, the horizontal size of voxels, renamed v.3.1 for convenience
+  float t_Ct;             //!< flexural force threshold, _BASICTREEFALL
+  float t_GPP;            //!< Gross primary productivity of the tree (gC/timestep)
+  float t_NPP;            //!< Net primary productivity of the tree (gC/timestep)
+  float t_Rday;           //!< Daytime leaf respiration of the tree (gC/timestep)
+  float t_Rnight;         //!< Nighttime leaf respiration of the tree (gC/timestep)
+  float t_Rstem;          //!< Stem respiration (gC/timestep)
+  float t_LA;             //!< Total crown leaf area (m^2); v.2.2, renamed in v.3.1 for convenience
+  float t_youngLA;        //!< Total young leaf area (m^2); v.2.2
+  float t_matureLA;       //!< Total mature leaf area (m^2); v.2.2
+  float t_oldLA;          //!< Total old leaf area (m^2); v.2.2
+  float t_LAI;            //!< Total leaf area index (m^2/m^2), t_LAI replaces t_dens and average crown leaf density. LAI can be converted into densities; LAI is more relevant given the new dynamic leaf module, and also more informative as output variable; v.2.5
+  float t_litter;         //!< Tree litterfall at each timestep, in dry mass (g); v.2.2
+  float t_seedlingcycle;  //!< Time beetween two seedlings events; v.3.1.8 Theo
+  float t_seedlingOffset; //!< Offsetting valuer for cycle; v.3.1.8 Theo
 
 #ifdef Audrey
   float t_fecundity; // Fecundity in number of seeds/year per mm2 of reproductive basal area (following Visser et al. 2016). Modif Audrey
@@ -991,6 +1000,29 @@ vector<Tree> T; //!< Definition of a vector of the Tree class
 //! reformulation of birth process: light environment is checked within birth function, based on precomputed array of LAImax
 void Tree::Birth(int nume, int site0)
 {
+  // #############################
+  // # Seedling Custom Phenology #
+  // #############################
+  if (_CustomPhenology)
+  {
+    if (S[t_sp_lab].s_randomOffset == 1)
+    {
+      t_seedlingOffset = gsl_rng_uniform_int(gslrng, S[t_sp_lab].s_seedlingCycle);
+    }
+    else
+    {
+      t_seedlingOffset = S[t_sp_lab].s_seedlingOffset;
+    }
+    if (S[t_sp_lab].s_randomCycle == 1)
+    {
+      t_seedlingcycle = gsl_ran_gaussian(gslrng, S[t_sp_lab].s_seedlingCycle);
+    }
+    else
+    {
+      t_seedlingcycle = S[t_sp_lab].s_seedlingCycle;
+    }
+  }
+
   // ######################
   // # first test LAImax ##
   // ######################
@@ -1115,7 +1147,7 @@ void Tree::Birth(int nume, int site0)
     // This could/should be updated later, so that these two quantities change under water stress, and also seasonally.
     // t_WSF and t_WSF_A are then updated later in Tree::Birth to account for the real water conditions at birth.
     Water_availability(); // Roots are not set here, but at the beginning of Tree::Update (however see comments within function Tree::Water_availability)
-    // UpdateRootDistribution();
+                          // UpdateRootDistribution();
 #endif
 
     // ###############
@@ -4743,6 +4775,25 @@ void AssignValueSpecies(Species &S, string parameter_name, string parameter_valu
   {
     SetParameter(parameter_name, parameter_value, S.s_DispSynd, 0, 3, 0, quiet);
   }
+  else if (_CustomPhenology)
+  {
+    if (parameter_name == "s_seedlingCycle")
+    {
+      SetParameter(parameter_name, parameter_value, S.s_seedlingCycle, 1, 1000, 1, quiet);
+    }
+    else if (parameter_name == "s_seedlingOffset")
+    {
+      SetParameter(parameter_name, parameter_value, S.s_seedlingOffset, 1, 10000, 1, quiet);
+    }
+    else if (parameter_name == "s_randomCycle")
+    {
+      SetParameter(parameter_name, parameter_value, S.s_randomCycle, 0, 1, 0, quiet);
+    }
+    else if (parameter_name == "s_randomOffset")
+    {
+      SetParameter(parameter_name, parameter_value, S.s_randomOffset, 0, 1, 0, quiet);
+    }
+  }
 }
 
 // added v.3.1.6
@@ -4904,8 +4955,10 @@ void ReadInputSpecies()
     // possible parameters to initialise vector<string> parameter_names{"s_name","s_LMA","s_Nmass","s_Pmass","s_wsg","s_dbhmax","s_hmax","s_ah","s_seedmass","s_regionalfreq","s_tlp","s_drymass"};
     //        int nb_parameters = int(parameter_names.size()); only works from C++11 onwards
 
-    string parameter_names[12] = {"s_name", "s_LMA", "s_Nmass", "s_Pmass", "s_wsg", "s_dbhmax", "s_hmax", "s_ah", "s_seedmass", "s_regionalfreq", "s_tlp", "s_drymass"};
-    int nb_parameters = 12;
+    string parameter_names[16] = {"s_name", "s_LMA", "s_Nmass", "s_Pmass", "s_wsg", "s_dbhmax", "s_hmax", "s_ah", "s_seedmass", "s_regionalfreq", "s_tlp", "s_drymass", "s_seedlingCycle", "s_randomCycle"
+                                                                                                                                                                                           "s_seedlingOffset",
+                                  "s_randomOffset"};
+    int nb_parameters = 16;
 #ifdef Audrey
     if (_distdisperse)
     {
@@ -6430,7 +6483,7 @@ void UpdateSeeds()
   // With MPI option: Pass seeds across processors => two more fields to be communicated between n.n. (nearest neighbor) processors. NB: dispersal distance is bounded by the value of 'rows'. At least 99 % of the seeds should be dispersed within the stripe or on the n.n. stripe. Hence rows > 4.7*max(dist_moy_dissemination),for an exponential dispersal kernel.
   // dispersal only once a year
   int timeofyear = GetTimeofyear();
-  if (timeofyear == 0)
+  if (_MonthlySeedUpdate || timeofyear == 0)
   {
     // acceleration, using the multinomial distribution
     int ha = sites / 10000;
