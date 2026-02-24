@@ -94,7 +94,10 @@
 #' @param torus num. active le module torus (0;1) implementing a torus
 #' @param MinLAImax num. active le module MinLAImax (0;1) le filtrage par la lumière se fait avant de tirer le graine, version la plus contraignante
 #' @param MaxLAImax num. active le module MaxLAImax (0;1) le filtrage par la lumière se fait avant de tirer le graine, version la moins contraignante
-#'
+#' @param CustomPhenology
+#' @param MonthlySeedUpdate
+#' @param SeedBoosting
+
 #' @return A data frame of global parameters.
 #'
 #' @seealso [troll()], [stack()], [update_parameters()]
@@ -171,7 +174,11 @@ generate_parameters <- function(cols = 200,
                                 distdisperse = 1, 
                                 torus = 1,
                                 MinLAImax = 1, 
-                                MaxLAImax = 1) {
+                                MaxLAImax = 1,
+                                CustomPhenology = 0,
+                                MonthlySeedUpdate = 0,
+                                SeedBoosting = 0,
+                                ) {
   # check args
   if (!all(unlist(lapply(
     list(
@@ -218,7 +225,8 @@ generate_parameters <- function(cols = 200,
       "_LA_regulation", "_sapwood", "_seedsadditional",
       "_NONRANDOM", "Rseed", "_GPPcrown", "_BASICTREEFALL", "_SEEDTRADEOFF",
       "_CROWN_MM", "_OUTPUT_extended", "extent_visual", 
-      "_fecundity", "_Rrecruit", "_distdisperse", "_torus", "_MinLAImax", "_MaxLAImax"
+      "_fecundity", "_Rrecruit", "_distdisperse", "_torus", "_MinLAImax", "_MaxLAImax", "_CustomPhenology",
+       "_MonthlySeedUpdate", "_SeedBoosting"
     ),
     value = c(
       cols, rows, HEIGHT, length_dcell, nbiter, iterperyear,
@@ -233,7 +241,7 @@ generate_parameters <- function(cols = 200,
       sapwood, seedsadditional,
       NONRANDOM, Rseed, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
       CROWN_MM, OUTPUT_extended, extent_visual, fecundity, Rrecruit, distdisperse, torus, 
-      MinLAImax, MaxLAImax
+      MinLAImax, MaxLAImax, CustomPhenology, MonthlySeedUpdate, SeedBoosting
     ),
     description = c(
       "/* nb of columns */",
@@ -304,7 +312,11 @@ generate_parameters <- function(cols = 200,
       "/* active le module distdisperse (0;1) simulating dispersal distance following seed mass, dispersal syndrom and tree height (Visser et al. 2016) (developped in v3.1.5 by Bruno)*/", 
       "/* active le module torus (0;1) implementing a torus */", 
       "/* active le module MinLAImax (0;1) le filtrage pour la lumière se fait avant de tirer la graine, le + contraignant */",
-      "/* active le module MaxLAImax (0;1) le filtrage pour la lumière se fait avant de tirer la graine, le - contraignant */"
+      "/* active le module MaxLAImax (0;1) le filtrage pour la lumière se fait avant de tirer la graine, le - contraignant */",
+      "/* Activate control on seed production timing */,"
+      "/* Update Seedbank every month in case Custom Phenology include intra-annual cycle */",
+      "/* Allow to give a shade survival advantage to big seeds */"
+
     )
   )
 }

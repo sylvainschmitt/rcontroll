@@ -77,7 +77,7 @@
 #'
 #' # TROLL
 #'
-#' version 3.1.6
+#' version 3.1.8 Theo
 #'
 #' @docType package
 #' @name rcontroll
