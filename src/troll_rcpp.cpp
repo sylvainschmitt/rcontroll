@@ -758,29 +758,29 @@ public:
   int t_NPPneg;            //!< Diagnostic variable: number of consecutive timesteps with NPP<0; v.2.2
   int t_CrownDisplacement; //!< Displacement of the crown center with respect to the stem. Currently not used in TROLL, but required for initialization via the Canopy Constructor algorithm. Its rationale is the same as for t_site, i.e. t_Crown_Displacement = col_displacement + row_displacement * cols, so it can be added to t_site to obtain the geolocation of the crown center; v.2.5
 
-  float t_age;            //!< Tree age, also indicates whether tree is alive (live trees are such that t_age > 0.0)
-  float t_hmax;           //!< Allometric parameter, not real maximum
-  float t_ah;             //!< Allometric parameter, for consistency with t_hmax also an individual parameter; v.2.4
-  float t_dbh;            //!< Diameter at breast height (m) beware: this scales with NH, the horizontal size of voxels
-  float t_dbhmature;      //!< Reproductive size threshold; v.2.3
-  float t_dbhmax;         //!< Maximum diameter at breast height (dbh), as estimated from field data
-  float t_height;         //!< Total tree height (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
-  float t_CD;             //!< crown depth (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
-  float t_CR;             //!< crown radius (m) beware: this scales with NH, the horizontal size of voxels, renamed v.3.1 for convenience
-  float t_Ct;             //!< flexural force threshold, _BASICTREEFALL
-  float t_GPP;            //!< Gross primary productivity of the tree (gC/timestep)
-  float t_NPP;            //!< Net primary productivity of the tree (gC/timestep)
-  float t_Rday;           //!< Daytime leaf respiration of the tree (gC/timestep)
-  float t_Rnight;         //!< Nighttime leaf respiration of the tree (gC/timestep)
-  float t_Rstem;          //!< Stem respiration (gC/timestep)
-  float t_LA;             //!< Total crown leaf area (m^2); v.2.2, renamed in v.3.1 for convenience
-  float t_youngLA;        //!< Total young leaf area (m^2); v.2.2
-  float t_matureLA;       //!< Total mature leaf area (m^2); v.2.2
-  float t_oldLA;          //!< Total old leaf area (m^2); v.2.2
-  float t_LAI;            //!< Total leaf area index (m^2/m^2), t_LAI replaces t_dens and average crown leaf density. LAI can be converted into densities; LAI is more relevant given the new dynamic leaf module, and also more informative as output variable; v.2.5
-  float t_litter;         //!< Tree litterfall at each timestep, in dry mass (g); v.2.2
-  float t_seedlingcycle;  //!< Time beetween two seedlings events; v.3.1.8 Theo
-  float t_seedlingOffset; //!< Offsetting valuer for cycle; v.3.1.8 Theo
+  float t_age;          //!< Tree age, also indicates whether tree is alive (live trees are such that t_age > 0.0)
+  float t_hmax;         //!< Allometric parameter, not real maximum
+  float t_ah;           //!< Allometric parameter, for consistency with t_hmax also an individual parameter; v.2.4
+  float t_dbh;          //!< Diameter at breast height (m) beware: this scales with NH, the horizontal size of voxels
+  float t_dbhmature;    //!< Reproductive size threshold; v.2.3
+  float t_dbhmax;       //!< Maximum diameter at breast height (dbh), as estimated from field data
+  float t_height;       //!< Total tree height (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
+  float t_CD;           //!< crown depth (m) beware: this scales with NV, the vertical size of voxels, renamed v.3.1 for convenience
+  float t_CR;           //!< crown radius (m) beware: this scales with NH, the horizontal size of voxels, renamed v.3.1 for convenience
+  float t_Ct;           //!< flexural force threshold, _BASICTREEFALL
+  float t_GPP;          //!< Gross primary productivity of the tree (gC/timestep)
+  float t_NPP;          //!< Net primary productivity of the tree (gC/timestep)
+  float t_Rday;         //!< Daytime leaf respiration of the tree (gC/timestep)
+  float t_Rnight;       //!< Nighttime leaf respiration of the tree (gC/timestep)
+  float t_Rstem;        //!< Stem respiration (gC/timestep)
+  float t_LA;           //!< Total crown leaf area (m^2); v.2.2, renamed in v.3.1 for convenience
+  float t_youngLA;      //!< Total young leaf area (m^2); v.2.2
+  float t_matureLA;     //!< Total mature leaf area (m^2); v.2.2
+  float t_oldLA;        //!< Total old leaf area (m^2); v.2.2
+  float t_LAI;          //!< Total leaf area index (m^2/m^2), t_LAI replaces t_dens and average crown leaf density. LAI can be converted into densities; LAI is more relevant given the new dynamic leaf module, and also more informative as output variable; v.2.5
+  float t_litter;       //!< Tree litterfall at each timestep, in dry mass (g); v.2.2
+  int t_seedlingCycle;  //!< Time beetween two seedlings events; v.3.1.8 Theo
+  int t_seedlingOffset; //!< Offsetting valuer for cycle; v.3.1.8 Theo
 
 #ifdef Audrey
   float t_fecundity; // Fecundity in number of seeds/year per mm2 of reproductive basal area (following Visser et al. 2016). Modif Audrey
@@ -1015,11 +1015,11 @@ void Tree::Birth(int nume, int site0)
     }
     if (S[t_sp_lab].s_randomCycle == 1)
     {
-      t_seedlingcycle = gsl_ran_gaussian(gslrng, S[t_sp_lab].s_seedlingCycle);
+      t_seedlingCycle = gsl_ran_gaussian(gslrng, S[t_sp_lab].s_seedlingCycle);
     }
     else
     {
-      t_seedlingcycle = S[t_sp_lab].s_seedlingCycle;
+      t_seedlingCycle = S[t_sp_lab].s_seedlingCycle;
     }
   }
 
@@ -3371,8 +3371,17 @@ void Tree::DisperseSeed()
         if (row_dispersal < 0)
           row_dispersal = row_dispersal + rows;
       }
-
-      FillSeed(col_dispersal, row_dispersal, t_sp_lab);
+      if (_CustomPhenology)
+      {
+        if (iter % t_seedlingCycle - t_seedlingOffset == 0)
+        {
+          FillSeed(col_dispersal, row_dispersal, t_sp_lab);
+        }
+      }
+      else
+      {
+        FillSeed(col_dispersal, row_dispersal, t_sp_lab);
+      }
     }
 
 #ifdef TRACK_INDIVIDUALS
@@ -6483,13 +6492,16 @@ void UpdateSeeds()
   // With MPI option: Pass seeds across processors => two more fields to be communicated between n.n. (nearest neighbor) processors. NB: dispersal distance is bounded by the value of 'rows'. At least 99 % of the seeds should be dispersed within the stripe or on the n.n. stripe. Hence rows > 4.7*max(dist_moy_dissemination),for an exponential dispersal kernel.
   // dispersal only once a year
   int timeofyear = GetTimeofyear();
+  int trees_mature = 0;
+  int seedsadded = 0;
+  int seedsadded_species = 0;
   if (_MonthlySeedUpdate || timeofyear == 0)
   {
     // acceleration, using the multinomial distribution
     int ha = sites / 10000;
     gsl_ran_multinomial(gslrng, sites, Cseedrain * ha, p_seed, n_seed);
     Rcout << sites << " Seedrain: " << Cseedrain * ha << endl;
-    int seedsadded = 0;
+
     for (int s = 0; s < sites; s++)
     {
       // if(T[s].t_age == 0){
@@ -6513,32 +6525,29 @@ void UpdateSeeds()
 
     // now disperse seeds from the trees on site
     // dispersion comes after seedrain calculation, because seedrain automatically removes seeds from places where there was no incoming seed
-    int trees_mature = 0;
     for (int site = 0; site < sites; site++)
     { // disperse seeds produced by mature trees
       if (T[site].t_age)
       {
-        if (T[site].t_dbh >= T[site].t_dbhmature)
-          trees_mature++;
+        trees_mature++;
         T[site].DisperseSeed();
       }
     }
-
-    int nbspecies_affected = 0;
-    int seedsadded_effective = 0;
-    for (int spp = 1; spp <= nbspp; spp++)
-    {
-      int seedsadded_species = 0;
-      for (int s = 0; s < sites; s++)
-      {
-        seedsadded_species += SPECIES_SEEDS[s][spp];
-      }
-      if (seedsadded_species > 0)
-        nbspecies_affected++;
-      seedsadded_effective += seedsadded_species;
-    }
-    Rcout << "Trees_mature: " << trees_mature << " Nbseedsadded: " << seedsadded << " effective: " << seedsadded_effective << " nbspeciesaffected: " << nbspecies_affected << endl;
   }
+
+  int nbspecies_affected = 0;
+  int seedsadded_effective = 0;
+  for (int spp = 1; spp <= nbspp; spp++)
+  {
+    for (int s = 0; s < sites; s++)
+    {
+      seedsadded_species += SPECIES_SEEDS[s][spp];
+    }
+    if (seedsadded_species > 0)
+      nbspecies_affected++;
+    seedsadded_effective += seedsadded_species;
+  }
+  Rcout << "Trees_mature: " << trees_mature << " Nbseedsadded: " << seedsadded << " effective: " << seedsadded_effective << " nbspeciesaffected: " << nbspecies_affected << endl;
 }
 
 // #################################
