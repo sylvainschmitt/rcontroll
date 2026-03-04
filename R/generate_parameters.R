@@ -194,7 +194,7 @@ generate_parameters <- function(cols = 200,
       sapwood, seedsadditional,
       NONRANDOM, GPPcrown, BASICTREEFALL, SEEDTRADEOFF,
       CROWN_MM, OUTPUT_extended, extent_visual, fecundity, Rrecruit, distdisperse, 
-      torus, MinLAImax, MaxLAImax
+      torus, MinLAImax, MaxLAImax, CustomPhenology, MonthlySeedUpdate, SeedBoosting
     ),
     class
   )) == "numeric")) {
