@@ -13,7 +13,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // trollCpp
 void trollCpp(std::string global_file, std::string climate_file, std::string species_file, std::string day_file, std::string pedology_file, std::string lidar_file, std::string forest_file, std::string soil_file, std::string output_file);
-RcppExport SEXP _rcontroll_trollCpp(SEXP global_fileSEXP, SEXP climate_fileSEXP, SEXP species_fileSEXP, SEXP day_fileSEXP, SEXP pedology_fileSEXP, SEXP lidar_fileSEXP, SEXP forest_fileSEXP, SEXP soil_fileSEXP, SEXP output_fileSEXP) {
+RcppExport SEXP _rcontroll4_trollCpp(SEXP global_fileSEXP, SEXP climate_fileSEXP, SEXP species_fileSEXP, SEXP day_fileSEXP, SEXP pedology_fileSEXP, SEXP lidar_fileSEXP, SEXP forest_fileSEXP, SEXP soil_fileSEXP, SEXP output_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type global_file(global_fileSEXP);
@@ -31,11 +31,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcontroll_trollCpp", (DL_FUNC) &_rcontroll_trollCpp, 9},
+    {"_rcontroll4_trollCpp", (DL_FUNC) &_rcontroll4_trollCpp, 9},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_rcontroll(DllInfo *dll) {
+RcppExport void R_init_rcontroll4(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

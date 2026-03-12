@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9022
+
+- temporary rename to rcontroll4 for dual installation during Manaus workshop
+
 # rcontroll 0.2.0.9021
 
 - parameters: update TROLLv4_input.txt and generate_parameters according to the last discussion with IM

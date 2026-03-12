@@ -1,4 +1,4 @@
-Package: rcontroll
+Package: rcontroll4
 Type: Package
 Title: Individual-Based Forest Growth Simulator 'TROLL'
 Version: 0.2.0
@@ -56,7 +56,7 @@ Suggests:
     testthat,
     covr
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate: 
     'RcppExports.R'
     'TROLLv4_climate.R'
@@ -91,7 +91,7 @@ Collate:
     'prepare_era.R'
     'print.trollsim.R'
     'rcontroll-package.R'
-    'rcontroll.R'
+    'rcontroll4.R'
     'request_era.R'
     'troll.R'
     'stack.R'
