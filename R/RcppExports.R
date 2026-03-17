@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 trollCpp <- function(global_file, climate_file, species_file, day_file, pedology_file, lidar_file, forest_file, soil_file, output_file) {
-    invisible(.Call(`_rcontroll4_trollCpp`, global_file, climate_file, species_file, day_file, pedology_file, lidar_file, forest_file, soil_file, output_file))
+    invisible(.Call(`_rcontroll_trollCpp`, global_file, climate_file, species_file, day_file, pedology_file, lidar_file, forest_file, soil_file, output_file))
 }
 

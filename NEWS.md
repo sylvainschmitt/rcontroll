@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9023
+
+- rm rcontroll4 naming
+
 # rcontroll 0.2.0.9022
 
 - temporary rename to rcontroll4 for dual installation during Manaus workshop

@@ -1,4 +1,4 @@
-#' `rcontroll4`: individual-based forest growth simulator TROLL
+#' `rcontroll`: individual-based forest growth simulator TROLL
 #'
 #' `TROLL` is coded in C++ and it typically simulates hundreds of thousands of
 #' individuals over hundreds of years. The `rcontroll` R package is a wrapper of

@@ -1,4 +1,4 @@
-Package: rcontroll4
+Package: rcontroll
 Type: Package
 Title: Individual-Based Forest Growth Simulator 'TROLL'
 Version: 0.2.0
@@ -91,7 +91,7 @@ Collate:
     'prepare_era.R'
     'print.trollsim.R'
     'rcontroll-package.R'
-    'rcontroll4.R'
+    'rcontroll.R'
     'request_era.R'
     'troll.R'
     'stack.R'
