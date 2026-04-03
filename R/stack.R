@@ -176,10 +176,10 @@ stack <- function(name = NULL, # nolint
     cl <- makeCluster(cores, outfile = "")
     registerDoSNOW(cl)
     stack_res_batch <- foreach(
-      j = seq_along(batches[[1]]),
+      j = seq_along(batches[[i]]),
       .export = ".troll_child"
     ) %dopar% {
-      sim <- batches[[1]][j]
+      sim <- batches[[i]][j]
       .troll_child(
         name = sim,
         path = sim_path[[sim]],
