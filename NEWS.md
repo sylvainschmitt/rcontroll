@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9003
+
+- Making lidR a suggest following CRAN archiving
+
 # rcontroll 0.2.0.9002
 
 - Adding GRIB fix for era5_land_month, dirty fix for Nick to be cleaned.

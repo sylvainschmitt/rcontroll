@@ -331,9 +331,10 @@ generate_climate <- function(x, y, tz,
   # monthly
   era5_mt_r <- suppressWarnings(rast(era5land_month))
   era5_mt <- suppressWarnings(extract(era5_mt_r, cbind(x, y))) %>%
-    gather("variable", "value") %>% 
-    mutate(date = as_datetime(terra::time(era5_mt_r))) %>%
-    separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
+    gather("variable", "value")  %>%
+    separate(variable, c("variable", "time"),
+             sep = "_valid_time=", convert = TRUE)  %>%
+    mutate(date = as_datetime(as.POSIXct(time, origin = "1970-01-01")))  %>%
     spread(variable, value) %>%
     arrange(date) %>%
     mutate(month = month(date)) %>%
@@ -341,8 +342,7 @@ generate_climate <- function(x, y, tz,
     group_by(year) %>%
     filter(n() == 12) %>%
     ungroup() %>%
-    arrange(year, month) %>% 
-    rename(t2m = "2t", d2m = "2d", u10 = "10u", v10 = "10v")
+    arrange(year, month)
   rm(era5_mt_r)
   era5_mt <- era5_mt %>%
     mutate(tdeg = t2m - 273.15) %>% # K to degree celcisus

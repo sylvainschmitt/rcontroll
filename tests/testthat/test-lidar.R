@@ -1,4 +1,5 @@
 test_that("lidar", {
+  skip_if_not(requireNamespace("lidR", quietly = TRUE), message = NULL)
   data("TROLLv3_output")
   sim <- troll(
     name = "test",

@@ -1,34 +1,7 @@
-## Resubmission
+## Submission
 
-This is a resubmission. In this version I have:
-
-* Written software names single quotes
-* Omitted the redundant "Package for" at the start of the title
-* Extended the description of the package in the field description to one paragraph
-* Added \value to pipe.Rd, trollsim.Rd and trollstack.Rd
-* Replaced \dontrun by \donttest in troll.Rd
-
-I have not added a reference for the method because we are waiting for CRAN acceptance 
-before submitting it to Methods in Ecology and Evolution. 
-But I will add a reference as soon as a paper describing the method is accepted.
-
-I have included all the people concerned in the Authors@R field 
-and included everyone as authors. 
-Indeed, J. Chave, I. Maréchaux and F. Fischer developed the C++ code in src,
-and S. Schmitt and G. Salzet developed the R code.
-
-\dontrun is only used for the trollCpp, load_output, load_stack and autogif functions 
-due to the use of external files or additional software.
-But we have used \donttest in the troll and stack functions 
-which are executable in more than 5 seconds.
-
-The functions in the examples and vignettes do not write to the users' folders 
-but only to the temporary directories.
-The last chunk of the climate vignette uses the write_tsv function 
-but is not evaluated and is only an example for a user who would like to save the resulting climate data.
-
-All examples and vignettes used only one core 
-except for the stack function example, and the lidar and workflow vignettes which use no more than two cores.
+Following rlas and lidR archiving from CRAN, I've made lidR a suggest as it is
+not core of rcontroll but only minor modules of the code.
 
 ## Test environments 
 
@@ -43,6 +16,13 @@ except for the stack function example, and the lidar and workflow vignettes whic
 There were no ERRORs or WARNINGs.
 
 There was 1 NOTE:
+
+* Package suggested but not available for checking: ‘lidR’
+
+As described in the submission, after being archive lidR has been moved as a suggest.
+Only a small portion of the code rely on it and its an optional module.
+Thus I added a test that will throw an error of lidR is not available and invite to install from GitHub.
+I prefer to keep as it this parts of the code instead of completely removing them.
 
 * checking CRAN incoming feasibility ... [11s] NOTE
     Uses the superseded package: 'doSNOW (>= 1.0.10)'
