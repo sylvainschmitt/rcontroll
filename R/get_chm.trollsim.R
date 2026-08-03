@@ -1,6 +1,5 @@
 #' @include trollsim.R
 #' @import methods
-#' @importFrom lidR rasterize_canopy LAS p2r
 #' @importFrom terra focal
 NULL
 
@@ -31,6 +30,15 @@ setGeneric("get_chm", function(sim, method = "smoothed", ...) {
 #' @rdname get_chm
 #' @export
 setMethod("get_chm", "trollsim", function(sim, method = "smoothed", ...) {
+  
+  # Check lidr as now a suggest after rlas is not on CRAN anymore
+  if (!requireNamespace("lidR", quietly = TRUE)) {
+    stop(
+      "Package \"lidR\" must be installed to exploit all lidar simulations.",
+      call. = FALSE
+    )
+  }
+  
   # check las existence
   if (length(sim@las) == 0) {
     stop("The TROLL outputs does not contain a las from lidar simulation.")
@@ -41,7 +49,8 @@ setMethod("get_chm", "trollsim", function(sim, method = "smoothed", ...) {
     stop("method should be filled, or smoothed")
   }
 
-  chm <- lapply(sim@las, rasterize_canopy, res = 1, algorithm = p2r())
+  chm <- lapply(sim@las, lidR::rasterize_canopy,
+                res = 1, algorithm = lidR::p2r())
 
   fill_na <- function(x, i = 5) {
     if (is.na(x)[i]) {

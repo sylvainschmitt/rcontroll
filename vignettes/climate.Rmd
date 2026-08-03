@@ -57,14 +57,10 @@ Then Copernicus:
 Next you can see your used id (UID) and API key on your account: https://cds.climate.copernicus.eu/user/ .
 You need to manually set your account information in R using `wf_set_key` from the `ecmwfr` package with the service `'cds'`.
 Beware, you will need the **ECMWF password** to connect to Copernicus services with `wf_set_key`.
-Replace the user ID and API key in the following chunk and run it.
+Replace the API key in the following chunk and run it.
 
 ```{r, eval=FALSE}
-wf_set_key(
-  user = "******",
-  key = "********-****-****-****-************",
-  service = "cds"
-)
+wf_set_key(key = "********-****-****-****-************")
 ```
 
 You then define the location to retrieve climate data.
@@ -125,7 +121,6 @@ Finally you can use `wf_request` to download locally the request with the regist
 
 ```{r, eval=FALSE}
 ncfile <- wf_request(
-  user = "152268",
   request = request,
   transfer = TRUE,
   path = ".",
@@ -173,7 +168,6 @@ Finally you can use `wf_request` to download locally the request with the regist
 
 ```{r, eval=FALSE}
 ncfile <- wf_request(
-  user = "152268",
   request = request,
   transfer = TRUE,
   path = ".",
@@ -198,10 +192,9 @@ test_r <- suppressWarnings(rast(
 test <- suppressWarnings(as.data.frame(test_r, xy = TRUE)) %>%
   gather("variable", "value", -x, -y) %>%
   group_by(x, y) %>%
-  mutate(date = rep(as_date(terra::time(test_r)))) %>%
-  separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-  select(-t) %>%
-  separate(variable, c("variable", "expver"), sep = "_expver=") %>%
+    separate(variable, c("variable", "date"), 
+             sep = "_valid_time=", convert = TRUE) %>% 
+    mutate(date = ymd_hms("1970-01-01 00:00:00") + date) %>% 
   group_by(x, y, date, variable) %>%
   summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
   spread(variable, value) %>%

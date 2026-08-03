@@ -3,7 +3,7 @@
 #' @importFrom tidyr gather separate spread nest unnest
 #' @importFrom dplyr mutate select arrange lag group_by do slice mutate_at funs
 #'   ungroup bind_rows rename n recode left_join mutate_all summarise
-#' @importFrom lubridate as_datetime force_tz hms year month hour as_date
+#' @importFrom lubridate as_datetime force_tz hms year month hour as_date ymd_hms
 #'   days_in_month
 #' @importFrom stats decompose ts spline
 #' @importFrom utils data
@@ -251,16 +251,14 @@ generate_climate <- function(x, y, tz,
 
   # hourly
   era5_hr_r <- suppressWarnings(rast(era5land_hour))
-  era5_hr <- suppressWarnings(extract(era5_hr_r, cbind(x, y))) %>%
+  era5_hr <-   era5_hr <- suppressWarnings(extract(era5_hr_r, cbind(x, y))) %>%
     gather("variable", "value") %>%
     mutate(date = as_datetime(terra::time(era5_hr_r))) %>%
     separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    select(-t) %>%
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>%
-    group_by(date, variable) %>%
-    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+    select(-t) %>% 
     spread(variable, value) %>%
-    arrange(date)
+    arrange(date) %>% 
+    rename(t2m = "2t", d2m = "2d")
   rm(era5_hr_r)
   t0 <- t1 <- era5_hr$date[1]
   t1 <- force_tz(t1, tz)
@@ -332,13 +330,10 @@ generate_climate <- function(x, y, tz,
   # monthly
   era5_mt_r <- suppressWarnings(rast(era5land_month))
   era5_mt <- suppressWarnings(extract(era5_mt_r, cbind(x, y))) %>%
-    gather("variable", "value") %>%
-    mutate(date = as_date(terra::time(era5_mt_r))) %>%
-    separate(variable, c("variable", "t"), sep = "_(?=\\d)") %>%
-    select(-t) %>%
-    separate(variable, c("variable", "expver"), sep = "_expver=") %>%
-    group_by(date, variable) %>%
-    summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+    gather("variable", "value")  %>%
+    separate(variable, c("variable", "time"),
+             sep = "_valid_time=", convert = TRUE)  %>%
+    mutate(date = as_datetime(as.POSIXct(time, origin = "1970-01-01")))  %>%
     spread(variable, value) %>%
     arrange(date) %>%
     mutate(month = month(date)) %>%

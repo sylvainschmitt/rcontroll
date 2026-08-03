@@ -1,6 +1,5 @@
 #' @include trollsim.R
 #' @import methods
-#' @importFrom lidR LAS
 NULL
 
 #' A stack of `TROLL` simulations
@@ -50,7 +49,7 @@ setClass(
 #'   [generate_parameters()]).
 #' @param las list. List with simulated point cloud in LAS from lidar parameters
 #'   (with lidar option, see [generate_lidar()]). The LAS format correspond to
-#'   [lidR::LAS()].
+#'   lidR::LAS() package, a suggest dependency to be installed beforehand.
 #'
 #' @return An empty S4 [trollstack()] class object.
 #'

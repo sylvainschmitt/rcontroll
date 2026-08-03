@@ -20,6 +20,16 @@ This vignette gives a quick example of a simple workflow to produce discrete lid
 
 # Setup
 
+To use lidar modules in `rcontroll` you need the [`lidR` package](https://github.com/r-lidar/lidR).
+Because `lidR` is not on CRAN anymore this is a suggested dependency and this needs to be installed independently first.
+If not, the lidar outputs from `rcontroll` are not accessible and this vignette will be empty.
+
+```{r}
+if(!requireNamespace("lidR", quietly = TRUE))
+  knitr::opts_chunk$set(eval = FALSE)
+```
+
+
 We will use `rcontroll` with a previous simulation (`TROLLv3_output`) as a starting point for new simulations. 
 
 ```{r}

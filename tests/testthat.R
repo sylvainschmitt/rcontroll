@@ -1,4 +1,4 @@
 library(testthat)
-library(rcontroll)
+suppressMessages(library(rcontroll))
 
 test_check("rcontroll")

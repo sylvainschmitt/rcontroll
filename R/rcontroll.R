@@ -79,8 +79,4 @@
 #'
 #' version 3.1.6
 #'
-#' @docType package
-#' @name rcontroll
-#'
-NULL
-# > NULL
+"_PACKAGE"

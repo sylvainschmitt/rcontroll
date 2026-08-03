@@ -1,5 +1,4 @@
 #' @import methods
-#' @importFrom lidR LAS
 NULL
 
 #' A `TROLL` simulations
@@ -29,7 +28,7 @@ NULL
 #'   [generate_parameters()]).
 #' @slot las list. List with simulated point cloud in LAS from lidar parameters
 #'   (with lidar option, see [generate_lidar()]). The LAS format correspond to
-#'   [lidR::LAS()].
+#'   lidR::LAS() package, a suggest dependency to be installed beforehand.
 #'
 #' @return An empty S4 [trollsim()] class object.
 #'
@@ -91,7 +90,7 @@ setClass(
 #'   [generate_parameters()]).
 #' @param las list. List with simulated point cloud in LAS from lidar parameters
 #'   (with lidar option, see [generate_lidar()]). The LAS format correspond to
-#'   [lidR::LAS()].
+#'   lidR::LAS() package, a suggest dependency to be installed beforehand.
 #'
 #' @return An empty S4 [trollsim()] class object.
 #'

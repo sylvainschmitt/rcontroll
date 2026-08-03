@@ -2,7 +2,6 @@
 #' @importFrom readr read_tsv cols read_file
 #' @importFrom dplyr bind_rows n filter
 #' @importFrom reshape2 melt dcast
-#' @importFrom lidR readLAS LAS
 NULL
 
 #' Load outputs from simulation
@@ -116,8 +115,14 @@ load_output <- function(name,
   # @las
   las_file <- file.path(path, paste0(name, "_0", "", ".las"))
   if (file.exists(las_file)) {
+    if (!requireNamespace("lidR", quietly = TRUE)) {
+      stop(
+        "Package \"lidR\" must be installed to exploit all lidar simulations.",
+        call. = FALSE
+      )
+    }
     file.copy(las_file, paste0(las_file, ".save.las"))
-    las <- list(readLAS(file.path(las_file)))
+    las <- list(lidR::readLAS(file.path(las_file)))
   } else {
     las <- list()
   }
