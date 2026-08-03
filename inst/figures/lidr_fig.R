@@ -19,6 +19,8 @@ sim <- troll(
 fake <- readLAS("inst/figures/lidar/lidar_0.las")
 plot(fake, bg = "white", axis = TRUE, size = 1, legend = TRUE)
 nouragues <- readLAS("inst/figures/nouragues_clipped.las")
-plot(nouragues, bg = "white", axis = TRUE, size = 2,
-     legend = TRUE, backend = "rgl")
+plot(nouragues,
+  bg = "white", axis = TRUE, size = 2,
+  legend = TRUE, backend = "rgl"
+)
 # currently manual capture

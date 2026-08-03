@@ -38,12 +38,15 @@ setMethod("update_parameters", "trollsim", function(sim, ...) {
   V1 <- description <- newvalue <- oldvalue <- param <- value <- NULL # nolint
   sim@inputs$global %>%
     rename(oldvalue = value) %>%
-    left_join(list(...) %>%
-      as.data.frame() %>%
-      t() %>%
-      as.data.frame() %>%
-      rownames_to_column("param") %>%
-      rename(newvalue = V1), by = "param") %>%
+    left_join(
+      list(...) %>%
+        as.data.frame() %>%
+        t() %>%
+        as.data.frame() %>%
+        rownames_to_column("param") %>%
+        rename(newvalue = V1),
+      by = "param"
+    ) %>%
     mutate(value = ifelse(is.na(newvalue), oldvalue, newvalue)) %>%
     select(param, value, description)
 })
