@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lidar simulation using TROLL • rcontroll</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -108,10 +107,18 @@ height canopy models.</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
+<p>To use lidar modules in <code>rcontroll</code> you need the <a href="https://github.com/r-lidar/lidR" class="external-link"><code>lidR</code> package</a>.
+Because <code>lidR</code> is not on CRAN anymore this is a suggested
+dependency and this needs to be installed independently first. If not,
+the lidar outputs from <code>rcontroll</code> are not accessible and
+this vignette will be empty.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"lidR"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>eval <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>We will use <code>rcontroll</code> with a previous simulation
 (<code>TROLLv3_output</code>) as a starting point for new
 simulations.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sylvainschmitt/rcontroll" class="external-link">rcontroll</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TROLLv3_output"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -125,7 +132,7 @@ simulation includes mean and standard deviation of pulse density, the
 laser attenuation factor, the transmittance of laser after hit, and the
 iteration for point cloud generation (see
 <code><a href="../reference/generate_lidar.html">?generate_lidar</a></code>).</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/troll.html">troll</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"test"</span>,</span>
 <span>  global <span class="op">=</span> <span class="fu"><a href="../reference/update_parameters.html">update_parameters</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, nbiter <span class="op">=</span> <span class="fl">12</span> <span class="op">*</span> <span class="fl">1</span><span class="op">)</span>,</span>
@@ -138,7 +145,7 @@ iteration for point cloud generation (see
 <span><span class="op">)</span></span></code></pre></div>
 <p>Printing the output <code>rcontroll</code> inform the lidar
 simulation status:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span></span>
 <span><span class="co">#&gt; Object of class : trollsim </span></span>
 <span><span class="co">#&gt; Name : test </span></span>
@@ -156,7 +163,7 @@ simulation status:</p>
 <span><span class="co">#&gt; Number of Species    :  45</span></span></code></pre></div>
 <p>The point cloud can be accessed in a list in the attribute
 <code>@las</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">@</span><span class="va">las</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
@@ -165,9 +172,10 @@ simulation status:</p>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
 <span><span class="co">#&gt; area         : 10020 units²</span></span>
 <span><span class="co">#&gt; points       : 144.9 thousand points</span></span>
+<span><span class="co">#&gt; type         : airborne</span></span>
 <span><span class="co">#&gt; density      : 14.46 points/units²</span></span>
 <span><span class="co">#&gt; density      : 9.58 pulses/units²</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p><code>lidR</code> include a <code>plot</code> method for las objects
@@ -175,25 +183,25 @@ with a nice 3D interactive plot.</p>
 </blockquote>
 <p><code>rcontroll</code> includes a <code>get_chm</code> method to
 extract the canopy height model from the point cloud as a raster:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_chm.html">get_chm</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $test</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 102, 102, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
+<span><span class="co">#&gt; size        : 102, 102, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 1, 1  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : -1, 101, -1, 101  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. :  </span></span>
+<span><span class="co">#&gt; coord. ref. : </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :       4.57000 </span></span>
-<span><span class="co">#&gt; max value   :      34.00222</span></span></code></pre></div>
+<span><span class="co">#&gt; name        : canopy_height</span></span>
+<span><span class="co">#&gt; min value   :          4.57</span></span>
+<span><span class="co">#&gt; max value   :     34.002222</span></span></code></pre></div>
 <p><code>rcontroll</code> includes in the <code>autoplot</code> method
 an automatic plot of the canopy height model when choosing
 <code>what = "lidar"</code> (if the lidar simulations as been activated
 obviously):</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim</span>, what <span class="op">=</span> <span class="st">"lidar"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="lidar_files/figure-html/unnamed-chunk-8-1.png" width="576"></p>
+<p><img src="lidar_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="576"></p>
 <blockquote>
 <p>Prefer to use <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">rcontroll::autoplot</a></code> instead of
 <code>autoplot</code> alone to avoid namespace conflict with
@@ -208,7 +216,7 @@ obviously):</p>
 that can be easily generated using the <code>generate_lidar</code>
 function. Here we test the difference between a simulation with mean
 pulse density of 10 (<code>10pc</code>) and 20 (<code>20pc</code>):</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stack.html">stack</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"teststack"</span>,</span>
 <span>  simulations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10pc"</span>, <span class="st">"20pc"</span><span class="op">)</span>,</span>
@@ -231,10 +239,12 @@ pulse density of 10 (<code>10pc</code>) and 20 (<code>20pc</code>):</p>
 <span>  cores <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</span></span></code></pre></div>
+<span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                                                                                                                                                                 </span></span></code></pre></div>
 <p>Printing the output <code>rcontroll</code> inform the lidar
 simulation status:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span></span>
 <span><span class="co">#&gt; Object of class : trollstack </span></span>
 <span><span class="co">#&gt; Name : teststack </span></span>
@@ -253,7 +263,7 @@ simulation status:</p>
 <span><span class="co">#&gt; Number of Species    :  45</span></span></code></pre></div>
 <p>The point clouds can be accessed in a list in the attribute
 <code>@las</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span></span>
 <span><span class="co">#&gt; $`10pc`</span></span>
 <span><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
@@ -262,6 +272,7 @@ simulation status:</p>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
 <span><span class="co">#&gt; area         : 10020 units²</span></span>
 <span><span class="co">#&gt; points       : 144.9 thousand points</span></span>
+<span><span class="co">#&gt; type         : airborne</span></span>
 <span><span class="co">#&gt; density      : 14.46 points/units²</span></span>
 <span><span class="co">#&gt; density      : 9.58 pulses/units²</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -272,42 +283,43 @@ simulation status:</p>
 <span><span class="co">#&gt; coord. ref.  : NA </span></span>
 <span><span class="co">#&gt; area         : 10020 units²</span></span>
 <span><span class="co">#&gt; points       : 144.9 thousand points</span></span>
+<span><span class="co">#&gt; type         : airborne</span></span>
 <span><span class="co">#&gt; density      : 14.46 points/units²</span></span>
 <span><span class="co">#&gt; density      : 9.58 pulses/units²</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">lidR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lidR/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim_stack</span><span class="op">@</span><span class="va">las</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><code>rcontroll</code> includes a <code>get_chm</code> method to
 extract the canopy height model from the point clouds as a raster:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_chm.html">get_chm</a></span><span class="op">(</span><span class="va">sim_stack</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`10pc`</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 102, 102, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
+<span><span class="co">#&gt; size        : 102, 102, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 1, 1  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : -1, 101, -1, 101  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. :  </span></span>
+<span><span class="co">#&gt; coord. ref. : </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :       4.57000 </span></span>
-<span><span class="co">#&gt; max value   :      34.00222 </span></span>
+<span><span class="co">#&gt; name        : canopy_height</span></span>
+<span><span class="co">#&gt; min value   :          4.57</span></span>
+<span><span class="co">#&gt; max value   :     34.002222</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`20pc`</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 102, 102, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
+<span><span class="co">#&gt; size        : 102, 102, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 1, 1  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : -1, 101, -1, 101  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. :  </span></span>
+<span><span class="co">#&gt; coord. ref. : </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; name        : canopy_height </span></span>
-<span><span class="co">#&gt; min value   :       4.57000 </span></span>
-<span><span class="co">#&gt; max value   :      34.00222</span></span></code></pre></div>
+<span><span class="co">#&gt; name        : canopy_height</span></span>
+<span><span class="co">#&gt; min value   :          4.57</span></span>
+<span><span class="co">#&gt; max value   :     34.002222</span></span></code></pre></div>
 <p><code>rcontroll</code> includes in the <code>autoplot</code> method
 an automatic plot of the canopy height model when choosing
 <code>what = "lidar"</code> (if the lidar simulations as been activated
 obviously):</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">sim_stack</span>, what <span class="op">=</span> <span class="st">"lidar"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="lidar_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
+<p><img src="lidar_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="576"></p>
 </div>
   </div>
 
@@ -326,7 +338,7 @@ obviously):</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>

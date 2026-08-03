@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A simple workflow • rcontroll</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -258,7 +257,7 @@ americana</em>:</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/fullsimG1-1.png" width="768"></p>
+<p><img src="workflow_files/figure-html/fullsimG1-1.png" class="r-plt" alt="" width="768"></p>
 <blockquote>
 <p>Note that <code>autoplot</code> results in a <code>ggplot2</code>
 object that you can modify with the <code>+</code> operator and other
@@ -278,8 +277,8 @@ patterns using <code>autoplot</code> and <code>what</code> defined on
 <span>  what <span class="op">=</span> <span class="st">"distribution"</span>,</span>
 <span>  variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dbh"</span>, <span class="st">"height"</span>, <span class="st">"LA"</span>, <span class="st">"LMA"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/fullsimG3-1.png" width="576"></p>
+<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
+<p><img src="workflow_files/figure-html/fullsimG3-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="stack-of-simulations">Stack of simulations<a class="anchor" aria-label="anchor" href="#stack-of-simulations"></a>
@@ -329,7 +328,7 @@ aboveground biomass (agb):</p>
 <span>  what <span class="op">=</span> <span class="st">"temporal"</span>,</span>
 <span>  variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ba"</span>, <span class="st">"agb"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/fullstackG1-1.png" width="576"></p>
+<p><img src="workflow_files/figure-html/fullstackG1-1.png" class="r-plt" alt="" width="576"></p>
 <p>Similarly, we can quickly plot the forest final patterns using
 <code>autoplot</code> and <code>what</code> defined on
 <code>spatial</code>:</p>
@@ -346,7 +345,7 @@ starting from an existing inventory or a previous simulation using the
 the <code>TROLLv3_output</code> simulation:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rcontroll</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">TROLLv3_output</span>, what <span class="op">=</span> <span class="st">"temporal"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-5-1.png" width="576"></p>
+<p><img src="workflow_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="576"></p>
 <p>Similarly we can have a look to the the forest final pattern from
 <code>TROLLv3_output</code> that we will use to initiate the next
 simulation:</p>
@@ -390,7 +389,7 @@ show aboveground biomass (agb) temporal trajectory:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="va">Abovergound</span> <span class="op">~</span> <span class="va">biomass</span> <span class="op">~</span> <span class="op">(</span><span class="va">AGB</span> <span class="op">~</span> <span class="va">Kg</span> <span class="op">~</span> <span class="va">ha</span><span class="op">^</span><span class="op">{</span></span>
 <span>    <span class="op">-</span><span class="fl">1</span></span>
 <span>  <span class="op">}</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-8-1.png" width="576"></p>
+<p><img src="workflow_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="576"></p>
 <blockquote>
 <p>Note how the simulation AGB starts at the end of
 <code>TROLLv3_output</code>’s temporal trajectory.</p>
@@ -432,7 +431,7 @@ show aboveground biomass (agb) temporal trajectory:</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>
