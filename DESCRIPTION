@@ -51,7 +51,8 @@ Suggests:
     rmarkdown,
     testthat,
     covr,
-    lidR (>= 4.0.1)
+    rlas,
+    lidR
 Remotes:
     r-lidar/lidR,
     r-lidar/rlas
