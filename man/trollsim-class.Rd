@@ -45,7 +45,7 @@ see \code{\link[=stack]{stack()}}).}
 
 \item{\code{las}}{list. List with simulated point cloud in LAS from lidar parameters
 (with lidar option, see \code{\link[=generate_lidar]{generate_lidar()}}). The LAS format correspond to
-\code{\link[lidR:LAS-class]{lidR::LAS()}}.}
+lidR::LAS() package, a suggest dependency to be installed beforehand.}
 }}
 
 \seealso{

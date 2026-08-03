@@ -1,8 +1,15 @@
-# rcontroll 0.1.0.9004
+# rcontroll 0.1.1.9005
+
+- lidR and rlas remote in description for GA
+- Making lidR and rlas a suggest following CRAN archiving
+- Adding GRIB fix for era5_land_month, dirty fix for Nick to be cleaned.
+- Fixing climate generation for new CDS API but bug with nc extract of hourly monthly means, needs first grib dl and cdo convert to nc, should be replaced by GEE in future
+
+# rcontroll 0.1.1.9004
 
 - merging and cleaning before CRAN fix
 
-# rcontroll 0.1.0.9003
+# rcontroll 0.1.1.9003
 
 - TROLL version 3.1.8 following discussion with IM, updating treefall time normalisation and carbon starvation to match TROLL4, a clean merge with main and dev will be needed
 
