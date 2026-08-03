@@ -1,3 +1,7 @@
+# rcontroll 0.2.0.9004
+
+- lidR remote in description for GA
+
 # rcontroll 0.2.0.9003
 
 - Making lidR a suggest following CRAN archiving
